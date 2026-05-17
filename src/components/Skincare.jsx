@@ -187,8 +187,8 @@ function Retinoid() {
 
 const PANELS = { am: AM, pm: PM, weekly: Weekly, lifestyle: Lifestyle, retinoid: Retinoid };
 
-export default function Skincare() {
-  const [activeTab, setActiveTab] = useState('am');
+export default function Skincare({ initialTab }) {
+  const [activeTab, setActiveTab] = useState(initialTab || 'am');
   const Panel = PANELS[activeTab];
 
   return (

@@ -1,12 +1,12 @@
 const GOALS = [
-  '🌸 Flat Stomach at Rest',
-  '✨ Clear, Bright Skin',
-  '💪 Round Glutes',
-  '🌿 Low Inflammation',
-  '🌺 Healthy Hormones',
-  '💎 Shiny Wavy Hair',
-  '🧠 Brain Health',
-  '💧 Less Puffiness',
+  { label: '🌸 Flat Stomach at Rest', section: 'nutrition',  tab: 'guide'     },
+  { label: '✨ Clear, Bright Skin',    section: 'skincare',   tab: 'am'        },
+  { label: '💪 Round Glutes',          section: 'workout',    tab: null        },
+  { label: '🌿 Low Inflammation',      section: 'nutrition',  tab: 'guide'     },
+  { label: '🌺 Healthy Hormones',      section: 'antiaging',  tab: null        },
+  { label: '💎 Shiny Wavy Hair',       section: 'haircare',   tab: null        },
+  { label: '🧠 Brain Health',          section: 'antiaging',  tab: null        },
+  { label: '💧 Less Puffiness',        section: 'nutrition',  tab: 'hydration' },
 ];
 
 export default function Hero({ onNavigate }) {
@@ -17,7 +17,7 @@ export default function Hero({ onNavigate }) {
       <div className="hero-bg-ring" style={{ width: 560, height: 560, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', animationDelay: '2s' }} />
       <div className="hero-bg-ring" style={{ width: 320, height: 320, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', animationDelay: '4s' }} />
 
-      <div className="hero-tag">✦ May — December 2025 ✦</div>
+      <div className="hero-tag">✦ January — December 2026 ✦</div>
 
       <h1>The <em>Goddess</em><br />Plan</h1>
 
@@ -27,7 +27,15 @@ export default function Hero({ onNavigate }) {
       <p className="hero-sub">Anti-Bloat · Lean · Glow · Strength · Skin · Hair</p>
 
       <div className="hero-goals">
-        {GOALS.map(g => <span key={g} className="goal-pill">{g}</span>)}
+        {GOALS.map(g => (
+          <button
+            key={g.label}
+            className="goal-pill"
+            onClick={() => onNavigate(g.section, g.tab)}
+          >
+            {g.label}
+          </button>
+        ))}
       </div>
 
       <div className="hero-cta">

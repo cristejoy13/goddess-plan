@@ -49,13 +49,13 @@ export default function Workout() {
 
       <div className="divider splash-item">Your Weekly Blueprint</div>
       <div className="g-card splash-item">
-        <p><span className="pill pr">Mon</span> Strength A — The Power Day (heavy load)</p>
-        <p style={{ marginTop: 6 }}><span className="pill py">Tue</span> Pilates — Deep core &amp; TVA</p>
+        <p><span className="pill pr">Mon</span> Strength A — The Power Day (hip thrust, RDL, kickback)</p>
+        <p style={{ marginTop: 6 }}><span className="pill py">Tue</span> Pilates 1 — Deep core &amp; TVA</p>
         <p style={{ marginTop: 6 }}><span className="pill pr">Wed</span> Sprint Day — Sprints or cycling intervals</p>
-        <p style={{ marginTop: 6 }}><span className="pill py">Thu</span> Pilates — Flow, spine &amp; side body</p>
-        <p style={{ marginTop: 6 }}><span className="pill pr">Fri</span> Strength B — The Shape Day (isolation)</p>
-        <p style={{ marginTop: 6 }}><span className="pill pg">Sat</span> Sprints or cycling intervals — your choice</p>
-        <p style={{ marginTop: 6 }}><span className="pill pg">Sun</span> Sprints, cycling, or Zone 2 — listen to your body</p>
+        <p style={{ marginTop: 6 }}><span className="pill pr">Thu</span> Strength B — The Shape Day (split squat, sumo, clamshell)</p>
+        <p style={{ marginTop: 6 }}><span className="pill py">Fri</span> Pilates 2 — Flow, spine &amp; side body</p>
+        <p style={{ marginTop: 6 }}><span className="pill pg">Sat</span> Rest or Active Recovery — walk, yoga, swim, or foam roll</p>
+        <p style={{ marginTop: 6 }}><span className="pill pg">Sun</span> Rest or Active Recovery — full rest or gentle movement</p>
         <p style={{ marginTop: 14, fontSize: 13, color: 'var(--text-mid)' }}>
           <strong>Progressive overload:</strong> Weeks 1–2, learn the movements and feel the muscle. Weeks 3–4, add 0.5–2 kg or 1–2 reps. Each month reassess — if every set feels easy, increase load. If form suffers, increase reps before adding weight.
         </p>

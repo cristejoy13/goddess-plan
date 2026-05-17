@@ -52,9 +52,11 @@ function FloatingPetals() {
 
 export default function App() {
   const [active, setActive] = useState('home');
+  const [navMeta, setNavMeta] = useState({ tab: null, key: 0 });
 
-  const navigate = (id) => {
+  const navigate = (id, tab = null) => {
     setActive(id);
+    setNavMeta(prev => ({ tab, key: prev.key + 1 }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -79,8 +81,8 @@ export default function App() {
         {active === 'home'       && <Hero onNavigate={navigate} />}
         {active === 'workout'    && <Workout />}
         {active === 'challenges' && <Challenges />}
-        {active === 'nutrition'  && <Nutrition />}
-        {active === 'skincare'   && <Skincare />}
+        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} />}
+        {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
         {active === 'antiaging'  && <AntiAging />}
       </div>
@@ -95,7 +97,7 @@ export default function App() {
           Every meal, every workout, every oiling ritual, every skincare step, every night you choose rest over chaos — it compounds. Quietly. Powerfully. Irreversibly.
         </p>
         <p className="mot-p">
-          Eight months from now you will not recognise the version of yourself you left behind.
+          Twelve months from now you will not recognise the version of yourself you left behind.
         </p>
         <div className="mot-q">Be consistent. Be patient. Be relentless. ✦</div>
       </div>
