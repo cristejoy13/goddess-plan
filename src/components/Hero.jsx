@@ -12,12 +12,18 @@ const GOALS = [
 export default function Hero({ onNavigate }) {
   return (
     <div className="hero">
-      <div className="hero-bg-ring" style={{ width: 700, height: 700, top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
-      <div className="hero-bg-ring" style={{ width: 500, height: 500, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', animationDelay: '2s' }} />
-      <div className="hero-bg-ring" style={{ width: 300, height: 300, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', animationDelay: '4s' }} />
+      {/* Concentric glow rings */}
+      <div className="hero-bg-ring" style={{ width: 800, height: 800, top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
+      <div className="hero-bg-ring" style={{ width: 560, height: 560, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', animationDelay: '2s' }} />
+      <div className="hero-bg-ring" style={{ width: 320, height: 320, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', animationDelay: '4s' }} />
 
       <div className="hero-tag">✦ May — December 2025 ✦</div>
+
       <h1>The <em>Goddess</em><br />Plan</h1>
+
+      {/* Gold shimmer bar */}
+      <div className="hero-shimmer" />
+
       <p className="hero-sub">Anti-Bloat · Lean · Glow · Strength · Skin · Hair</p>
 
       <div className="hero-goals">
