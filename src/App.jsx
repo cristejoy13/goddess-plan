@@ -67,13 +67,23 @@ const SEARCH_INDEX = [
 
 const FLOWER_EMOJIS = ['🌸', '🌺', '🌼', '🌸', '🌷', '💐', '🌸', '🌺'];
 
-const PETALS = Array.from({ length: 16 }, (_, i) => ({
+const PETALS = Array.from({ length: 18 }, (_, i) => ({
   id: i,
   size: Math.random() * 10 + 12,
   left: Math.random() * 100,
   flower: FLOWER_EMOJIS[Math.floor(Math.random() * FLOWER_EMOJIS.length)],
   duration: Math.random() * 20 + 14,
-  delay: Math.random() * -24,
+  delay: Math.random() * -28,
+}));
+
+// Twinkling star-sparkles scattered across the upper sky (matches the image)
+const SPARKLES = Array.from({ length: 38 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 100,
+  y: Math.random() * 65,       // upper 65% of screen only
+  size: Math.random() * 2.5 + 0.8,
+  delay: Math.random() * 6,
+  duration: Math.random() * 2.5 + 1.5,
 }));
 
 function FloatingFlowers() {
@@ -94,6 +104,27 @@ function FloatingFlowers() {
         </div>
       ))}
     </>
+  );
+}
+
+function AtmosphericSparkles() {
+  return (
+    <div className="sparkle-layer">
+      {SPARKLES.map(s => (
+        <div
+          key={s.id}
+          className="sparkle-dot"
+          style={{
+            left: `${s.x}%`,
+            top: `${s.y}%`,
+            width: `${s.size}px`,
+            height: `${s.size}px`,
+            animationDelay: `${s.delay}s`,
+            animationDuration: `${s.duration}s`,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -228,6 +259,9 @@ export default function App() {
   return (
     <>
       <div className="bg-layer" />
+      <div className="bg-aurora" />
+      <div className="cloud-layer" />
+      <AtmosphericSparkles />
       <FloatingFlowers />
       <InstallBanner />
 
