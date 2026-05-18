@@ -201,6 +201,7 @@ export default function App() {
 
   // Touch tracking for swipe-back gesture
   const touchStartRef = useRef({ x: 0, y: 0 });
+  const lastTapRef = useRef({ time: 0, x: 0, y: 0 });
 
   const navigate = (id, tab = null, scrollTo = null) => {
     const cur = activeRef.current;
@@ -232,17 +233,35 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Keyboard: Cmd+Z (Mac) or Ctrl+Z (Windows/Linux) to go back
+  const goHome = () => {
+    const cur = activeRef.current;
+    if (cur.section === 'home') {
+      setSearchOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setHistory([]);
+    setActive('home');
+    setNavMeta(p => ({ tab: null, scrollTo: null, key: p.key + 1 }));
+    setSearchOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Keyboard: Cmd+Z / Ctrl+Z to go back, Cmd+H / Ctrl+H to return home
   useEffect(() => {
     const handler = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
         e.preventDefault();
         goBack();
       }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'h') {
+        e.preventDefault();
+        goHome();
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, []); // goBack reads historyRef — always fresh, no deps needed
+  }, []); // goBack/goHome read refs — always fresh, no deps needed
 
   // Touch: swipe right from left edge to go back (mirrors iOS native gesture)
   function handleTouchStart(e) {
@@ -253,7 +272,29 @@ export default function App() {
     const dx = e.changedTouches[0].clientX - startX;
     const dy = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
     // Only fire when starting from left 40px edge, swiping right > 60px, minimal vertical drift
-    if (startX < 40 && dx > 60 && dy < 100) goBack();
+    if (startX < 40 && dx > 60 && dy < 100) {
+      goBack();
+      return;
+    }
+
+    const target = e.target;
+    const isInteractive = target.closest?.(
+      'button, input, textarea, select, a, [role="button"], .check-item, .ingr-card, .petal-acc, .month-card'
+    );
+    if (isInteractive) return;
+
+    const tap = e.changedTouches[0];
+    const now = Date.now();
+    const last = lastTapRef.current;
+    const distance = Math.hypot(tap.clientX - last.x, tap.clientY - last.y);
+
+    if (now - last.time < 320 && distance < 36) {
+      lastTapRef.current = { time: 0, x: 0, y: 0 };
+      goHome();
+      return;
+    }
+
+    lastTapRef.current = { time: now, x: tap.clientX, y: tap.clientY };
   }
 
   return (

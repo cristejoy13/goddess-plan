@@ -2,21 +2,21 @@ import { useState, useEffect } from 'react';
 
 export default function InstallBanner() {
   const [prompt, setPrompt] = useState(null);      // Android/Chrome install prompt
-  const [showIOS, setShowIOS] = useState(false);   // iOS manual instruction
+  const [showIOS, setShowIOS] = useState(() => {   // iOS manual instruction
+    if (window.matchMedia('(display-mode: standalone)').matches) return false;
+    if (sessionStorage.getItem('gp_install_dismissed')) return false;
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    return isIOS && isSafari;
+  });
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     // Already installed (standalone mode) — hide the banner
     if (window.matchMedia('(display-mode: standalone)').matches) return;
     if (sessionStorage.getItem('gp_install_dismissed')) return;
-
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-    if (isIOS && isSafari) {
-      setShowIOS(true);
-      return;
-    }
+    if (showIOS) return;
 
     function handlePrompt(e) {
       e.preventDefault();
@@ -24,7 +24,7 @@ export default function InstallBanner() {
     }
     window.addEventListener('beforeinstallprompt', handlePrompt);
     return () => window.removeEventListener('beforeinstallprompt', handlePrompt);
-  }, []);
+  }, [showIOS]);
 
   function dismiss() {
     sessionStorage.setItem('gp_install_dismissed', '1');

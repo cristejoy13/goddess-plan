@@ -16,7 +16,9 @@ function saveState(state) {
   try {
     localStorage.setItem('gp_checks', JSON.stringify(state.checks));
     localStorage.setItem('gp_done',   JSON.stringify(state.done));
-  } catch {}
+  } catch {
+    // Storage can be unavailable in private browsing or restricted webviews.
+  }
 }
 
 function MonthCard({ month, idx, checks, done, onToggleCheck, onToggleDone }) {
