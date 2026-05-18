@@ -28,7 +28,7 @@ body {
   font-weight: 300;
   color: var(--text);
   min-height: 100vh;
-  background: #0d0508;
+  background: #1a0c12;
   overflow-x: hidden;
 }
 
@@ -40,7 +40,7 @@ body {
   background:
     radial-gradient(ellipse 80% 60% at 20% 10%, rgba(100,20,50,0.45) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 80% 90%, rgba(80,50,5,0.35) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, #0d0508 0%, #1a0810 100%);
+    radial-gradient(ellipse 100% 100% at 50% 50%, #1a0c12 0%, #241018 100%);
   animation: bgPulse 10s ease-in-out infinite alternate;
 }
 @keyframes bgPulse {
@@ -48,20 +48,21 @@ body {
   100% { opacity: 0.85; }
 }
 
-/* floating petals */
+/* floating flowers */
 .petal {
   position: fixed;
   pointer-events: none;
   z-index: 0;
-  border-radius: 50% 0 50% 0;
   opacity: 0;
+  line-height: 1;
+  user-select: none;
   animation: petalFloat linear infinite;
 }
 @keyframes petalFloat {
-  0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-  10%  { opacity: 0.22; }
-  90%  { opacity: 0.14; }
-  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  0%   { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
+  10%  { opacity: 0.28; }
+  90%  { opacity: 0.18; }
+  100% { transform: translateY(-10vh) rotate(300deg) scale(1.1); opacity: 0; }
 }
 
 /* ─── NAV ─── */
@@ -300,7 +301,7 @@ body {
   align-items: center;
   gap: 8px;
 }
-.s-tag::before { content: '✦'; font-size: 8px; }
+.s-tag::before { content: '🌸'; font-size: 10px; }
 .s-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(34px, 7vw, 58px);
@@ -421,7 +422,7 @@ body {
   line-height: 1.5;
 }
 .workout-list li:last-child { border-bottom: none; }
-.workout-list li::before { content: '✦'; color: var(--gold); font-size: 9px; margin-top: 5px; flex-shrink: 0; }
+.workout-list li::before { content: '🌸'; font-size: 11px; margin-top: 3px; flex-shrink: 0; }
 
 .meal-box {
   margin-top: 16px;
@@ -1025,4 +1026,168 @@ body {
   .ag-accordion .ag-t { font-size: 17px; }
   .ag-inner { padding: 0 16px; }
   .ag-accordion.is-open .ag-inner { padding: 0 16px 16px; }
+}
+
+/* ── Search Bar ── */
+.search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 8px;
+}
+.search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(240,204,96,0.28);
+  border-radius: 999px;
+  padding: 11px 44px 11px 18px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  font-weight: 300;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.search-input::placeholder { color: var(--text-soft); }
+.search-input:focus { border-color: rgba(240,204,96,0.6); background: rgba(255,255,255,0.09); }
+.search-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  font-size: 16px;
+  pointer-events: none;
+}
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: rgba(22, 8, 16, 0.97);
+  border: 1px solid rgba(240,204,96,0.22);
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 300;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+.search-result {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.15s;
+}
+.search-result:last-child { border-bottom: none; }
+.search-result:hover { background: rgba(240,204,96,0.08); }
+.sr-label { font-size: 13.5px; color: var(--text); font-weight: 400; }
+.sr-hint { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+
+/* ── Ingredient Cards ── */
+.ingr-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
+.ingr-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+.ingr-card.is-open { border-color: rgba(240,204,96,0.35); }
+.ingr-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 14px 18px;
+  cursor: pointer;
+  text-align: left;
+}
+.ingr-em { font-size: 26px; flex-shrink: 0; }
+.ingr-info { flex: 1; }
+.ingr-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--text); }
+.ingr-note { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+.ingr-macro { flex-shrink: 0; text-align: right; }
+.ingr-protein { font-size: 11.5px; color: var(--gold); background: rgba(240,204,96,0.1); border-radius: 999px; padding: 3px 9px; }
+.ingr-arr { font-size: 15px; color: var(--text-soft); flex-shrink: 0; transition: transform 0.3s; }
+.ingr-card.is-open .ingr-arr { transform: rotate(180deg); }
+.ingr-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
+.ingr-card.is-open .ingr-body { grid-template-rows: 1fr; }
+.ingr-inner { overflow: hidden; padding: 0 18px; }
+.ingr-card.is-open .ingr-inner { padding: 0 18px 18px; }
+.ingr-methods { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.ingr-method-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.ingr-method-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(240,204,96,0.08);
+}
+.ingr-method-btn:hover:not(.active) { border-color: var(--border-r); color: var(--text-mid); }
+.ingr-recipe { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 14px; }
+.ingr-recipe-time { font-size: 11px; letter-spacing: 1px; color: var(--rose); margin-bottom: 10px; text-transform: uppercase; }
+.ingr-steps { margin: 0; padding-left: 20px; }
+.ingr-steps li { font-size: 13px; color: var(--text-mid); line-height: 1.65; margin-bottom: 6px; }
+.ingr-steps li:last-child { margin-bottom: 0; }
+.ingr-tip { font-size: 12px; color: var(--text-soft); margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-style: italic; }
+
+/* ── Product Cards (Skincare) ── */
+.pc-grid { display: flex; flex-direction: column; gap: 0; }
+.product-card {
+  display: flex;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.product-card:hover { transform: translateY(-2px); border-color: var(--border-r); }
+.product-card.primary { border-color: rgba(240,204,96,0.3); }
+.product-card.primary:hover { border-color: var(--gold); }
+.pc-band {
+  width: 6px;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+.pc-body { flex: 1; padding: 13px 15px; }
+.pc-brand { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 3px; font-weight: 600; }
+.pc-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.pc-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+.pc-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  color: var(--text-soft);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.pc-why { font-size: 12px; color: var(--text-soft); line-height: 1.55; }
+.pc-star { font-size: 10px; padding: 2px 8px; border-radius: 999px; margin-bottom: 7px; display: inline-block; }
+.pc-star.primary { background: rgba(240,204,96,0.15); border: 1px solid rgba(240,204,96,0.3); color: var(--gold); }
+.pc-star.alt { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--text-soft); }
+.pc-find { font-size: 10.5px; color: var(--text-soft); margin-top: 7px; }
+.pc-find strong { color: var(--text-mid); }
+
+@media (max-width: 768px) {
+  .search-wrap { max-width: 100%; }
+  .ingr-trigger { padding: 12px 14px; }
+  .ingr-inner { padding: 0 14px; }
+  .ingr-card.is-open .ingr-inner { padding: 0 14px 14px; }
 }

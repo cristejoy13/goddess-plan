@@ -9,7 +9,7 @@ import AntiAging from './components/AntiAging';
 import './styles/index.css';
 
 const NAV_ITEMS = [
-  { id: 'home',       label: '✦ Home' },
+  { id: 'home',       label: '🌸 Home' },
   { id: 'workout',    label: 'Workouts' },
   { id: 'challenges', label: 'Challenges' },
   { id: 'nutrition',  label: 'Nutrition' },
@@ -18,18 +18,18 @@ const NAV_ITEMS = [
   { id: 'antiaging',  label: 'Anti-Aging' },
 ];
 
-const PETAL_COLORS = ['#f9c4d8','#fde97a','#fce4ef','#f0cc60','#fcd6e8','#fffde0'];
+const FLOWER_EMOJIS = ['🌸', '🌺', '🌼', '🌸', '🌷', '💐', '🌸', '🌺'];
 
-const PETALS = Array.from({ length: 14 }, (_, i) => ({
+const PETALS = Array.from({ length: 16 }, (_, i) => ({
   id: i,
-  size: Math.random() * 18 + 8,
+  size: Math.random() * 10 + 12,
   left: Math.random() * 100,
-  color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
-  duration: Math.random() * 18 + 12,
-  delay: Math.random() * -20,
+  flower: FLOWER_EMOJIS[Math.floor(Math.random() * FLOWER_EMOJIS.length)],
+  duration: Math.random() * 20 + 14,
+  delay: Math.random() * -24,
 }));
 
-function FloatingPetals() {
+function FloatingFlowers() {
   return (
     <>
       {PETALS.map(p => (
@@ -37,14 +37,14 @@ function FloatingPetals() {
           key={p.id}
           className="petal"
           style={{
-            width: p.size,
-            height: p.size,
+            fontSize: p.size,
             left: `${p.left}%`,
-            background: p.color,
             animationDuration: `${p.duration}s`,
             animationDelay: `${p.delay}s`,
           }}
-        />
+        >
+          {p.flower}
+        </div>
       ))}
     </>
   );
@@ -63,7 +63,7 @@ export default function App() {
   return (
     <>
       <div className="bg-layer" />
-      <FloatingPetals />
+      <FloatingFlowers />
 
       <nav className="nav">
         {NAV_ITEMS.map(item => (
@@ -88,7 +88,7 @@ export default function App() {
       </div>
 
       <div className="motivation">
-        <div className="mot-stars">✦  ✦  ✦  ✦  ✦</div>
+        <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>
         <h2 className="mot-h">
           You are not building a body.<br />
           You are building <em>a way of life.</em>
@@ -99,7 +99,7 @@ export default function App() {
         <p className="mot-p">
           Twelve months from now you will not recognise the version of yourself you left behind.
         </p>
-        <div className="mot-q">Be consistent. Be patient. Be relentless. ✦</div>
+        <div className="mot-q">Be consistent. Be patient. Be relentless. 🌸</div>
       </div>
     </>
   );
