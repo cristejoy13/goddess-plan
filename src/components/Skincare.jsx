@@ -7,6 +7,7 @@ const TABS = [
   { id: 'weekly',    label: '💎 Weekly Treatments' },
   { id: 'lifestyle', label: '🌿 Lifestyle & Food' },
   { id: 'retinoid',  label: '✨ Retinoid Roadmap' },
+  { id: 'body',      label: '🫧 Body Care' },
 ];
 
 const BRAND_COLOR = {
@@ -22,6 +23,15 @@ const BRAND_COLOR = {
   'Round Lab':        '#4888c0',
   'The Inkey List':   '#606868',
   'Etude':            '#d04870',
+  'CeraVe':           '#0060a8',
+  'Human Nature':     '#6a8c3e',
+  'Dove':             '#6090b8',
+  'Biore':            '#d03060',
+  'Aveeno':           '#b09040',
+  'Bio-Oil':          '#d07030',
+  'AmLactin':         '#4888a0',
+  'St. Ives':         '#60a850',
+  'Vaseline':         '#4878a0',
 };
 
 function ProductCard({ brand, name, badges = [], why, primary = false }) {
@@ -358,7 +368,133 @@ function Retinoid() {
   );
 }
 
-const PANELS = { am: AM, pm: PM, weekly: Weekly, lifestyle: Lifestyle, retinoid: Retinoid };
+/* ─── Body Care ─── */
+function Body() {
+  return (
+    <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        🫧 Body skin needs the same consistent attention as your face — just different products. These three routines build soft, smooth, glowing skin from head to toe over 4–8 weeks.
+      </div>
+
+      <RoutineStep num="1" cat="In The Shower" name="Cleanse & Exfoliate">
+        <div className="note-box note-rose" style={{ marginBottom: 12, marginTop: 0 }}>
+          🌡️ Temperature: warm — never hot. Hot water strips the body's natural oils and breaks the moisture barrier. Finish with a 30-second cooler rinse to close pores and improve circulation.
+        </div>
+        <ProductCard
+          brand="Human Nature" primary
+          name="Naturals Body Wash — Sunflower"
+          badges={['Sulfate-Free', 'Moisturising', 'Filipino Brand', 'Gentle']}
+          why="Gentle, sulfate-free body wash made with sunflower oil. Cleanses without stripping moisture — important for maintaining the body skin barrier. Affordable and widely available across the Philippines."
+        />
+        <ProductCard
+          brand="Dove"
+          name="Sensitive Skin Body Wash"
+          badges={['Fragrance-Free', 'Hypoallergenic', 'Moisture Seal']}
+          why="Contains ¼ moisturising cream — cleans without the tight, dry feeling. Ideal on days when skin feels reactive or after sun exposure. Clinically tested for sensitive skin."
+        />
+        <div className="step-note">🪥 Dry brush 2× per week BEFORE your shower (Sunday + Wednesday): use a natural bristle brush in firm circular upward strokes — start at feet, move toward the heart. Stimulates lymphatic drainage, reduces puffiness, and dramatically smooths skin texture over 4–6 weeks.</div>
+        <div style={{ marginTop: 12 }}>
+          <ProductCard
+            brand="St. Ives"
+            name="Oatmeal & Shea Butter Body Scrub"
+            badges={['Physical Exfoliant', '2× per week', 'Texture Smoothing']}
+            why="Buffs away dead skin cells that cause dullness and rough patches. Use on Sunday and Wednesday in the shower after body wash. Focus on elbows, knees, upper arms, and thighs — then rinse thoroughly."
+          />
+        </div>
+        <div className="step-note">Exfoliation days: Sunday and Wednesday only. Over-exfoliating causes irritation and barrier damage — 2× per week is the correct frequency for body skin.</div>
+      </RoutineStep>
+
+      <RoutineStep num="2" cat="After Shower — Before Going Out" name="Seal & Protect">
+        <div className="step-note" style={{ marginBottom: 12 }}>⏱️ The 2-minute rule: apply body moisturiser within 2 minutes of stepping out of the shower, while skin is still slightly damp. This locks moisture in far more effectively than applying to completely dry skin.</div>
+        <ProductCard
+          brand="CeraVe" primary
+          name="Moisturizing Cream (body)"
+          badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free', '24-Hour Hydration']}
+          why="Ceramides repair and strengthen the skin barrier — the same principle as your face routine. Long-lasting hydration that is non-greasy and absorbs quickly. The gold standard for daily body moisturising."
+        />
+        <ProductCard
+          brand="Human Nature"
+          name="Naturals Intensive Moisturizer"
+          badges={['Sunflower Oil', 'Non-Greasy', 'Lightweight', 'Filipino Brand']}
+          why="Absorbs quickly with no stickiness — ideal for humid Philippine weather. Good budget-friendly daily option when you need to get dressed fast."
+        />
+        <div className="step-note">🦵 Apply a thicker layer to elbows, knees, and heels — these areas lose moisture fastest and show rough texture most visibly. Give them extra attention every morning.</div>
+        <div style={{ marginTop: 12 }}>
+          <ProductCard
+            brand="Biore"
+            name="UV Aqua Rich Watery Essence SPF 50+ PA++++"
+            badges={['SPF 50+', 'PA++++', 'Lightweight', 'No White Cast']}
+            why="Apply SPF to all exposed skin before going out — arms, neck, décolletage, and legs if wearing skirts or shorts. UV damage causes premature skin ageing on body skin just as on the face. This formula absorbs in seconds with zero stickiness."
+          />
+        </div>
+        <div className="step-note">⚠️ Body SPF is non-negotiable when wearing sleeveless tops, shorts, or skirts outdoors. Reapply every 2 hours. Neck and arms age at the same rate as face skin when exposed without protection.</div>
+        <div style={{ marginTop: 12 }}>
+          <ProductCard
+            brand="Bio-Oil"
+            name="Bio-Oil Skincare Oil"
+            badges={['Vitamin A & E', 'Stretch Mark Fading', 'Scar Reduction', 'Skin Glow']}
+            why="2–3 drops layered over moisturiser adds a natural glow and gradually fades stretch marks, scars, and uneven pigmentation. Pat — never rub — into the skin. Applied last so it seals everything underneath."
+          />
+        </div>
+        <div className="step-note">Layer order: moisturiser first → absorb 1 min → then 2–3 drops of Bio-Oil on top. Apply oil as the final step so it seals in all the hydration below it.</div>
+      </RoutineStep>
+
+      <RoutineStep num="3" cat="Evening Routine" name="Repair Overnight">
+        <div className="step-note" style={{ marginBottom: 12 }}>🌙 Skin regenerates most actively between 10 PM and 2 AM. Evening body care is when richer products do their most effective work — no UV degradation, and the body is in full repair mode.</div>
+        <ProductCard
+          brand="Aveeno" primary
+          name="Daily Moisturizing Lotion"
+          badges={['Colloidal Oat', 'Soothing', 'Fragrance-Free', '24-Hour Repair']}
+          why="Colloidal oatmeal is clinically proven to soothe, protect, and repair the skin barrier overnight. Slightly richer than daytime options — perfect for the body's deeper overnight recovery phase."
+        />
+        <ProductCard
+          brand="CeraVe"
+          name="Moisturizing Cream (heavy layer)"
+          badges={['Ceramides', 'Overnight Repair', 'Barrier Restoration']}
+          why="Apply a more generous layer at night than in the morning — no sun or layering needed, just pure overnight absorption into the skin."
+        />
+        <div className="step-note">🦶 Vaseline on heels and elbows every night: apply a generous amount of Vaseline Original after your regular moisturiser. This is the most effective treatment for cracked heels and rough elbows — clinical-level results within 2–3 weeks of nightly use.</div>
+        <div style={{ marginTop: 12 }}>
+          <ProductCard
+            brand="Vaseline"
+            name="Original Petroleum Jelly"
+            badges={['Occlusive', 'Heel Repair', 'Elbow Softening', 'Fragrance-Free']}
+            why="Locks moisture in completely. Nothing evaporates from skin when Vaseline is applied — it traps hydration underneath and allows deep overnight tissue repair. Apply on heels and elbows every single night after moisturiser."
+          />
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <ProductCard
+            brand="AmLactin"
+            name="Daily Moisturizing Body Lotion"
+            badges={['Lactic Acid 12%', 'AHA', 'Keratosis Pilaris', '1× per week']}
+            why="Lactic acid gently exfoliates body skin chemically — smooths keratosis pilaris (the small rough bumps on upper arms), improves overall skin texture, and brightens uneven tone. Use once a week on Sunday evening, after your dry brushing day."
+          />
+        </div>
+        <div className="step-note">AmLactin: Sunday evenings only (after your scrub day). Do not combine with Bio-Oil on the same night — one treatment at a time. Wash hands after applying.</div>
+        <div style={{ marginTop: 12 }}>
+          <ProductCard
+            brand="Bio-Oil"
+            name="Bio-Oil Evening Massage (2× per week)"
+            badges={['Circulation Boost', 'Lymphatic Drainage', 'Firming', 'Tue + Fri']}
+            why="A 5-minute Bio-Oil massage on Tuesday and Friday evenings boosts circulation, supports lymphatic drainage, reduces water retention, and keeps skin firm and radiant. Use on arms, thighs, and abdomen in long upward circular strokes."
+          />
+        </div>
+        <div className="step-note">Massage technique: 4–5 drops of Bio-Oil per area. Long upward strokes on limbs, small circular strokes on abdomen. 5 minutes total. Do this AFTER your regular moisturiser — the oil seals everything in and does not need to absorb on its own.</div>
+      </RoutineStep>
+
+      <div className="note-box note-rose" style={{ marginTop: 20 }}>
+        🌸 <strong>Weekly body skin schedule at a glance</strong><br /><br />
+        <strong>Every day:</strong> Warm shower → body wash → moisturise within 2 min → SPF on all exposed skin<br />
+        <strong>Sunday + Wednesday:</strong> Dry brush before shower + body scrub in shower<br />
+        <strong>Sunday evening:</strong> AmLactin AHA lotion instead of regular moisturiser on rough areas<br />
+        <strong>Tuesday + Friday evening:</strong> Bio-Oil massage after regular moisturiser<br />
+        <strong>Every night:</strong> Vaseline on heels and elbows — non-negotiable
+      </div>
+    </>
+  );
+}
+
+const PANELS = { am: AM, pm: PM, weekly: Weekly, lifestyle: Lifestyle, retinoid: Retinoid, body: Body };
 
 export default function Skincare({ initialTab }) {
   const [activeTab, setActiveTab] = useState(initialTab || 'am');
