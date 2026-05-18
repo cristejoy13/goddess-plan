@@ -20,7 +20,6 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  // ── Workouts — individual days ──
   { label: 'Monday — Strength A',         hint: 'Workouts · Hip Thrust · RDL · Kickback',    section: 'workout', scrollTo: 'day-monday'    },
   { label: 'Tuesday — Pilates 1',         hint: 'Workouts · Deep Core & TVA',                section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Wednesday — Sprint Day',      hint: 'Workouts · Intervals · Meat Meals',          section: 'workout', scrollTo: 'day-wednesday' },
@@ -28,7 +27,6 @@ const SEARCH_INDEX = [
   { label: 'Friday — Pilates 2',          hint: 'Workouts · Flow · Spine & Side Body',        section: 'workout', scrollTo: 'day-friday'   },
   { label: 'Saturday — Rest Day',         hint: 'Workouts · Active Recovery · Light Meals',   section: 'workout', scrollTo: 'day-saturday' },
   { label: 'Sunday — Rest & Prepare',     hint: 'Workouts · Reset · Meal Prep Day',           section: 'workout', scrollTo: 'day-sunday'   },
-  // ── Workouts — general ──
   { label: 'Barbell Hip Thrust',          hint: 'Workouts → Monday Strength A',  section: 'workout', scrollTo: 'day-monday'    },
   { label: 'Romanian Deadlift',           hint: 'Workouts → Monday Strength A',  section: 'workout', scrollTo: 'day-monday'    },
   { label: 'Bulgarian Split Squat',       hint: 'Workouts → Thursday Strength B',section: 'workout', scrollTo: 'day-thursday'  },
@@ -36,7 +34,6 @@ const SEARCH_INDEX = [
   { label: 'Sprint Training',             hint: 'Workouts → Wednesday',          section: 'workout', scrollTo: 'day-wednesday' },
   { label: 'Pilates Exercises',           hint: 'Workouts → Tuesday & Friday',   section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Rest Day Options',            hint: 'Workouts → Saturday & Sunday',  section: 'workout', scrollTo: 'day-saturday'  },
-  // ── Nutrition ──
   { label: 'Meals on Strength & Sprint Days', hint: 'Nutrition → Meat Days',    section: 'nutrition', tab: 'meat'      },
   { label: 'Meals on Pilates & Rest Days',    hint: 'Nutrition → Light Days',   section: 'nutrition', tab: 'light'     },
   { label: 'Chicken Tinola Recipe',           hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
@@ -47,7 +44,6 @@ const SEARCH_INDEX = [
   { label: 'Glycemic Index Guide',            hint: 'Nutrition → Food Guide',   section: 'nutrition', tab: 'guide'     },
   { label: 'Hydration Guide',                 hint: 'Nutrition → Hydration',    section: 'nutrition', tab: 'hydration' },
   { label: 'Calorie Deficit Plan',            hint: 'Nutrition → Meat Days',    section: 'nutrition', tab: 'meat'      },
-  // ── Skincare ──
   { label: 'Morning Skincare Routine',      hint: 'Skincare → Face → AM Routine',   section: 'skincare', tab: 'am'       },
   { label: 'Night Skincare Routine',        hint: 'Skincare → Face → PM Routine',   section: 'skincare', tab: 'pm'       },
   { label: 'Skincare Products',             hint: 'Skincare → Face → AM Routine',   section: 'skincare', tab: 'am'       },
@@ -57,17 +53,14 @@ const SEARCH_INDEX = [
   { label: 'Shower Body Care',             hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
   { label: 'Body SPF & Moisturiser',       hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
   { label: 'Vaseline Heels & Elbows',      hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
-  // ── Hair Care ──
   { label: 'Camellia Oil Ritual',          hint: 'Hair Care', section: 'haircare' },
   { label: 'Rosemary Oil for Hair Growth', hint: 'Hair Care', section: 'haircare' },
   { label: 'Argan Oil Shine',              hint: 'Hair Care', section: 'haircare' },
-  // ── Anti-Aging ──
   { label: 'Sleep Protocol',               hint: 'Anti-Aging → Sleep',    section: 'antiaging' },
   { label: 'Cortisol Management',          hint: 'Anti-Aging → Cortisol', section: 'antiaging' },
   { label: 'Hormone-Protective Eating',    hint: 'Anti-Aging → Hormones', section: 'antiaging' },
   { label: 'Skin Longevity Nutrients',     hint: 'Anti-Aging → Skin',     section: 'antiaging' },
   { label: 'Supplement Stack',             hint: 'Anti-Aging',            section: 'antiaging' },
-  // ── Challenges ──
   { label: 'Monthly Challenges',           hint: 'Challenges', section: 'challenges' },
   { label: 'January Challenge',            hint: 'Challenges', section: 'challenges' },
 ];
@@ -165,23 +158,72 @@ export default function App() {
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [searchOpen, setSearchOpen] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  // Ref so event handlers always read the latest history without needing it as a dependency
+  const historyRef = useRef([]);
+  useEffect(() => { historyRef.current = history; }, [history]);
+
+  // Ref for tracking the active section/tab (same reason)
+  const activeRef = useRef({ section: 'home', tab: null });
+  useEffect(() => { activeRef.current = { section: active, tab: navMeta.tab }; }, [active, navMeta.tab]);
+
+  // Touch tracking for swipe-back gesture
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
   const navigate = (id, tab = null, scrollTo = null) => {
+    const cur = activeRef.current;
+    // Push current location to history only if destination is different
+    if (id !== cur.section || tab !== cur.tab) {
+      setHistory(prev => [...prev.slice(-19), { section: cur.section, tab: cur.tab }]);
+    }
     setActive(id);
     setNavMeta(prev => ({ tab, scrollTo, key: prev.key + 1 }));
     setSearchOpen(false);
-
     if (scrollTo) {
-      // scroll to top first, then to the specific element after React renders it
       window.scrollTo({ top: 0, behavior: 'instant' });
       setTimeout(() => {
-        const el = document.getElementById(scrollTo);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 200);
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  const goBack = () => {
+    const h = historyRef.current;
+    if (h.length === 0) return;
+    const prev = h[h.length - 1];
+    setHistory(h.slice(0, -1));
+    setActive(prev.section);
+    setNavMeta(p => ({ tab: prev.tab, scrollTo: null, key: p.key + 1 }));
+    setSearchOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Keyboard: Cmd+Z (Mac) or Ctrl+Z (Windows/Linux) to go back
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault();
+        goBack();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []); // goBack reads historyRef — always fresh, no deps needed
+
+  // Touch: swipe right from left edge to go back (mirrors iOS native gesture)
+  function handleTouchStart(e) {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }
+  function handleTouchEnd(e) {
+    const startX = touchStartRef.current.x;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
+    // Only fire when starting from left 40px edge, swiping right > 60px, minimal vertical drift
+    if (startX < 40 && dx > 60 && dy < 100) goBack();
+  }
 
   return (
     <>
@@ -190,6 +232,11 @@ export default function App() {
       <InstallBanner />
 
       <nav className="nav">
+        {history.length > 0 && (
+          <button className="nav-btn nav-back-btn" onClick={goBack} aria-label="Go back">
+            ‹
+          </button>
+        )}
         {NAV_ITEMS.map(item => (
           <button
             key={item.id}
@@ -217,7 +264,11 @@ export default function App() {
         </div>
       )}
 
-      <div className="main">
+      <div
+        className="main"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {active === 'home'       && <Hero onNavigate={navigate} />}
         {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} />}
         {active === 'challenges' && <Challenges />}

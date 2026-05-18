@@ -70,13 +70,18 @@ body {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 200;
-  height: 60px;
+  /* Height grows to accommodate iPhone notch / Dynamic Island */
+  height: calc(56px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
   background: rgba(8, 2, 6, 0.92);
   backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-bottom: 1px solid rgba(240,204,96,0.14);
   display: flex;
-  align-items: center;
-  padding: 0 16px;
+  align-items: flex-end;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
   gap: 2px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -117,7 +122,7 @@ body {
 .nav-btn.active::after { left: 16%; right: 16%; }
 
 /* ─── MAIN WRAPPER ─── */
-.main { position: relative; z-index: 1; padding-top: 60px; }
+.main { position: relative; z-index: 1; padding-top: calc(56px + env(safe-area-inset-top)); }
 
 /* ─── HERO ─── */
 .hero {
@@ -1212,7 +1217,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 90px;
+  padding-top: calc(80px + env(safe-area-inset-top));
   animation: fadeIn 0.18s ease;
 }
 @keyframes fadeIn {
@@ -1358,3 +1363,17 @@ body {
   justify-content: center;
 }
 .install-btn-dismiss:hover { border-color: var(--rose); color: var(--rose); }
+
+/* ── Back Button in Nav ── */
+.nav-back-btn {
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  padding: 4px 10px 4px 2px;
+  color: var(--text-mid);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  margin-right: 4px;
+  flex-shrink: 0;
+  transition: color 0.2s, transform 0.2s;
+}
+.nav-back-btn:hover { color: var(--rose); transform: translateX(-2px); }
