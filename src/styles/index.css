@@ -1297,3 +1297,64 @@ body {
   .sk-top-tabs { gap: 10px; }
   .sk-top-tab { font-size: 13px; padding: 14px 16px; }
 }
+
+/* ── Install Banner ── */
+.install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, rgba(26,12,18,0.97), rgba(40,10,24,0.97));
+  border-top: 1px solid var(--border-r);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  animation: slideUp 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.install-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.4;
+  flex: 1;
+}
+.install-icon { font-size: 20px; flex-shrink: 0; }
+.install-banner-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.install-btn-primary {
+  background: linear-gradient(135deg, var(--rose-deep), var(--rose));
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 18px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+.install-btn-dismiss {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50%;
+  color: var(--text-soft);
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.install-btn-dismiss:hover { border-color: var(--rose); color: var(--rose); }

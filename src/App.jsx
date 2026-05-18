@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Hero from './components/Hero';
+import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
 import Challenges from './components/Challenges';
 import Nutrition from './components/Nutrition';
@@ -186,6 +187,7 @@ export default function App() {
     <>
       <div className="bg-layer" />
       <FloatingFlowers />
+      <InstallBanner />
 
       <nav className="nav">
         {NAV_ITEMS.map(item => (
