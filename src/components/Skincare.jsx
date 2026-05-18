@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import RoutineStep from './RoutineStep';
 
-const TABS = [
+const FACE_TABS = [
   { id: 'am',        label: '☀️ Morning Routine' },
   { id: 'pm',        label: '🌙 Night Routine' },
   { id: 'weekly',    label: '💎 Weekly Treatments' },
   { id: 'lifestyle', label: '🌿 Lifestyle & Food' },
   { id: 'retinoid',  label: '✨ Retinoid Roadmap' },
-  { id: 'body',      label: '🫧 Body Care' },
 ];
 
 const BRAND_COLOR = {
@@ -494,46 +493,68 @@ function Body() {
   );
 }
 
-const PANELS = { am: AM, pm: PM, weekly: Weekly, lifestyle: Lifestyle, retinoid: Retinoid, body: Body };
+const FACE_PANELS = { am: AM, pm: PM, weekly: Weekly, lifestyle: Lifestyle, retinoid: Retinoid };
 
 export default function Skincare({ initialTab }) {
-  const [activeTab, setActiveTab] = useState(initialTab || 'am');
-  const Panel = PANELS[activeTab];
+  const [topLevel, setTopLevel] = useState(initialTab === 'body' ? 'body' : 'face');
+  const [faceTab, setFaceTab] = useState((initialTab && initialTab !== 'body') ? initialTab : 'am');
+  const FacePanel = FACE_PANELS[faceTab];
 
   return (
     <div className="section">
       <div className="s-header">
         <div className="s-tag">Your Personalised Skin Protocol</div>
         <h2 className="s-title">Glass Skin <em>Plan</em></h2>
-        <p className="s-desc">Based on your skin right now: visible pores across nose & cheeks, small texture bumps, some redness and flushing. Goal: clear, smooth, poreless skin — the Korean glass skin look.</p>
+        <p className="s-desc">Your complete guide for face and body — tap a routine below to dive in.</p>
       </div>
 
-      <div className="note-box note-gold splash-item" style={{ marginBottom: 14 }}>
+      <div className="note-box note-gold splash-item" style={{ marginBottom: 20 }}>
         🛍 <strong>Where to buy:</strong> All products are available in the Philippines on <strong>Shopee</strong>, <strong>Lazada</strong>, and <strong>Watsons</strong>. Search the exact product name shown on each card. Most are under ₱500–₱1,200.
       </div>
 
-      <div className="divider splash-item">What Your Skin Actually Needs Right Now</div>
-      <div className="g-card splash-item">
-        <p style={{ fontSize: 13.5, color: 'var(--text-mid)', lineHeight: 1.8 }}>Looking at your skin, here is what is happening and why:</p>
-        <p style={{ marginTop: 10 }}><span className="pill pr">Enlarged Pores</span> Caused by excess sebum, dead skin cell buildup, and lack of consistent exfoliation. Pores stretch when clogged and appear smaller when clean and tight.</p>
-        <p style={{ marginTop: 8 }}><span className="pill pr">Texture & Small Bumps</span> Mostly congested pores (comedones) and mild closed whiteheads. Not cystic acne — responds very well to the right exfoliation and barrier care.</p>
-        <p style={{ marginTop: 8 }}><span className="pill pr">Redness & Flushing</span> Your skin barrier is slightly reactive. Build the barrier first before introducing strong actives — barrier-first is the Korean approach.</p>
-        <p style={{ marginTop: 8 }}><span className="pill pg">Good news</span> Your skin has no deep scarring, good natural moisture, and a smooth underlying structure. With the right 3-month protocol, the improvement will be dramatic.</p>
+      <div className="sk-top-tabs splash-item">
+        <button
+          className={`sk-top-tab${topLevel === 'face' ? ' active' : ''}`}
+          onClick={() => setTopLevel('face')}
+        >
+          💆 Face Routine
+        </button>
+        <button
+          className={`sk-top-tab${topLevel === 'body' ? ' active' : ''}`}
+          onClick={() => setTopLevel('body')}
+        >
+          🫧 Body Routine
+        </button>
       </div>
 
-      <div className="sk-tabs splash-item">
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            className={`sk-tab${activeTab === t.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      {topLevel === 'face' && (
+        <>
+          <div className="divider splash-item">What Your Skin Actually Needs Right Now</div>
+          <div className="g-card splash-item">
+            <p style={{ fontSize: 13.5, color: 'var(--text-mid)', lineHeight: 1.8 }}>Looking at your skin, here is what is happening and why:</p>
+            <p style={{ marginTop: 10 }}><span className="pill pr">Enlarged Pores</span> Caused by excess sebum, dead skin cell buildup, and lack of consistent exfoliation. Pores stretch when clogged and appear smaller when clean and tight.</p>
+            <p style={{ marginTop: 8 }}><span className="pill pr">Texture & Small Bumps</span> Mostly congested pores (comedones) and mild closed whiteheads. Not cystic acne — responds very well to the right exfoliation and barrier care.</p>
+            <p style={{ marginTop: 8 }}><span className="pill pr">Redness & Flushing</span> Your skin barrier is slightly reactive. Build the barrier first before introducing strong actives — barrier-first is the Korean approach.</p>
+            <p style={{ marginTop: 8 }}><span className="pill pg">Good news</span> Your skin has no deep scarring, good natural moisture, and a smooth underlying structure. With the right 3-month protocol, the improvement will be dramatic.</p>
+          </div>
 
-      <Panel />
+          <div className="sk-tabs splash-item">
+            {FACE_TABS.map(t => (
+              <button
+                key={t.id}
+                className={`sk-tab${faceTab === t.id ? ' active' : ''}`}
+                onClick={() => setFaceTab(t.id)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <FacePanel />
+        </>
+      )}
+
+      {topLevel === 'body' && <Body />}
     </div>
   );
 }

@@ -1255,3 +1255,45 @@ body {
 @media (max-width: 768px) {
   .search-modal { padding-top: 70px; }
 }
+
+/* ── Skincare Top-Level Pills (Face / Body) ── */
+.sk-top-tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+.sk-top-tab {
+  flex: 1;
+  max-width: 240px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1.5px solid var(--border-g);
+  background: rgba(15,5,10,0.6);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.sk-top-tab:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255,92,157,0.12);
+}
+.sk-top-tab.active {
+  background: linear-gradient(135deg, rgba(255,92,157,0.18), rgba(240,204,96,0.12));
+  border-color: var(--rose);
+  color: var(--text);
+  box-shadow: 0 8px 28px rgba(255,92,157,0.22);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .sk-top-tabs { gap: 10px; }
+  .sk-top-tab { font-size: 13px; padding: 14px 16px; }
+}

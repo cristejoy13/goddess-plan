@@ -19,39 +19,56 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  { label: 'Glute Workout — Strength A', hint: 'Workouts → Monday', section: 'workout' },
-  { label: 'Glute Workout — Strength B', hint: 'Workouts → Thursday', section: 'workout' },
-  { label: 'Pilates Workout', hint: 'Workouts → Tuesday & Friday', section: 'workout' },
-  { label: 'Sprint Training', hint: 'Workouts → Wednesday', section: 'workout' },
-  { label: 'Rest Day Options', hint: 'Workouts → Saturday & Sunday', section: 'workout' },
-  { label: 'Meals on Strength & Sprint Days', hint: 'Nutrition → Meat Days', section: 'nutrition', tab: 'meat' },
-  { label: 'Meals on Pilates & Rest Days', hint: 'Nutrition → Light Days', section: 'nutrition', tab: 'light' },
-  { label: 'Chicken Tinola Recipe', hint: 'Nutrition → Recipes', section: 'nutrition', tab: 'recipes' },
-  { label: 'Chia Pudding Recipe', hint: 'Nutrition → Recipes', section: 'nutrition', tab: 'recipes' },
-  { label: 'Egg Preparation Methods', hint: 'Nutrition → Recipes', section: 'nutrition', tab: 'recipes' },
-  { label: 'Salad Ideas', hint: 'Nutrition → Recipes', section: 'nutrition', tab: 'recipes' },
-  { label: 'Snack Ideas', hint: 'Nutrition → Snacks', section: 'nutrition', tab: 'snacks' },
-  { label: 'Glycemic Index Guide', hint: 'Nutrition → Food Guide', section: 'nutrition', tab: 'guide' },
-  { label: 'Hydration Guide', hint: 'Nutrition → Hydration', section: 'nutrition', tab: 'hydration' },
-  { label: 'Calorie Deficit Plan', hint: 'Nutrition → Meat Days', section: 'nutrition', tab: 'meat' },
-  { label: 'Morning Skincare Routine', hint: 'Skincare → AM Routine', section: 'skincare', tab: 'am' },
-  { label: 'Night Skincare Routine', hint: 'Skincare → PM Routine', section: 'skincare', tab: 'pm' },
-  { label: 'Skincare Products', hint: 'Skincare → AM Routine', section: 'skincare', tab: 'am' },
-  { label: 'Retinoid Roadmap', hint: 'Skincare → Retinoid', section: 'skincare', tab: 'retinoid' },
-  { label: 'Weekly Skincare Treatments', hint: 'Skincare → Weekly', section: 'skincare', tab: 'weekly' },
-  { label: 'Body Skincare Routine', hint: 'Skincare → Body Care', section: 'skincare', tab: 'body' },
-  { label: 'Shower Body Care', hint: 'Skincare → Body Care', section: 'skincare', tab: 'body' },
-  { label: 'Body SPF & Moisturiser', hint: 'Skincare → Body Care', section: 'skincare', tab: 'body' },
-  { label: 'Camellia Oil Ritual', hint: 'Hair Care', section: 'haircare' },
+  // ── Workouts — individual days ──
+  { label: 'Monday — Strength A',         hint: 'Workouts · Hip Thrust · RDL · Kickback',    section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Tuesday — Pilates 1',         hint: 'Workouts · Deep Core & TVA',                section: 'workout', scrollTo: 'day-tuesday'   },
+  { label: 'Wednesday — Sprint Day',      hint: 'Workouts · Intervals · Meat Meals',          section: 'workout', scrollTo: 'day-wednesday' },
+  { label: 'Thursday — Strength B',       hint: 'Workouts · Split Squat · Sumo · Clamshell', section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Friday — Pilates 2',          hint: 'Workouts · Flow · Spine & Side Body',        section: 'workout', scrollTo: 'day-friday'   },
+  { label: 'Saturday — Rest Day',         hint: 'Workouts · Active Recovery · Light Meals',   section: 'workout', scrollTo: 'day-saturday' },
+  { label: 'Sunday — Rest & Prepare',     hint: 'Workouts · Reset · Meal Prep Day',           section: 'workout', scrollTo: 'day-sunday'   },
+  // ── Workouts — general ──
+  { label: 'Barbell Hip Thrust',          hint: 'Workouts → Monday Strength A',  section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Romanian Deadlift',           hint: 'Workouts → Monday Strength A',  section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Bulgarian Split Squat',       hint: 'Workouts → Thursday Strength B',section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Clamshell with Band',         hint: 'Workouts → Thursday Strength B',section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Sprint Training',             hint: 'Workouts → Wednesday',          section: 'workout', scrollTo: 'day-wednesday' },
+  { label: 'Pilates Exercises',           hint: 'Workouts → Tuesday & Friday',   section: 'workout', scrollTo: 'day-tuesday'   },
+  { label: 'Rest Day Options',            hint: 'Workouts → Saturday & Sunday',  section: 'workout', scrollTo: 'day-saturday'  },
+  // ── Nutrition ──
+  { label: 'Meals on Strength & Sprint Days', hint: 'Nutrition → Meat Days',    section: 'nutrition', tab: 'meat'      },
+  { label: 'Meals on Pilates & Rest Days',    hint: 'Nutrition → Light Days',   section: 'nutrition', tab: 'light'     },
+  { label: 'Chicken Tinola Recipe',           hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
+  { label: 'Chia Pudding Recipe',             hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
+  { label: 'Egg Preparation Methods',         hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
+  { label: 'Salad Ideas',                     hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
+  { label: 'Snack Ideas',                     hint: 'Nutrition → Snacks',       section: 'nutrition', tab: 'snacks'    },
+  { label: 'Glycemic Index Guide',            hint: 'Nutrition → Food Guide',   section: 'nutrition', tab: 'guide'     },
+  { label: 'Hydration Guide',                 hint: 'Nutrition → Hydration',    section: 'nutrition', tab: 'hydration' },
+  { label: 'Calorie Deficit Plan',            hint: 'Nutrition → Meat Days',    section: 'nutrition', tab: 'meat'      },
+  // ── Skincare ──
+  { label: 'Morning Skincare Routine',      hint: 'Skincare → Face → AM Routine',   section: 'skincare', tab: 'am'       },
+  { label: 'Night Skincare Routine',        hint: 'Skincare → Face → PM Routine',   section: 'skincare', tab: 'pm'       },
+  { label: 'Skincare Products',             hint: 'Skincare → Face → AM Routine',   section: 'skincare', tab: 'am'       },
+  { label: 'Retinoid Roadmap',              hint: 'Skincare → Face → Retinoid',     section: 'skincare', tab: 'retinoid' },
+  { label: 'Weekly Skincare Treatments',    hint: 'Skincare → Face → Weekly',       section: 'skincare', tab: 'weekly'   },
+  { label: 'Body Skincare Routine',         hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
+  { label: 'Shower Body Care',             hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
+  { label: 'Body SPF & Moisturiser',       hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
+  { label: 'Vaseline Heels & Elbows',      hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
+  // ── Hair Care ──
+  { label: 'Camellia Oil Ritual',          hint: 'Hair Care', section: 'haircare' },
   { label: 'Rosemary Oil for Hair Growth', hint: 'Hair Care', section: 'haircare' },
-  { label: 'Argan Oil Shine', hint: 'Hair Care', section: 'haircare' },
-  { label: 'Sleep Protocol', hint: 'Anti-Aging → Sleep', section: 'antiaging' },
-  { label: 'Cortisol Management', hint: 'Anti-Aging → Cortisol', section: 'antiaging' },
-  { label: 'Hormone-Protective Eating', hint: 'Anti-Aging → Hormones', section: 'antiaging' },
-  { label: 'Skin Longevity Nutrients', hint: 'Anti-Aging → Skin', section: 'antiaging' },
-  { label: 'Monthly Challenges', hint: 'Challenges', section: 'challenges' },
-  { label: 'January Challenge', hint: 'Challenges', section: 'challenges' },
-  { label: 'Supplement Stack', hint: 'Anti-Aging', section: 'antiaging' },
+  { label: 'Argan Oil Shine',              hint: 'Hair Care', section: 'haircare' },
+  // ── Anti-Aging ──
+  { label: 'Sleep Protocol',               hint: 'Anti-Aging → Sleep',    section: 'antiaging' },
+  { label: 'Cortisol Management',          hint: 'Anti-Aging → Cortisol', section: 'antiaging' },
+  { label: 'Hormone-Protective Eating',    hint: 'Anti-Aging → Hormones', section: 'antiaging' },
+  { label: 'Skin Longevity Nutrients',     hint: 'Anti-Aging → Skin',     section: 'antiaging' },
+  { label: 'Supplement Stack',             hint: 'Anti-Aging',            section: 'antiaging' },
+  // ── Challenges ──
+  { label: 'Monthly Challenges',           hint: 'Challenges', section: 'challenges' },
+  { label: 'January Challenge',            hint: 'Challenges', section: 'challenges' },
 ];
 
 const FLOWER_EMOJIS = ['🌸', '🌺', '🌼', '🌸', '🌷', '💐', '🌸', '🌺'];
@@ -96,7 +113,7 @@ function SearchBar({ onNavigate }) {
     ? SEARCH_INDEX.filter(item =>
         item.label.toLowerCase().includes(query.toLowerCase()) ||
         item.hint.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6)
+      ).slice(0, 7)
     : [];
 
   useEffect(() => {
@@ -112,7 +129,7 @@ function SearchBar({ onNavigate }) {
   }, []);
 
   function handleSelect(item) {
-    onNavigate(item.section, item.tab || null);
+    onNavigate(item.section, item.tab || null, item.scrollTo || null);
     setQuery('');
     setOpen(false);
   }
@@ -145,14 +162,24 @@ function SearchBar({ onNavigate }) {
 
 export default function App() {
   const [active, setActive] = useState('home');
-  const [navMeta, setNavMeta] = useState({ tab: null, key: 0 });
+  const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const navigate = (id, tab = null) => {
+  const navigate = (id, tab = null, scrollTo = null) => {
     setActive(id);
-    setNavMeta(prev => ({ tab, key: prev.key + 1 }));
+    setNavMeta(prev => ({ tab, scrollTo, key: prev.key + 1 }));
     setSearchOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (scrollTo) {
+      // scroll to top first, then to the specific element after React renders it
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      setTimeout(() => {
+        const el = document.getElementById(scrollTo);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -190,7 +217,7 @@ export default function App() {
 
       <div className="main">
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout />}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} />}
         {active === 'challenges' && <Challenges />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}

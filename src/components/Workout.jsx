@@ -1,6 +1,16 @@
 import PetalAccordion from './PetalAccordion';
 import { WORKOUT_DAYS } from '../data/workouts';
 
+const DAY_IDS = [
+  'day-monday',
+  'day-tuesday',
+  'day-wednesday',
+  'day-thursday',
+  'day-friday',
+  'day-saturday',
+  'day-sunday',
+];
+
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
@@ -19,9 +29,17 @@ function MealBox({ meals }) {
   );
 }
 
-function WorkoutDay({ day }) {
+function WorkoutDay({ day, id, defaultOpen }) {
   return (
-    <PetalAccordion emoji={day.emoji} emojiBg={day.emojiBg} day={day.day} title={day.title} sub={day.sub}>
+    <PetalAccordion
+      id={id}
+      emoji={day.emoji}
+      emojiBg={day.emojiBg}
+      day={day.day}
+      title={day.title}
+      sub={day.sub}
+      defaultOpen={defaultOpen}
+    >
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
       <ul className="workout-list">
         {day.exercises.map((ex, i) => (
@@ -36,7 +54,7 @@ function WorkoutDay({ day }) {
   );
 }
 
-export default function Workout() {
+export default function Workout({ openDayId }) {
   return (
     <div className="section">
       <div className="s-header">
@@ -45,7 +63,14 @@ export default function Workout() {
         <p className="s-desc">Strength · Pilates · Sprints Mon–Sun. Tap any day to reveal the full workout and meals.</p>
       </div>
 
-      {WORKOUT_DAYS.map((day, i) => <WorkoutDay key={i} day={day} />)}
+      {WORKOUT_DAYS.map((day, i) => (
+        <WorkoutDay
+          key={i}
+          day={day}
+          id={DAY_IDS[i]}
+          defaultOpen={openDayId === DAY_IDS[i]}
+        />
+      ))}
 
       <div className="divider splash-item">Your Weekly Blueprint</div>
       <div className="g-card splash-item">
