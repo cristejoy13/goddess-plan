@@ -57,7 +57,7 @@ function generateGoddessIcon(size) {
   const cx = size / 2, cy = size / 2;
   const raw = Buffer.alloc(size * size * 3);
 
-  // ── 1. Background: sunset — gold top → hot pink → deep purple ──
+  // ── 1. Background: deep cosmic — dark navy · magenta nebula · purple ──
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const nx = (x - cx) / cx;
@@ -65,31 +65,39 @@ function generateGoddessIcon(size) {
       const d  = Math.min(1, Math.hypot(nx, ny));
       const vy = y / size;
 
-      let r, g, b;
-      if (vy < 0.30) {
-        const t = vy / 0.30;
-        r = lerp(255, 255, t); g = lerp(215, 72,  t); b = lerp(52,  138, t);
-      } else if (vy < 0.58) {
-        const t = (vy - 0.30) / 0.28;
-        r = lerp(255, 195, t); g = lerp(72,  25,  t); b = lerp(138, 142, t);
-      } else {
-        const t = (vy - 0.58) / 0.42;
-        r = lerp(195, 48,  t); g = lerp(25,  4,   t); b = lerp(142, 125, t);
+      // Deep cosmic navy base
+      let r = lerp(8, 18, vy), g = lerp(4, 5, vy), b = lerp(30, 50, vy);
+
+      // Magenta-pink nebula bloom — center
+      const nebDist = Math.hypot((x - cx * 0.9) / cx, (y - cy * 1.05) / cy);
+      const neb = Math.max(0, 1 - nebDist / 0.75);
+      r = clamp(r + neb * neb * 185, 0, 255);
+      g = clamp(g + neb * neb * 15,  0, 255);
+      b = clamp(b + neb * neb * 125, 0, 255);
+
+      // Deep purple cloud — upper portion
+      const purp = Math.max(0, 1 - Math.hypot(nx * 0.9, (ny + 0.6) * 0.7) / 0.85);
+      b = clamp(b + purp * purp * 145, 0, 255);
+      r = clamp(r + purp * purp * 60,  0, 255);
+
+      // Blue-violet shimmer — upper right
+      if (nx > 0.2 && ny < -0.2) {
+        const bv = (nx - 0.2) * (-ny - 0.2) * 2.5;
+        b = clamp(b + bv * 90, 0, 255);
+        r = clamp(r + bv * 20, 0, 255);
       }
 
-      // Vignette — darken edges to focus on crown
-      const vig = Math.pow(d, 2.0) * 0.52;
+      // Diagonal magenta ray
+      const rayPos = (x + y) / (size * 1.4);
+      const ray = Math.max(0, 1 - Math.abs(rayPos - 0.55) / 0.18);
+      r = clamp(r + ray * ray * 65, 0, 255);
+      b = clamp(b + ray * ray * 40, 0, 255);
+
+      // Vignette — frame edges darker
+      const vig = Math.pow(d, 1.8) * 0.58;
       r = clamp(r * (1 - vig * 0.55), 0, 255);
-      g = clamp(g * (1 - vig * 0.65), 0, 255);
-      b = clamp(b + vig * 22, 0, 255);
-
-      // Upper-right golden warmth
-      if (nx > 0.1 && ny < -0.05) {
-        const w = nx * (-ny) * 0.6;
-        r = clamp(r + w * 30, 0, 255);
-        g = clamp(g + w * 25, 0, 255);
-        b = clamp(b - w * 15, 0, 255);
-      }
+      g = clamp(g * (1 - vig * 0.60), 0, 255);
+      b = clamp(b * (1 - vig * 0.30), 0, 255);
 
       const idx = (y * size + x) * 3;
       raw[idx]   = Math.round(clamp(r, 0, 255));
@@ -144,11 +152,11 @@ function generateGoddessIcon(size) {
 
       const idx = (y * size + x) * 3;
       if (inside) {
-        // Metallic gold gradient — bright at peaks, warm-orange at base
+        // Crown fill: bright yellow at peak tips → warm pink at base
         const tY = Math.max(0, Math.min(1, (y - centerPkY) / (bandBot - centerPkY)));
         const rC = 255;
-        const gC = Math.round(lerp(245, 145, tY * 0.65));
-        const bC = Math.round(lerp(38,  16,  tY * 0.50));
+        const gC = Math.round(lerp(225, 92,  tY * 0.72)); // yellow → pink
+        const bC = Math.round(lerp(42,  148, tY * 0.78)); // yellow → pink
 
         // Top-of-band highlight — simulates light catching the metal edge
         const bandHL = Math.max(0, 1 - Math.abs(y - bandTop) / (size * 0.016)) * 0.32;
@@ -186,22 +194,20 @@ function generateGoddessIcon(size) {
         if (ix < 0 || ix >= size || iy < 0 || iy >= size) continue;
         const idx = (iy * size + ix) * 3;
         if (d <= orbR) {
-          // Bright metallic orb: white-hot highlight offset to upper-left
-          const hx = dx + orbR * 0.3, hy = dy + orbR * 0.3;
-          const highlight = Math.max(0, 1 - Math.hypot(hx, hy) / (orbR * 0.8));
+          // Bright orb: white-yellow center → warm pink edge
           const t = d / orbR;
-          const rC = Math.round(lerp(255, 255, t * 0.05) + highlight * 10);
-          const gC = Math.round(lerp(252, 205, t * 0.6)  + highlight * 15);
-          const bC = Math.round(lerp(200, 42,  t * 0.85) - highlight * 10);
-          raw[idx]   = Math.min(255, rC);
+          const rC = 255;
+          const gC = Math.round(lerp(248, 118, t * 0.75));
+          const bC = Math.round(lerp(180, 165, t * 0.60));
+          raw[idx]   = rC;
           raw[idx+1] = Math.min(255, gC);
-          raw[idx+2] = Math.max(0,   bC);
+          raw[idx+2] = Math.min(255, bC);
         } else if (d < orbR * 3) {
-          // Warm glow around orb
+          // Pink-gold glow around orb
           const g = Math.pow(1 - (d - orbR) / (orbR * 2), 2) * 0.52;
-          raw[idx]   = Math.min(255, raw[idx]   + Math.round(g * 205));
-          raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(g * 158));
-          raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(g * 48));
+          raw[idx]   = Math.min(255, raw[idx]   + Math.round(g * 215));
+          raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(g * 95));
+          raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(g * 158));
         }
       }
     }
