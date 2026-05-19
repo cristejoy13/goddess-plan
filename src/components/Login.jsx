@@ -1,8 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { auth } from '../firebase';
 import {
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   RecaptchaVerifier,
   signInWithPhoneNumber,
 } from 'firebase/auth';
@@ -18,8 +20,25 @@ function GoogleIcon() {
   );
 }
 
+function toE164(raw) {
+  const digits = raw.replace(/[^\d+]/g, '');
+  return digits.startsWith('+') ? digits : '+' + digits;
+}
+
+function phoneErrorMessage(code) {
+  switch (code) {
+    case 'auth/invalid-phone-number':    return 'Invalid phone number. Include your country code, e.g. +63 for Philippines.';
+    case 'auth/captcha-check-failed':    return 'Security check failed. Refresh the page and try again.';
+    case 'auth/quota-exceeded':          return 'SMS limit reached. Please wait a few minutes and try again.';
+    case 'auth/too-many-requests':       return 'Too many attempts. Please wait a few minutes before trying again.';
+    case 'auth/billing-not-enabled':     return 'SMS is not enabled on this Firebase plan. Contact the app owner.';
+    case 'auth/missing-phone-number':    return 'Please enter your phone number.';
+    default: return `Could not send code (${code}). Check your number includes the country code (+63, +1, +44…) and try again.`;
+  }
+}
+
 export default function Login() {
-  const [mode, setMode] = useState('main'); // 'main' | 'phone' | 'otp'
+  const [mode, setMode] = useState('main');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -27,32 +46,57 @@ export default function Login() {
   const confirmRef = useRef(null);
   const recaptchaRef = useRef(null);
 
+  // Quietly handle any pending redirect result from Google (mobile fallback)
+  useEffect(() => {
+    getRedirectResult(auth).catch((e) => {
+      console.error('[Firebase redirect]', e.code, e.message);
+    });
+  }, []);
+
   async function handleGoogle() {
     setError('');
     setLoading(true);
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
+      // onAuthStateChanged in App.jsx handles navigation
     } catch (e) {
-      if (e.code !== 'auth/popup-closed-by-user') {
-        setError('Google sign-in failed. Please try again.');
+      console.error('[Google sign-in]', e.code, e.message);
+      if (e.code === 'auth/popup-blocked') {
+        // Mobile browsers block popups — fall back to redirect
+        try {
+          await signInWithRedirect(auth, new GoogleAuthProvider());
+        } catch (e2) {
+          setError(`Google sign-in failed (${e2.code}). Please try again.`);
+          setLoading(false);
+        }
+      } else if (e.code === 'auth/popup-closed-by-user') {
+        setLoading(false);
+      } else if (e.code === 'auth/unauthorized-domain') {
+        setError('This domain is not authorized for Google sign-in. Please contact the app owner.');
+        setLoading(false);
+      } else {
+        setError(`Google sign-in failed (${e.code}). Please try again.`);
+        setLoading(false);
       }
-      setLoading(false);
     }
   }
 
   async function handleSendOTP(e) {
     e.preventDefault();
     setError('');
-    if (!phone.trim()) { setError('Please enter your phone number.'); return; }
+    const formatted = toE164(phone);
+    if (!formatted || formatted === '+') { setError('Please enter your phone number.'); return; }
     setLoading(true);
     try {
       if (!recaptchaRef.current) {
         recaptchaRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
       }
-      confirmRef.current = await signInWithPhoneNumber(auth, phone.trim(), recaptchaRef.current);
+      await recaptchaRef.current.render();
+      confirmRef.current = await signInWithPhoneNumber(auth, formatted, recaptchaRef.current);
       setMode('otp');
     } catch (e) {
-      setError('Could not send code. Check the number format (+63XXXXXXXXXX) and try again.');
+      console.error('[Phone OTP]', e.code, e.message);
+      setError(phoneErrorMessage(e.code));
       recaptchaRef.current = null;
     } finally {
       setLoading(false);
@@ -66,8 +110,11 @@ export default function Login() {
     setLoading(true);
     try {
       await confirmRef.current.confirm(otp.trim());
-    } catch {
-      setError('Incorrect code. Please try again.');
+    } catch (e) {
+      console.error('[OTP verify]', e.code, e.message);
+      setError(e.code === 'auth/invalid-verification-code'
+        ? 'Incorrect code. Please check the SMS and try again.'
+        : `Verification failed (${e.code}). Please try again.`);
       setLoading(false);
     }
   }
@@ -92,7 +139,7 @@ export default function Login() {
               <input
                 className="login-phone-input"
                 type="tel"
-                placeholder="+63 XXX XXX XXXX"
+                placeholder="+63 9XX XXX XXXX"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 disabled={loading}
@@ -101,14 +148,16 @@ export default function Login() {
                 {loading ? 'Sending…' : 'Send Code →'}
               </button>
             </form>
-            <p className="login-phone-hint">Include your country code, e.g. +63 for Philippines</p>
+            <p className="login-phone-hint">
+              Start with your country code — +63 Philippines · +1 USA · +44 UK · +61 Australia
+            </p>
           </>
         )}
 
         {mode === 'otp' && (
           <>
             <p className="login-otp-prompt">
-              We sent a 6-digit code to<br /><strong>{phone}</strong>
+              We sent a 6-digit code to<br /><strong>{toE164(phone)}</strong>
             </p>
             <form onSubmit={handleVerifyOTP} className="login-phone-form">
               <input
@@ -137,7 +186,6 @@ export default function Login() {
         )}
 
         {error && <p className="login-error">{error}</p>}
-
         <div id="recaptcha-container" />
 
         <p className="login-footer">
