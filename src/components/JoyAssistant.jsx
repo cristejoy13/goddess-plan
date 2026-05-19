@@ -102,7 +102,8 @@ export default function JoyAssistant() {
     <>
       {!open && (
         <button className="joy-fab" onClick={() => setOpen(true)} aria-label="Open Joy assistant">
-          💬
+          <span className="joy-fab-emoji">🥰</span>
+          <span className="joy-fab-name">Joy</span>
         </button>
       )}
 
@@ -110,7 +111,7 @@ export default function JoyAssistant() {
         <div className="joy-overlay" onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}>
           <div className="joy-modal">
             <div className="joy-header">
-              <div className="joy-header-avatar">🌸</div>
+              <div className="joy-header-avatar">🥰</div>
               <div className="joy-header-info">
                 <div className="joy-header-name">Joy ✨</div>
                 <div className="joy-header-status">
@@ -124,7 +125,7 @@ export default function JoyAssistant() {
             <div className="joy-messages">
               {messages.map((m, i) => (
                 <div key={i} className={`joy-msg joy-msg-${m.from}`}>
-                  {m.from === 'joy' && <div className="joy-msg-avatar">🌸</div>}
+                  {m.from === 'joy' && <div className="joy-msg-avatar">🥰</div>}
                   <div className="joy-msg-bubble">{m.text}</div>
                 </div>
               ))}
@@ -133,7 +134,7 @@ export default function JoyAssistant() {
                 <div className="joy-msg joy-msg-joy">
                   <div className="joy-msg-avatar">🌸</div>
                   <div className="joy-msg-bubble">
-                    <div className="joy-typing">
+                      <div className="joy-typing">
                       <div className="joy-typing-dot" />
                       <div className="joy-typing-dot" />
                       <div className="joy-typing-dot" />
