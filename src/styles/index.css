@@ -124,77 +124,79 @@ body {
 }
 
 /* ─── NAV ─── */
-.nav {
+/* ─── SEARCH BAR — fixed at very top, full width ─── */
+.search-bar-fixed {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0; right: 0;
   z-index: 200;
-  /* Height grows to accommodate iPhone notch / Dynamic Island */
-  height: calc(56px + env(safe-area-inset-top));
-  padding-top: env(safe-area-inset-top);
-  background: rgba(8, 2, 6, 0.92);
+  padding: 8px 16px;
+  padding-top: calc(env(safe-area-inset-top) + 8px);
+  background: rgba(8, 2, 6, 0.95);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid rgba(240,204,96,0.14);
+  border-bottom: 1px solid rgba(235,80,160,0.14);
+}
+.search-bar-fixed .search-wrap { margin: 0 auto; }
+
+/* ─── SIDEBAR NAV — fixed left, below search bar ─── */
+.sidebar {
+  position: fixed;
+  top: calc(54px + env(safe-area-inset-top));
+  left: 0;
+  bottom: 0;
+  width: 118px;
+  z-index: 190;
+  background: rgba(8, 2, 6, 0.94);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-right: 1px solid rgba(235,80,160,0.13);
   display: flex;
-  align-items: flex-end;
-  padding-bottom: 6px;
-  padding-left: 16px;
-  padding-right: 16px;
-  gap: 2px;
-  overflow-x: auto;
+  flex-direction: column;
+  padding: 10px 0;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  overflow-y: auto;
   scrollbar-width: none;
 }
-.nav::-webkit-scrollbar { display: none; }
+.sidebar::-webkit-scrollbar { display: none; }
 
 .nav-btn {
-  flex-shrink: 0;
+  display: block;
+  width: 100%;
   background: none;
   border: none;
-  padding: 8px 14px;
+  border-left: 3px solid transparent;
+  padding: 13px 12px 13px 14px;
   font-family: 'Outfit', sans-serif;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   color: var(--text-soft);
   cursor: pointer;
-  border-radius: 30px;
-  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-  white-space: nowrap;
+  text-align: left;
+  line-height: 1.35;
+  white-space: normal;
   position: relative;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-.nav-btn::after {
-  content: '';
-  position: absolute;
-  bottom: 4px; left: 50%; right: 50%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--rose), var(--gold-light));
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-.nav-btn:hover { color: var(--gold-light); transform: translateY(-1px); }
-.nav-btn.active {
-  background: linear-gradient(135deg, rgba(255,92,157,0.14), rgba(240,204,96,0.16));
+.nav-btn:hover {
   color: var(--gold-light);
+  background: rgba(235,80,160,0.07);
 }
-.nav-btn.active::after { left: 16%; right: 16%; }
+.nav-btn.active {
+  color: var(--gold-light);
+  border-left-color: var(--rose);
+  background: linear-gradient(90deg, rgba(235,80,160,0.14), rgba(240,204,96,0.06));
+}
 
 /* ─── MAIN WRAPPER ─── */
-.main { position: relative; z-index: 1; padding-top: calc(56px + 54px + env(safe-area-inset-top)); }
-
-/* ─── FIXED SEARCH BAR — always visible below nav ─── */
-.search-bar-fixed {
-  position: fixed;
-  top: calc(56px + env(safe-area-inset-top));
-  left: 0; right: 0;
-  z-index: 190;
-  padding: 8px 16px;
-  background: rgba(8, 2, 6, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(235,80,160,0.12);
+.main {
+  position: relative;
+  z-index: 1;
+  padding-top: calc(54px + env(safe-area-inset-top));
+  padding-left: 118px;
 }
-.search-bar-fixed .search-wrap { margin: 0 auto; }
 
 /* ─── HERO ─── */
 .hero {
@@ -1378,14 +1380,15 @@ body {
 
 /* ── Back Button in Nav ── */
 .nav-back-btn {
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 300;
   line-height: 1;
-  padding: 4px 10px 4px 2px;
+  padding: 10px 12px;
   color: var(--text-mid);
-  border-right: 1px solid rgba(255,255,255,0.1);
-  margin-right: 4px;
-  flex-shrink: 0;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 4px;
   transition: color 0.2s, transform 0.2s;
+  letter-spacing: 0;
 }
-.nav-back-btn:hover { color: var(--rose); transform: translateX(-2px); }
+.nav-back-btn:hover { color: var(--rose); transform: translateX(2px); }

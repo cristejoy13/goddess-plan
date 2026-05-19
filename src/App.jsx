@@ -301,10 +301,14 @@ export default function App() {
       <FloatingFlowers />
       <InstallBanner />
 
-      <nav className="nav">
+      <div className="search-bar-fixed">
+        <SearchBar onNavigate={navigate} />
+      </div>
+
+      <nav className="sidebar">
         {history.length > 0 && (
           <button className="nav-btn nav-back-btn" onClick={goBack} aria-label="Go back">
-            ‹
+            ‹ Back
           </button>
         )}
         {NAV_ITEMS.map(item => (
@@ -317,10 +321,6 @@ export default function App() {
           </button>
         ))}
       </nav>
-
-      <div className="search-bar-fixed">
-        <SearchBar onNavigate={navigate} />
-      </div>
 
       <div
         className="main"
