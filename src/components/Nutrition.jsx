@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const TABS = [
   { id: 'meat',      icon: '🔥', title: 'Strength & Sprint Days',  desc: 'Monday, Wednesday, Thursday — high protein fuel for your heaviest training days.' },
@@ -341,8 +341,27 @@ function Hydration() {
 const PANELS = { meat: MeatDays, light: LightDays, recipes: Recipes, snacks: Snacks, guide: FoodGuide, hydration: Hydration };
 
 /* ─── Main Component ─── */
-export default function Nutrition({ initialTab }) {
+export default function Nutrition({ initialTab, onNavigate }) {
   const [detail, setDetail] = useState(initialTab || null);
+
+  // Intercept Cmd+Z / Cmd+H keyboard shortcuts when inside a detail panel
+  useEffect(() => {
+    if (!detail) return;
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setDetail(null);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'h') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        onNavigate?.('home');
+      }
+    };
+    window.addEventListener('keydown', handler, true);
+    return () => window.removeEventListener('keydown', handler, true);
+  }, [detail, onNavigate]);
 
   if (detail) {
     const Panel = PANELS[detail];

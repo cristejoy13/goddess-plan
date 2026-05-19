@@ -330,7 +330,7 @@ export default function App() {
         {active === 'home'       && <Hero onNavigate={navigate} />}
         {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} />}
         {active === 'challenges' && <Challenges />}
-        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} />}
+        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
         {active === 'antiaging'  && <AntiAging />}

@@ -1,5 +1,70 @@
 import OilCard from './OilCard';
 
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+// Two-week oil rotation — repeating cycle
+const ROTATION = [
+  // Week 1
+  [
+    [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }], // Mon — pre-wash
+    [{ e: '✨', n: 'Argan' }],                                  // Tue — post-wash
+    [{ e: '🌼', n: 'Jojoba' }],                                 // Wed — scalp
+    [],                                                          // Thu — rest
+    [{ e: '🌸', n: 'Camellia' }],                               // Fri — pre-wash
+    [{ e: '✨', n: 'Argan' }],                                   // Sat — post-wash
+    [],                                                          // Sun — rest
+  ],
+  // Week 2 — same but Coconut added Wednesday
+  [
+    [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }],
+    [{ e: '✨', n: 'Argan' }],
+    [{ e: '🌼', n: 'Jojoba' }, { e: '🥥', n: 'Coconut' }],
+    [],
+    [{ e: '🌸', n: 'Camellia' }],
+    [{ e: '✨', n: 'Argan' }],
+    [],
+  ],
+];
+
+function OilRotationCalendar() {
+  return (
+    <div className="oil-rotation">
+      <div className="oil-rot-grid">
+        {/* Column headers */}
+        <div className="oil-rot-row-label" />
+        {DAYS.map(d => <div key={d} className="oil-rot-dh">{d}</div>)}
+
+        {/* Week rows */}
+        {ROTATION.map((week, wi) => (
+          <>
+            <div key={`lbl-${wi}`} className="oil-rot-row-label">Wk {wi + 1}</div>
+            {week.map((oils, di) => (
+              <div key={di} className={`oil-rot-cell${oils.length === 0 ? ' oil-rot-rest' : ''}`}>
+                {oils.length === 0
+                  ? <span className="oil-rot-dash">—</span>
+                  : oils.map(o => (
+                    <div key={o.n} className="oil-rot-pill">
+                      <span>{o.e}</span>
+                      <span className="oil-rot-name">{o.n}</span>
+                    </div>
+                  ))
+                }
+              </div>
+            ))}
+          </>
+        ))}
+      </div>
+      <div className="oil-rot-legend">
+        <span>🌸 Camellia — pre-wash scalp</span>
+        <span>🌿 Rosemary — scalp stimulator (with Camellia)</span>
+        <span>✨ Argan — post-wash finish</span>
+        <span>🌼 Jojoba — midweek scalp balance</span>
+        <span>🥥 Coconut — ends only, Week 2 only</span>
+      </div>
+    </div>
+  );
+}
+
 const OILS = [
   {
     emoji: '🌸',
@@ -86,6 +151,9 @@ export default function HairCare() {
         <h2 className="s-title">Hair Care <em>&amp; Oils</em></h2>
         <p className="s-desc">Tap each oil to reveal its full profile, exact usage ratio, and complete step-by-step ritual tailored to your hair type.</p>
       </div>
+
+      <div className="divider splash-item">2-Week Oil Rotation</div>
+      <OilRotationCalendar />
 
       <div className="divider splash-item">Your Oil Guide — Tap Each Oil to Expand</div>
       <div className="oil-grid splash-item">
