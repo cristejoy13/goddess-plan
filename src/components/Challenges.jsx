@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { MONTHS } from '../data/months';
 
 const YEAR = 2026;
+const CURRENT_YEAR = new Date().getFullYear();
 const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 const _t = new Date();
@@ -13,7 +14,6 @@ function dayKey(monthIdx, day) {
 
 function getMonthWeeks(monthIdx) {
   const daysInMonth = new Date(YEAR, monthIdx + 1, 0).getDate();
-  // Convert JS day (0=Sun) to Mon-based (0=Mon … 6=Sun)
   const firstDow = (new Date(YEAR, monthIdx, 1).getDay() + 6) % 7;
 
   const weeks = [];
@@ -32,14 +32,31 @@ function getMonthWeeks(monthIdx) {
   return weeks;
 }
 
+function clearProgress() {
+  localStorage.removeItem('gp_daily');
+  localStorage.removeItem('gp_done');
+  localStorage.setItem('gp_year', String(CURRENT_YEAR));
+}
+
 function loadState() {
   try {
+    const storedYear = parseInt(localStorage.getItem('gp_year') || '0', 10);
+    // First launch — stamp the year
+    if (storedYear === 0) {
+      localStorage.setItem('gp_year', String(CURRENT_YEAR));
+    }
+    // New year — auto-reset progress so the app starts fresh each calendar year
+    if (storedYear !== 0 && storedYear !== CURRENT_YEAR) {
+      clearProgress();
+      return { daily: {}, done: {}, autoReset: true };
+    }
     return {
       daily: JSON.parse(localStorage.getItem('gp_daily') || '{}'),
       done:  JSON.parse(localStorage.getItem('gp_done')  || '{}'),
+      autoReset: false,
     };
   } catch {
-    return { daily: {}, done: {} };
+    return { daily: {}, done: {}, autoReset: false };
   }
 }
 
@@ -136,7 +153,7 @@ export default function Challenges() {
 
   const toggleDay = useCallback((key) => {
     setState(prev => {
-      const next = { daily: { ...prev.daily, [key]: !prev.daily[key] }, done: prev.done };
+      const next = { ...prev, daily: { ...prev.daily, [key]: !prev.daily[key] } };
       saveState(next);
       return next;
     });
@@ -144,11 +161,20 @@ export default function Challenges() {
 
   const toggleDone = useCallback((monthIdx) => {
     setState(prev => {
-      const next = { daily: prev.daily, done: { ...prev.done, [monthIdx]: !prev.done[monthIdx] } };
+      const next = { ...prev, done: { ...prev.done, [monthIdx]: !prev.done[monthIdx] } };
       saveState(next);
       return next;
     });
   }, []);
+
+  function handleReset() {
+    if (!window.confirm('Reset all progress? Every checked day and completed month will be cleared. This cannot be undone.')) return;
+    clearProgress();
+    setState({ daily: {}, done: {}, autoReset: false });
+  }
+
+  const completedMonths = Object.values(state.done).filter(Boolean).length;
+  const totalChecked = Object.values(state.daily).filter(Boolean).length;
 
   return (
     <div className="section">
@@ -157,6 +183,12 @@ export default function Challenges() {
         <h2 className="s-title">Monthly <em>Challenges</em></h2>
         <p className="s-desc">Expand each month to see the full calendar. Tap any day to check it off — your consistency is tracked automatically.</p>
       </div>
+
+      {state.autoReset && (
+        <div className="challenges-year-banner splash-item">
+          🎉 Welcome to {CURRENT_YEAR}! Your {CURRENT_YEAR - 1} progress has been cleared — a fresh start awaits.
+        </div>
+      )}
 
       <div className="month-grid">
         {MONTHS.map((m, i) => (
@@ -170,6 +202,20 @@ export default function Challenges() {
             onToggleDone={toggleDone}
           />
         ))}
+      </div>
+
+      {/* ── Reset All Progress ── */}
+      <div className="challenges-reset-section splash-item">
+        <div className="challenges-reset-summary">
+          {completedMonths} month{completedMonths !== 1 ? 's' : ''} complete · {totalChecked} day{totalChecked !== 1 ? 's' : ''} checked
+        </div>
+        <button className="challenges-reset-btn" onClick={handleReset}>
+          <span>🗑</span>
+          <span>Reset All Progress</span>
+        </button>
+        <p className="challenges-reset-note">
+          Progress also resets automatically each new year so you always start fresh.
+        </p>
       </div>
     </div>
   );

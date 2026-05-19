@@ -2162,3 +2162,64 @@ body {
   box-shadow: 0 4px 18px rgba(255,92,157,0.18);
 }
 .settings-logout-icon { font-size: 16px; }
+
+/* ─── CHALLENGES RESET SECTION ─── */
+.challenges-reset-section {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px solid rgba(255,92,157,0.15);
+  border-radius: 16px;
+  background: rgba(255,92,157,0.04);
+  text-align: center;
+}
+.challenges-reset-summary {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 14px;
+}
+.challenges-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border: 1.5px solid rgba(255,92,157,0.28);
+  border-radius: 12px;
+  background: rgba(255,92,157,0.06);
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--rose);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+}
+.challenges-reset-btn:hover {
+  background: rgba(255,92,157,0.14);
+  border-color: var(--rose);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(255,92,157,0.18);
+}
+.challenges-reset-note {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-soft);
+  opacity: 0.7;
+}
+
+/* ─── YEAR RESET BANNER ─── */
+.challenges-year-banner {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  border: 1px solid rgba(240,204,96,0.25);
+  border-radius: 12px;
+  background: rgba(240,204,96,0.07);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gold);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
