@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
@@ -11,6 +12,7 @@ import HairCare from './components/HairCare';
 import AntiAging from './components/AntiAging';
 import Settings from './components/Settings';
 import Login from './components/Login';
+import Onboarding from './components/Onboarding';
 import './styles/index.css';
 
 const NAV_ITEMS = [
@@ -191,15 +193,26 @@ function SearchBar({ onNavigate }) {
 }
 
 export default function App() {
-  const [user, setUser] = useState(undefined); // undefined = checking auth, null = logged out
+  const [user, setUser] = useState(undefined);     // undefined = checking
+  const [profile, setProfile] = useState(undefined); // undefined = not yet fetched
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u ?? null));
+    const unsub = onAuthStateChanged(auth, (u) => { setUser(u ?? null); });
     return unsub;
   }, []);
+
+  // When user changes, fetch their Firestore profile
+  useEffect(() => {
+    if (user === undefined) return;
+    if (!user) { setProfile(undefined); return; }
+    setProfile(undefined);
+    getDoc(doc(db, 'users', user.uid))
+      .then(snap => setProfile(snap.exists() ? snap.data() : null))
+      .catch(() => setProfile(null));
+  }, [user?.uid]); // eslint-disable-line
 
   // Ref so event handlers always read the latest history without needing it as a dependency
   const historyRef = useRef([]);
@@ -313,17 +326,22 @@ export default function App() {
     </>
   );
 
-  // Still checking Firebase auth state
-  if (user === undefined) {
+  // Checking auth or profile
+  if (user === undefined || (user !== null && profile === undefined)) {
     return <>{background}<div className="auth-loading">✨</div></>;
   }
 
-  // Not logged in — show login screen
+  // Not logged in
   if (user === null) {
     return <>{background}<Login /></>;
   }
 
-  // Logged in — show the full app
+  // Logged in but no profile yet — run onboarding
+  if (profile === null) {
+    return <>{background}<Onboarding user={user} onComplete={(p) => setProfile(p)} /></>;
+  }
+
+  // Logged in and has profile — show the full app
   return (
     <>
       {background}
