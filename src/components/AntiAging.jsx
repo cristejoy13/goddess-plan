@@ -95,6 +95,27 @@ const CARDS = [
   },
 ];
 
+const GROUPS = [
+  {
+    ico: '🌙',
+    title: 'Daily Rhythms',
+    desc: 'Sleep & morning sunlight — the foundation of every result in this plan',
+    cards: [CARDS[0], CARDS[1]],
+  },
+  {
+    ico: '🌿',
+    title: 'Hormones & Mind',
+    desc: 'Brain health · Cortisol management · Hormone-protective eating',
+    cards: [CARDS[2], CARDS[3], CARDS[4]],
+  },
+  {
+    ico: '✨',
+    title: 'Skin Longevity',
+    desc: 'Nutrients & supplements that compound visible results over decades',
+    cards: [CARDS[5]],
+  },
+];
+
 function AgAccordion({ card }) {
   const [open, setOpen] = useState(false);
   return (
@@ -129,17 +150,38 @@ function AgAccordion({ card }) {
   );
 }
 
+function GroupAccordion({ group }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`ag-group${open ? ' is-open' : ''}`}>
+      <button className="ag-group-trigger" onClick={() => setOpen(o => !o)}>
+        <span className="ag-group-ico">{group.ico}</span>
+        <div className="ag-group-text">
+          <div className="ag-group-title">{group.title}</div>
+          <div className="ag-group-desc">{group.desc}</div>
+        </div>
+        <span className="ag-group-chevron">▾</span>
+      </button>
+      <div className="ag-group-body">
+        <div className="ag-group-inner">
+          {group.cards.map(c => <AgAccordion key={c.t} card={c} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AntiAging() {
   return (
     <div className="section">
       <div className="s-header">
         <div className="s-tag">Longevity &amp; Hormones</div>
         <h2 className="s-title">Anti-Aging <em>&amp; Hormones</em></h2>
-        <p className="s-desc">Starting at 22 is your greatest advantage. Tap each card to reveal the full protocol — how, why, and when. These habits create the visible difference at 32, 42, and beyond.</p>
+        <p className="s-desc">Starting at 22 is your greatest advantage. Tap a group to expand it, then tap any card for the full protocol — how, why, and when.</p>
       </div>
 
-      <div className="ag-list-section splash-item">
-        {CARDS.map(c => <AgAccordion key={c.t} card={c} />)}
+      <div className="ag-groups splash-item">
+        {GROUPS.map(g => <GroupAccordion key={g.title} group={g} />)}
       </div>
 
       <div className="divider splash-item">Supplement Stack</div>
