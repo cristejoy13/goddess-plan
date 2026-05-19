@@ -7,6 +7,7 @@ import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import HairCare from './components/HairCare';
 import AntiAging from './components/AntiAging';
+import Settings from './components/Settings';
 import './styles/index.css';
 
 const NAV_ITEMS = [
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { id: 'skincare',   label: 'Skincare' },
   { id: 'haircare',   label: 'Hair Care' },
   { id: 'antiaging',  label: 'Anti-Aging' },
+  { id: 'settings',   label: '⚙ Settings' },
 ];
 
 const SEARCH_INDEX = [
@@ -266,8 +268,8 @@ export default function App() {
     const startX = touchStartRef.current.x;
     const dx = e.changedTouches[0].clientX - startX;
     const dy = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
-    // Only fire when starting from left 40px edge, swiping right > 60px, minimal vertical drift
-    if (startX < 40 && dx > 60 && dy < 100) {
+    // Fire when swiping right from the left 220px of screen (covers sidebar + left content edge)
+    if (startX < 220 && dx > 80 && dy < 100) {
       goBack();
       return;
     }
@@ -334,6 +336,7 @@ export default function App() {
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
         {active === 'antiaging'  && <AntiAging />}
+        {active === 'settings'   && <Settings onNavigate={navigate} />}
       </div>
 
       <div className="motivation">
