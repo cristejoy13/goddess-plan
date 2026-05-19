@@ -57,7 +57,7 @@ function generateGoddessIcon(size) {
   const cx = size / 2, cy = size / 2;
   const raw = Buffer.alloc(size * size * 3);
 
-  // ── 1. Background: pink dominant · deep purple accent lower ──
+  // ── 1. Background: dark base · single warm pink-gold glow ──
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const nx = (x - cx) / cx;
@@ -65,40 +65,23 @@ function generateGoddessIcon(size) {
       const d  = Math.min(1, Math.hypot(nx, ny));
       const vy = y / size;
 
-      // Pink-rose base: dark rose top → deeper rose bottom
-      let r = lerp(62, 42, vy), g = lerp(8, 4, vy), b = lerp(24, 18, vy);
+      // Near-black dark base
+      let r = 12, g = 11, b = 13;
 
-      // Hot pink dominant bloom — upper area, large and strong
-      const pinkDist = Math.hypot((x - cx) / (cx * 1.1), (y - cy * 0.3) / (cy * 0.9));
-      const pink = Math.max(0, 1 - pinkDist / 0.95);
-      r = clamp(r + pink * pink * 180, 0, 255);
-      g = clamp(g + pink * pink * 12,  0, 255);
-      b = clamp(b + pink * pink * 90,  0, 255);
+      // Single warm pink-gold bloom — centered upper area
+      const glowDist = Math.hypot((x - cx) / (cx * 1.0), (y - cy * 0.45) / (cy * 0.95));
+      const glow = Math.max(0, 1 - glowDist / 0.88);
+      const g2 = glow * glow;
+      // Pink core blending into gold warmth at edges
+      r = clamp(r + g2 * 223, 0, 255);
+      g = clamp(g + g2 * lerp(80, 165, Math.min(1, glowDist / 0.5)), 0, 255);
+      b = clamp(b + g2 * lerp(160, 50, Math.min(1, glowDist / 0.5)), 0, 255);
 
-      // Secondary pink bloom — right side
-      const pink2Dist = Math.hypot((x - cx * 1.7) / cx, (y - cy * 0.5) / cy);
-      const pink2 = Math.max(0, 1 - pink2Dist / 0.80);
-      r = clamp(r + pink2 * pink2 * 120, 0, 255);
-      b = clamp(b + pink2 * pink2 * 55,  0, 255);
-
-      // Deep purple ONLY at bottom — grounding accent
-      if (vy > 0.55) {
-        const purpStr = (vy - 0.55) / 0.45;
-        b = clamp(b + purpStr * purpStr * 85, 0, 255);
-        r = clamp(r * (1 - purpStr * 0.30), 0, 255);
-      }
-
-      // Diagonal bright-pink ray
-      const rayPos = (x + y) / (size * 1.4);
-      const ray = Math.max(0, 1 - Math.abs(rayPos - 0.52) / 0.16);
-      r = clamp(r + ray * ray * 70, 0, 255);
-      b = clamp(b + ray * ray * 30, 0, 255);
-
-      // Vignette — frame edges darker
-      const vig = Math.pow(d, 1.8) * 0.55;
-      r = clamp(r * (1 - vig * 0.50), 0, 255);
-      g = clamp(g * (1 - vig * 0.58), 0, 255);
-      b = clamp(b * (1 - vig * 0.35), 0, 255);
+      // Vignette — edges go to pure dark
+      const vig = Math.pow(d, 1.6) * 0.65;
+      r = clamp(r * (1 - vig * 0.75), 0, 255);
+      g = clamp(g * (1 - vig * 0.80), 0, 255);
+      b = clamp(b * (1 - vig * 0.70), 0, 255);
 
       const idx = (y * size + x) * 3;
       raw[idx]   = Math.round(clamp(r, 0, 255));
