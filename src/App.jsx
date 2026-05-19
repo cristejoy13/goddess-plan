@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
@@ -8,6 +10,7 @@ import Skincare from './components/Skincare';
 import HairCare from './components/HairCare';
 import AntiAging from './components/AntiAging';
 import Settings from './components/Settings';
+import Login from './components/Login';
 import './styles/index.css';
 
 const NAV_ITEMS = [
@@ -188,9 +191,15 @@ function SearchBar({ onNavigate }) {
 }
 
 export default function App() {
+  const [user, setUser] = useState(undefined); // undefined = checking auth, null = logged out
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u ?? null));
+    return unsub;
+  }, []);
 
   // Ref so event handlers always read the latest history without needing it as a dependency
   const historyRef = useRef([]);
@@ -294,13 +303,30 @@ export default function App() {
     lastTapRef.current = { time: now, x: tap.clientX, y: tap.clientY };
   }
 
-  return (
+  const background = (
     <>
       <div className="bg-layer" />
       <div className="bg-aurora" />
       <div className="cloud-layer" />
       <AtmosphericSparkles />
       <FloatingFlowers />
+    </>
+  );
+
+  // Still checking Firebase auth state
+  if (user === undefined) {
+    return <>{background}<div className="auth-loading">✨</div></>;
+  }
+
+  // Not logged in — show login screen
+  if (user === null) {
+    return <>{background}<Login /></>;
+  }
+
+  // Logged in — show the full app
+  return (
+    <>
+      {background}
       <InstallBanner />
 
       <div className="search-bar-fixed">
@@ -336,7 +362,7 @@ export default function App() {
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
         {active === 'antiaging'  && <AntiAging />}
-        {active === 'settings'   && <Settings onNavigate={navigate} />}
+        {active === 'settings'   && <Settings onNavigate={navigate} user={user} />}
       </div>
 
       <div className="motivation">

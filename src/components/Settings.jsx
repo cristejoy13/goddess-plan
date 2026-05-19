@@ -1,3 +1,6 @@
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+
 function GuideStep({ num, title, desc }) {
   return (
     <div className="guide-step">
@@ -10,12 +13,14 @@ function GuideStep({ num, title, desc }) {
   );
 }
 
-export default function Settings({ onNavigate }) {
-  function handleLogout() {
-    // When Firebase Auth is added: firebase.auth().signOut()
-    // then redirect to the login screen instead of home.
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    onNavigate('home');
+export default function Settings({ onNavigate, user }) {
+  async function handleLogout() {
+    try {
+      await signOut(auth);
+      // onAuthStateChanged in App.jsx will detect the sign-out and show the Login screen
+    } catch (e) {
+      console.error('Sign out failed:', e);
+    }
   }
 
   return (
@@ -94,9 +99,23 @@ export default function Settings({ onNavigate }) {
       <div className="divider splash-item">Account</div>
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">👤 Your Account</div>
+        {user?.displayName && (
+          <p className="settings-about-text" style={{ fontWeight: 600, marginBottom: 4 }}>
+            {user.displayName}
+          </p>
+        )}
+        {user?.email && (
+          <p className="settings-about-text" style={{ opacity: 0.7, marginBottom: 8 }}>
+            {user.email}
+          </p>
+        )}
+        {user?.phoneNumber && (
+          <p className="settings-about-text" style={{ opacity: 0.7, marginBottom: 8 }}>
+            {user.phoneNumber}
+          </p>
+        )}
         <p className="settings-about-text">
-          You are currently signed in. Signing out will return you to the login screen.
-          Your progress and data will be waiting when you sign back in.
+          Signing out will return you to the login screen. Your progress will be waiting when you sign back in.
         </p>
         <button className="settings-logout-btn" onClick={handleLogout}>
           <span className="settings-logout-icon">🚪</span>
