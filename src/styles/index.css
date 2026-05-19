@@ -2141,24 +2141,24 @@ body {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 16px;
-  border: 1.5px solid var(--border-g);
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(255,92,157,0.1), rgba(240,204,96,0.08));
+  padding: 13px 16px;
+  border: 1.5px solid rgba(255,92,157,0.3);
+  border-radius: 14px;
+  background: rgba(255,92,157,0.06);
   font-family: 'Outfit', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--rose);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-  margin-top: 4px;
-  margin-bottom: 32px;
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  margin-top: 8px;
 }
 .settings-logout-btn:hover {
+  background: rgba(255,92,157,0.14);
   border-color: var(--rose);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(255,92,157,0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(255,92,157,0.18);
 }
-.settings-logout-icon { font-size: 18px; }
+.settings-logout-icon { font-size: 16px; }

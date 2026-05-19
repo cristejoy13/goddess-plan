@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 function GuideStep({ num, title, desc }) {
   return (
     <div className="guide-step">
@@ -13,19 +11,9 @@ function GuideStep({ num, title, desc }) {
 }
 
 export default function Settings({ onNavigate }) {
-  const [cleared, setCleared] = useState(false);
-
-  function handleClearProgress() {
-    if (window.confirm('This will reset all your challenge check-ins and monthly progress. Your plan content stays the same. Continue?')) {
-      localStorage.removeItem('gp_daily');
-      localStorage.removeItem('gp_done');
-      localStorage.removeItem('gp_checks');
-      setCleared(true);
-      setTimeout(() => setCleared(false), 3000);
-    }
-  }
-
   function handleLogout() {
+    // When Firebase Auth is added: firebase.auth().signOut()
+    // then redirect to the login screen instead of home.
     window.scrollTo({ top: 0, behavior: 'smooth' });
     onNavigate('home');
   }
@@ -93,39 +81,28 @@ export default function Settings({ onNavigate }) {
         <div className="settings-section-title">🌸 The Goddess Plan</div>
         <p className="settings-about-text">
           Your personal wellness companion for January – December 2026.<br />
-          Built around movement, nutrition, skincare, hair care, and anti-aging habits designed specifically for your body and goals.
+          Built around movement, nutrition, skincare, hair care, and anti-aging habits designed specifically for your goals.
         </p>
         <div className="settings-badge-row">
           <span className="pill pg">PWA</span>
           <span className="pill py">Works Offline</span>
-          <span className="pill pg">Saves to Phone</span>
+          <span className="pill pg">Multi-Device</span>
         </div>
-        <p className="settings-about-text" style={{ marginTop: 10, fontSize: 12 }}>
-          All your progress is saved on this device only — nothing is sent to any server.
-        </p>
       </div>
 
-      {/* ── Data & Logout ── */}
-      <div className="divider splash-item">Data &amp; Account</div>
+      {/* ── Account / Logout ── */}
+      <div className="divider splash-item">Account</div>
       <div className="g-card splash-item settings-card">
-        <div className="settings-section-title">📊 Your Progress Data</div>
+        <div className="settings-section-title">👤 Your Account</div>
         <p className="settings-about-text">
-          Your daily challenge check-ins and monthly completions are stored locally on this device. Clearing progress resets all check-ins — your plan content is not affected.
+          You are currently signed in. Signing out will return you to the login screen.
+          Your progress and data will be waiting when you sign back in.
         </p>
-
-        {cleared && (
-          <div className="settings-cleared-msg">✓ Progress cleared successfully.</div>
-        )}
-
-        <button className="settings-clear-btn" onClick={handleClearProgress}>
-          Reset All Progress
+        <button className="settings-logout-btn" onClick={handleLogout}>
+          <span className="settings-logout-icon">🚪</span>
+          <span>Sign Out</span>
         </button>
       </div>
-
-      <button className="settings-logout-btn splash-item" onClick={handleLogout}>
-        <span className="settings-logout-icon">🌸</span>
-        <span>Return to Home</span>
-      </button>
     </div>
   );
 }
