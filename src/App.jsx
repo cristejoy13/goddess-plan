@@ -13,6 +13,7 @@ import AntiAging from './components/AntiAging';
 import Settings from './components/Settings';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
+import JoyAssistant from './components/JoyAssistant';
 import './styles/index.css';
 
 const NAV_ITEMS = [
@@ -382,6 +383,8 @@ export default function App() {
         {active === 'antiaging'  && <AntiAging />}
         {active === 'settings'   && <Settings onNavigate={navigate} user={user} />}
       </div>
+
+      <JoyAssistant />
 
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>
