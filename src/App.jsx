@@ -188,7 +188,6 @@ function SearchBar({ onNavigate }) {
 export default function App() {
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
-  const [searchOpen, setSearchOpen] = useState(false);
   const [history, setHistory] = useState([]);
 
   // Ref so event handlers always read the latest history without needing it as a dependency
@@ -211,7 +210,6 @@ export default function App() {
     }
     setActive(id);
     setNavMeta(prev => ({ tab, scrollTo, key: prev.key + 1 }));
-    setSearchOpen(false);
     if (scrollTo) {
       window.scrollTo({ top: 0, behavior: 'instant' });
       setTimeout(() => {
@@ -229,21 +227,18 @@ export default function App() {
     setHistory(h.slice(0, -1));
     setActive(prev.section);
     setNavMeta(p => ({ tab: prev.tab, scrollTo: null, key: p.key + 1 }));
-    setSearchOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const goHome = () => {
     const cur = activeRef.current;
     if (cur.section === 'home') {
-      setSearchOpen(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     setHistory([]);
     setActive('home');
     setNavMeta(p => ({ tab: null, scrollTo: null, key: p.key + 1 }));
-    setSearchOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -321,23 +316,11 @@ export default function App() {
             {item.label}
           </button>
         ))}
-        <button
-          className="nav-btn nav-search-btn"
-          onClick={() => setSearchOpen(s => !s)}
-          aria-label="Search"
-        >
-          🔍
-        </button>
       </nav>
 
-      {searchOpen && (
-        <div className="search-modal" onClick={() => setSearchOpen(false)}>
-          <div className="search-modal-inner" onClick={e => e.stopPropagation()}>
-            <button className="search-modal-close" onClick={() => setSearchOpen(false)}>✕</button>
-            <SearchBar onNavigate={navigate} />
-          </div>
-        </div>
-      )}
+      <div className="search-bar-fixed">
+        <SearchBar onNavigate={navigate} />
+      </div>
 
       <div
         className="main"

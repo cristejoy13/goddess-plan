@@ -180,7 +180,21 @@ body {
 .nav-btn.active::after { left: 16%; right: 16%; }
 
 /* ─── MAIN WRAPPER ─── */
-.main { position: relative; z-index: 1; padding-top: calc(56px + env(safe-area-inset-top)); }
+.main { position: relative; z-index: 1; padding-top: calc(56px + 54px + env(safe-area-inset-top)); }
+
+/* ─── FIXED SEARCH BAR — always visible below nav ─── */
+.search-bar-fixed {
+  position: fixed;
+  top: calc(56px + env(safe-area-inset-top));
+  left: 0; right: 0;
+  z-index: 190;
+  padding: 8px 16px;
+  background: rgba(8, 2, 6, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(235,80,160,0.12);
+}
+.search-bar-fixed .search-wrap { margin: 0 auto; }
 
 /* ─── HERO ─── */
 .hero {
@@ -1255,68 +1269,8 @@ body {
   .ingr-card.is-open .ingr-inner { padding: 0 14px 14px; }
 }
 
-/* ── Nav Search Button ── */
-.nav-search-btn {
-  font-size: 15px;
-  opacity: 0.75;
-  transition: opacity 0.2s, color 0.2s;
-  letter-spacing: 0;
-}
-.nav-search-btn:hover { opacity: 1; color: var(--rose); }
-
-/* ── Search Modal Overlay ── */
-.search-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  background: rgba(8, 2, 6, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: calc(80px + env(safe-area-inset-top));
-  animation: fadeIn 0.18s ease;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-.search-modal-inner {
-  position: relative;
-  width: min(540px, 92vw);
-}
-.search-modal-close {
-  position: absolute;
-  top: -40px;
-  right: 0;
-  background: none;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 50%;
-  color: var(--text-mid);
-  font-size: 14px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
-.search-modal-close:hover { border-color: var(--rose); color: var(--rose); }
-.search-modal-inner .search-wrap { width: 100%; max-width: 100%; }
-.search-modal-inner .search-input {
-  font-size: 15px;
-  padding: 15px 46px 15px 18px;
-  border-radius: 14px;
-}
-.search-modal-inner .search-dropdown {
-  max-height: 320px;
-  overflow-y: auto;
-}
-
 @media (max-width: 768px) {
-  .search-modal { padding-top: 70px; }
+  .search-bar-fixed { padding: 6px 12px; }
 }
 
 /* ── Skincare Top-Level Pills (Face / Body) ── */
