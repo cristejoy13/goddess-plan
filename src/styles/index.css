@@ -28,31 +28,34 @@ body {
   font-weight: 300;
   color: var(--text);
   min-height: 100vh;
-  background: #06041a; /* deep cosmic navy — like deep space */
+  background: #180330;
   overflow-x: hidden;
 }
 
-/* ─── COSMIC UNIVERSE BACKGROUND — deep navy · magenta nebula · purple clouds ─── */
+/* ─── UNIVERSE BACKGROUND — hot pink upper · deep purple lower · diagonal beams ─── */
 .bg-layer {
   position: fixed;
   inset: 0;
   z-index: 0;
   background:
-    /* Diagonal magenta light ray — the streaking aurora effect */
-    linear-gradient(132deg, transparent 0%, rgba(198,25,138,0.36) 28%, rgba(172,20,128,0.20) 52%, transparent 72%),
-    linear-gradient(145deg, transparent 10%, rgba(215,42,155,0.24) 34%, rgba(185,28,138,0.14) 58%, transparent 78%),
-    /* Hot magenta-pink nebula — center heart of the galaxy */
-    radial-gradient(ellipse 68% 58% at 44% 52%, rgba(192,25,132,0.54) 0%, rgba(152,15,105,0.28) 42%, transparent 68%),
-    /* Deep purple cloud — upper canopy */
-    radial-gradient(ellipse 85% 50% at 50% 6%, rgba(85,12,155,0.60) 0%, rgba(62,6,122,0.32) 42%, transparent 68%),
-    /* Blue-violet shimmer — upper right corner */
-    radial-gradient(ellipse 50% 44% at 92% 10%, rgba(38,58,195,0.40) 0%, rgba(30,48,162,0.18) 44%, transparent 65%),
-    /* Magenta bloom — left edge */
-    radial-gradient(ellipse 52% 60% at 0% 55%, rgba(158,20,142,0.44) 0%, transparent 62%),
-    /* Dark purple depth — lower half */
-    radial-gradient(ellipse 100% 52% at 50% 100%, rgba(52,6,102,0.78) 0%, rgba(35,3,78,0.50) 44%, transparent 70%),
-    /* Deep cosmic base */
-    linear-gradient(172deg, #06041a 0%, #0c0628 28%, #120532 52%, #06041a 100%);
+    /* Diagonal light beam streaks — bright pink-white rays like the reference */
+    linear-gradient(125deg, transparent 0%, rgba(255,100,180,0.22) 22%, rgba(220,60,160,0.14) 40%, transparent 58%),
+    linear-gradient(148deg, transparent 15%, rgba(240,80,170,0.18) 38%, rgba(200,50,150,0.10) 55%, transparent 72%),
+    linear-gradient(108deg, transparent 5%,  rgba(255,120,190,0.12) 28%, transparent 50%),
+    /* Hot pink / magenta bloom — upper left, dominant */
+    radial-gradient(ellipse 90% 55% at 20% 5%,  rgba(230,40,130,0.72) 0%, rgba(195,25,118,0.44) 38%, transparent 65%),
+    /* Pink-magenta center bloom */
+    radial-gradient(ellipse 75% 50% at 55% 18%, rgba(215,35,140,0.58) 0%, rgba(175,18,120,0.30) 44%, transparent 68%),
+    /* Pink scatter — right upper edge */
+    radial-gradient(ellipse 55% 40% at 100% 12%, rgba(225,55,145,0.50) 0%, rgba(185,22,128,0.24) 44%, transparent 66%),
+    /* Mid-zone: pink fades into deep purple */
+    radial-gradient(ellipse 100% 35% at 50% 48%, rgba(145,15,110,0.38) 0%, rgba(105,8,88,0.20) 50%, transparent 72%),
+    /* Deep purple — lower half, dominates bottom */
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(72,5,105,0.90) 0%, rgba(50,4,80,0.70) 38%, rgba(30,3,55,0.40) 65%, transparent 82%),
+    /* Purple side — left lower */
+    radial-gradient(ellipse 48% 58% at 0% 78%, rgba(85,8,120,0.52) 0%, transparent 62%),
+    /* Deep purple base gradient */
+    linear-gradient(175deg, #2a0545 0%, #1e0438 30%, #180330 58%, #120228 100%);
   animation: bgDream 22s ease-in-out infinite alternate;
 }
 @keyframes bgDream {
@@ -63,16 +66,16 @@ body {
   100% { opacity: 0.95; }
 }
 
-/* Slow-drifting nebula bands — magenta, purple, blue-violet */
+/* Slow-drifting nebula bands — hot pink and deep purple */
 .bg-aurora {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 75% 32% at 62% 20%, rgba(188,22,142,0.16) 0%, transparent 60%),
-    radial-gradient(ellipse 65% 36% at 22% 48%, rgba(92,12,162,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 28% at 80% 72%, rgba(38,52,188,0.14) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 28% at 68% 12%, rgba(235,55,148,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 65% 32% at 18% 38%, rgba(195,25,135,0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 26% at 82% 68%, rgba(110,10,95,0.18) 0%, transparent 60%);
   animation: auroraDrift 28s ease-in-out infinite alternate;
 }
 @keyframes auroraDrift {
@@ -82,21 +85,21 @@ body {
   100% { opacity: 0.90; transform: translate(6px, -4px); }
 }
 
-/* Cosmic cloud wisps — deep purple-blue, like nebula dust */
+/* Cloud wisps — deep purple, like nebula dust pooling at the bottom */
 .cloud-layer {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 24% at 18% 98%, rgba(110,15,145,0.28) 0%, rgba(88,10,118,0.14) 50%, transparent 70%),
-    radial-gradient(ellipse 55% 20% at 55% 100%, rgba(95,12,138,0.24) 0%, rgba(78,8,112,0.12) 50%, transparent 70%),
-    radial-gradient(ellipse 50% 22% at 85% 97%, rgba(105,14,142,0.26) 0%, rgba(85,10,115,0.13) 50%, transparent 70%),
-    radial-gradient(ellipse 40% 14% at 30% 84%, rgba(82,10,128,0.18) 0%, transparent 70%),
-    radial-gradient(ellipse 35% 12% at 68% 82%, rgba(72,8,122,0.16) 0%, transparent 70%),
-    radial-gradient(ellipse 25% 10% at 90% 78%, rgba(88,12,135,0.14) 0%, transparent 70%),
-    radial-gradient(ellipse 30% 8%  at 12% 70%, rgba(65,8,118,0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 20% 7%  at 75% 68%, rgba(75,10,125,0.10) 0%, transparent 70%);
+    radial-gradient(ellipse 70% 24% at 18% 98%, rgba(90,8,125,0.32) 0%, rgba(68,5,100,0.16) 50%, transparent 70%),
+    radial-gradient(ellipse 55% 20% at 55% 100%, rgba(78,6,115,0.28) 0%, rgba(60,4,95,0.14) 50%, transparent 70%),
+    radial-gradient(ellipse 50% 22% at 85% 97%, rgba(85,7,120,0.30) 0%, rgba(65,5,100,0.15) 50%, transparent 70%),
+    radial-gradient(ellipse 40% 14% at 30% 84%, rgba(65,5,105,0.20) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 12% at 68% 82%, rgba(58,4,98,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 10% at 90% 78%, rgba(72,6,110,0.16) 0%, transparent 70%),
+    radial-gradient(ellipse 25% 8%  at 12% 70%, rgba(55,4,92,0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 20% 7%  at 75% 68%, rgba(62,5,102,0.12) 0%, transparent 70%);
   animation: cloudGlow 30s ease-in-out infinite alternate;
 }
 @keyframes cloudGlow {
@@ -119,8 +122,8 @@ body {
   background: white;
   box-shadow:
     0 0 3px 1px rgba(255,255,255,0.95),
-    0 0 8px 2px rgba(255,145,42,0.58),
-    0 0 16px 5px rgba(188,28,152,0.25);
+    0 0 8px 3px rgba(255,120,180,0.65),
+    0 0 18px 6px rgba(210,40,140,0.28);
   animation: sparkleTwinkle ease-in-out infinite;
 }
 @keyframes sparkleTwinkle {
