@@ -57,7 +57,7 @@ function generateGoddessIcon(size) {
   const cx = size / 2, cy = size / 2;
   const raw = Buffer.alloc(size * size * 3);
 
-  // ── 1. Background: deep cosmic — dark navy · magenta nebula · purple ──
+  // ── 1. Background: pink dominant · deep purple accent lower ──
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const nx = (x - cx) / cx;
@@ -65,39 +65,40 @@ function generateGoddessIcon(size) {
       const d  = Math.min(1, Math.hypot(nx, ny));
       const vy = y / size;
 
-      // Deep cosmic navy base
-      let r = lerp(8, 18, vy), g = lerp(4, 5, vy), b = lerp(30, 50, vy);
+      // Pink-rose base: dark rose top → deeper rose bottom
+      let r = lerp(62, 42, vy), g = lerp(8, 4, vy), b = lerp(24, 18, vy);
 
-      // Magenta-pink nebula bloom — center
-      const nebDist = Math.hypot((x - cx * 0.9) / cx, (y - cy * 1.05) / cy);
-      const neb = Math.max(0, 1 - nebDist / 0.75);
-      r = clamp(r + neb * neb * 185, 0, 255);
-      g = clamp(g + neb * neb * 15,  0, 255);
-      b = clamp(b + neb * neb * 125, 0, 255);
+      // Hot pink dominant bloom — upper area, large and strong
+      const pinkDist = Math.hypot((x - cx) / (cx * 1.1), (y - cy * 0.3) / (cy * 0.9));
+      const pink = Math.max(0, 1 - pinkDist / 0.95);
+      r = clamp(r + pink * pink * 180, 0, 255);
+      g = clamp(g + pink * pink * 12,  0, 255);
+      b = clamp(b + pink * pink * 90,  0, 255);
 
-      // Deep purple cloud — upper portion
-      const purp = Math.max(0, 1 - Math.hypot(nx * 0.9, (ny + 0.6) * 0.7) / 0.85);
-      b = clamp(b + purp * purp * 145, 0, 255);
-      r = clamp(r + purp * purp * 60,  0, 255);
+      // Secondary pink bloom — right side
+      const pink2Dist = Math.hypot((x - cx * 1.7) / cx, (y - cy * 0.5) / cy);
+      const pink2 = Math.max(0, 1 - pink2Dist / 0.80);
+      r = clamp(r + pink2 * pink2 * 120, 0, 255);
+      b = clamp(b + pink2 * pink2 * 55,  0, 255);
 
-      // Blue-violet shimmer — upper right
-      if (nx > 0.2 && ny < -0.2) {
-        const bv = (nx - 0.2) * (-ny - 0.2) * 2.5;
-        b = clamp(b + bv * 90, 0, 255);
-        r = clamp(r + bv * 20, 0, 255);
+      // Deep purple ONLY at bottom — grounding accent
+      if (vy > 0.55) {
+        const purpStr = (vy - 0.55) / 0.45;
+        b = clamp(b + purpStr * purpStr * 85, 0, 255);
+        r = clamp(r * (1 - purpStr * 0.30), 0, 255);
       }
 
-      // Diagonal magenta ray
+      // Diagonal bright-pink ray
       const rayPos = (x + y) / (size * 1.4);
-      const ray = Math.max(0, 1 - Math.abs(rayPos - 0.55) / 0.18);
-      r = clamp(r + ray * ray * 65, 0, 255);
-      b = clamp(b + ray * ray * 40, 0, 255);
+      const ray = Math.max(0, 1 - Math.abs(rayPos - 0.52) / 0.16);
+      r = clamp(r + ray * ray * 70, 0, 255);
+      b = clamp(b + ray * ray * 30, 0, 255);
 
       // Vignette — frame edges darker
-      const vig = Math.pow(d, 1.8) * 0.58;
-      r = clamp(r * (1 - vig * 0.55), 0, 255);
-      g = clamp(g * (1 - vig * 0.60), 0, 255);
-      b = clamp(b * (1 - vig * 0.30), 0, 255);
+      const vig = Math.pow(d, 1.8) * 0.55;
+      r = clamp(r * (1 - vig * 0.50), 0, 255);
+      g = clamp(g * (1 - vig * 0.58), 0, 255);
+      b = clamp(b * (1 - vig * 0.35), 0, 255);
 
       const idx = (y * size + x) * 3;
       raw[idx]   = Math.round(clamp(r, 0, 255));
