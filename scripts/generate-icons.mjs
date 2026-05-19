@@ -1,5 +1,5 @@
 // Generates public/icon-192.png, public/icon-512.png, public/apple-touch-icon.png
-// Goddess Plan icon: sunset palette (gold → pink → purple) + golden goddess crown
+// Goddess Plan icon: sunset palette + 5-peak goddess crown with metallic orbs and gems
 import { deflateSync } from 'zlib';
 import { writeFileSync } from 'fs';
 
@@ -22,7 +22,7 @@ function buildPNG(size, raw) {
   const sig = Buffer.from([137,80,78,71,13,10,26,10]);
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(size, 0); ihdr.writeUInt32BE(size, 4);
-  ihdr[8] = 8; ihdr[9] = 2; // 8-bit RGB
+  ihdr[8] = 8; ihdr[9] = 2;
   const rows = [];
   for (let y = 0; y < size; y++) {
     rows.push(Buffer.from([0]));
@@ -36,7 +36,6 @@ function buildPNG(size, raw) {
 const lerp  = (a, b, t) => a + (b - a) * Math.max(0, Math.min(1, t));
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
-// Ray-casting point-in-polygon
 function inPoly(x, y, poly) {
   let inside = false;
   for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -47,7 +46,6 @@ function inPoly(x, y, poly) {
   return inside;
 }
 
-// Distance from point to line segment
 function ptSegDist(px, py, x1, y1, x2, y2) {
   const dx = x2 - x1, dy = y2 - y1;
   const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
@@ -59,38 +57,38 @@ function generateGoddessIcon(size) {
   const cx = size / 2, cy = size / 2;
   const raw = Buffer.alloc(size * size * 3);
 
-  // ── 1. Background: sunset — gold top → vivid pink → deep purple ──
+  // ── 1. Background: sunset — gold top → hot pink → deep purple ──
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const nx = (x - cx) / cx;
       const ny = (y - cy) / cy;
       const d  = Math.min(1, Math.hypot(nx, ny));
-      const vy = y / size;  // 0 = top, 1 = bottom
+      const vy = y / size;
 
       let r, g, b;
-      if (vy < 0.32) {
-        const t = vy / 0.32;
-        r = lerp(255, 255, t); g = lerp(215, 78,  t); b = lerp(52,  142, t); // gold → hot pink
-      } else if (vy < 0.62) {
-        const t = (vy - 0.32) / 0.30;
-        r = lerp(255, 210, t); g = lerp(78,  35,  t); b = lerp(142, 148, t); // hot pink → deep rose
+      if (vy < 0.30) {
+        const t = vy / 0.30;
+        r = lerp(255, 255, t); g = lerp(215, 72,  t); b = lerp(52,  138, t);
+      } else if (vy < 0.58) {
+        const t = (vy - 0.30) / 0.28;
+        r = lerp(255, 195, t); g = lerp(72,  25,  t); b = lerp(138, 142, t);
       } else {
-        const t = (vy - 0.62) / 0.38;
-        r = lerp(210, 62,  t); g = lerp(35,  8,   t); b = lerp(148, 130, t); // deep rose → dark purple
+        const t = (vy - 0.58) / 0.42;
+        r = lerp(195, 48,  t); g = lerp(25,  4,   t); b = lerp(142, 125, t);
       }
 
-      // Radial vignette — darken edges for depth + focus on center
-      const vig = Math.pow(d, 2.2) * 0.48;
-      r = clamp(r - vig * r * 0.5,              0, 255);
-      g = clamp(g - vig * g * 0.6,              0, 255);
-      b = clamp(b - vig * (b - 60) * 0.3 + vig * 18, 0, 255);
+      // Vignette — darken edges to focus on crown
+      const vig = Math.pow(d, 2.0) * 0.52;
+      r = clamp(r * (1 - vig * 0.55), 0, 255);
+      g = clamp(g * (1 - vig * 0.65), 0, 255);
+      b = clamp(b + vig * 22, 0, 255);
 
-      // Upper-right golden warmth (sunshine)
+      // Upper-right golden warmth
       if (nx > 0.1 && ny < -0.05) {
-        const w = nx * (-ny) * 0.65;
-        r = clamp(r + w * 32, 0, 255);
-        g = clamp(g + w * 28, 0, 255);
-        b = clamp(b - w * 18, 0, 255);
+        const w = nx * (-ny) * 0.6;
+        r = clamp(r + w * 30, 0, 255);
+        g = clamp(g + w * 25, 0, 255);
+        b = clamp(b - w * 15, 0, 255);
       }
 
       const idx = (y * size + x) * 3;
@@ -100,32 +98,38 @@ function generateGoddessIcon(size) {
     }
   }
 
-  // ── 2. Goddess Crown (3-peak tiara shape) ──
-  // Vertices traced as a crown polygon: base → right side → 3 peaks → left side → close
-  const crownCY = cy - size * 0.02;  // slightly above center
-  const hw      = size * 0.30;       // half-width
-  const bandTop = crownCY + size * 0.05;
-  const bandBot = crownCY + size * 0.18;
-  const sideY   = crownCY - size * 0.07;
-  const centerY = crownCY - size * 0.20;
+  // ── 2. 5-peak goddess crown ──
+  // 5 peaks: outer (shortest) → inner (medium) → center (tallest)
+  // Real-crown look: flat band base, peaks with metallic orbs on top
+  const crownCY   = cy - size * 0.02;
+  const hw        = size * 0.30;
+  const bandTop   = crownCY + size * 0.06;
+  const bandBot   = crownCY + size * 0.18;
+  const outerPkY  = crownCY - size * 0.04;   // outer peaks — shorter
+  const innerPkY  = crownCY - size * 0.12;   // inner peaks — medium
+  const centerPkY = crownCY - size * 0.21;   // center peak — tallest
 
   const crown = [
-    [cx - hw,          bandBot],   // bottom-left
-    [cx + hw,          bandBot],   // bottom-right
-    [cx + hw,          bandTop],   // band top-right
-    [cx + hw * 0.72,   sideY  ],   // right peak tip
-    [cx + hw * 0.42,   bandTop],   // right valley
-    [cx,               centerY],   // center peak tip (tallest)
-    [cx - hw * 0.42,   bandTop],   // left valley
-    [cx - hw * 0.72,   sideY  ],   // left peak tip
-    [cx - hw,          bandTop],   // band top-left
+    [cx - hw,          bandBot    ],  // bottom-left
+    [cx + hw,          bandBot    ],  // bottom-right
+    [cx + hw,          bandTop    ],  // band top-right
+    [cx + hw * 0.90,   outerPkY   ],  // outer-right peak
+    [cx + hw * 0.70,   bandTop    ],  // valley
+    [cx + hw * 0.48,   innerPkY   ],  // inner-right peak
+    [cx + hw * 0.25,   bandTop    ],  // valley
+    [cx,               centerPkY  ],  // center peak
+    [cx - hw * 0.25,   bandTop    ],  // valley
+    [cx - hw * 0.48,   innerPkY   ],  // inner-left peak
+    [cx - hw * 0.70,   bandTop    ],  // valley
+    [cx - hw * 0.90,   outerPkY   ],  // outer-left peak
+    [cx - hw,          bandTop    ],  // band top-left
   ];
 
   const glowW = size * 0.08;
-  const cbx1 = Math.floor(cx - hw - glowW);
-  const cbx2 = Math.ceil(cx + hw + glowW);
-  const cby1 = Math.floor(centerY - glowW);
-  const cby2 = Math.ceil(bandBot + glowW);
+  const cbx1  = Math.floor(cx - hw - glowW);
+  const cbx2  = Math.ceil (cx + hw + glowW);
+  const cby1  = Math.floor(centerPkY - glowW);
+  const cby2  = Math.ceil (bandBot   + glowW);
 
   for (let y = cby1; y <= cby2; y++) {
     for (let x = cbx1; x <= cbx2; x++) {
@@ -140,18 +144,21 @@ function generateGoddessIcon(size) {
 
       const idx = (y * size + x) * 3;
       if (inside) {
-        // Bright gold at peak tips → warm yellow-orange at base
-        const tY = Math.max(0, Math.min(1, (y - centerY) / (bandBot - centerY)));
+        // Metallic gold gradient — bright at peaks, warm-orange at base
+        const tY = Math.max(0, Math.min(1, (y - centerPkY) / (bandBot - centerPkY)));
         const rC = 255;
-        const gC = Math.round(lerp(230, 152, tY * 0.62));
-        const bC = Math.round(lerp(42,  20,  tY * 0.50));
-        // Slight inner-edge darkening for 3D depth
-        const depth = Math.max(0, 1 - minEdge / (size * 0.055)) * 0.20;
-        raw[idx]   = Math.round(clamp(rC - depth * 25,  0, 255));
-        raw[idx+1] = Math.round(clamp(gC - depth * 30,  0, 255));
-        raw[idx+2] = Math.round(clamp(bC - depth * 10,  0, 255));
+        const gC = Math.round(lerp(245, 145, tY * 0.65));
+        const bC = Math.round(lerp(38,  16,  tY * 0.50));
+
+        // Top-of-band highlight — simulates light catching the metal edge
+        const bandHL = Math.max(0, 1 - Math.abs(y - bandTop) / (size * 0.016)) * 0.32;
+        // Edge shadow for 3D depth
+        const shadow = Math.max(0, 1 - minEdge / (size * 0.042)) * 0.24;
+
+        raw[idx]   = Math.round(clamp(rC - shadow * 22 + bandHL * 10, 0, 255));
+        raw[idx+1] = Math.round(clamp(gC - shadow * 28 + bandHL * 20, 0, 255));
+        raw[idx+2] = Math.round(clamp(bC - shadow * 12 + bandHL * 28, 0, 255));
       } else if (minEdge < glowW) {
-        // Warm golden glow halo around the crown
         const g = Math.pow(1 - minEdge / glowW, 2.5) * 0.72;
         raw[idx]   = Math.min(255, raw[idx]   + Math.round(g * 218));
         raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(g * 162));
@@ -160,33 +167,73 @@ function generateGoddessIcon(size) {
     }
   }
 
-  // ── 3. Gem ornaments at peak tips ──
-  const gemR = Math.max(3, size * 0.030);
-  const gems = [
-    { x: cx,              y: centerY, cr: 255, cg: 238, cb: 75  }, // center — bright yellow
-    { x: cx + hw * 0.72,  y: sideY,   cr: 255, cg: 105, cb: 195 }, // right — hot pink
-    { x: cx - hw * 0.72,  y: sideY,   cr: 255, cg: 105, cb: 195 }, // left — hot pink
+  // ── 3. Metallic orbs at all 5 peak tips ──
+  // Orbs are the round balls on top of a real crown — the defining detail
+  const orbR = Math.max(4, size * 0.024);
+  const peakOrbs = [
+    { x: cx + hw * 0.90, y: outerPkY  },
+    { x: cx + hw * 0.48, y: innerPkY  },
+    { x: cx,             y: centerPkY },
+    { x: cx - hw * 0.48, y: innerPkY  },
+    { x: cx - hw * 0.90, y: outerPkY  },
   ];
-
-  for (const gem of gems) {
-    const gr = gemR * 3.5;
-    for (let dy = -gr; dy <= gr; dy++) {
-      for (let dx = -gr; dx <= gr; dx++) {
+  for (const orb of peakOrbs) {
+    for (let dy = -orbR * 3; dy <= orbR * 3; dy++) {
+      for (let dx = -orbR * 3; dx <= orbR * 3; dx++) {
         const d = Math.hypot(dx, dy);
-        if (d > gr) continue;
-        const ix = Math.round(gem.x + dx), iy = Math.round(gem.y + dy);
+        if (d > orbR * 3) continue;
+        const ix = Math.round(orb.x + dx), iy = Math.round(orb.y + dy);
         if (ix < 0 || ix >= size || iy < 0 || iy >= size) continue;
-        const core = Math.pow(Math.max(0, 1 - d / gemR), 2.5);
-        const glow = Math.pow(Math.max(0, 1 - d / gr),   2.0) * 0.52;
-        const idx  = (iy * size + ix) * 3;
-        raw[idx]   = Math.min(255, raw[idx]   + Math.round(core * gem.cr + glow * gem.cr * 0.45));
-        raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(core * gem.cg + glow * gem.cg * 0.45));
-        raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(core * gem.cb + glow * gem.cb * 0.45));
+        const idx = (iy * size + ix) * 3;
+        if (d <= orbR) {
+          // Bright metallic orb: white-hot highlight offset to upper-left
+          const hx = dx + orbR * 0.3, hy = dy + orbR * 0.3;
+          const highlight = Math.max(0, 1 - Math.hypot(hx, hy) / (orbR * 0.8));
+          const t = d / orbR;
+          const rC = Math.round(lerp(255, 255, t * 0.05) + highlight * 10);
+          const gC = Math.round(lerp(252, 205, t * 0.6)  + highlight * 15);
+          const bC = Math.round(lerp(200, 42,  t * 0.85) - highlight * 10);
+          raw[idx]   = Math.min(255, rC);
+          raw[idx+1] = Math.min(255, gC);
+          raw[idx+2] = Math.max(0,   bC);
+        } else if (d < orbR * 3) {
+          // Warm glow around orb
+          const g = Math.pow(1 - (d - orbR) / (orbR * 2), 2) * 0.52;
+          raw[idx]   = Math.min(255, raw[idx]   + Math.round(g * 205));
+          raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(g * 158));
+          raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(g * 48));
+        }
       }
     }
   }
 
-  // ── 4. Sparkle star-dots ──
+  // ── 4. Jewels set into the crown band ──
+  const bandMidY = (bandTop + bandBot) * 0.5;
+  const jewR = Math.max(3, size * 0.026);
+  const bandJewels = [
+    { x: cx,             y: bandMidY, cr: 255, cg: 238, cb: 70  }, // center — yellow
+    { x: cx + hw * 0.44, y: bandMidY, cr: 255, cg: 100, cb: 195 }, // right — pink
+    { x: cx - hw * 0.44, y: bandMidY, cr: 255, cg: 100, cb: 195 }, // left — pink
+  ];
+  for (const j of bandJewels) {
+    const gr = jewR * 3.2;
+    for (let dy = -gr; dy <= gr; dy++) {
+      for (let dx = -gr; dx <= gr; dx++) {
+        const d = Math.hypot(dx, dy);
+        if (d > gr) continue;
+        const ix = Math.round(j.x + dx), iy = Math.round(j.y + dy);
+        if (ix < 0 || ix >= size || iy < 0 || iy >= size) continue;
+        const core = Math.pow(Math.max(0, 1 - d / jewR), 2.5);
+        const glow = Math.pow(Math.max(0, 1 - d / gr),   2.0) * 0.50;
+        const idx  = (iy * size + ix) * 3;
+        raw[idx]   = Math.min(255, raw[idx]   + Math.round(core * j.cr + glow * j.cr * 0.44));
+        raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(core * j.cg + glow * j.cg * 0.44));
+        raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(core * j.cb + glow * j.cb * 0.44));
+      }
+    }
+  }
+
+  // ── 5. Sparkle dots ──
   const sparks = [
     [0.16, 0.11], [0.80, 0.14], [0.07, 0.36], [0.90, 0.30],
     [0.50, 0.07], [0.26, 0.82], [0.74, 0.80], [0.93, 0.62],
@@ -210,7 +257,7 @@ function generateGoddessIcon(size) {
     }
   }
 
-  // ── 5. Rose-gold ring border ──
+  // ── 6. Rose-gold ring border ──
   const ringR = size * 0.455, ringW = size * 0.020;
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -218,9 +265,9 @@ function generateGoddessIcon(size) {
       if (Math.abs(d - ringR) < ringW) {
         const t   = 1 - Math.abs(d - ringR) / ringW;
         const idx = (y * size + x) * 3;
-        raw[idx]   = Math.min(255, raw[idx]   + Math.round(t * 82));
-        raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(t * 38));
-        raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(t * 52));
+        raw[idx]   = Math.min(255, raw[idx]   + Math.round(t * 85));
+        raw[idx+1] = Math.min(255, raw[idx+1] + Math.round(t * 40));
+        raw[idx+2] = Math.min(255, raw[idx+2] + Math.round(t * 55));
       }
     }
   }
@@ -228,7 +275,6 @@ function generateGoddessIcon(size) {
   return raw;
 }
 
-// Generate and save all icon sizes
 for (const size of [512, 192, 180]) {
   const raw  = generateGoddessIcon(size);
   const name = size === 180 ? 'public/apple-touch-icon.png' : `public/icon-${size}.png`;

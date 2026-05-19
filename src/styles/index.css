@@ -28,31 +28,31 @@ body {
   font-weight: 300;
   color: var(--text);
   min-height: 100vh;
-  background: #180628; /* deep purple base — sunset layers bloom over this */
+  background: #1a0432; /* deep dark violet — base layer */
   overflow-x: hidden;
 }
 
-/* ─── SUNSET BACKGROUND — golden sky · pink horizon · purple twilight ─── */
+/* ─── SUNSET BACKGROUND — dark violet dominant · pink accent · gold hint ─── */
 .bg-layer {
   position: fixed;
   inset: 0;
   z-index: 0;
   background:
-    /* Golden sun — upper sky */
-    radial-gradient(ellipse 95% 52% at 50% 0%, rgba(255,215,52,0.70) 0%, rgba(255,178,42,0.38) 42%, transparent 68%),
-    /* Yellow-orange right glow */
-    radial-gradient(ellipse 52% 46% at 98% 20%, rgba(255,165,38,0.58) 0%, transparent 62%),
-    /* Sunset pink band — the warm horizon (dominant pink) */
-    radial-gradient(ellipse 100% 55% at 50% 52%, rgba(248,68,148,0.72) 0%, rgba(225,52,125,0.42) 40%, transparent 68%),
-    /* Hot pink left bloom */
-    radial-gradient(ellipse 60% 58% at 0% 55%, rgba(255,58,142,0.58) 0%, transparent 65%),
-    /* Deep purple twilight — lower half (adds darkness for readability) */
-    radial-gradient(ellipse 100% 58% at 50% 100%, rgba(72,5,115,0.80) 0%, rgba(52,2,88,0.52) 44%, transparent 70%),
-    /* Purple depth — sides */
-    radial-gradient(ellipse 40% 85% at 0% 68%, rgba(62,0,100,0.48) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 85% at 100% 68%, rgba(62,0,100,0.48) 0%, transparent 65%),
-    /* Deep sunset base */
-    linear-gradient(178deg, #180628 0%, #2e0828 28%, #380a2c 52%, #180628 100%);
+    /* Subtle golden glow — upper right only, like sunset peeking */
+    radial-gradient(ellipse 50% 38% at 88% 12%, rgba(255,205,50,0.32) 0%, rgba(255,165,38,0.14) 44%, transparent 65%),
+    /* Pink sunset blush — upper area accent */
+    radial-gradient(ellipse 80% 40% at 50% 2%, rgba(228,65,145,0.50) 0%, rgba(205,50,122,0.24) 38%, transparent 63%),
+    /* Soft pink bloom — left edge */
+    radial-gradient(ellipse 48% 50% at 0% 44%, rgba(215,52,135,0.35) 0%, transparent 60%),
+    /* Dark violet — dominant, fills most of the screen */
+    radial-gradient(ellipse 95% 70% at 50% 56%, rgba(72,8,130,0.88) 0%, rgba(52,4,98,0.62) 44%, transparent 72%),
+    /* Deep violet — bottom (maximum readability) */
+    radial-gradient(ellipse 100% 55% at 50% 100%, rgba(55,4,105,0.95) 0%, rgba(38,2,78,0.70) 44%, transparent 70%),
+    /* Violet depth — both sides */
+    radial-gradient(ellipse 38% 90% at 0% 68%, rgba(60,4,108,0.75) 0%, transparent 65%),
+    radial-gradient(ellipse 38% 90% at 100% 68%, rgba(60,4,108,0.75) 0%, transparent 65%),
+    /* Rich dark violet base */
+    linear-gradient(175deg, #1a0432 0%, #280542 25%, #2e0838 50%, #1a0432 100%);
   animation: bgDream 20s ease-in-out infinite alternate;
 }
 @keyframes bgDream {
@@ -63,16 +63,16 @@ body {
   100% { opacity: 0.96; }
 }
 
-/* Drifting aurora — golden and pink bands float slowly */
+/* Drifting aurora — very subtle gold and pink over dark violet */
 .bg-aurora {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 75% 32% at 65% 22%, rgba(255,208,55,0.16) 0%, transparent 60%),
-    radial-gradient(ellipse 65% 38% at 25% 50%, rgba(255,72,148,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 30% at 78% 75%, rgba(148,18,108,0.14) 0%, transparent 60%);
+    radial-gradient(ellipse 72% 28% at 62% 18%, rgba(255,205,52,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 62% 34% at 22% 46%, rgba(218,62,142,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 52% 26% at 78% 74%, rgba(90,8,148,0.14) 0%, transparent 60%);
   animation: auroraDrift 28s ease-in-out infinite alternate;
 }
 @keyframes auroraDrift {
@@ -82,30 +82,27 @@ body {
   100% { opacity: 0.90; transform: translate(6px, -4px); }
 }
 
-/* Soft cloud wisps — warm peach-apricot tones at sunset */
+/* Soft cloud wisps — warm peach-apricot, lower portion */
 .cloud-layer {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    /* Large base clouds — warm apricot-white */
-    radial-gradient(ellipse 70% 24% at 18% 98%, rgba(255,235,210,0.40) 0%, rgba(255,215,190,0.20) 50%, transparent 70%),
-    radial-gradient(ellipse 55% 20% at 55% 100%, rgba(255,228,208,0.36) 0%, rgba(255,218,195,0.18) 50%, transparent 70%),
-    radial-gradient(ellipse 50% 22% at 85% 97%, rgba(255,232,212,0.38) 0%, rgba(248,218,200,0.18) 50%, transparent 70%),
-    /* Mid wisps — pink-peach */
-    radial-gradient(ellipse 40% 14% at 30% 84%, rgba(255,222,200,0.22) 0%, transparent 70%),
-    radial-gradient(ellipse 35% 12% at 68% 82%, rgba(255,218,205,0.20) 0%, transparent 70%),
-    radial-gradient(ellipse 25% 10% at 90% 78%, rgba(255,225,208,0.17) 0%, transparent 70%),
-    /* High wisps — blush-gold */
-    radial-gradient(ellipse 30% 8%  at 12% 70%, rgba(255,228,195,0.14) 0%, transparent 70%),
-    radial-gradient(ellipse 20% 7%  at 75% 68%, rgba(255,220,198,0.12) 0%, transparent 70%);
+    radial-gradient(ellipse 70% 24% at 18% 98%, rgba(255,232,208,0.32) 0%, rgba(255,212,188,0.15) 50%, transparent 70%),
+    radial-gradient(ellipse 55% 20% at 55% 100%, rgba(255,225,205,0.28) 0%, rgba(255,215,192,0.12) 50%, transparent 70%),
+    radial-gradient(ellipse 50% 22% at 85% 97%, rgba(255,228,210,0.30) 0%, rgba(248,215,198,0.14) 50%, transparent 70%),
+    radial-gradient(ellipse 40% 14% at 30% 84%, rgba(255,218,198,0.16) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 12% at 68% 82%, rgba(255,215,202,0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 25% 10% at 90% 78%, rgba(255,222,205,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 8%  at 12% 70%, rgba(255,225,195,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 20% 7%  at 75% 68%, rgba(255,218,196,0.09) 0%, transparent 70%);
   animation: cloudGlow 30s ease-in-out infinite alternate;
 }
 @keyframes cloudGlow {
-  0%   { opacity: 0.78; }
+  0%   { opacity: 0.75; }
   50%  { opacity: 1; }
-  100% { opacity: 0.84; }
+  100% { opacity: 0.82; }
 }
 
 /* Star/sparkle field */
@@ -122,8 +119,8 @@ body {
   background: white;
   box-shadow:
     0 0 3px 1px rgba(255,255,255,0.85),
-    0 0 8px 2px rgba(255,228,98,0.62),
-    0 0 14px 4px rgba(255,175,218,0.28);
+    0 0 8px 2px rgba(255,225,95,0.55),
+    0 0 14px 4px rgba(255,172,215,0.25);
   animation: sparkleTwinkle ease-in-out infinite;
 }
 @keyframes sparkleTwinkle {
