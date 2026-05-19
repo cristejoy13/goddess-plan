@@ -28,7 +28,7 @@ body {
   font-weight: 300;
   color: var(--text);
   min-height: 100vh;
-  background: #0c0b0d;
+  background: #07040f;
   overflow-x: hidden;
 }
 
@@ -39,7 +39,7 @@ body {
   z-index: 0;
   background:
     radial-gradient(ellipse 78% 48% at 50% 22%, rgba(235,80,160,0.48) 0%, rgba(225,165,50,0.20) 38%, transparent 68%),
-    #0c0b0d;
+    #07040f;
   animation: bgDream 22s ease-in-out infinite alternate;
 }
 @keyframes bgDream {
