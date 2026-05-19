@@ -1,21 +1,21 @@
 import OilCard from './OilCard';
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-// Two-week oil rotation — repeating cycle
-const ROTATION = [
-  // Week 1
-  [
-    [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }], // Mon — pre-wash
-    [{ e: '✨', n: 'Argan' }],                                  // Tue — post-wash
-    [{ e: '🌼', n: 'Jojoba' }],                                 // Wed — scalp
+// Oils per day-of-week for each rotation week type (0=Week A, 1=Week B)
+// Index: [weekType][dayOfWeek 0=Mon…6=Sun]
+const OIL_SCHEDULE = [
+  [ // Week A
+    [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }], // Mon — scalp treatment
+    [{ e: '✨', n: 'Argan' }],                                  // Tue — post-wash finish
+    [{ e: '🌼', n: 'Jojoba' }],                                 // Wed — scalp balance
     [],                                                          // Thu — rest
-    [{ e: '🌸', n: 'Camellia' }],                               // Fri — pre-wash
-    [{ e: '✨', n: 'Argan' }],                                   // Sat — post-wash
+    [{ e: '🌸', n: 'Camellia' }],                               // Fri — scalp treatment
+    [{ e: '✨', n: 'Argan' }],                                   // Sat — post-wash finish
     [],                                                          // Sun — rest
   ],
-  // Week 2 — same but Coconut added Wednesday
-  [
+  [ // Week B (Coconut added on Wednesday every other week)
     [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }],
     [{ e: '✨', n: 'Argan' }],
     [{ e: '🌼', n: 'Jojoba' }, { e: '🥥', n: 'Coconut' }],
@@ -26,40 +26,108 @@ const ROTATION = [
   ],
 ];
 
+const OIL_COLORS = {
+  Camellia: 'rgba(255,92,157,0.18)',
+  Rosemary: 'rgba(240,204,96,0.14)',
+  Argan:    'rgba(255,232,122,0.16)',
+  Jojoba:   'rgba(240,204,96,0.10)',
+  Coconut:  'rgba(255,255,255,0.08)',
+};
+
+function getMonthWeeks(year, monthIdx) {
+  const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+  const firstDow = (new Date(year, monthIdx, 1).getDay() + 6) % 7; // 0=Mon
+  const weeks = [];
+  let week = Array(7).fill(null);
+  let day = 1;
+  for (let d = firstDow; d < 7 && day <= daysInMonth; d++, day++) week[d] = day;
+  weeks.push([...week]);
+  while (day <= daysInMonth) {
+    week = Array(7).fill(null);
+    for (let d = 0; d < 7 && day <= daysInMonth; d++, day++) week[d] = day;
+    weeks.push([...week]);
+  }
+  return weeks;
+}
+
 function OilRotationCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const monthIdx = now.getMonth();
+  const weeks = getMonthWeeks(year, monthIdx);
+  const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+
+  // Count total sessions per oil this month
+  const counts = { Camellia: 0, Rosemary: 0, Argan: 0, Jojoba: 0, Coconut: 0 };
+  weeks.forEach((week, wi) => {
+    const wType = wi % 2;
+    week.forEach((day, di) => {
+      if (!day) return;
+      OIL_SCHEDULE[wType][di].forEach(o => { counts[o.n]++; });
+    });
+  });
+
   return (
-    <div className="oil-rotation">
-      <div className="oil-rot-grid">
-        {/* Column headers */}
-        <div className="oil-rot-row-label" />
-        {DAYS.map(d => <div key={d} className="oil-rot-dh">{d}</div>)}
+    <div className="oil-rotation splash-item">
+      <div className="oil-rot-month-label">{MONTH_NAMES[monthIdx]} {year}</div>
+
+      {/* Calendar grid */}
+      <div className="oil-rot-cal">
+        {/* Day headers */}
+        <div className="oil-rot-cal-header">
+          {DAY_LETTERS.map(d => <div key={d} className="oil-rot-dh">{d}</div>)}
+        </div>
 
         {/* Week rows */}
-        {ROTATION.map((week, wi) => (
-          <>
-            <div key={`lbl-${wi}`} className="oil-rot-row-label">Wk {wi + 1}</div>
-            {week.map((oils, di) => (
-              <div key={di} className={`oil-rot-cell${oils.length === 0 ? ' oil-rot-rest' : ''}`}>
-                {oils.length === 0
-                  ? <span className="oil-rot-dash">—</span>
-                  : oils.map(o => (
-                    <div key={o.n} className="oil-rot-pill">
-                      <span>{o.e}</span>
-                      <span className="oil-rot-name">{o.n}</span>
+        {weeks.map((week, wi) => {
+          const wType = wi % 2;
+          return (
+            <div key={wi} className="oil-rot-cal-week">
+              {week.map((day, di) => {
+                if (!day) return <div key={di} className="oil-rot-day oil-rot-day-empty" />;
+                const oils = OIL_SCHEDULE[wType][di];
+                const bg = oils.length > 0
+                  ? OIL_COLORS[oils[0].n]
+                  : 'transparent';
+                return (
+                  <div key={di} className={`oil-rot-day${oils.length === 0 ? ' oil-rot-day-rest' : ''}`} style={{ background: bg }}>
+                    <span className="oil-rot-day-num">{day}</span>
+                    <div className="oil-rot-day-oils">
+                      {oils.map(o => (
+                        <span key={o.n} className="oil-rot-day-em" title={o.n}>{o.e}</span>
+                      ))}
                     </div>
-                  ))
-                }
-              </div>
-            ))}
-          </>
-        ))}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
+
+      {/* Monthly count summary */}
+      <div className="oil-rot-summary">
+        <div className="oil-rot-summary-label">Your {MONTH_NAMES[monthIdx]} sessions — {daysInMonth} days</div>
+        <div className="oil-rot-summary-grid">
+          {Object.entries(counts).map(([name, n]) => (
+            <div key={name} className="oil-rot-summary-item">
+              <span className="oil-rot-summary-em">
+                {name === 'Camellia' ? '🌸' : name === 'Rosemary' ? '🌿' : name === 'Argan' ? '✨' : name === 'Jojoba' ? '🌼' : '🥥'}
+              </span>
+              <span className="oil-rot-summary-name">{name}</span>
+              <span className="oil-rot-summary-count">{n}×</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Legend */}
       <div className="oil-rot-legend">
-        <span>🌸 Camellia — pre-wash scalp</span>
-        <span>🌿 Rosemary — scalp stimulator (with Camellia)</span>
-        <span>✨ Argan — post-wash finish</span>
-        <span>🌼 Jojoba — midweek scalp balance</span>
-        <span>🥥 Coconut — ends only, Week 2 only</span>
+        <span>🌸 Camellia · 🌿 Rosemary — Monday scalp treatment (pre-wash)</span>
+        <span>✨ Argan — Tuesday &amp; Saturday post-wash finishing</span>
+        <span>🌼 Jojoba — Wednesday scalp balance</span>
+        <span>🥥 Coconut — Wednesday Week 2 only (ends, every 2 weeks)</span>
+        <span>🌸 Camellia — Friday second treatment</span>
       </div>
     </div>
   );
