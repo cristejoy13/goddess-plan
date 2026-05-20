@@ -14,6 +14,7 @@ import Settings from './components/Settings';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
 import JoyAssistant from './components/JoyAssistant';
+import { getAvatarByProfile } from './avatars';
 import './styles/index.css';
 
 const NAV_ITEMS = [
@@ -343,6 +344,8 @@ export default function App() {
   }
 
   // Logged in and has profile — show the full app
+  const avatar = getAvatarByProfile(profile);
+
   return (
     <>
       {background}
@@ -351,6 +354,18 @@ export default function App() {
       <div className="search-bar-fixed">
         <SearchBar onNavigate={navigate} />
       </div>
+
+      {/* Avatar button — top-right, always visible */}
+      {avatar && (
+        <button
+          className="avatar-topbar-btn"
+          onClick={() => navigate('settings')}
+          title="Profile & Settings"
+          aria-label="Open profile"
+        >
+          <span className="avatar-topbar-emoji">{avatar.emoji}</span>
+        </button>
+      )}
 
       <nav className="sidebar">
         {history.length > 0 && (

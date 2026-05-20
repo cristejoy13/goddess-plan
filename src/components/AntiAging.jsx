@@ -4,7 +4,7 @@ const CARDS = [
   {
     ico: '🛌',
     t: 'Sleep — Master Hormone',
-    b: '7.5–9 hours is not optional. Growth hormone — which rebuilds your glutes and skin overnight — is secreted primarily in deep sleep. Poor sleep raises cortisol, driving belly fat, puffiness, and hormonal acne.',
+    b: '7.5–9 hours is not optional. Growth hormone rebuilds your glutes and skin overnight — secreted primarily in deep sleep.',
     how: [
       'Sleep by 10 PM — the most valuable GH release window is 10 PM to 2 AM',
       'Keep your room completely dark and cool (18–21°C)',
@@ -15,11 +15,12 @@ const CARDS = [
     ],
     why: 'During deep sleep, your pituitary gland releases growth hormone in pulses. GH rebuilds muscle tissue (including glutes), synthesises collagen for skin, and regulates body fat composition. Poor sleep reduces GH by up to 70% and raises cortisol — cortisol breaks down collagen, deposits fat around the belly, and worsens hormonal acne. Sleep is where the entire Goddess Plan actually works.',
     when: 'Begin your wind-down at 9:30 PM. Lights out by 10 PM. This is the single most important habit in this entire plan — it amplifies every other result.',
+    group: 'Daily Rhythms',
   },
   {
     ico: '☀️',
     t: 'Morning Sunlight',
-    b: '10–20 min of direct morning sunlight before 9 AM anchors your circadian rhythm, supports serotonin-to-melatonin conversion, regulates cortisol, and supports Vitamin D.',
+    b: '10–20 min of direct morning sunlight before 9 AM anchors your circadian rhythm, supports serotonin-to-melatonin conversion, and regulates cortisol.',
     how: [
       'Go outside within 30–60 minutes of waking — every single day',
       'Look in the direction of the sun (not directly at it) for 10–20 minutes',
@@ -29,11 +30,12 @@ const CARDS = [
     ],
     why: 'Morning sunlight activates specialised photoreceptors in your eyes that signal your brain to anchor your circadian clock. This single action sets cortisol timing (high in morning, low at night), triggers serotonin production, and ensures melatonin is released at the right time in the evening. A well-anchored circadian rhythm means better sleep quality, more stable hormones, improved mood, and faster skin healing. All from 15 minutes of morning light.',
     when: 'First thing in the morning, ideally before 8 AM. Make it part of your morning routine before your first meal. This is completely free and takes no extra time if you eat breakfast outside or near a window.',
+    group: 'Daily Rhythms',
   },
   {
     ico: '🧠',
     t: 'Brain Health',
-    b: 'Omega-3 from bangus, tuna, and tanigue are essential for neuroplasticity. Eggs provide choline — critical for memory. Ginger reduces neuroinflammation. Turmeric\'s curcumin crosses the blood-brain barrier and supports cognitive longevity.',
+    b: 'Omega-3 from bangus, tuna, and tanigue are essential for neuroplasticity. Eggs provide choline — critical for memory. Ginger reduces neuroinflammation.',
     how: [
       'Eat fatty fish (bangus, tuna, tanigue) 3× per week — omega-3 EPA and DHA',
       'Eat eggs daily — the yolk contains choline, the precursor to acetylcholine (your learning neurotransmitter)',
@@ -44,6 +46,7 @@ const CARDS = [
     ],
     why: 'Your brain is 60% fat — it requires a constant supply of omega-3 to build and maintain neuronal membranes. DHA specifically is the structural fat in brain cell walls. Low DHA is linked to brain fog, low mood, and accelerated cognitive decline. At 22, building these habits creates a measurably sharper brain at 32, 42, and beyond. Curcumin specifically has been shown in clinical studies to cross the blood-brain barrier and reduce amyloid plaques.',
     when: 'Daily — through food choices. Fatty fish at lunch or dinner 3× weekly. Eggs every day. Ginger and turmeric in cooking. Omega-3 supplement with your biggest meal if needed.',
+    group: 'Hormones & Mind',
   },
   {
     ico: '🍃',
@@ -58,13 +61,14 @@ const CARDS = [
       'Get 10–20 min morning sunlight — correctly times cortisol peak to morning only',
       'Eat regular meals with 4-hour gaps — erratic eating spikes cortisol',
     ],
-    why: 'Cortisol is your stress hormone — essential in bursts, damaging when chronically elevated. High cortisol breaks down collagen (causing wrinkles and pore enlargement), deposits visceral fat around the belly (causing the puffiness and roundness you want to reduce), disrupts estrogen and progesterone (causing acne, irregular cycles, and mood swings), and causes hair follicles to enter a resting phase (causing hair shedding). Managing cortisol is one of the most powerful anti-aging and body composition levers available.',
+    why: 'Cortisol is your stress hormone — essential in bursts, damaging when chronically elevated. High cortisol breaks down collagen (causing wrinkles and pore enlargement), deposits visceral fat around the belly, disrupts estrogen and progesterone (causing acne, irregular cycles, and mood swings), and causes hair follicles to enter a resting phase (causing hair shedding). Managing cortisol is one of the most powerful anti-aging and body composition levers available.',
     when: 'All day — the habits above are woven into your existing routine. The chamomile tea, morning light, and pilates sessions together create a powerful cortisol-lowering effect over 8–12 weeks.',
+    group: 'Hormones & Mind',
   },
   {
     ico: '🌸',
     t: 'Hormone-Protective Eating',
-    b: 'Eggs provide cholesterol — the raw material for all sex hormones. Healthy fats from avocado, olive oil, and nuts are precursors to estrogen and progesterone. Avoiding processed foods removes xenoestrogens that disrupt your hormonal balance.',
+    b: 'Eggs provide cholesterol — the raw material for all sex hormones. Healthy fats from avocado, olive oil, and nuts are precursors to estrogen and progesterone.',
     how: [
       'Eat eggs daily — cholesterol in the yolk is the direct precursor to all steroid hormones including estrogen and progesterone',
       'Use olive oil, avocado, and nuts at every meal — these fats are required for hormone synthesis',
@@ -76,11 +80,12 @@ const CARDS = [
     ],
     why: 'All sex hormones — estrogen, progesterone, testosterone — are synthesised from cholesterol. Without adequate dietary fat and cholesterol, your body cannot produce balanced hormones. Conversely, processed foods contain plasticizers and synthetic compounds that mimic estrogen, flooding receptors and causing estrogen dominance — which manifests as bloating, acne, irregular cycles, and mood swings. Your whole food protocol directly addresses hormonal balance from the inside.',
     when: 'Every meal — hormone-protective eating is built into your existing nutrition plan. The most important habit is eating eggs and healthy fats at every meal, and avoiding all processed foods consistently.',
+    group: 'Hormones & Mind',
   },
   {
     ico: '✨',
     t: 'Skin Longevity Nutrients',
-    b: 'Daily collagen peptides rebuild the dermal matrix. Vitamin C from calamansi and papaya drives collagen synthesis. Omega-3 reduces water loss for plumpness. Zinc from nuts and lean beef heals and regulates oil glands.',
+    b: 'Daily collagen peptides rebuild the dermal matrix. Vitamin C from calamansi drives collagen synthesis. Omega-3 reduces water loss for plumpness.',
     how: [
       'Take 5–10g collagen peptides (bovine or marine) dissolved in water daily with a Vitamin C source',
       'Squeeze calamansi on everything — Vitamin C is the co-factor for every step of collagen synthesis',
@@ -92,100 +97,81 @@ const CARDS = [
     ],
     why: 'Collagen is the scaffolding of your skin — it gives it structure, plumpness, and elasticity. By 22 your collagen production is still strong, but it begins declining from around 25 at 1–2% per year. Building the maximum baseline now means the decline starts from a higher point. Oral collagen supplementation with Vitamin C has been shown in clinical trials to improve skin elasticity by up to 20% over 8–12 weeks. The SPF habit alone prevents more visible aging than any cream, serum, or supplement.',
     when: 'Daily: collagen in water at meals, calamansi on food, SPF every morning. Fatty fish 3× weekly. This is your skin longevity baseline — the earlier it starts, the more compounding benefit it builds.',
+    group: 'Skin Longevity',
   },
 ];
 
 const GROUPS = [
-  {
-    ico: '🌙',
-    title: 'Daily Rhythms',
-    desc: 'Sleep & morning sunlight — the foundation of every result in this plan',
-    cards: [CARDS[0], CARDS[1]],
-  },
-  {
-    ico: '🌿',
-    title: 'Hormones & Mind',
-    desc: 'Brain health · Cortisol management · Hormone-protective eating',
-    cards: [CARDS[2], CARDS[3], CARDS[4]],
-  },
-  {
-    ico: '✨',
-    title: 'Skin Longevity',
-    desc: 'Nutrients & supplements that compound visible results over decades',
-    cards: [CARDS[5]],
-  },
+  { ico: '🌙', title: 'Daily Rhythms',   desc: 'Sleep & morning sunlight — the foundation of every result' },
+  { ico: '🌿', title: 'Hormones & Mind', desc: 'Brain health · Cortisol · Hormone-protective eating' },
+  { ico: '✨', title: 'Skin Longevity',  desc: 'Nutrients & supplements that compound visible results' },
 ];
 
-function AgAccordion({ card }) {
-  const [open, setOpen] = useState(false);
+function CardDetailPage({ card, onBack }) {
   return (
-    <div className={`ag-accordion${open ? ' is-open' : ''}`}>
-      <button className="ag-trigger" onClick={() => setOpen(o => !o)}>
-        <div className="ag-ico">{card.ico}</div>
-        <div className="ag-trigger-text">
-          <div className="ag-t">{card.t}</div>
-          <div className="ag-b">{card.b}</div>
-        </div>
-        <span className="ag-arr">▾</span>
-      </button>
-      <div className="ag-body">
-        <div className="ag-inner">
-          <div className="ag-section">
-            <div className="ag-section-title">📋 How to Do It</div>
-            <ul className="ag-list">
-              {card.how.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          </div>
-          <div className="ag-section">
-            <div className="ag-section-title">💡 Why It Works</div>
-            <p className="ag-section-body">{card.why}</p>
-          </div>
-          <div className="ag-section">
-            <div className="ag-section-title">⏰ Best Time</div>
-            <p className="ag-section-body">{card.when}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    <div className="section">
+      <button className="ag-detail-back" onClick={onBack}>← Back to Anti-Aging</button>
 
-function GroupAccordion({ group }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={`ag-group${open ? ' is-open' : ''}`}>
-      <button className="ag-group-trigger" onClick={() => setOpen(o => !o)}>
-        <span className="ag-group-ico">{group.ico}</span>
-        <div className="ag-group-text">
-          <div className="ag-group-title">{group.title}</div>
-          <div className="ag-group-desc">{group.desc}</div>
-        </div>
-        <span className="ag-group-chevron">▾</span>
-      </button>
-      <div className="ag-group-body">
-        <div className="ag-group-inner">
-          {group.cards.map(c => <AgAccordion key={c.t} card={c} />)}
-        </div>
+      <div className="ag-detail-header splash-item">
+        <div className="ag-detail-ico">{card.ico}</div>
+        <div className="ag-detail-group-tag">{card.group}</div>
+        <h2 className="ag-detail-title">{card.t}</h2>
+        <p className="ag-detail-intro">{card.b}</p>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">📋 How to Do It</div>
+        <ul className="ag-detail-list">
+          {card.how.map((item, i) => <li key={i}>{item}</li>)}
+        </ul>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">💡 Why It Works</div>
+        <p className="ag-detail-body">{card.why}</p>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">⏰ Best Time</div>
+        <p className="ag-detail-body">{card.when}</p>
       </div>
     </div>
   );
 }
 
 export default function AntiAging() {
+  const [selected, setSelected] = useState(null);
+
+  if (selected) return <CardDetailPage card={selected} onBack={() => setSelected(null)} />;
+
   return (
     <div className="section">
       <div className="s-header">
         <div className="s-tag">Longevity &amp; Hormones</div>
         <h2 className="s-title">Anti-Aging <em>&amp; Hormones</em></h2>
-        <p className="s-desc">Starting at 22 is your greatest advantage. Tap a group to expand it, then tap any card for the full protocol — how, why, and when.</p>
+        <p className="s-desc">Starting at 22 is your greatest advantage. Tap any topic below to open the full protocol — how, why, and when.</p>
       </div>
 
-      <div className="ag-groups splash-item">
-        {GROUPS.map(g => <GroupAccordion key={g.title} group={g} />)}
-      </div>
+      {GROUPS.map(group => (
+        <div key={group.title}>
+          <div className="divider splash-item">{group.ico} {group.title}</div>
+          <div className="ag-nav-list splash-item">
+            {CARDS.filter(c => c.group === group.title).map(card => (
+              <button key={card.t} className="ag-nav-item" onClick={() => setSelected(card)}>
+                <span className="ag-nav-ico">{card.ico}</span>
+                <div className="ag-nav-text">
+                  <div className="ag-nav-title">{card.t}</div>
+                  <div className="ag-nav-desc">{card.b}</div>
+                </div>
+                <span className="ag-nav-arr">›</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
 
-      <div className="divider splash-item">Supplement Stack</div>
-      <div className="g-card splash-item">
+      <div className="divider divider-center splash-item">Supplement Stack</div>
+      <div className="g-card g-card-center splash-item">
         <p><span className="pill pg">Daily</span> Collagen peptides (bovine or marine) — dissolved in water at meals with Vitamin C</p>
         <p style={{ marginTop: 8 }}><span className="pill pg">Daily</span> Omega-3 fish oil — or eat fatty fish 3× per week</p>
         <p style={{ marginTop: 8 }}><span className="pill pg">Daily</span> Vitamin C from whole food — calamansi, papaya, tomatoes</p>
