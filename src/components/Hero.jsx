@@ -3,9 +3,8 @@ import { WORKOUT_DAYS } from '../data/workouts';
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-const jsDay     = new Date().getDay();
-const dayIndex  = jsDay === 0 ? 6 : jsDay - 1;
-const isMeatDay = jsDay === 1 || jsDay === 3 || jsDay === 4;
+const jsDay    = new Date().getDay();
+const dayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 function todayLabel() {
   const d = new Date();
@@ -38,8 +37,7 @@ function DayCard({ icon, label, title, sub, onClick }) {
 }
 
 export default function Hero({ onNavigate }) {
-  const today   = WORKOUT_DAYS[dayIndex];
-  const mealTab = isMeatDay ? 'meat' : 'light';
+  const today = WORKOUT_DAYS[dayIndex];
 
   return (
     <div className="hero hero-dashboard">
@@ -60,13 +58,6 @@ export default function Hero({ onNavigate }) {
           title={today.title}
           sub={today.sub}
           onClick={() => onNavigate('workout')}
-        />
-        <DayCard
-          icon="🍽️"
-          label="Nutrition"
-          title={isMeatDay ? 'Meat Day Meals' : 'Light Day Meals'}
-          sub={isMeatDay ? 'High protein · 4 meals' : 'Light & anti-bloat · 4 meals'}
-          onClick={() => onNavigate('nutrition', mealTab)}
         />
         <DayCard
           icon="🌿"

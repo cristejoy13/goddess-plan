@@ -44,10 +44,10 @@ const SEARCH_INDEX = [
   { label: 'Rest Day Options',            hint: 'Workouts → Saturday & Sunday',  section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Meals on Strength & Sprint Days', hint: 'Nutrition → Meat Days',    section: 'nutrition', tab: 'meat'      },
   { label: 'Meals on Pilates & Rest Days',    hint: 'Nutrition → Light Days',   section: 'nutrition', tab: 'light'     },
-  { label: 'Chicken Tinola Recipe',           hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
-  { label: 'Chia Pudding Recipe',             hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
-  { label: 'Egg Preparation Methods',         hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
-  { label: 'Salad Ideas',                     hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes'   },
+  { label: 'Chicken — Cooking Methods',       hint: 'Nutrition → Strength Days', section: 'nutrition', tab: 'meat'      },
+  { label: 'Chia Pudding',                    hint: 'Nutrition → Light Days',   section: 'nutrition', tab: 'light'     },
+  { label: 'Egg Preparation Methods',         hint: 'Nutrition → Strength Days',section: 'nutrition', tab: 'meat'      },
+  { label: 'Salad Options',                   hint: 'Nutrition → Light Days',   section: 'nutrition', tab: 'light'     },
   { label: 'Snack Ideas',                     hint: 'Nutrition → Snacks',       section: 'nutrition', tab: 'snacks'    },
   { label: 'Glycemic Index Guide',            hint: 'Nutrition → Food Guide',   section: 'nutrition', tab: 'guide'     },
   { label: 'Hydration Guide',                 hint: 'Nutrition → Hydration',    section: 'nutrition', tab: 'hydration' },
@@ -394,7 +394,7 @@ export default function App() {
         onTouchEnd={handleTouchEnd}
       >
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} />}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} />}
         {active === 'challenges' && <Challenges />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}

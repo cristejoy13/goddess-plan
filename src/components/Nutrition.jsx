@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 const TABS = [
   { id: 'meat',      icon: '🔥', title: 'Strength & Sprint Days',  desc: 'Monday, Wednesday, Thursday — high protein fuel for your heaviest training days.' },
   { id: 'light',     icon: '🌿', title: 'Pilates & Rest Days',      desc: 'Tuesday, Friday, Saturday, Sunday — digestive rest and plant-based meals.' },
-  { id: 'recipes',   icon: '🥘', title: 'Ingredients & Recipes',    desc: 'Eggs, chicken, fish, beef, oats, chia, salads — step-by-step cooking methods.' },
   { id: 'snacks',    icon: '🍱', title: 'Snacks',                    desc: 'Your 2 PM bridge meal — always eat protein or fat first.' },
   { id: 'guide',     icon: '📊', title: 'Food Guide',                desc: 'Glycemic load of every food in your plan and why it matters.' },
   { id: 'hydration', icon: '💧', title: 'Hydration',                 desc: 'What to drink, when, and what to avoid completely.' },
@@ -338,7 +337,7 @@ function Hydration() {
   );
 }
 
-const PANELS = { meat: MeatDays, light: LightDays, recipes: Recipes, snacks: Snacks, guide: FoodGuide, hydration: Hydration };
+const PANELS = { meat: MeatDays, light: LightDays, snacks: Snacks, guide: FoodGuide, hydration: Hydration };
 
 /* ─── Main Component ─── */
 export default function Nutrition({ initialTab, onNavigate }) {

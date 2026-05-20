@@ -51,7 +51,7 @@ function WorkoutDay({ day, id, defaultOpen, isToday }) {
   );
 }
 
-export default function Workout({ openDayId }) {
+export default function Workout({ openDayId, onNavigate }) {
   const todayDay = WORKOUT_DAYS[todayIndex];
   const todayId  = DAY_IDS[todayIndex];
 
@@ -91,6 +91,14 @@ export default function Workout({ openDayId }) {
           <strong>Progressive overload:</strong> Weeks 1–2 learn the movements. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If every set feels easy, increase load. If form breaks, increase reps first.
         </p>
       </div>
+
+      {onNavigate && (
+        <div className="workout-nutrition-row splash-item">
+          <button className="workout-nutrition-pill" onClick={() => onNavigate('nutrition')}>
+            🥗 Nutrition &amp; Meal Plans →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

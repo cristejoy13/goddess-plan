@@ -3654,6 +3654,36 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(255,92,157,0.15);
 }
+/* ─── WORKOUT → NUTRITION PILL ─── */
+.workout-nutrition-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.workout-nutrition-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border: 1.5px solid rgba(240,204,96,0.38);
+  border-radius: 30px;
+  background: linear-gradient(135deg, rgba(240,204,96,0.10), rgba(255,232,122,0.05));
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 0 0 rgba(240,204,96,0);
+}
+.workout-nutrition-pill:hover {
+  background: linear-gradient(135deg, rgba(240,204,96,0.18), rgba(255,232,122,0.10));
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(240,204,96,0.18);
+}
+
 .oil-rot-summary-tap-hint {
   text-align: center;
   font-size: 10.5px;
