@@ -273,13 +273,23 @@ function FoodGuide() {
 const PANELS = { meat: MeatDays, light: LightDays, guide: FoodGuide };
 
 /* ─── Main Component ─── */
-export default function Nutrition({ initialTab, onNavigate }) {
+export default function Nutrition({ initialTab, onNavigate, pushBack, clearInnerBack }) {
   const [detail, setDetail]                 = useState(initialTab || null);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   function selectRecipe(item) {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    clearInnerBack?.();
     setSelectedRecipe(item);
+    pushBack?.(() => {
+      setSelectedRecipe(null);
+      clearInnerBack?.();
+    });
+  }
+
+  function closeRecipe() {
+    clearInnerBack?.();
+    setSelectedRecipe(null);
   }
 
   useEffect(() => {
@@ -308,7 +318,8 @@ export default function Nutrition({ initialTab, onNavigate }) {
         ingredientKey={selectedRecipe.key}
         ingredientName={selectedRecipe.name}
         backLabel="Recipes"
-        onBack={() => setSelectedRecipe(null)}
+        onBack={closeRecipe}
+        pushBack={pushBack}
       />
     );
   }

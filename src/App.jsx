@@ -216,19 +216,27 @@ export default function App() {
       .catch(() => setProfile(null));
   }, [user?.uid]); // eslint-disable-line
 
-  // Ref so event handlers always read the latest history without needing it as a dependency
   const historyRef = useRef([]);
   useEffect(() => { historyRef.current = history; }, [history]);
 
-  // Ref for tracking the active section/tab (same reason)
   const activeRef = useRef({ section: 'home', tab: null });
   useEffect(() => { activeRef.current = { section: active, tab: navMeta.tab }; }, [active, navMeta.tab]);
+
+  /* Inner back stack — lets sub-pages (ingredient tabs, etc.) register back handlers */
+  const innerBackStackRef = useRef([]);
+  function pushBack(fn) {
+    innerBackStackRef.current = [...innerBackStackRef.current, fn];
+  }
+  function clearInnerBack() {
+    innerBackStackRef.current = [];
+  }
 
   // Touch tracking for swipe-back gesture
   const touchStartRef = useRef({ x: 0, y: 0 });
   const lastTapRef = useRef({ time: 0, x: 0, y: 0 });
 
   const navigate = (id, tab = null, scrollTo = null) => {
+    clearInnerBack(); // entering a new section clears any inner sub-page history
     const cur = activeRef.current;
     if (id !== cur.section || tab !== cur.tab) {
       setHistory(prev => [...prev.slice(-19), { section: cur.section, tab: cur.tab }]);
@@ -247,6 +255,16 @@ export default function App() {
   };
 
   const goBack = () => {
+    /* First drain inner back stack (sub-page navigation within a section) */
+    if (innerBackStackRef.current.length > 0) {
+      const stack = innerBackStackRef.current;
+      const fn = stack[stack.length - 1];
+      innerBackStackRef.current = stack.slice(0, -1);
+      fn();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    /* Then pop section history */
     const h = historyRef.current;
     if (h.length === 0) return;
     const prev = h[h.length - 1];
@@ -353,16 +371,32 @@ export default function App() {
       <InstallBanner />
 
       <div className="search-bar-fixed">
+        {/* Mobile only: avatar circle + hamburger in the top bar */}
+        <div className="mobile-controls">
+          {avatar && (
+            <button className="mob-avatar-btn" onClick={() => navigate('settings')} aria-label="Profile">
+              <div className="mob-avatar-circle" style={{ background: avatar.bg }}>
+                <span style={{ fontSize: 16 }}>{avatar.emoji}</span>
+              </div>
+            </button>
+          )}
+          <button className="mob-hamburger" onClick={() => setMenuOpen(o => !o)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
+            <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+            <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+            <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+          </button>
+        </div>
         <SearchBar onNavigate={navigate} />
       </div>
 
-      {/* Sidebar backdrop — closes menu on mobile when tapping outside */}
+      {/* Backdrop — closes the drawer when tapping outside on mobile */}
       {menuOpen && (
         <div className="sidebar-backdrop" onClick={() => setMenuOpen(false)} />
       )}
 
       <nav className={`sidebar${menuOpen ? ' open' : ''}`}>
-        {/* Avatar — always visible, taps open Settings */}
+        {/* Desktop: avatar at top of sidebar */}
         {avatar && (
           <button
             className={`sidebar-avatar-btn${active === 'settings' ? ' active' : ''}`}
@@ -378,18 +412,6 @@ export default function App() {
           </button>
         )}
 
-        {/* Hamburger button — visible on mobile */}
-        <button
-          className="hamburger-btn"
-          onClick={() => setMenuOpen(o => !o)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        >
-          <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-          <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-          <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-        </button>
-
-        {/* Nav items — always visible on desktop, only when open on mobile */}
         {history.length > 0 && (
           <button className="nav-btn nav-back-btn" onClick={goBack} aria-label="Go back">
             ‹ Back
@@ -412,9 +434,9 @@ export default function App() {
         onTouchEnd={handleTouchEnd}
       >
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} />}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'challenges' && <Challenges />}
-        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} />}
+        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
         {active === 'antiaging'  && <AntiAging />}

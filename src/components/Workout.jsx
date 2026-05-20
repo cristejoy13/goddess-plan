@@ -63,14 +63,25 @@ function WorkoutDay({ day, id, defaultOpen, isToday, onIngredientClick }) {
   );
 }
 
-export default function Workout({ openDayId, onNavigate }) {
+export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack }) {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const todayDay = WORKOUT_DAYS[todayIndex];
   const todayId  = DAY_IDS[todayIndex];
 
   function selectIngredient(ingr) {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    clearInnerBack?.();
     setSelectedIngredient(ingr);
+    /* Pressing back/swipe will close the ingredient page and return here */
+    pushBack?.(() => {
+      setSelectedIngredient(null);
+      clearInnerBack?.();
+    });
+  }
+
+  function closeIngredient() {
+    clearInnerBack?.();
+    setSelectedIngredient(null);
   }
 
   if (selectedIngredient) {
@@ -79,7 +90,8 @@ export default function Workout({ openDayId, onNavigate }) {
         ingredientKey={selectedIngredient.key}
         ingredientName={selectedIngredient.name}
         backLabel="Meals"
-        onBack={() => setSelectedIngredient(null)}
+        onBack={closeIngredient}
+        pushBack={pushBack}
       />
     );
   }

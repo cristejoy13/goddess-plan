@@ -3085,6 +3085,10 @@ body {
   bottom: 28px;
   right: 24px;
   z-index: 400;
+  /* Prevent iOS from showing copy/callout menu on long press */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   width: 64px;
   height: 76px;
   border-radius: 32px;
@@ -3984,37 +3988,83 @@ body {
   -webkit-backdrop-filter: blur(2px);
 }
 
-/* ── Mobile layout — hamburger nav ── */
+/* ── Mobile layout — hamburger drawer ── */
+.mobile-controls {
+  display: none; /* visible only on mobile */
+}
+
 @media (max-width: 768px) {
-  .hamburger-btn { display: flex; }
-
-  /* Sidebar: collapsed strip (avatar + hamburger only) */
-  .sidebar {
-    width: 54px;
-    overflow: hidden;
-    transition: width 0.26s cubic-bezier(0.4,0,0.2,1);
-    z-index: 280;
+  /* Mobile controls (avatar + ☰) live in the search bar */
+  .mobile-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
-  /* Expanded state */
-  .sidebar.open {
-    width: 200px;
-    z-index: 290;
-    overflow-y: auto;
+  .mob-avatar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
   }
-  /* Hide nav label when collapsed */
-  .sidebar:not(.open) .sidebar-avatar-label { display: none; }
-  /* Hide nav buttons when collapsed */
-  .sidebar:not(.open) .nav-btn { display: none; }
-
-  /* Main content: full width, just clear the 54px strip */
-  .main {
-    padding-left: 54px;
-    padding-right: 0;
+  .mob-avatar-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 1.5px solid rgba(255,92,157,0.35);
+  }
+  .mob-hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
-  /* Search bar: shift right of the sidebar strip */
+  /* Search bar becomes flex row: [controls] [input] */
   .search-bar-fixed {
-    padding-left: 62px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    padding-top: calc(env(safe-area-inset-top) + 6px);
+  }
+  .search-bar-fixed .search-wrap {
+    flex: 1;
+    margin: 0;
+  }
+
+  /* Sidebar: off-screen overlay by default */
+  .sidebar {
+    left: -220px;
+    width: 220px;
+    top: 0;            /* full height including search bar */
+    z-index: 295;
+    transition: left 0.26s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+    /* extra padding so content clears the search bar height */
+    padding-top: calc(54px + env(safe-area-inset-top) + 10px);
+  }
+  .sidebar.open { left: 0; }
+
+  /* Desktop-only sidebar pieces hidden on mobile (we use mob-avatar-btn instead) */
+  .sidebar-avatar-btn { display: none; }
+  .hamburger-btn      { display: none; }
+
+  /* FULL-WIDTH main — no sidebar strip taking up space */
+  .main {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 

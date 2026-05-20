@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { INGREDIENT_RECIPES } from '../data/ingredients';
 
-export default function IngredientDetailPage({ ingredientKey, ingredientName, backLabel = 'Back', onBack }) {
+export default function IngredientDetailPage({
+  ingredientKey,
+  ingredientName,
+  backLabel = 'Back',
+  onBack,
+  pushBack,
+}) {
   const data = INGREDIENT_RECIPES[ingredientKey];
   const [active, setActive] = useState(0);
 
-  /* Always open at the top of the page */
+  /* Always open at the very top of the page */
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, []);
 
   if (!data) {
@@ -17,6 +23,14 @@ export default function IngredientDetailPage({ ingredientKey, ingredientName, ba
         </div>
       </div>
     );
+  }
+
+  /* Switch tabs and push the previous tab onto the back stack */
+  function switchTab(i) {
+    if (i === active) return;
+    const prev = active;
+    pushBack?.(() => setActive(prev));
+    setActive(i);
   }
 
   const opt = data.options[active];
@@ -36,7 +50,7 @@ export default function IngredientDetailPage({ ingredientKey, ingredientName, ba
           <button
             key={i}
             className={`ingr-page-tab${active === i ? ' active' : ''}`}
-            onClick={() => setActive(i)}
+            onClick={() => switchTab(i)}
           >
             {o.emoji} {o.name}
           </button>

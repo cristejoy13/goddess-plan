@@ -146,6 +146,7 @@ export default function JoyAssistant() {
           onMouseUp={handleFabEnd}
           onTouchStart={handleFabStart}
           onTouchEnd={handleFabEnd}
+          onContextMenu={e => e.preventDefault()}
           aria-label="Open Joy assistant"
         >
           <span className="joy-fab-emoji">🥰</span>
