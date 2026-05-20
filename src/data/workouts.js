@@ -15,10 +15,24 @@ export const WORKOUT_DAYS = [
     meals: {
       label: '🍽️ Meat Day Meals — 7 AM · 11 AM · 2 PM · 4 PM',
       rows: [
-        { time: '7:00 AM — Meal 1 (before workout)', desc: '½ banana + 1 boiled egg + green tea — light fuel to avoid crashing mid-session' },
-        { time: '11:00 AM — Meal 2 (post-workout)', desc: 'Grilled Calamansi Chicken (150 g) + steamed broccoli + ½ cup roasted sweet potato + collagen water' },
-        { time: '2:00 PM — Snack', desc: 'Kiwi slices + small handful of almonds + spearmint tea' },
-        { time: '4:00 PM — Last Meal', desc: 'Ginger-Steamed Fish (120 g bangus or tanigue) + Anti-Bloat Goddess Salad (cucumber + pechay + cherry tomatoes + calamansi dressing)' },
+        { time: '7:00 AM — Meal 1 (before workout)', ingredients: [
+          { name: '½ banana', key: 'banana' },
+          { name: '1 egg', key: 'egg' },
+          { name: 'green tea', key: null },
+        ]},
+        { time: '11:00 AM — Meal 2 (post-workout)', ingredients: [
+          { name: 'chicken 150g', key: 'chicken' },
+          { name: 'broccoli', key: 'broccoli' },
+          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'banana nice cream', key: 'banana-nice-cream' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: 'fish 120g', key: 'fish' },
+          { name: 'salad', key: 'salad' },
+        ]},
       ],
     },
   },
@@ -41,10 +55,25 @@ export const WORKOUT_DAYS = [
     meals: {
       label: '🍽️ Light Day Meals — 8 AM · 12 PM · 2 PM · 4 PM',
       rows: [
-        { time: '8:00 AM — Meal 1', desc: 'Classic Chia Pudding (chia seeds + unsweetened almond milk + cinnamon, made the night before) + papaya cubes + green tea' },
-        { time: '12:00 PM — Meal 2', desc: '1 scrambled egg with turmeric + Anti-Bloat Goddess Salad (cucumber + pechay + tomatoes + calamansi dressing) + collagen water' },
-        { time: '2:00 PM — Snack', desc: 'Small bowl papaya + spearmint tea' },
-        { time: '4:00 PM — Last Meal', desc: '1 soft-boiled egg + ½ avocado + cucumber slices + chamomile tea' },
+        { time: '8:00 AM — Meal 1', ingredients: [
+          { name: 'chia pudding', key: 'chia' },
+          { name: 'papaya', key: null },
+          { name: 'green tea', key: null },
+        ]},
+        { time: '12:00 PM — Meal 2', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: 'salad', key: 'salad' },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'chia mango pudding', key: 'chia-mango-pudding' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: '½ avocado', key: 'avocado' },
+          { name: 'cucumber', key: null },
+          { name: 'chamomile tea', key: null },
+        ]},
       ],
     },
   },
@@ -59,14 +88,30 @@ export const WORKOUT_DAYS = [
       { name: 'Option A — Outdoor Sprints', detail: 'Dynamic warm-up 10 min → Sprint 20–30 sec full effort, rest 90 sec × 6–8 rounds → Cool-down walk 10 min, glute & hamstring stretch' },
       { name: 'Option B — Indoor Cycling Intervals', detail: 'Easy warm-up 5 min → High resistance sprint 20–30 sec, easy pedal 90 sec × 6–8 rounds → Cool-down easy ride 5 min, stretch hips and glutes' },
     ],
-    noteAfter: { type: 'gold', text: '📋 Start with 6 rounds in January. Build to 10 rounds by June. Consistency matters more than which option you pick.' },
+    noteAfter: { type: 'gold', text: '📋 Start with 6 rounds. Build to 10 rounds over weeks. Consistency matters more than which option you pick.' },
     meals: {
       label: '🍽️ Meat Day Meals — 7 AM · 11 AM · 2 PM · 4 PM',
       rows: [
-        { time: '7:00 AM — Meal 1 (45–60 min before sprinting)', desc: '½ banana + 1 boiled egg + fresh ginger-lemon-beet juice — natural nitrates to boost sprint performance' },
-        { time: '11:00 AM — Meal 2 (post-sprint, within 30–45 min)', desc: 'Grilled Turmeric Fish (150 g bangus or tanigue) + steamed broccoli + ½ cup sweet potato + collagen water' },
-        { time: '2:00 PM — Snack', desc: '1 boiled egg + cucumber slices + ginger tea' },
-        { time: '4:00 PM — Last Meal', desc: 'Chicken Tinola (100 g chicken + malunggay + squash in light ginger broth)' },
+        { time: '7:00 AM — Meal 1 (45–60 min before)', ingredients: [
+          { name: '½ banana', key: 'banana' },
+          { name: '1 egg', key: 'egg' },
+          { name: 'ginger-lemon-beet juice', key: null },
+        ]},
+        { time: '11:00 AM — Meal 2 (post-sprint)', ingredients: [
+          { name: 'fish 150g', key: 'fish' },
+          { name: 'broccoli', key: 'broccoli' },
+          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'cacao banana bites', key: 'cacao-banana-bites' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: 'chicken 100g', key: 'chicken' },
+          { name: 'malunggay', key: null },
+          { name: 'squash', key: null },
+          { name: 'ginger broth', key: null },
+        ]},
       ],
     },
   },
@@ -86,10 +131,24 @@ export const WORKOUT_DAYS = [
     meals: {
       label: '🍽️ Meat Day Meals — 7 AM · 11 AM · 2 PM · 4 PM',
       rows: [
-        { time: '7:00 AM — Meal 1 (before workout)', desc: '½ banana + 1 boiled egg + green tea' },
-        { time: '11:00 AM — Meal 2 (post-workout)', desc: 'Ginger Beef Stir-Fry (120 g lean beef + broccoli + pechay + fresh ginger) + ½ cup sweet potato + collagen water' },
-        { time: '2:00 PM — Snack', desc: '1 boiled egg + cucumber slices + ginger tea' },
-        { time: '4:00 PM — Last Meal', desc: 'Grilled Turmeric Fish (120 g bangus or tanigue) + Anti-Bloat Goddess Salad (cucumber + pechay + calamansi dressing)' },
+        { time: '7:00 AM — Meal 1 (before workout)', ingredients: [
+          { name: '½ banana', key: 'banana' },
+          { name: '1 egg', key: 'egg' },
+          { name: 'green tea', key: null },
+        ]},
+        { time: '11:00 AM — Meal 2 (post-workout)', ingredients: [
+          { name: 'beef 120g', key: 'beef' },
+          { name: 'broccoli', key: 'broccoli' },
+          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'sweet potato brownie bites', key: 'sweet-potato-brownie' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: 'fish 120g', key: 'fish' },
+          { name: 'salad', key: 'salad' },
+        ]},
       ],
     },
   },
@@ -112,10 +171,26 @@ export const WORKOUT_DAYS = [
     meals: {
       label: '🍽️ Light Day Meals — 8 AM · 12 PM · 2 PM · 4 PM',
       rows: [
-        { time: '8:00 AM — Meal 1', desc: 'Overnight Oats (rolled oats + unsweetened almond milk + banana slices + chia seeds, soaked overnight) + kiwi + green tea' },
-        { time: '12:00 PM — Meal 2', desc: '1 scrambled egg with turmeric + Warm Anti-Inflammatory Salad (steamed pechay + cucumber + calamansi) + collagen water' },
-        { time: '2:00 PM — Snack', desc: '½ cup pineapple cubes + small handful of almonds + ginger tea' },
-        { time: '4:00 PM — Last Meal', desc: '1 soft-boiled egg + ½ avocado + chamomile tea' },
+        { time: '8:00 AM — Meal 1', ingredients: [
+          { name: 'oats', key: 'oats' },
+          { name: '½ banana', key: 'banana' },
+          { name: 'chia seeds', key: null },
+          { name: 'kiwi', key: null },
+          { name: 'green tea', key: null },
+        ]},
+        { time: '12:00 PM — Meal 2', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: 'salad', key: 'salad' },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'coconut chia balls', key: 'coconut-chia-balls' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: '½ avocado', key: 'avocado' },
+          { name: 'chamomile tea', key: null },
+        ]},
       ],
     },
   },
@@ -137,10 +212,24 @@ export const WORKOUT_DAYS = [
     meals: {
       label: '🍽️ Light Day Meals — 8 AM · 12 PM · 2 PM · 4 PM',
       rows: [
-        { time: '8:00 AM — Meal 1', desc: 'Banana Chia Pudding (chia seeds + mashed banana + unsweetened almond milk + cinnamon, made overnight) + kiwi slices + green tea' },
-        { time: '12:00 PM — Meal 2', desc: '1 scrambled egg with turmeric + Anti-Bloat Goddess Salad (cucumber + pechay + cherry tomatoes + calamansi dressing) + collagen water' },
-        { time: '2:00 PM — Snack', desc: 'Small bowl papaya cubes + small handful of mixed nuts + spearmint tea' },
-        { time: '4:00 PM — Last Meal', desc: '1 soft-boiled egg + ½ avocado + chamomile tea' },
+        { time: '8:00 AM — Meal 1', ingredients: [
+          { name: 'chia pudding', key: 'chia' },
+          { name: 'kiwi', key: null },
+          { name: 'green tea', key: null },
+        ]},
+        { time: '12:00 PM — Meal 2', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: 'salad', key: 'salad' },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'avocado chocolate mousse', key: 'avocado-choc-mousse' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: '½ avocado', key: 'avocado' },
+          { name: 'chamomile tea', key: null },
+        ]},
       ],
     },
   },
@@ -161,10 +250,27 @@ export const WORKOUT_DAYS = [
     meals: {
       label: '🍽️ Light Day Meals — 8 AM · 12 PM · 2 PM · 4 PM',
       rows: [
-        { time: '8:00 AM — Meal 1', desc: 'Classic Warm Oatmeal (rolled oats + hot water + sliced banana + cinnamon + unsweetened almond milk) + green tea' },
-        { time: '12:00 PM — Meal 2', desc: 'Tropical Chia Bowl (chia pudding base + papaya + pineapple + kiwi) + small handful of almonds + collagen water' },
-        { time: '2:00 PM — Snack', desc: 'Kiwi slices + small handful of almonds + spearmint tea' },
-        { time: '4:00 PM — Last Meal', desc: '1 soft-boiled egg + ½ avocado + cucumber slices + chamomile tea' },
+        { time: '8:00 AM — Meal 1', ingredients: [
+          { name: 'oats', key: 'oats' },
+          { name: '½ banana', key: 'banana' },
+          { name: 'cinnamon', key: null },
+          { name: 'green tea', key: null },
+        ]},
+        { time: '12:00 PM — Meal 2', ingredients: [
+          { name: 'chia pudding', key: 'chia' },
+          { name: 'papaya', key: null },
+          { name: 'kiwi', key: null },
+          { name: 'collagen water', key: null },
+        ]},
+        { time: '2:00 PM — Sweet Snack', ingredients: [
+          { name: 'banana oat cookies', key: 'banana-oat-cookies' },
+        ]},
+        { time: '4:00 PM — Last Meal', ingredients: [
+          { name: '1 egg', key: 'egg' },
+          { name: '½ avocado', key: 'avocado' },
+          { name: 'cucumber', key: null },
+          { name: 'chamomile tea', key: null },
+        ]},
       ],
     },
   },

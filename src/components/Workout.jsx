@@ -1,33 +1,45 @@
+import { useState } from 'react';
 import PetalAccordion from './PetalAccordion';
 import { WORKOUT_DAYS } from '../data/workouts';
+import IngredientDetailPage from './IngredientDetailPage';
 
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
 ];
 
-const jsDay      = new Date().getDay();         // 0=Sun
-const todayIndex = jsDay === 0 ? 6 : jsDay - 1; // 0=Mon … 6=Sun
+const jsDay      = new Date().getDay();
+const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
 
-function MealBox({ meals }) {
+function MealBox({ meals, onIngredientClick }) {
   return (
     <div className="meal-box">
       <div className="meal-lbl">{meals.label}</div>
       {meals.rows.map((r, i) => (
         <div key={i} className="meal-row">
           <span className="meal-t">{r.time}</span>
-          {r.desc}
+          <div className="meal-ingr-list">
+            {r.ingredients.map((ingr, j) =>
+              ingr.key ? (
+                <button key={j} className="meal-ingr-chip" onClick={() => onIngredientClick(ingr)}>
+                  {ingr.name}
+                </button>
+              ) : (
+                <span key={j} className="meal-ingr-plain">{ingr.name}</span>
+              )
+            )}
+          </div>
         </div>
       ))}
     </div>
   );
 }
 
-function WorkoutDay({ day, id, defaultOpen, isToday }) {
+function WorkoutDay({ day, id, defaultOpen, isToday, onIngredientClick }) {
   return (
     <PetalAccordion
       id={id}
@@ -46,21 +58,33 @@ function WorkoutDay({ day, id, defaultOpen, isToday }) {
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBox meals={day.meals} />
+      <MealBox meals={day.meals} onIngredientClick={onIngredientClick} />
     </PetalAccordion>
   );
 }
 
 export default function Workout({ openDayId, onNavigate }) {
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
   const todayDay = WORKOUT_DAYS[todayIndex];
   const todayId  = DAY_IDS[todayIndex];
+
+  if (selectedIngredient) {
+    return (
+      <IngredientDetailPage
+        ingredientKey={selectedIngredient.key}
+        ingredientName={selectedIngredient.name}
+        backLabel="Meals"
+        onBack={() => setSelectedIngredient(null)}
+      />
+    );
+  }
 
   return (
     <div className="section">
       <div className="s-header">
         <div className="s-tag">Weekly Structure</div>
         <h2 className="s-title">Movement <em>&amp;</em> Meals</h2>
-        <p className="s-desc">Today's workout opens automatically. Tap any day to expand the full session and meals.</p>
+        <p className="s-desc">Today's workout opens automatically. Tap any highlighted ingredient to see three ways to prepare it.</p>
       </div>
 
       <div className="today-banner splash-item">
@@ -75,6 +99,7 @@ export default function Workout({ openDayId, onNavigate }) {
           id={DAY_IDS[i]}
           defaultOpen={openDayId ? openDayId === DAY_IDS[i] : todayId === DAY_IDS[i]}
           isToday={i === todayIndex}
+          onIngredientClick={setSelectedIngredient}
         />
       ))}
 
@@ -95,7 +120,7 @@ export default function Workout({ openDayId, onNavigate }) {
       {onNavigate && (
         <div className="workout-nutrition-row splash-item">
           <button className="workout-nutrition-pill" onClick={() => onNavigate('nutrition')}>
-            🥗 Nutrition &amp; Meal Plans →
+            🥗 Nutrition &amp; Recipes →
           </button>
         </div>
       )}
