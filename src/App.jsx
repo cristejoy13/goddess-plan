@@ -396,7 +396,7 @@ export default function App() {
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
         {active === 'antiaging'  && <AntiAging />}
-        {active === 'settings'   && <Settings onNavigate={navigate} user={user} />}
+        {active === 'settings'   && <Settings onNavigate={navigate} user={user} profile={profile} onProfileUpdate={p => setProfile(p)} />}
       </div>
 
       <JoyAssistant />

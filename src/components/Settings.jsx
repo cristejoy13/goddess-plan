@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { signOut, updateProfile } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../firebase';
+import { AVATARS, getAvatarByProfile } from '../avatars';
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function GuideStep({ num, title, desc }) {
   return (
@@ -37,24 +41,140 @@ function SignOutModal({ onConfirm, onCancel }) {
   );
 }
 
-export default function Settings({ onNavigate, user }) {
-  const [showConfirm, setShowConfirm] = useState(false);
+// ─── Edit Profile Screen ───────────────────────────────────────────────────────
 
-  async function handleLogout() {
+function EditProfileScreen({ user, profile, onSave, onBack }) {
+  const [username, setUsername]     = useState(profile?.username || profile?.displayName || '');
+  const [gender, setGender]         = useState(profile?.gender || 'female');
+  const [avatarId, setAvatarId]     = useState(profile?.avatarId || '');
+  const [saving, setSaving]         = useState(false);
+  const [error, setError]           = useState('');
+  const [saved, setSaved]           = useState(false);
+
+  const avatarList = AVATARS[gender] || [];
+
+  async function handleSave() {
+    if (username.trim().length < 2) { setError('Username must be at least 2 characters.'); return; }
+    if (!avatarId) { setError('Please choose an avatar.'); return; }
+    setError('');
+    setSaving(true);
     try {
-      await signOut(auth);
+      const updated = { ...profile, username: username.trim(), gender, avatarId, updatedAt: serverTimestamp() };
+      await setDoc(doc(db, 'users', user.uid), updated, { merge: true });
+      await updateProfile(auth.currentUser, { displayName: username.trim() });
+      setSaved(true);
+      onSave(updated);
+      setTimeout(onBack, 900);
     } catch (e) {
-      console.error('Sign out failed:', e);
+      setError('Could not save changes. Please try again.');
+    } finally {
+      setSaving(false);
     }
   }
 
   return (
+    <div className="section">
+      <button className="ag-detail-back" onClick={onBack}>← Back to Settings</button>
+
+      <div className="s-header" style={{ marginBottom: 20 }}>
+        <div className="s-tag">Your Profile</div>
+        <h2 className="s-title">Edit <em>Profile</em></h2>
+        <p className="s-desc">Update your name and avatar any time.</p>
+      </div>
+
+      {saved && (
+        <div className="ep-saved-banner splash-item">✓ Profile saved! 🌸</div>
+      )}
+
+      {/* Username */}
+      <div className="g-card splash-item">
+        <div className="settings-section-title">✏️ Display Name</div>
+        <label className="ob-label" style={{ marginBottom: 8 }}>Your name in the app</label>
+        <input
+          className="ob-input"
+          type="text"
+          maxLength={30}
+          placeholder="e.g. Joy, Goddess, Your name…"
+          value={username}
+          onChange={e => { setUsername(e.target.value); setSaved(false); }}
+        />
+      </div>
+
+      {/* Gender (controls avatar set) */}
+      <div className="g-card splash-item">
+        <div className="settings-section-title">🌸 Avatar Style</div>
+        <label className="ob-label" style={{ marginBottom: 8 }}>Avatar set</label>
+        <div className="ob-gender-btns" style={{ marginBottom: 16 }}>
+          {['female', 'male'].map(g => (
+            <button
+              key={g}
+              type="button"
+              className={`ob-gender-btn${gender === g ? ' selected' : ''}`}
+              onClick={() => { setGender(g); setAvatarId(''); setSaved(false); }}
+            >
+              {g === 'female' ? '🌸 Feminine' : '🌊 Masculine'}
+            </button>
+          ))}
+        </div>
+
+        <label className="ob-label" style={{ marginBottom: 8 }}>Pick your avatar</label>
+        <div className="ob-avatar-grid">
+          {avatarList.map(a => (
+            <button
+              key={a.id}
+              type="button"
+              className={`ob-avatar-item${avatarId === a.id ? ' selected' : ''}`}
+              style={{ background: a.bg }}
+              onClick={() => { setAvatarId(a.id); setSaved(false); }}
+            >
+              <span className="ob-avatar-emoji">{a.emoji}</span>
+              <span className="ob-avatar-label">{a.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {error && <p className="ep-error">{error}</p>}
+
+      <button
+        className="ob-btn-primary splash-item"
+        onClick={handleSave}
+        disabled={saving}
+        style={{ marginTop: 4 }}
+      >
+        {saving ? 'Saving…' : saved ? '✓ Saved!' : 'Save Changes →'}
+      </button>
+    </div>
+  );
+}
+
+// ─── Main Settings ─────────────────────────────────────────────────────────────
+
+export default function Settings({ onNavigate, user, profile, onProfileUpdate }) {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [editing, setEditing]         = useState(false);
+
+  async function handleLogout() {
+    try { await signOut(auth); } catch (e) { console.error('Sign out failed:', e); }
+  }
+
+  if (editing) {
+    return (
+      <EditProfileScreen
+        user={user}
+        profile={profile}
+        onSave={onProfileUpdate}
+        onBack={() => setEditing(false)}
+      />
+    );
+  }
+
+  const avatar = getAvatarByProfile(profile);
+
+  return (
     <>
       {showConfirm && (
-        <SignOutModal
-          onConfirm={handleLogout}
-          onCancel={() => setShowConfirm(false)}
-        />
+        <SignOutModal onConfirm={handleLogout} onCancel={() => setShowConfirm(false)} />
       )}
 
       <div className="section">
@@ -62,6 +182,31 @@ export default function Settings({ onNavigate, user }) {
           <div className="s-tag">App Guide &amp; Preferences</div>
           <h2 className="s-title">Settings <em>&amp; How to Use</em></h2>
           <p className="s-desc">Everything you need to navigate the Goddess Plan smoothly — on any device.</p>
+        </div>
+
+        {/* ── Profile Card ── */}
+        <div className="divider splash-item">Account</div>
+        <div className="g-card splash-item settings-card">
+          <div className="settings-section-title">👤 Your Profile</div>
+
+          <div className="ep-profile-row">
+            {avatar && (
+              <div className="ep-avatar-display" style={{ background: avatar.bg }}>
+                <span style={{ fontSize: 32 }}>{avatar.emoji}</span>
+              </div>
+            )}
+            <div className="ep-profile-info">
+              {(profile?.username || user?.displayName) && (
+                <p className="ep-profile-name">{profile?.username || user?.displayName}</p>
+              )}
+              {user?.email && <p className="ep-profile-email">{user.email}</p>}
+              {user?.phoneNumber && <p className="ep-profile-email">{user.phoneNumber}</p>}
+            </div>
+          </div>
+
+          <button className="ep-edit-btn" onClick={() => setEditing(true)}>
+            ✏️ Edit Name &amp; Avatar
+          </button>
         </div>
 
         {/* ── Navigation Guide ── */}
@@ -89,7 +234,7 @@ export default function Settings({ onNavigate, user }) {
           <GuideStep num="6" title="Left Sidebar Navigation"
             desc="Tap any section in the left sidebar to switch between Home, Workouts, Challenges, Nutrition, Skincare, Hair Care, and Anti-Aging." />
           <GuideStep num="7" title="Tapping Into Detail Pages"
-            desc="In Nutrition and other sections, tap any card to open its full detail page. Use the back button or Cmd+Z / swipe right to return." />
+            desc="In Hair Care, Anti-Aging, and other sections, tap any card to open its full detail page. Use the back button or Cmd+Z / swipe right to return." />
         </div>
 
         {/* ── About ── */}
@@ -107,25 +252,9 @@ export default function Settings({ onNavigate, user }) {
           </div>
         </div>
 
-        {/* ── Account ── */}
-        <div className="divider splash-item">Account</div>
-        <div className="g-card splash-item settings-card">
-          <div className="settings-section-title">👤 Your Account</div>
-          {user?.displayName && (
-            <p className="settings-about-text" style={{ fontWeight: 600, marginBottom: 4 }}>
-              {user.displayName}
-            </p>
-          )}
-          {user?.email && (
-            <p className="settings-about-text" style={{ opacity: 0.7, marginBottom: 8 }}>
-              {user.email}
-            </p>
-          )}
-          {user?.phoneNumber && (
-            <p className="settings-about-text" style={{ opacity: 0.7, marginBottom: 8 }}>
-              {user.phoneNumber}
-            </p>
-          )}
+        {/* ── Sign Out ── */}
+        <div className="g-card splash-item settings-card" style={{ marginTop: 8 }}>
+          <div className="settings-section-title">🚪 Sign Out</div>
           <p className="settings-about-text">
             Your progress and profile are always saved automatically. Signing out will return you to the login screen.
           </p>
