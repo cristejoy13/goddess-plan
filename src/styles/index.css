@@ -3332,42 +3332,70 @@ body {
   .joy-modal { max-width: 100%; border-bottom-left-radius: 0; border-bottom-right-radius: 0; height: 75dvh; }
 }
 
-/* ─── AVATAR TOPBAR BUTTON ─── */
-.avatar-topbar-btn {
-  position: fixed;
-  top: 8px;
-  right: 16px;
-  z-index: 300;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 2px solid rgba(240,204,96,0.45);
-  background: linear-gradient(135deg, rgba(60,16,48,0.95), rgba(30,8,42,0.95));
-  box-shadow: 0 2px 12px rgba(240,204,96,0.2), 0 0 0 3px rgba(240,204,96,0.1);
+/* ─── SIDEBAR AVATAR BUTTON ─── */
+.sidebar-avatar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 12px 8px 10px;
+  border: none;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid rgba(240,204,96,0.1);
+  background: rgba(240,204,96,0.04);
   cursor: pointer;
+  transition: all 0.22s ease;
+  margin-bottom: 4px;
+}
+.sidebar-avatar-btn:hover {
+  background: rgba(240,204,96,0.09);
+  border-left-color: var(--gold);
+}
+.sidebar-avatar-btn.active {
+  background: linear-gradient(90deg, rgba(240,204,96,0.14), rgba(235,80,160,0.06));
+  border-left-color: var(--gold);
+}
+.sidebar-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-  backdrop-filter: blur(8px);
+  border: 2px solid rgba(240,204,96,0.45);
+  box-shadow: 0 0 0 3px rgba(240,204,96,0.1), 0 2px 10px rgba(0,0,0,0.3);
+  transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
 }
-.avatar-topbar-btn:hover {
-  transform: scale(1.12);
-  box-shadow: 0 4px 18px rgba(240,204,96,0.35), 0 0 0 4px rgba(240,204,96,0.18);
+.sidebar-avatar-btn:hover .sidebar-avatar-circle,
+.sidebar-avatar-btn.active .sidebar-avatar-circle {
+  box-shadow: 0 0 0 3px rgba(240,204,96,0.25), 0 4px 14px rgba(0,0,0,0.35);
   border-color: var(--gold);
 }
-.avatar-topbar-emoji { line-height: 1; }
+.sidebar-avatar-emoji { font-size: 22px; line-height: 1; }
+.sidebar-avatar-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  text-align: center;
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+}
+.sidebar-avatar-btn:hover .sidebar-avatar-label,
+.sidebar-avatar-btn.active .sidebar-avatar-label { color: var(--gold); }
 
-/* Joy repositioned to top-right, just below avatar */
+/* Joy repositioned to top-right, below search bar with breathing room */
 .joy-fab {
-  top: 56px;
+  top: 80px;
   bottom: auto;
   right: 16px;
 }
-
-/* Reserve right space in search bar so avatar doesn't overlap */
-.search-bar-fixed { padding-right: 62px; }
 
 /* ─── DIVIDER CENTER VARIANT ─── */
 .divider.divider-center {

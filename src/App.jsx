@@ -25,7 +25,6 @@ const NAV_ITEMS = [
   { id: 'skincare',   label: 'Skincare' },
   { id: 'haircare',   label: 'Hair Care' },
   { id: 'antiaging',  label: 'Anti-Aging' },
-  { id: 'settings',   label: '⚙ Settings' },
 ];
 
 const SEARCH_INDEX = [
@@ -355,19 +354,24 @@ export default function App() {
         <SearchBar onNavigate={navigate} />
       </div>
 
-      {/* Avatar button — top-right, always visible */}
-      {avatar && (
-        <button
-          className="avatar-topbar-btn"
-          onClick={() => navigate('settings')}
-          title="Profile & Settings"
-          aria-label="Open profile"
-        >
-          <span className="avatar-topbar-emoji">{avatar.emoji}</span>
-        </button>
-      )}
-
       <nav className="sidebar">
+        {/* Avatar at top of sidebar — taps open Settings/Profile */}
+        {avatar && (
+          <button
+            className={`sidebar-avatar-btn${active === 'settings' ? ' active' : ''}`}
+            onClick={() => navigate('settings')}
+            title="Profile & Settings"
+            aria-label="Open profile"
+          >
+            <div className="sidebar-avatar-circle" style={{ background: avatar.bg }}>
+              <span className="sidebar-avatar-emoji">{avatar.emoji}</span>
+            </div>
+            <span className="sidebar-avatar-label">
+              {profile?.username || user?.displayName || 'Profile'}
+            </span>
+          </button>
+        )}
+
         {history.length > 0 && (
           <button className="nav-btn nav-back-btn" onClick={goBack} aria-label="Go back">
             ‹ Back
