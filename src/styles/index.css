@@ -3947,3 +3947,145 @@ body {
   flex-shrink: 0;
   opacity: 0.6;
 }
+
+/* ── Hamburger Button (visible only on mobile) ── */
+.hamburger-btn {
+  display: none; /* shown via mobile media query */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  padding: 10px 0 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.hamburger-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-soft);
+  border-radius: 2px;
+  transition: all 0.25s ease;
+  transform-origin: center;
+}
+.hamburger-bar.open:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-bar.open:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger-bar.open:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Sidebar backdrop (mobile menu overlay) */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 270;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* ── Mobile layout — hamburger nav ── */
+@media (max-width: 768px) {
+  .hamburger-btn { display: flex; }
+
+  /* Sidebar: collapsed strip (avatar + hamburger only) */
+  .sidebar {
+    width: 54px;
+    overflow: hidden;
+    transition: width 0.26s cubic-bezier(0.4,0,0.2,1);
+    z-index: 280;
+  }
+  /* Expanded state */
+  .sidebar.open {
+    width: 200px;
+    z-index: 290;
+    overflow-y: auto;
+  }
+  /* Hide nav label when collapsed */
+  .sidebar:not(.open) .sidebar-avatar-label { display: none; }
+  /* Hide nav buttons when collapsed */
+  .sidebar:not(.open) .nav-btn { display: none; }
+
+  /* Main content: full width, just clear the 54px strip */
+  .main {
+    padding-left: 54px;
+    padding-right: 0;
+  }
+
+  /* Search bar: shift right of the sidebar strip */
+  .search-bar-fixed {
+    padding-left: 62px;
+  }
+}
+
+/* ── Settings Pills ── */
+.settings-pills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.settings-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  padding: 16px 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Outfit', sans-serif;
+  transition: background 0.15s, border-color 0.15s;
+  width: 100%;
+}
+.settings-pill:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,92,157,0.2);
+}
+.settings-pill-danger {
+  border-color: rgba(255,92,157,0.18);
+}
+.settings-pill-danger:hover {
+  background: rgba(255,92,157,0.08);
+  border-color: rgba(255,92,157,0.4);
+}
+.settings-pill-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.settings-pill-text { flex: 1; }
+.settings-pill-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.settings-pill-desc {
+  font-size: 12px;
+  color: var(--text-mid);
+  margin-top: 2px;
+}
+.settings-pill-arrow {
+  font-size: 20px;
+  color: var(--text-mid);
+  opacity: 0.5;
+}
+
+/* ── Joy FAB drag-ready state ── */
+.joy-fab.joy-drag-ready {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 8px rgba(240,204,96,0.18), 0 6px 28px rgba(255,92,157,0.4);
+  animation: joyShake 0.25s ease-in-out infinite;
+  cursor: grab;
+}
+@keyframes joyShake {
+  0%, 100% { transform: rotate(0deg) scale(1.05); }
+  33%       { transform: rotate(-4deg) scale(1.05); }
+  66%       { transform: rotate(4deg) scale(1.05); }
+}

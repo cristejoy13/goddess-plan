@@ -68,6 +68,11 @@ export default function Workout({ openDayId, onNavigate }) {
   const todayDay = WORKOUT_DAYS[todayIndex];
   const todayId  = DAY_IDS[todayIndex];
 
+  function selectIngredient(ingr) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setSelectedIngredient(ingr);
+  }
+
   if (selectedIngredient) {
     return (
       <IngredientDetailPage
@@ -99,7 +104,7 @@ export default function Workout({ openDayId, onNavigate }) {
           id={DAY_IDS[i]}
           defaultOpen={openDayId ? openDayId === DAY_IDS[i] : todayId === DAY_IDS[i]}
           isToday={i === todayIndex}
-          onIngredientClick={setSelectedIngredient}
+          onIngredientClick={selectIngredient}
         />
       ))}
 

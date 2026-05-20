@@ -274,8 +274,13 @@ const PANELS = { meat: MeatDays, light: LightDays, guide: FoodGuide };
 
 /* ─── Main Component ─── */
 export default function Nutrition({ initialTab, onNavigate }) {
-  const [detail, setDetail]               = useState(initialTab || null);
+  const [detail, setDetail]                 = useState(initialTab || null);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  function selectRecipe(item) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setSelectedRecipe(item);
+  }
 
   useEffect(() => {
     if (!detail) return;
@@ -334,7 +339,7 @@ export default function Nutrition({ initialTab, onNavigate }) {
           <h2 className="s-title">{tab.icon} {tab.title}</h2>
           <p className="s-desc">{tab.desc}</p>
         </div>
-        <RecipesPanel onSelectRecipe={setSelectedRecipe} />
+        <RecipesPanel onSelectRecipe={selectRecipe} />
       </div>
     );
   }

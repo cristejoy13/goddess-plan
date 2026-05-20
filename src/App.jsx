@@ -194,11 +194,12 @@ function SearchBar({ onNavigate }) {
 }
 
 export default function App() {
-  const [user, setUser] = useState(undefined);     // undefined = checking
-  const [profile, setProfile] = useState(undefined); // undefined = not yet fetched
+  const [user, setUser] = useState(undefined);
+  const [profile, setProfile] = useState(undefined);
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => { setUser(u ?? null); });
@@ -229,12 +230,12 @@ export default function App() {
 
   const navigate = (id, tab = null, scrollTo = null) => {
     const cur = activeRef.current;
-    // Push current location to history only if destination is different
     if (id !== cur.section || tab !== cur.tab) {
       setHistory(prev => [...prev.slice(-19), { section: cur.section, tab: cur.tab }]);
     }
     setActive(id);
     setNavMeta(prev => ({ tab, scrollTo, key: prev.key + 1 }));
+    setMenuOpen(false);
     if (scrollTo) {
       window.scrollTo({ top: 0, behavior: 'instant' });
       setTimeout(() => {
@@ -252,6 +253,7 @@ export default function App() {
     setHistory(h.slice(0, -1));
     setActive(prev.section);
     setNavMeta(p => ({ tab: prev.tab, scrollTo: null, key: p.key + 1 }));
+    setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -354,13 +356,17 @@ export default function App() {
         <SearchBar onNavigate={navigate} />
       </div>
 
-      <nav className="sidebar">
-        {/* Avatar at top of sidebar — taps open Settings/Profile */}
+      {/* Sidebar backdrop — closes menu on mobile when tapping outside */}
+      {menuOpen && (
+        <div className="sidebar-backdrop" onClick={() => setMenuOpen(false)} />
+      )}
+
+      <nav className={`sidebar${menuOpen ? ' open' : ''}`}>
+        {/* Avatar — always visible, taps open Settings */}
         {avatar && (
           <button
             className={`sidebar-avatar-btn${active === 'settings' ? ' active' : ''}`}
             onClick={() => navigate('settings')}
-            title="Profile & Settings"
             aria-label="Open profile"
           >
             <div className="sidebar-avatar-circle" style={{ background: avatar.bg }}>
@@ -372,6 +378,18 @@ export default function App() {
           </button>
         )}
 
+        {/* Hamburger button — visible on mobile */}
+        <button
+          className="hamburger-btn"
+          onClick={() => setMenuOpen(o => !o)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        >
+          <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+          <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+          <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+        </button>
+
+        {/* Nav items — always visible on desktop, only when open on mobile */}
         {history.length > 0 && (
           <button className="nav-btn nav-back-btn" onClick={goBack} aria-label="Go back">
             ‹ Back

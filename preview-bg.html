@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dark Rose Gold — Background Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', serif;
+    min-height: 100vh;
+    background: #0c0b0d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 40px 20px;
+  }
+
+  h1 { color: #c8a87a; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: -16px; }
+
+  /* ── SWATCH STRIP ── */
+  .swatches {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .swatch {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+  }
+
+  /* ── FULL BACKGROUND PREVIEW ── */
+  .preview {
+    width: 360px;
+    height: 640px;
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(180,60,80,0.35);
+    background:
+      /* Warm pink-gold glow — the only light source, soft and centered */
+      radial-gradient(ellipse 75% 45% at 50% 22%, rgba(235,80,160,0.48) 0%, rgba(225,165,50,0.20) 38%, transparent 68%),
+      /* Just dark */
+      #0c0b0d;
+  }
+
+  .preview-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 32px;
+    gap: 20px;
+  }
+
+  .preview-title {
+    font-family: 'Georgia', serif;
+    font-size: 22px;
+    color: #f0d090;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .preview-subtitle {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(200,160,140,0.75);
+    text-transform: uppercase;
+  }
+
+  .preview-card {
+    width: 100%;
+    background: rgba(10, 3, 6, 0.78);
+    border: 1px solid rgba(200,140,100,0.18);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .card-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(200,150,120,0.65);
+    text-transform: uppercase;
+  }
+  .card-title {
+    font-size: 16px;
+    color: #f0d8c8;
+  }
+  .card-body {
+    font-size: 12px;
+    color: rgba(230,195,175,0.70);
+    line-height: 1.6;
+  }
+
+  .preview-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 56px;
+    background: rgba(8, 2, 5, 0.92);
+    border-top: 1px solid rgba(200,140,100,0.14);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+  }
+  .nav-item {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(200,150,130,0.55);
+    text-transform: uppercase;
+  }
+  .nav-item.active {
+    color: #f0cc80;
+  }
+
+  /* ── ICON PREVIEW ── */
+  .icon-wrap {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 22%, rgba(235,80,160,0.55) 0%, rgba(225,165,50,0.22) 38%, transparent 65%),
+      #0c0b0d;
+    box-shadow: 0 4px 24px rgba(180,60,70,0.40);
+  }
+  .icon-label {
+    font-size: 10px;
+    color: rgba(200,150,130,0.65);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* ── COLOR CHIPS ── */
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 6px 12px;
+  }
+  .dot { width: 16px; height: 16px; border-radius: 50%; }
+  .chip-label { font-size: 11px; color: rgba(220,180,160,0.80); }
+</style>
+</head>
+<body>
+
+<h1>Color Preview — Dark Rose Gold</h1>
+
+<!-- Color chips -->
+<div class="chips">
+  <div class="chip"><div class="dot" style="background:#0c0b0d"></div><span class="chip-label">#0c0b0d — dark base</span></div>
+  <div class="chip"><div class="dot" style="background:#eb50a0"></div><span class="chip-label">#eb50a0 — pink glow</span></div>
+  <div class="chip"><div class="dot" style="background:#f0b832"></div><span class="chip-label">#f0b832 — gold glow</span></div>
+  <div class="chip"><div class="dot" style="background:#f0cc80"></div><span class="chip-label">#f0cc80 — crown gold</span></div>
+</div>
+
+<!-- Phone mockup preview -->
+<div class="preview">
+  <div class="preview-content">
+    <div class="preview-title">The Goddess Plan</div>
+    <div class="preview-subtitle">Your Daily Ritual</div>
+    <div class="preview-card">
+      <div class="card-label">Today's Focus</div>
+      <div class="card-title">Morning Ritual</div>
+      <div class="card-body">Skincare · Movement · Nourishment</div>
+    </div>
+    <div class="preview-card">
+      <div class="card-label">Anti-Bloat</div>
+      <div class="card-title">Lean Glow Protocol</div>
+      <div class="card-body">Strength · Skin &amp; Hair · Wellness</div>
+    </div>
+  </div>
+  <div class="preview-nav">
+    <span class="nav-item active">Home</span>
+    <span class="nav-item">Workout</span>
+    <span class="nav-item">Nutrition</span>
+    <span class="nav-item">Skincare</span>
+  </div>
+</div>
+
+<!-- Icon preview -->
+<h1>App Icon Preview</h1>
+<div class="icon-wrap">
+  <div>
+    <div class="icon-preview">👑</div>
+    <div class="icon-label">192 × 192</div>
+  </div>
+</div>
+
+<p style="color:rgba(200,150,130,0.5); font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:center; padding-bottom: 20px;">
+  Dark base · warm pink-gold glow · that is all
+</p>
+
+</body>
+</html>

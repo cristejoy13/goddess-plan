@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { INGREDIENT_RECIPES } from '../data/ingredients';
 
 export default function IngredientDetailPage({ ingredientKey, ingredientName, backLabel = 'Back', onBack }) {
   const data = INGREDIENT_RECIPES[ingredientKey];
   const [active, setActive] = useState(0);
+
+  /* Always open at the top of the page */
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, []);
 
   if (!data) {
     return (
