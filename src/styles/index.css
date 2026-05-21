@@ -4031,6 +4031,29 @@ body {
     flex-shrink: 0;
   }
 
+  .mob-joy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .mob-joy-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 1.5px solid rgba(255,92,157,0.45);
+    background: linear-gradient(160deg, rgba(61,18,50,0.9), rgba(26,8,40,0.9));
+    animation: joyPulse 3s ease-in-out infinite;
+  }
+
+  /* Hide floating FAB on mobile — Joy lives in the top bar instead */
+  .joy-fab { display: none; }
+
   /* Search bar becomes flex row: [controls] [input] */
   .search-bar-fixed {
     display: flex;
@@ -4126,6 +4149,109 @@ body {
   color: var(--text-mid);
   opacity: 0.5;
 }
+
+/* ── Reminders Screen ── */
+.rem-perm-card {
+  text-align: center;
+  padding: 24px 20px;
+  margin-bottom: 14px;
+}
+.rem-perm-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+.rem-perm-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+.rem-perm-desc {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+.rem-active-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.rem-test-btn {
+  background: rgba(255,92,157,0.1);
+  border: 1.5px solid rgba(255,92,157,0.3);
+  border-radius: 20px;
+  color: var(--rose);
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.rem-test-btn:hover { background: rgba(255,92,157,0.18); }
+
+.rem-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.rem-row:last-child { border-bottom: none; }
+.rem-emoji { font-size: 20px; flex-shrink: 0; width: 26px; text-align: center; }
+.rem-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.rem-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.rem-time-input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: var(--text-soft);
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  padding: 4px 8px;
+  width: 90px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.rem-time-input:enabled { color: var(--rose); border-color: rgba(255,92,157,0.3); }
+.rem-time-input:disabled { opacity: 0.35; cursor: not-allowed; }
+.rem-time-input::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
+
+/* Toggle switch */
+.rem-toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: background 0.25s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.rem-toggle.on { background: var(--rose); }
+.rem-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+}
+.rem-toggle.on .rem-toggle-knob { transform: translateX(18px); }
 
 /* ── Joy FAB drag-ready state ── */
 .joy-fab.joy-drag-ready {

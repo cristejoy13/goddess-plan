@@ -49,7 +49,7 @@ function joyReply(msg) {
   return JOY_REPLIES[Math.floor(Math.random() * JOY_REPLIES.length)];
 }
 
-export default function JoyAssistant() {
+export default function JoyAssistant({ forceOpen, onClose }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([{ from: 'joy', text: JOY_INTROS[0] }]);
   const [input, setInput] = useState('');
@@ -65,6 +65,15 @@ export default function JoyAssistant() {
   const inputRef = useRef(null);
 
   useEffect(() => {
+    if (forceOpen) setOpen(true);
+  }, [forceOpen]);
+
+  function closeModal() {
+    setOpen(false);
+    onClose?.();
+  }
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typing]);
 
@@ -77,6 +86,7 @@ export default function JoyAssistant() {
     if (!dragMode) return;
 
     function onMove(e) {
+      if (e.cancelable) e.preventDefault();
       const t = e.touches?.[0] ?? e;
       movedRef.current = true;
       setPos({
@@ -101,7 +111,7 @@ export default function JoyAssistant() {
     };
   }, [dragMode]);
 
-  function handleFabStart(e) {
+  function handleFabStart() {
     if (open) return;
     movedRef.current = false;
     pressTimerRef.current = setTimeout(() => {
@@ -111,7 +121,7 @@ export default function JoyAssistant() {
     }, 3000);
   }
 
-  function handleFabEnd(e) {
+  function handleFabEnd() {
     clearTimeout(pressTimerRef.current);
     if (!dragModeRef.current && !movedRef.current) {
       setOpen(true);
@@ -155,7 +165,7 @@ export default function JoyAssistant() {
       )}
 
       {open && (
-        <div className="joy-overlay" onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}>
+        <div className="joy-overlay" onClick={e => { if (e.target === e.currentTarget) closeModal(); }}>
           <div className="joy-modal">
             <div className="joy-header">
               <div className="joy-header-avatar">🥰</div>
@@ -166,7 +176,7 @@ export default function JoyAssistant() {
                   Your wellness bestie · always here!
                 </div>
               </div>
-              <button className="joy-header-close" onClick={() => setOpen(false)}>✕</button>
+              <button className="joy-header-close" onClick={closeModal}>✕</button>
             </div>
 
             <div className="joy-messages">

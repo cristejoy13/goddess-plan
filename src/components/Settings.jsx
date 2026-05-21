@@ -8,6 +8,10 @@ import {
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AVATARS, getAvatarByProfile } from '../avatars';
+import {
+  loadReminders, saveReminders, requestNotificationPermission,
+  scheduleReminders, playChime,
+} from '../utils/notifications';
 
 /* ─── Helpers ─── */
 function GuideStep({ num, title, desc }) {
@@ -335,10 +339,116 @@ function AboutScreen({ onBack }) {
   );
 }
 
+/* ─── Reminders Screen ─── */
+function RemindersScreen({ onBack }) {
+  const [reminders, setReminders] = useState(loadReminders);
+  const [permission, setPermission] = useState(() => Notification?.permission ?? 'default');
+  const [testPlayed, setTestPlayed] = useState(false);
+
+  async function handleEnable() {
+    const result = await requestNotificationPermission();
+    setPermission(result);
+    if (result === 'granted') scheduleReminders(reminders);
+  }
+
+  function toggle(id) {
+    const updated = reminders.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r);
+    setReminders(updated);
+    saveReminders(updated);
+    if (permission === 'granted') scheduleReminders(updated);
+  }
+
+  function updateTime(id, time) {
+    const updated = reminders.map(r => r.id === id ? { ...r, time } : r);
+    setReminders(updated);
+    saveReminders(updated);
+    if (permission === 'granted') scheduleReminders(updated);
+  }
+
+  function handleTest() {
+    playChime();
+    setTestPlayed(true);
+    setTimeout(() => setTestPlayed(false), 2000);
+  }
+
+  return (
+    <div className="section">
+      <button className="section-back-btn" onClick={onBack}>‹ Settings</button>
+      <div className="s-header" style={{ marginBottom: 20 }}>
+        <div className="s-tag">Daily Reminders</div>
+        <h2 className="s-title">Your <em>Reminders</em></h2>
+        <p className="s-desc">Get notified at the right time for every part of your goddess routine.</p>
+      </div>
+
+      {permission !== 'granted' && (
+        <div className="g-card splash-item rem-perm-card">
+          <div className="rem-perm-icon">🔔</div>
+          <div className="rem-perm-title">
+            {permission === 'denied' ? 'Notifications Blocked' : 'Enable Notifications'}
+          </div>
+          <div className="rem-perm-desc">
+            {permission === 'denied'
+              ? 'Notifications are blocked in your browser. Open browser site settings, allow notifications for this site, then reload.'
+              : 'Allow notifications so Goddess Plan can remind you of your routines even when the app is in the background.'}
+          </div>
+          {permission !== 'denied' && (
+            <button className="ob-btn-primary" style={{ marginTop: 14 }} onClick={handleEnable}>
+              Enable Notifications 🔔
+            </button>
+          )}
+        </div>
+      )}
+
+      {permission === 'granted' && (
+        <div className="g-card splash-item rem-active-row">
+          <div>
+            <div className="settings-section-title" style={{ marginBottom: 2 }}>🔔 Notifications Active</div>
+            <div style={{ fontSize: 12, color: 'var(--text-soft)' }}>Reminders will fire even when the app is in the background.</div>
+          </div>
+          <button className="rem-test-btn" onClick={handleTest}>
+            {testPlayed ? '✓ Played!' : '🎵 Test'}
+          </button>
+        </div>
+      )}
+
+      <div className="g-card splash-item">
+        <div className="settings-section-title" style={{ marginBottom: 14 }}>⏰ Daily Schedule</div>
+        {reminders.map(r => (
+          <div key={r.id} className="rem-row">
+            <span className="rem-emoji">{r.emoji}</span>
+            <div className="rem-info">
+              <div className="rem-label">{r.label}</div>
+              <input
+                type="time"
+                className="rem-time-input"
+                value={r.time}
+                disabled={!r.enabled}
+                onChange={e => updateTime(r.id, e.target.value)}
+              />
+            </div>
+            <button
+              className={`rem-toggle${r.enabled ? ' on' : ''}`}
+              onClick={() => toggle(r.id)}
+              aria-label={r.enabled ? 'Disable reminder' : 'Enable reminder'}
+            >
+              <div className="rem-toggle-knob" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <p className="settings-about-text splash-item" style={{ marginTop: 14, textAlign: 'center', fontSize: 12 }}>
+        Reminders fire daily at the times above. Tap the time field to change it. 💕<br />
+        Install the app on your phone for the best background notification support.
+      </p>
+    </div>
+  );
+}
+
 /* ─── Main Settings ─── */
 export default function Settings({ onNavigate, user, profile, onProfileUpdate }) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [screen, setScreen] = useState('main'); // 'main' | 'account' | 'navigate' | 'about'
+  const [screen, setScreen] = useState('main'); // 'main' | 'account' | 'navigate' | 'about' | 'reminders'
 
   async function handleLogout() {
     try { await signOut(auth); } catch (e) { console.error('Sign out failed:', e); }
@@ -353,6 +463,9 @@ export default function Settings({ onNavigate, user, profile, onProfileUpdate })
   }
   if (screen === 'about') {
     return <AboutScreen onBack={() => setScreen('main')} />;
+  }
+  if (screen === 'reminders') {
+    return <RemindersScreen onBack={() => setScreen('main')} />;
   }
 
   return (
@@ -370,6 +483,8 @@ export default function Settings({ onNavigate, user, profile, onProfileUpdate })
         <div className="settings-pills-list splash-item">
           <SettingsPill icon="👤" label="Account"
             desc="Edit profile, avatar, password" onClick={() => setScreen('account')} />
+          <SettingsPill icon="🔔" label="Reminders"
+            desc="Daily notifications with sound" onClick={() => setScreen('reminders')} />
           <SettingsPill icon="🗂️" label="Navigate the App"
             desc="Gestures, shortcuts, tips" onClick={() => setScreen('navigate')} />
           <SettingsPill icon="🌸" label="About & Help"

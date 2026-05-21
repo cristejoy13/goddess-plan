@@ -15,6 +15,7 @@ import Login from './components/Login';
 import Onboarding from './components/Onboarding';
 import JoyAssistant from './components/JoyAssistant';
 import { getAvatarByProfile } from './avatars';
+import { loadReminders, scheduleReminders, stopReminders } from './utils/notifications';
 import './styles/index.css';
 
 const NAV_ITEMS = [
@@ -200,6 +201,7 @@ export default function App() {
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [joyOpen, setJoyOpen] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => { setUser(u ?? null); });
@@ -209,11 +211,18 @@ export default function App() {
   // When user changes, fetch their Firestore profile
   useEffect(() => {
     if (user === undefined) return;
-    if (!user) { setProfile(undefined); return; }
+    if (!user) { setProfile(undefined); stopReminders(); return; }
     setProfile(undefined);
     getDoc(doc(db, 'users', user.uid))
       .then(snap => setProfile(snap.exists() ? snap.data() : null))
       .catch(() => setProfile(null));
+  }, [user?.uid]); // eslint-disable-line
+
+  // Start reminder scheduler once user is logged in
+  useEffect(() => {
+    if (!user) return;
+    scheduleReminders(loadReminders());
+    return stopReminders;
   }, [user?.uid]); // eslint-disable-line
 
   const historyRef = useRef([]);
@@ -386,6 +395,9 @@ export default function App() {
             <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
             <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
           </button>
+          <button className="mob-joy-btn" onClick={() => setJoyOpen(true)} aria-label="Open Joy">
+            <div className="mob-joy-circle">🥰</div>
+          </button>
         </div>
         <SearchBar onNavigate={navigate} />
       </div>
@@ -443,7 +455,7 @@ export default function App() {
         {active === 'settings'   && <Settings onNavigate={navigate} user={user} profile={profile} onProfileUpdate={p => setProfile(p)} />}
       </div>
 
-      <JoyAssistant />
+      <JoyAssistant forceOpen={joyOpen} onClose={() => setJoyOpen(false)} />
 
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>
