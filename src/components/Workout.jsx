@@ -181,8 +181,9 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
                       onMouseDown={() => startHold(ingr.rawName)}
                       onMouseUp={() => cancelHold(ingr.rawName)}
                       onMouseLeave={() => cancelHold(ingr.rawName)}
-                      onTouchStart={e => { e.preventDefault(); startHold(ingr.rawName); }}
+                      onTouchStart={() => startHold(ingr.rawName)}
                       onTouchEnd={() => cancelHold(ingr.rawName)}
+                      onTouchCancel={() => cancelHold(ingr.rawName)}
                     >
                       {ingr.name}
                     </span>

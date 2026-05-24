@@ -271,10 +271,12 @@ function FoodGuide() {
 }
 
 const PANELS = { meat: MeatDays, light: LightDays, guide: FoodGuide };
+const TAB_ALIASES = { hydration: 'guide' };
+const resolveTab = (t) => (t ? TAB_ALIASES[t] || t : null);
 
 /* ─── Main Component ─── */
 export default function Nutrition({ initialTab, onNavigate, pushBack, clearInnerBack }) {
-  const [detail, setDetail]                 = useState(initialTab || null);
+  const [detail, setDetail]                 = useState(resolveTab(initialTab));
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   function selectRecipe(item) {

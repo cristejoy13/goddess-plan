@@ -4409,6 +4409,10 @@ body {
 .meal-ingr-plain.custom {
   color: var(--rose);
   font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 /* ── Calorie Banner ── */
@@ -4678,12 +4682,6 @@ body {
 }
 
 /* ── In-app meal ingredient delete ── */
-.meal-ingr-plain.custom {
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-}
 .meal-ingr-plain.custom.mb-deleting {
   opacity: 0.5;
   text-decoration: line-through;
