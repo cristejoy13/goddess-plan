@@ -1,7 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { MONTHS } from '../data/months';
 
-const YEAR = 2026;
 const CURRENT_YEAR = new Date().getFullYear();
 const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
@@ -9,12 +8,12 @@ const _t = new Date();
 const TODAY_KEY = `${_t.getFullYear()}-${String(_t.getMonth()+1).padStart(2,'0')}-${String(_t.getDate()).padStart(2,'0')}`;
 
 function dayKey(monthIdx, day) {
-  return `${YEAR}-${String(monthIdx + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  return `${CURRENT_YEAR}-${String(monthIdx + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
 }
 
 function getMonthWeeks(monthIdx) {
-  const daysInMonth = new Date(YEAR, monthIdx + 1, 0).getDate();
-  const firstDow = (new Date(YEAR, monthIdx, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(CURRENT_YEAR, monthIdx + 1, 0).getDate();
+  const firstDow = (new Date(CURRENT_YEAR, monthIdx, 1).getDay() + 6) % 7;
 
   const weeks = [];
   let week = Array(7).fill(null);
@@ -67,11 +66,10 @@ function saveState(state) {
   } catch {}
 }
 
-function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone }) {
-  const [open, setOpen] = useState(false);
+function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, isOpen, onOpen }) {
   const weeks = getMonthWeeks(monthIdx);
-  const daysInMonth = new Date(YEAR, monthIdx + 1, 0).getDate();
-  const prefix = `${YEAR}-${String(monthIdx + 1).padStart(2, '0')}-`;
+  const daysInMonth = new Date(CURRENT_YEAR, monthIdx + 1, 0).getDate();
+  const prefix = `${CURRENT_YEAR}-${String(monthIdx + 1).padStart(2, '0')}-`;
   const checkedCount = Object.keys(daily).filter(k => k.startsWith(prefix) && daily[k]).length;
   const pct = Math.round((checkedCount / daysInMonth) * 100);
 
@@ -87,12 +85,12 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone }) 
 
       <p className="m-why">{month.why}</p>
 
-      <button className={`m-toggle${open ? ' open' : ''}`} onClick={() => setOpen(o => !o)}>
+      <button className={`m-toggle${isOpen ? ' open' : ''}`} onClick={onOpen}>
         <span>View Calendar &amp; Daily Checklist</span>
         <span className="m-toggle-arrow">▾</span>
       </button>
 
-      <div className={`m-detail-body${open ? ' open' : ''}`}>
+      <div className={`m-detail-body${isOpen ? ' open' : ''}`}>
         <div className="m-detail-inner">
           <div className="cal-grid">
             {/* Day-of-week headers */}
@@ -150,6 +148,21 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone }) 
 
 export default function Challenges() {
   const [state, setState] = useState(loadState);
+  // Single-open month card; default to current month
+  const currentMonth = new Date().getMonth();
+  const [openMonthIdx, setOpenMonthIdx] = useState(currentMonth);
+  const currentMonthRef = useRef(null);
+
+  function toggleMonth(idx) {
+    setOpenMonthIdx(prev => prev === idx ? null : idx);
+  }
+
+  // Scroll current month into view on mount
+  useEffect(() => {
+    if (currentMonthRef.current) {
+      setTimeout(() => currentMonthRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleDay = useCallback((key) => {
     setState(prev => {
@@ -192,15 +205,18 @@ export default function Challenges() {
 
       <div className="month-grid">
         {MONTHS.map((m, i) => (
-          <MonthCard
-            key={i}
-            month={m}
-            monthIdx={i}
-            daily={state.daily}
-            done={state.done}
-            onToggleDay={toggleDay}
-            onToggleDone={toggleDone}
-          />
+          <div key={i} id={`month-${i}`} ref={i === currentMonth ? currentMonthRef : null}>
+            <MonthCard
+              month={m}
+              monthIdx={i}
+              daily={state.daily}
+              done={state.done}
+              onToggleDay={toggleDay}
+              onToggleDone={toggleDone}
+              isOpen={openMonthIdx === i}
+              onOpen={() => toggleMonth(i)}
+            />
+          </div>
         ))}
       </div>
 

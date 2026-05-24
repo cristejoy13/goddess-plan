@@ -284,7 +284,10 @@ function OilRotationCalendar({ onSelectOil }) {
         />
       )}
 
-      <div className="oil-rot-month-label">{MONTH_NAMES[monthIdx]} {year}</div>
+      <div className="oil-rot-month-label">
+        {MONTH_NAMES[monthIdx]} {year}
+        <span className="oil-rot-cal-hint"> · Tap any date to see your oil guide</span>
+      </div>
 
       <div className="oil-rot-cal">
         <div className="oil-rot-cal-header">
@@ -338,7 +341,6 @@ function OilRotationCalendar({ onSelectOil }) {
         <p className="oil-rot-summary-tap-hint">Tap an oil above to learn its benefits →</p>
       </div>
 
-      <p className="oil-rot-tap-hint">✨ Tap any date on the calendar above to see your oil guide for that day.</p>
     </div>
   );
 }

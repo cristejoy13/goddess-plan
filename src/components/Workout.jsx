@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PetalAccordion from './PetalAccordion';
 import { WORKOUT_DAYS } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
@@ -39,7 +39,7 @@ function MealBox({ meals, onIngredientClick }) {
   );
 }
 
-function WorkoutDay({ day, id, defaultOpen, isToday, onIngredientClick }) {
+function WorkoutDay({ day, id, open, onToggle, isToday, onIngredientClick }) {
   return (
     <PetalAccordion
       id={id}
@@ -48,7 +48,8 @@ function WorkoutDay({ day, id, defaultOpen, isToday, onIngredientClick }) {
       day={day.day}
       title={day.title}
       sub={day.sub}
-      defaultOpen={defaultOpen}
+      open={open}
+      onToggle={onToggle}
       isToday={isToday}
     >
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
@@ -68,11 +69,26 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
   const todayDay = WORKOUT_DAYS[todayIndex];
   const todayId  = DAY_IDS[todayIndex];
 
+  // Single-open accordion: only one day open at a time
+  const [openId, setOpenId] = useState(openDayId ?? todayId);
+
+  function toggleDay(id) {
+    setOpenId(prev => prev === id ? null : id);
+  }
+
+  // Scroll directly to the target day when navigating from Home
+  useEffect(() => {
+    if (!openDayId) return;
+    const el = document.getElementById(openDayId);
+    if (el) {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   function selectIngredient(ingr) {
     window.scrollTo({ top: 0, behavior: 'instant' });
     clearInnerBack?.();
     setSelectedIngredient(ingr);
-    /* Pressing back/swipe will close the ingredient page and return here */
     pushBack?.(() => {
       setSelectedIngredient(null);
       clearInnerBack?.();
@@ -101,7 +117,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       <div className="s-header">
         <div className="s-tag">Weekly Structure</div>
         <h2 className="s-title">Movement <em>&amp;</em> Meals</h2>
-        <p className="s-desc">Today's workout opens automatically. Tap any highlighted ingredient to see three ways to prepare it.</p>
+        <p className="s-desc">Today's workout opens automatically. Tap any day pill to jump directly to that day. Tap any highlighted ingredient to see three ways to prepare it.</p>
       </div>
 
       <div className="today-banner splash-item">
@@ -114,7 +130,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           key={i}
           day={day}
           id={DAY_IDS[i]}
-          defaultOpen={openDayId ? openDayId === DAY_IDS[i] : todayId === DAY_IDS[i]}
+          open={openId === DAY_IDS[i]}
+          onToggle={() => toggleDay(DAY_IDS[i])}
           isToday={i === todayIndex}
           onIngredientClick={selectIngredient}
         />
@@ -123,12 +140,12 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       <div className="divider splash-item">Weekly Blueprint</div>
       <div className="g-card splash-item">
         <p><span className="pill pr">Mon</span> Strength A — Hip Thrust · RDL · Kickback</p>
-        <p style={{ marginTop: 6 }}><span className="pill py">Tue</span> Pilates 1 — Deep Core &amp; TVA</p>
-        <p style={{ marginTop: 6 }}><span className="pill pr">Wed</span> Sprint Day — Sprints or Cycling Intervals</p>
-        <p style={{ marginTop: 6 }}><span className="pill pr">Thu</span> Strength B — Split Squat · Sumo · Clamshell</p>
-        <p style={{ marginTop: 6 }}><span className="pill py">Fri</span> Pilates 2 — Flow · Spine &amp; Side Body</p>
-        <p style={{ marginTop: 6 }}><span className="pill pg">Sat</span> Active Recovery — walk, yoga, swim</p>
-        <p style={{ marginTop: 6 }}><span className="pill pg">Sun</span> Rest — full rest or gentle movement</p>
+        <p style={{ marginTop: 6 }}><span className="pill py">Tue</span> Pilates 1 — The Hundred · Single Leg Stretch · Roll-Up</p>
+        <p style={{ marginTop: 6 }}><span className="pill pr">Wed</span> Sprint Day — Dynamic Warm-Up · Sprints or Intervals · Stretch</p>
+        <p style={{ marginTop: 6 }}><span className="pill pr">Thu</span> Strength B — Split Squat · Sumo Squat · Clamshell</p>
+        <p style={{ marginTop: 6 }}><span className="pill py">Fri</span> Pilates 2 — Leg Circles · Side Kick Series · Swimming</p>
+        <p style={{ marginTop: 6 }}><span className="pill pg">Sat</span> Bike — Warm-Up Ride · Steady State · Cool-Down</p>
+        <p style={{ marginTop: 6 }}><span className="pill pg">Sun</span> Back — Superman Hold · Band Row · Cat-Cow Thread</p>
         <p style={{ marginTop: 14, fontSize: 13, color: 'var(--text-mid)' }}>
           <strong>Progressive overload:</strong> Weeks 1–2 learn the movements. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If every set feels easy, increase load. If form breaks, increase reps first.
         </p>

@@ -460,16 +460,15 @@ export default function App() {
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>
         <h2 className="mot-h">
-          You are not building a body.<br />
-          You are building <em>a way of life.</em>
+          Step-by-Step.
         </h2>
         <p className="mot-p">
-          Every meal, every workout, every oiling ritual, every skincare step, every night you choose rest over chaos — it compounds. Quietly. Powerfully. Irreversibly.
+          Set a goal today and envision your long-term goal. What matters is today. Multiply your "todays" and it compounds and becomes a year.
         </p>
         <p className="mot-p">
-          Twelve months from now you will not recognise the version of yourself you left behind.
+          Don't wait for the right time. It's your choice to make it the right time — which is the <em>NOW.</em>
         </p>
-        <div className="mot-q">Be consistent. Be patient. Be relentless. 🌸</div>
+        <div className="mot-q">It's your choice. Make it now. 🌸</div>
       </div>
     </>
   );

@@ -21,7 +21,12 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
 
 body {
   font-family: 'Outfit', sans-serif;
@@ -30,6 +35,9 @@ body {
   min-height: 100vh;
   background: #07040f;
   overflow-x: hidden;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ─── BACKGROUND — dark base · single warm pink-gold glow ─── */
@@ -284,6 +292,50 @@ body {
   margin-bottom: 40px;
   animation: fadeSlideDown 1s ease 0.3s both;
 }
+/* ─── Week day-jump pills ─── */
+.hero-week-pills {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 520px;
+  margin-bottom: 4px;
+}
+.hero-week-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: rgba(20,6,14,0.7);
+  border: 1.5px solid rgba(240,204,96,0.18);
+  border-radius: 12px;
+  padding: 8px 10px 6px;
+  min-width: 44px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color: transparent;
+}
+.hero-week-pill:hover,
+.hero-week-pill:active {
+  background: rgba(255,92,157,0.12);
+  border-color: var(--rose);
+  transform: translateY(-2px) scale(1.05);
+}
+.hero-week-pill.is-today {
+  border-color: var(--rose);
+  background: rgba(255,92,157,0.14);
+  box-shadow: 0 0 10px rgba(255,92,157,0.25);
+}
+.hero-week-pill-emoji { font-size: 16px; line-height: 1; }
+.hero-week-pill-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+.hero-week-pill.is-today .hero-week-pill-label { color: var(--rose); }
+
 .hero-goals {
   display: flex;
   flex-wrap: wrap;
@@ -1906,6 +1958,14 @@ body {
   margin-bottom: 10px;
   letter-spacing: 0.5px;
 }
+.oil-rot-cal-hint {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-soft);
+  letter-spacing: 0;
+  opacity: 0.8;
+}
 
 .oil-rot-cal {
   background: var(--card);
@@ -3089,6 +3149,8 @@ body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+  /* Prevent page from scrolling when touching/dragging the FAB */
+  touch-action: none;
   width: 64px;
   height: 76px;
   border-radius: 32px;
@@ -3396,7 +3458,7 @@ body {
 
 /* Joy repositioned to top-right, below search bar with breathing room */
 .joy-fab {
-  top: 80px;
+  top: calc(80px + env(safe-area-inset-top));
   bottom: auto;
   right: 16px;
 }
@@ -4009,20 +4071,22 @@ body {
     flex-shrink: 0;
   }
   .mob-avatar-circle {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     border: 1.5px solid rgba(255,92,157,0.35);
   }
   .mob-hamburger {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px 4px;
+    padding: 0;
+    width: 28px;
+    height: 28px;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -4037,15 +4101,16 @@ body {
     cursor: pointer;
     padding: 0;
     flex-shrink: 0;
+    touch-action: manipulation;
   }
   .mob-joy-circle {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 15px;
     border: 1.5px solid rgba(255,92,157,0.45);
     background: linear-gradient(160deg, rgba(61,18,50,0.9), rgba(26,8,40,0.9));
     animation: joyPulse 3s ease-in-out infinite;
@@ -4252,6 +4317,89 @@ body {
   transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
 }
 .rem-toggle.on .rem-toggle-knob { transform: translateX(18px); }
+
+/* ── Treatment Calendar ── */
+.tx-cal {
+  margin-bottom: 20px;
+}
+.tx-cal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.tx-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.tx-day {
+  background: var(--card);
+  border: 1.5px solid var(--border-g);
+  border-radius: 10px;
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 9px;
+  min-width: 0;
+  transition: border-color 0.2s;
+}
+.tx-day.tx-today {
+  border-color: var(--rose);
+  background: rgba(255,92,157,0.06);
+}
+.tx-day-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.tx-day.tx-today .tx-day-label {
+  color: var(--rose);
+}
+.tx-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.tx-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+.tx-badge.pm {
+  color: var(--rose);
+}
+.tx-item {
+  font-size: 8.5px;
+  color: var(--text-soft);
+  line-height: 1.3;
+  white-space: pre-line;
+}
+.tx-warn {
+  font-size: 7.5px;
+  color: #e8a020;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+@media (max-width: 480px) {
+  .tx-cal-grid { grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .tx-day { padding: 4px 2px; font-size: 8px; border-radius: 7px; }
+  .tx-day-label { font-size: 9px; }
+  .tx-badge { font-size: 7px; }
+  .tx-item { font-size: 7.5px; }
+  .tx-warn { font-size: 7px; }
+}
 
 /* ── Joy FAB drag-ready state ── */
 .joy-fab.joy-drag-ready {

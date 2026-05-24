@@ -11,6 +11,16 @@ function todayLabel() {
   return `${DAYS_LONG[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
+const WEEK_PILLS = [
+  { label: 'Mon', emoji: '🔥', dayId: 'day-monday'    },
+  { label: 'Tue', emoji: '🧘', dayId: 'day-tuesday'   },
+  { label: 'Wed', emoji: '⚡', dayId: 'day-wednesday' },
+  { label: 'Thu', emoji: '🍑', dayId: 'day-thursday'  },
+  { label: 'Fri', emoji: '🌿', dayId: 'day-friday'    },
+  { label: 'Sat', emoji: '🚴', dayId: 'day-saturday'  },
+  { label: 'Sun', emoji: '💪', dayId: 'day-sunday'    },
+];
+
 const GOALS = [
   { label: '🌸 Flat Stomach at Rest', section: 'nutrition',  tab: 'guide'     },
   { label: '✨ Clear, Bright Skin',    section: 'skincare',   tab: 'am'        },
@@ -49,6 +59,20 @@ export default function Hero({ onNavigate }) {
 
       <div className="hero-date splash-item">{todayLabel()}</div>
 
+      {/* Jump-to-Day pills — tap any day to go directly to that workout */}
+      <div className="hero-week-pills splash-item">
+        {WEEK_PILLS.map((p, i) => (
+          <button
+            key={p.dayId}
+            className={`hero-week-pill${i === dayIndex ? ' is-today' : ''}`}
+            onClick={() => onNavigate('workout', null, p.dayId)}
+          >
+            <span className="hero-week-pill-emoji">{p.emoji}</span>
+            <span className="hero-week-pill-label">{p.label}</span>
+          </button>
+        ))}
+      </div>
+
       <div className="daily-plan splash-item">
         <div className="daily-plan-label">Today's Plan</div>
 
@@ -57,7 +81,7 @@ export default function Hero({ onNavigate }) {
           label="Workout"
           title={today.title}
           sub={today.sub}
-          onClick={() => onNavigate('workout')}
+          onClick={() => onNavigate('workout', null, `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`)}
         />
         <DayCard
           icon="🌿"
