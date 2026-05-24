@@ -1,5 +1,37 @@
+import { getToken } from 'firebase/messaging';
+import { doc, setDoc } from 'firebase/firestore';
+import { db, getAppMessaging } from '../firebase';
+
 const STORAGE_KEY = 'gp_reminders';
 const FIRED_KEY   = 'gp_fired_reminders';
+const VAPID_KEY   = import.meta.env.VITE_VAPID_KEY;
+
+/* Register this device for FCM push — saves token to Firestore */
+export async function registerFCMToken(userId) {
+  try {
+    const messaging = await getAppMessaging();
+    if (!messaging || !VAPID_KEY) return null;
+    const swReg = await navigator.serviceWorker.ready;
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+    if (token) {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      await setDoc(doc(db, 'fcm_tokens', userId), { token, timezone, updatedAt: new Date().toISOString() }, { merge: true });
+      return token;
+    }
+  } catch (e) {
+    console.error('FCM registration failed:', e);
+  }
+  return null;
+}
+
+/* Sync reminder settings to Firestore so Cloud Functions can read them */
+export async function syncRemindersToFirestore(userId, reminders) {
+  try {
+    await setDoc(doc(db, 'users', userId), {
+      reminders: reminders.map(({ id, enabled, time }) => ({ id, enabled, time })),
+    }, { merge: true });
+  } catch {}
+}
 
 export const DEFAULT_REMINDERS = [
   { id: 'sunlight',  emoji: '☀️',  label: 'Morning Sunlight',   time: '06:30', enabled: true,

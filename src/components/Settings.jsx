@@ -10,7 +10,7 @@ import { auth, db } from '../firebase';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import {
   loadReminders, saveReminders, requestNotificationPermission,
-  scheduleReminders, playChime,
+  scheduleReminders, playChime, registerFCMToken, syncRemindersToFirestore,
 } from '../utils/notifications';
 
 /* ─── Helpers ─── */
@@ -340,15 +340,34 @@ function AboutScreen({ onBack }) {
 }
 
 /* ─── Reminders Screen ─── */
-function RemindersScreen({ onBack }) {
+function RemindersScreen({ onBack, user }) {
   const [reminders, setReminders] = useState(loadReminders);
-  const [permission, setPermission] = useState(() => Notification?.permission ?? 'default');
+  const [permission, setPermission] = useState(() => {
+    if (!('Notification' in window)) return 'unsupported';
+    return Notification.permission;
+  });
   const [testPlayed, setTestPlayed] = useState(false);
+  const [fcmRegistered, setFcmRegistered] = useState(false);
+
+  // Register FCM token whenever permission is granted
+  useEffect(() => {
+    if (permission === 'granted' && user?.uid && !fcmRegistered) {
+      registerFCMToken(user.uid).then(token => {
+        if (token) setFcmRegistered(true);
+      });
+    }
+  }, [permission, user?.uid, fcmRegistered]);
 
   async function handleEnable() {
     const result = await requestNotificationPermission();
     setPermission(result);
-    if (result === 'granted') scheduleReminders(reminders);
+    if (result === 'granted') {
+      scheduleReminders(reminders);
+      if (user?.uid) {
+        const token = await registerFCMToken(user.uid);
+        if (token) setFcmRegistered(true);
+      }
+    }
   }
 
   function toggle(id) {
@@ -356,6 +375,7 @@ function RemindersScreen({ onBack }) {
     setReminders(updated);
     saveReminders(updated);
     if (permission === 'granted') scheduleReminders(updated);
+    if (user?.uid) syncRemindersToFirestore(user.uid, updated);
   }
 
   function updateTime(id, time) {
@@ -363,6 +383,7 @@ function RemindersScreen({ onBack }) {
     setReminders(updated);
     saveReminders(updated);
     if (permission === 'granted') scheduleReminders(updated);
+    if (user?.uid) syncRemindersToFirestore(user.uid, updated);
   }
 
   function handleTest() {
@@ -402,8 +423,14 @@ function RemindersScreen({ onBack }) {
       {permission === 'granted' && (
         <div className="g-card splash-item rem-active-row">
           <div>
-            <div className="settings-section-title" style={{ marginBottom: 2 }}>🔔 Notifications Active</div>
-            <div style={{ fontSize: 12, color: 'var(--text-soft)' }}>Reminders will fire even when the app is in the background.</div>
+            <div className="settings-section-title" style={{ marginBottom: 2 }}>
+              🔔 Notifications Active {fcmRegistered && <span style={{ fontSize: 11, color: 'var(--gold)', marginLeft: 6 }}>· Background push on ✓</span>}
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text-soft)' }}>
+              {fcmRegistered
+                ? 'Reminders will fire even when the app is fully closed.'
+                : 'Reminders fire when the app is open. Background push registering…'}
+            </div>
           </div>
           <button className="rem-test-btn" onClick={handleTest}>
             {testPlayed ? '✓ Played!' : '🎵 Test'}
@@ -465,7 +492,7 @@ export default function Settings({ onNavigate, user, profile, onProfileUpdate })
     return <AboutScreen onBack={() => setScreen('main')} />;
   }
   if (screen === 'reminders') {
-    return <RemindersScreen onBack={() => setScreen('main')} />;
+    return <RemindersScreen onBack={() => setScreen('main')} user={user} />;
   }
 
   return (
