@@ -41,6 +41,7 @@ export const FOODS = [
   { name: 'Zucchini',     emoji: '🥒', cat: 'Vegetable', meal: 'dinner'  },
   // Proteins
   { name: 'Bangus (Milkfish)', emoji: '🐟', cat: 'Protein', meal: 'lunch' },
+  { name: 'Beef',         emoji: '🥩', cat: 'Protein',   meal: 'lunch'   },
   { name: 'Chicken Breast', emoji: '🍗', cat: 'Protein', meal: 'lunch'  },
   { name: 'Eggs',         emoji: '🥚', cat: 'Protein',   meal: 'morning' },
   { name: 'Sardines',     emoji: '🐟', cat: 'Protein',   meal: 'lunch'   },

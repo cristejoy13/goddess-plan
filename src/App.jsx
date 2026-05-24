@@ -223,6 +223,15 @@ export default function App() {
     return stopReminders;
   }, [user?.uid]); // eslint-disable-line
 
+  // Apply gender-based color theme
+  useEffect(() => {
+    if (profile?.gender === 'male') {
+      document.documentElement.setAttribute('data-theme', 'male');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }, [profile?.gender]); // eslint-disable-line
+
   const historyRef = useRef([]);
   useEffect(() => { historyRef.current = history; }, [history]);
 

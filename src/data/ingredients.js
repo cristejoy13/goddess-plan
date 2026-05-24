@@ -190,6 +190,429 @@ export const INGREDIENT_RECIPES = {
     ],
   },
 
+  /* ── Drinks & Teas ──────────────────────────────────────────── */
+
+  'green-tea': {
+    emoji: '🍵',
+    color: 'rgba(100,180,100,0.07)',
+    tagline: 'The metabolism booster — three brewing methods',
+    options: [
+      {
+        name: 'Classic Hot Brew',
+        emoji: '♨️',
+        time: '5 min',
+        steps: [
+          'Boil water, then let it cool 2–3 min — ideal temperature is 80°C, not boiling.',
+          'Place 1 green tea bag or 1 tsp loose-leaf tea in a cup.',
+          'Pour the hot water over the tea.',
+          'Steep exactly 2–3 min. Remove the bag immediately.',
+          'Drink plain or add a squeeze of calamansi.',
+        ],
+        tip: 'Never use boiling water — it destroys the antioxidants (EGCG) and makes it bitter. 80°C is the sweet spot.',
+      },
+      {
+        name: 'Ginger Green Tea',
+        emoji: '🫚',
+        time: '8 min',
+        steps: [
+          'Slice 3–4 thin rounds of fresh ginger.',
+          'Simmer ginger in 300ml water on low heat for 5 min.',
+          'Remove from heat, cool to 80°C (about 2 min).',
+          'Add green tea bag. Steep 2–3 min, then remove.',
+          'Add a squeeze of calamansi. Drink warm.',
+        ],
+        tip: 'Ginger + green tea together boost metabolism more than either alone — the combination amplifies thermogenesis.',
+      },
+      {
+        name: 'Iced Green Tea',
+        emoji: '🧊',
+        time: '10 min',
+        steps: [
+          'Brew 2 green tea bags in 2 cups of 80°C water for 2–3 min.',
+          'Remove bags. Stir in 1 tsp raw honey while still warm.',
+          'Add a squeeze of calamansi.',
+          'Pour over a full glass of ice immediately.',
+          'Stir and drink — the ice dilutes it perfectly.',
+        ],
+        tip: 'Iced green tea is a great afternoon fat-burner that satisfies a sweet craving without sugar.',
+      },
+    ],
+  },
+
+  'collagen-water': {
+    emoji: '💧',
+    color: 'rgba(180,140,255,0.07)',
+    tagline: 'Skin, joint, and gut support in one drink',
+    options: [
+      {
+        name: 'Warm Collagen Water',
+        emoji: '♨️',
+        time: '3 min',
+        steps: [
+          'Boil 300ml of water, then cool to warm (not hot — heat degrades peptides).',
+          'Add 1 scoop of unflavored collagen powder.',
+          'Stir well until completely dissolved.',
+          'Add a squeeze of calamansi — Vitamin C doubles collagen absorption.',
+          'Drink slowly over 10–15 min.',
+        ],
+        tip: 'Vitamin C is required for collagen synthesis in your skin. Always pair your collagen with a citrus source.',
+      },
+      {
+        name: 'Collagen Calamansi Cooler',
+        emoji: '🍋',
+        time: '3 min',
+        steps: [
+          'Fill a glass with 300ml room-temperature water.',
+          'Add 1 scoop collagen powder and stir until dissolved.',
+          'Squeeze 3–4 calamansi into the water.',
+          'Add 1 tsp raw honey and stir.',
+          'Add a few ice cubes if desired.',
+        ],
+        tip: 'The acidity from calamansi helps dissolve collagen peptides and enhances gut absorption — most bioavailable version.',
+      },
+      {
+        name: 'Collagen Ginger Shot',
+        emoji: '⚡',
+        time: '5 min',
+        steps: [
+          'Juice or blend a small knob of ginger with 100ml water. Strain.',
+          'Add 1 scoop collagen powder to the ginger water.',
+          'Add a squeeze of calamansi and stir.',
+          'Drink as a concentrated shot on an empty stomach.',
+        ],
+        tip: 'Taking collagen first thing in the morning on an empty stomach maximises absorption — nothing competing in the gut.',
+      },
+    ],
+  },
+
+  'spearmint-tea': {
+    emoji: '🍵',
+    color: 'rgba(60,200,140,0.07)',
+    tagline: 'Natural anti-androgen — supports hormonal clarity',
+    options: [
+      {
+        name: 'Classic Hot Brew',
+        emoji: '♨️',
+        time: '7 min',
+        steps: [
+          'Bring water to a gentle boil, then remove from heat and wait 1 min.',
+          'Add 1 spearmint tea bag or 1 tsp dried spearmint leaves.',
+          'Steep 5–7 min — spearmint needs full extraction, longer than green tea.',
+          'Remove bag or strain. Drink plain or with a small drizzle of raw honey.',
+        ],
+        tip: 'Two cups of spearmint tea per day has been clinically shown to reduce androgens (male hormones) in women — supporting clearer skin and balanced hormones.',
+      },
+      {
+        name: 'Iced Spearmint Tea',
+        emoji: '🧊',
+        time: '10 min + chill',
+        steps: [
+          'Brew 2 spearmint tea bags in 500ml of just-off-boil water for 5–7 min.',
+          'Remove bags and stir in 1 tsp raw honey while warm.',
+          'Add a squeeze of calamansi.',
+          'Cool 15 min at room temperature, then pour over ice.',
+          'Keep in fridge — stays fresh for 24 hours.',
+        ],
+        tip: 'Batch-brewing means you always have a hormone-balancing drink ready instead of reaching for something sugary.',
+      },
+      {
+        name: 'Spearmint Ginger Blend',
+        emoji: '🫚',
+        time: '10 min',
+        steps: [
+          'Slice 3 thin rounds of fresh ginger.',
+          'Simmer ginger in 300ml water for 5 min on low heat.',
+          'Remove from heat, cool slightly, add 1 spearmint tea bag.',
+          'Steep 5 min. Remove bag. Add calamansi and optional honey.',
+          'Drink warm in the evening.',
+        ],
+        tip: 'Ginger + spearmint in the evening — ginger settles digestion, spearmint lowers androgens, both reduce overnight inflammation.',
+      },
+    ],
+  },
+
+  'ginger-juice': {
+    emoji: '🫚',
+    color: 'rgba(255,160,30,0.08)',
+    tagline: 'Metabolism fire starter — three anti-bloat shots',
+    options: [
+      {
+        name: 'Ginger Lemon Beet Shot',
+        emoji: '⚡',
+        time: '10 min',
+        steps: [
+          'Blend: 1 small knob ginger (2cm) + ½ small beet + juice of ½ lemon.',
+          'Add ½ cup water and blend until smooth.',
+          'Strain through a fine sieve, pressing all the liquid out.',
+          'Add calamansi for extra citrus brightness.',
+          'Drink as a shot or sip slowly on an empty stomach.',
+        ],
+        tip: 'Beet boosts nitric oxide (improves blood flow). Combined with ginger thermogenesis, this is one of the most powerful pre-workout drinks.',
+      },
+      {
+        name: 'Classic Ginger Shot',
+        emoji: '🔥',
+        time: '5 min',
+        steps: [
+          'Blend a 3cm knob of fresh ginger with 100ml water.',
+          'Strain thoroughly through a fine sieve.',
+          'Add juice of 1 calamansi and ½ tsp raw honey.',
+          'Stir and drink in one or two sips.',
+          'Chase with a full glass of plain water.',
+        ],
+        tip: 'A ginger shot first thing in the morning triggers thermogenesis within 20 minutes — body temperature rises and fat burning begins.',
+      },
+      {
+        name: 'Ginger Lemon Water',
+        emoji: '💧',
+        time: '5 min',
+        steps: [
+          'Slice 4–5 thin rounds of fresh ginger.',
+          'Muddle (press and twist) ginger slices in a glass.',
+          'Add 300ml warm (not hot) water.',
+          'Squeeze half a lemon or 3 calamansi.',
+          'Stir and drink immediately before eating.',
+        ],
+        tip: 'Warm lemon-ginger water before your first meal stimulates stomach acid production — improving digestion of everything you eat that day.',
+      },
+    ],
+  },
+
+  /* ── Fruits ──────────────────────────────────────────────────── */
+
+  papaya: {
+    emoji: '🍈',
+    color: 'rgba(255,160,60,0.08)',
+    tagline: 'The digestive enzyme fruit — three Filipino ways',
+    options: [
+      {
+        name: 'Plain Sliced',
+        emoji: '🔪',
+        time: '3 min',
+        steps: [
+          'Halve the papaya lengthwise and scoop out the black seeds.',
+          'Peel the skin or eat directly from the skin with a spoon.',
+          'Slice into cubes or long strips.',
+          'Squeeze calamansi over the top for brightness.',
+          'Eat immediately — papaya oxidises quickly once cut.',
+        ],
+        tip: 'The black seeds are edible and peppery — they contain papain enzyme too. Try eating a few as a natural digestive aid.',
+      },
+      {
+        name: 'Atchara-Style Salad',
+        emoji: '🥗',
+        time: '10 min',
+        steps: [
+          'Julienne or grate 1 cup of unripe (green) papaya into thin strips.',
+          'Soak in salted water for 5 min to reduce bitterness, then rinse.',
+          'Dressing: 2 calamansi + 1 tsp coconut aminos + pinch of chili.',
+          'Toss papaya with dressing, sliced tomato, and thin onion rings.',
+          'Rest 5 min before eating for flavors to meld.',
+        ],
+        tip: 'Unripe (green) papaya has the highest papain concentration — the enzyme that breaks down protein and actively reduces bloating after meals.',
+      },
+      {
+        name: 'Papaya Smoothie',
+        emoji: '🥤',
+        time: '5 min',
+        steps: [
+          'Scoop 1 cup ripe papaya flesh into a blender.',
+          'Add ½ banana for creaminess.',
+          'Pour in ½ cup coconut water.',
+          'Add a squeeze of calamansi and a pinch of cinnamon.',
+          'Blend until completely smooth. Drink immediately.',
+        ],
+        tip: 'Papaya + coconut water is a natural electrolyte + enzyme combo — ideal after a workout or on a hot day.',
+      },
+    ],
+  },
+
+  watermelon: {
+    emoji: '🍉',
+    color: 'rgba(255,80,80,0.07)',
+    tagline: '92% water, natural citrulline — three refreshing options',
+    options: [
+      {
+        name: 'Plain Chilled',
+        emoji: '🧊',
+        time: '2 min',
+        steps: [
+          'Slice watermelon into triangles or cube it.',
+          'Remove visible seeds if desired.',
+          'Refrigerate 30 min before eating — cold watermelon is significantly sweeter.',
+          'Sprinkle a tiny pinch of salt on top before eating.',
+        ],
+        tip: 'A pinch of salt on watermelon is a Filipino classic — it contrasts the sweetness and makes it taste even riper.',
+      },
+      {
+        name: 'Watermelon Juice',
+        emoji: '🥤',
+        time: '5 min',
+        steps: [
+          'Cube 2 cups of seedless watermelon.',
+          'Blend until smooth.',
+          'Do not strain — the fibre slows sugar absorption.',
+          'Add a squeeze of calamansi and pour over ice.',
+          'Drink immediately — do not store, it separates quickly.',
+        ],
+        tip: 'Watermelon is naturally high in citrulline — an amino acid that improves blood flow and reduces muscle soreness after workouts.',
+      },
+      {
+        name: 'Watermelon Mint Bowl',
+        emoji: '🌿',
+        time: '5 min',
+        steps: [
+          'Cube 1.5 cups of watermelon into bite-sized pieces.',
+          'Tear 4–5 fresh mint leaves and mix in.',
+          'Add a squeeze of calamansi.',
+          'Top with a small handful of blueberries or strawberries.',
+          'Serve cold.',
+        ],
+        tip: 'Mint + watermelon activates the cool receptors in the mouth — makes you feel even more refreshed, especially useful on hot days.',
+      },
+    ],
+  },
+
+  berries: {
+    emoji: '🫐',
+    color: 'rgba(100,80,200,0.07)',
+    tagline: 'Antioxidant powerhouses — three delicious options',
+    options: [
+      {
+        name: 'Plain Fresh',
+        emoji: '✨',
+        time: '1 min',
+        steps: [
+          'Rinse berries under cold running water in a colander.',
+          'Pat dry gently with a paper towel.',
+          'Eat immediately at room temperature — cold blunts the flavour.',
+          'Mix blueberries, strawberries, and raspberries for maximum antioxidant variety.',
+        ],
+        tip: 'Different coloured berries contain different antioxidants — eating a mix gives broader skin and inflammation protection.',
+      },
+      {
+        name: 'Berry Compote',
+        emoji: '🍓',
+        time: '8 min',
+        steps: [
+          'Add ½ cup mixed berries to a small saucepan.',
+          'Add 1 tsp raw honey and a squeeze of calamansi.',
+          'Cook on low heat 5–6 min, gently stirring, until berries break down and thicken.',
+          'Remove from heat and cool slightly.',
+          'Spoon over banana nice cream, chia pudding, or eat plain.',
+        ],
+        tip: 'Warm compote releases more anthocyanins (the anti-inflammatory pigment) than raw berries — a rare case where cooking increases nutrients.',
+      },
+      {
+        name: 'Berry Smoothie',
+        emoji: '🥤',
+        time: '5 min',
+        steps: [
+          'Add ½ cup frozen mixed berries to a blender.',
+          'Add ½ banana (fresh or frozen).',
+          'Pour in ½ cup coconut water or unsweetened almond milk.',
+          'Blend until thick and smooth.',
+          'Drink immediately — do not store.',
+        ],
+        tip: 'Frozen berries retain 90% of their antioxidants — freezing after peak ripeness locks in all the nutrients.',
+      },
+    ],
+  },
+
+  pineapple: {
+    emoji: '🍍',
+    color: 'rgba(255,200,50,0.08)',
+    tagline: 'Bromelain enzyme for digestion and anti-inflammation',
+    options: [
+      {
+        name: 'Fresh Sliced',
+        emoji: '🔪',
+        time: '5 min',
+        steps: [
+          'Lay pineapple on its side. Slice off top and bottom.',
+          'Stand upright. Slice off the skin in downward strips.',
+          'Quarter lengthwise and cut out the tough core from each quarter.',
+          'Slice into triangles or bite-sized chunks.',
+          'Serve immediately or refrigerate for up to 2 days.',
+        ],
+        tip: 'The core has the highest concentration of bromelain — chew it even if it feels tough, it is worth it.',
+      },
+      {
+        name: 'Pineapple Ginger Juice',
+        emoji: '🥤',
+        time: '7 min',
+        steps: [
+          'Cube 1 cup of fresh pineapple.',
+          'Blend with a 1cm knob of fresh ginger and ½ cup water.',
+          'Strain through a fine sieve, pressing the pulp.',
+          'Add a squeeze of calamansi.',
+          'Drink on an empty stomach for maximum bromelain effect.',
+        ],
+        tip: 'Pineapple-ginger juice on an empty stomach is one of the most powerful natural digestive tonics — reduces bloating for hours.',
+      },
+      {
+        name: 'Grilled Pineapple',
+        emoji: '🔥',
+        time: '10 min',
+        steps: [
+          'Cut pineapple into 1cm-thick rings or long wedges.',
+          'Sprinkle a tiny pinch of cinnamon on each piece.',
+          'Heat a dry grill pan or non-stick pan on medium-high.',
+          'Grill 2–3 min per side until caramelized lines form.',
+          'Serve warm — the heat intensifies the sweetness dramatically.',
+        ],
+        tip: 'Grilling pineapple caramelises the natural sugars and reduces acidity — it tastes sweeter than raw with zero added sugar.',
+      },
+    ],
+  },
+
+  apple: {
+    emoji: '🍎',
+    color: 'rgba(255,80,60,0.07)',
+    tagline: 'Pectin fibre for gut health and sustained energy',
+    options: [
+      {
+        name: 'Plain with Cinnamon',
+        emoji: '🌀',
+        time: '2 min',
+        steps: [
+          'Wash the apple thoroughly — eat with the skin on for maximum fibre.',
+          'Core and slice into wedges.',
+          'Sprinkle a pinch of cinnamon over the slices.',
+          'Optional: dip in a small amount of almond butter.',
+          'Eat at room temperature — cold dulls the flavour.',
+        ],
+        tip: 'The skin contains the majority of quercetin — an antioxidant that reduces histamine response and supports clear skin.',
+      },
+      {
+        name: 'Warm Baked Apple',
+        emoji: '🫙',
+        time: '20 min',
+        steps: [
+          'Core the apple but do not peel.',
+          'Stuff the cavity with a pinch of cinnamon and 1 tsp raw honey.',
+          'Place in a small baking dish with 2 tbsp water at the bottom.',
+          'Bake at 180°C for 15–18 min until tender and slightly caramelised.',
+          'Eat warm — the cinnamon and honey melt through the apple.',
+        ],
+        tip: 'A baked apple tastes like dessert — sweet, warm, and satisfying with zero guilt and full digestive benefit.',
+      },
+      {
+        name: 'Apple Ginger Juice',
+        emoji: '🥤',
+        time: '5 min',
+        steps: [
+          'Core 1 apple (no need to peel).',
+          'Blend with a small knob of fresh ginger and ½ cup water.',
+          'Add a squeeze of calamansi.',
+          'Do not strain — blend smooth to keep all the fibre.',
+          'Drink immediately.',
+        ],
+        tip: 'Apple pectin directly feeds good gut bacteria — this is prebiotic fibre that actively builds a healthier microbiome with every cup.',
+      },
+    ],
+  },
+
   /* ── Vegetables ──────────────────────────────────────────────── */
 
   broccoli: {

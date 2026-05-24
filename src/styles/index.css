@@ -20,6 +20,31 @@
   --card:       rgba(16, 5, 22, 0.88);
 }
 
+/* ─── MALE THEME ─── */
+[data-theme="male"] {
+  --rose:       #2d9cff;
+  --rose-deep:  #1a7fd8;
+  --rose-pale:  #0a1628;
+  --blush:      #080d18;
+  --gold:       #00c7b5;
+  --gold-light: #00e5d8;
+  --gold-pale:  #041010;
+  --gold-shine: #00e5d8;
+  --text-mid:   #80b4d8;
+  --text-soft:  #6099c0;
+  --border-g:   rgba(0,199,181,0.22);
+  --border-r:   rgba(45,156,255,0.32);
+}
+[data-theme="male"] .bg-layer {
+  background:
+    radial-gradient(ellipse 78% 48% at 50% 22%, rgba(30,100,220,0.48) 0%, rgba(0,180,200,0.20) 38%, transparent 68%),
+    #07040f;
+}
+[data-theme="male"] .bg-aurora {
+  background:
+    radial-gradient(ellipse 60% 30% at 50% 20%, rgba(30,100,220,0.10) 0%, transparent 60%);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html {

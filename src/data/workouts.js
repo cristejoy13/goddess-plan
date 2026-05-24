@@ -18,13 +18,13 @@ export const WORKOUT_DAYS = [
         { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
           { name: '½ banana', key: 'banana' },
           { name: '1 egg', key: 'egg' },
-          { name: 'green tea', key: null },
+          { name: 'green tea', key: 'green-tea' },
         ]},
         { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
           { name: 'chicken 150g', key: 'chicken' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
           { name: 'fish 120g', key: 'fish' },
@@ -46,24 +46,18 @@ export const WORKOUT_DAYS = [
       { name: 'Roll-Up', detail: '3 × 8 · peel up one vertebra at a time, resist on the way back down · decompresses the spine and works the full abdominal wall' },
     ],
     meals: {
-      label: '🍽️ Fruit & Salad Day — Eat after waking · Last meal 3:00 PM',
+      label: '🍽️ Fruit & Salad Day — Fasting until noon · Last meal 3:00 PM',
       rows: [
-        { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
-          { name: 'papaya', key: null },
-          { name: 'watermelon', key: null },
-          { name: 'berries (any)', key: null },
-          { name: 'green tea', key: null },
-        ]},
-        { time: '12:00 PM — Meal 2', ingredients: [
-          { name: 'pineapple', key: null },
-          { name: 'apple', key: null },
+        { time: '12:00 PM — First Meal', ingredients: [
+          { name: 'pineapple', key: 'pineapple' },
+          { name: 'apple', key: 'apple' },
           { name: 'Salad', key: 'salad' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
-          { name: 'watermelon or papaya', key: null },
-          { name: 'berries (any)', key: null },
-          { name: 'spearmint tea', key: null },
+          { name: 'watermelon or papaya', key: 'watermelon' },
+          { name: 'berries (any)', key: 'berries' },
+          { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
       ],
     },
@@ -87,13 +81,13 @@ export const WORKOUT_DAYS = [
         { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
           { name: '½ banana', key: 'banana' },
           { name: '1 egg', key: 'egg' },
-          { name: 'ginger-lemon-beet juice', key: null },
+          { name: 'ginger-lemon-beet juice', key: 'ginger-juice' },
         ]},
         { time: '12:00 PM — Meal 2 (post-sprint)', ingredients: [
           { name: 'fish 150g', key: 'fish' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
           { name: 'chicken 100g', key: 'chicken' },
@@ -121,13 +115,13 @@ export const WORKOUT_DAYS = [
         { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
           { name: '½ banana', key: 'banana' },
           { name: '1 egg', key: 'egg' },
-          { name: 'green tea', key: null },
+          { name: 'green tea', key: 'green-tea' },
         ]},
         { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
           { name: 'beef 120g', key: 'beef' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
           { name: 'fish 120g', key: 'fish' },
@@ -149,24 +143,18 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '💡 Two pilates sessions per week flanking your sprint day keeps the core active and the body mobile. This is what prevents lower back tightness from building up over weeks of heavy training.' },
     meals: {
-      label: '🍽️ Fruit & Salad Day — Eat after waking · Last meal 3:00 PM',
+      label: '🍽️ Fruit & Salad Day — Fasting until noon · Last meal 3:00 PM',
       rows: [
-        { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
-          { name: 'watermelon', key: null },
-          { name: 'pineapple', key: null },
-          { name: 'berries (any)', key: null },
-          { name: 'green tea', key: null },
-        ]},
-        { time: '12:00 PM — Meal 2', ingredients: [
-          { name: 'papaya', key: null },
-          { name: 'apple', key: null },
+        { time: '12:00 PM — First Meal', ingredients: [
+          { name: 'papaya', key: 'papaya' },
+          { name: 'apple', key: 'apple' },
           { name: 'Salad', key: 'salad' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
-          { name: 'pineapple or watermelon', key: null },
-          { name: 'berries (any)', key: null },
-          { name: 'spearmint tea', key: null },
+          { name: 'pineapple or watermelon', key: 'pineapple' },
+          { name: 'berries (any)', key: 'berries' },
+          { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
       ],
     },
@@ -185,22 +173,17 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'rose', text: '💡 Consistent cycling on Saturdays builds the aerobic engine that makes all your other workouts feel lighter and recovery faster.' },
     meals: {
-      label: '🍽️ Fruit & Salad Day — Eat after waking · Last meal 3:00 PM',
+      label: '🍽️ Fruit & Salad Day — Fasting until noon · Last meal 3:00 PM',
       rows: [
-        { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
-          { name: 'watermelon', key: null },
-          { name: 'papaya', key: null },
-          { name: 'green tea', key: null },
-        ]},
-        { time: '12:00 PM — Meal 2', ingredients: [
-          { name: 'pineapple', key: null },
-          { name: 'apple or berries', key: null },
+        { time: '12:00 PM — First Meal', ingredients: [
+          { name: 'pineapple', key: 'pineapple' },
+          { name: 'apple or berries', key: 'apple' },
           { name: 'Salad', key: 'salad' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
-          { name: 'watermelon or berries', key: null },
-          { name: 'spearmint tea', key: null },
+          { name: 'watermelon or berries', key: 'watermelon' },
+          { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
       ],
     },
@@ -219,22 +202,17 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'rose', text: '💡 Sunday back work + Sunday prep: batch-cook chicken or fish for Mon–Wed, boil eggs for the week, and set up your rosemary oil blend. A prepared week trains better and eats better.' },
     meals: {
-      label: '🍽️ Fruit & Salad Day — Eat after waking · Last meal 3:00 PM',
+      label: '🍽️ Fruit & Salad Day — Fasting until noon · Last meal 3:00 PM',
       rows: [
-        { time: 'Meal 1 — After waking (by 8:00 AM)', ingredients: [
-          { name: 'watermelon', key: null },
-          { name: 'berries (any)', key: null },
-          { name: 'green tea', key: null },
-        ]},
-        { time: '12:00 PM — Meal 2', ingredients: [
-          { name: 'papaya', key: null },
-          { name: 'pineapple', key: null },
+        { time: '12:00 PM — First Meal', ingredients: [
+          { name: 'papaya', key: 'papaya' },
+          { name: 'pineapple', key: 'pineapple' },
           { name: 'Salad', key: 'salad' },
-          { name: 'collagen water', key: null },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
-          { name: 'apple or berries', key: null },
-          { name: 'spearmint tea', key: null },
+          { name: 'apple or berries', key: 'apple' },
+          { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
       ],
     },
