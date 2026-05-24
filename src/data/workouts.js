@@ -28,7 +28,7 @@ export const WORKOUT_DAYS = [
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
           { name: 'fish 120g', key: 'fish' },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
         ]},
       ],
     },
@@ -57,7 +57,7 @@ export const WORKOUT_DAYS = [
         { time: '12:00 PM — Meal 2', ingredients: [
           { name: 'pineapple', key: null },
           { name: 'apple', key: null },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: null },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
@@ -97,7 +97,7 @@ export const WORKOUT_DAYS = [
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
           { name: 'chicken 100g', key: 'chicken' },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
         ]},
       ],
     },
@@ -131,7 +131,7 @@ export const WORKOUT_DAYS = [
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
           { name: 'fish 120g', key: 'fish' },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
         ]},
       ],
     },
@@ -160,7 +160,7 @@ export const WORKOUT_DAYS = [
         { time: '12:00 PM — Meal 2', ingredients: [
           { name: 'papaya', key: null },
           { name: 'apple', key: null },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: null },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
@@ -195,7 +195,7 @@ export const WORKOUT_DAYS = [
         { time: '12:00 PM — Meal 2', ingredients: [
           { name: 'pineapple', key: null },
           { name: 'apple or berries', key: null },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: null },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [
@@ -229,7 +229,7 @@ export const WORKOUT_DAYS = [
         { time: '12:00 PM — Meal 2', ingredients: [
           { name: 'papaya', key: null },
           { name: 'pineapple', key: null },
-          { name: 'salad (cucumber · tomato · bell pepper · calamansi · dressing)', key: 'salad' },
+          { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: null },
         ]},
         { time: '3:00 PM — Last Meal', ingredients: [

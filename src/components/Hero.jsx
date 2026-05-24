@@ -26,9 +26,9 @@ const GOALS = [
   { label: '✨ Clear, Bright Skin',    section: 'skincare',   tab: 'am'        },
   { label: '💪 Round Glutes',          section: 'workout',    tab: null        },
   { label: '🌿 Low Inflammation',      section: 'nutrition',  tab: 'guide'     },
-  { label: '🌺 Healthy Hormones',      section: 'antiaging',  tab: null        },
+  { label: '🌺 Healthy Hormones',      section: 'skincare',   tab: 'antiaging' },
   { label: '💎 Shiny Wavy Hair',       section: 'haircare',   tab: null        },
-  { label: '🧠 Brain Health',          section: 'antiaging',  tab: null        },
+  { label: '🧠 Brain Health',          section: 'skincare',   tab: 'antiaging' },
   { label: '💧 Less Puffiness',        section: 'nutrition',  tab: 'hydration' },
 ];
 

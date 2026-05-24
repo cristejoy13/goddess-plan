@@ -67,7 +67,19 @@ const SECTIONS = [
   { id: 'nutrition', emoji: '🥗', label: 'Nutrition Plan' },
   { id: 'skincare',  emoji: '✨', label: 'Skincare Routine' },
   { id: 'haircare',  emoji: '💆', label: 'Hair Care' },
-  { id: 'antiaging', emoji: '🌿', label: 'Anti-Aging Guide' },
+];
+
+const MEAL_FREQ = [
+  { id: '2', label: '2 meals' },
+  { id: '3', label: '3 meals' },
+  { id: '4', label: '4 meals' },
+  { id: '5', label: '5 meals' },
+];
+const FASTING = [
+  { id: 'none',  emoji: '🍽️', label: 'No fasting' },
+  { id: '16:8',  emoji: '⏱️', label: '16:8' },
+  { id: '18:6',  emoji: '⏱️', label: '18:6' },
+  { id: '20:4',  emoji: '⏱️', label: '20:4' },
 ];
 
 function ChipBtn({ selected, onClick, emoji, label, multi }) {
@@ -104,9 +116,29 @@ function QuestionnaireScreen({ form, setForm, onNext, onBack, saving }) {
       <h2 className="ob-title">Let's build your plan</h2>
       <p className="ob-subtitle">5 quick questions — Joy will use these to personalise everything for you</p>
 
+      {/* Meals per day */}
+      <div className="ob-field">
+        <label className="ob-label">1. How many meals per day do you prefer?</label>
+        <div className="ob-chip-wrap">
+          {MEAL_FREQ.map(m => (
+            <ChipBtn key={m.id} selected={form.mealFrequency === m.id} onClick={() => set('mealFrequency', m.id)} label={m.label} />
+          ))}
+        </div>
+      </div>
+
+      {/* Fasting */}
+      <div className="ob-field">
+        <label className="ob-label">2. Do you want to try intermittent fasting?</label>
+        <div className="ob-chip-wrap">
+          {FASTING.map(f => (
+            <ChipBtn key={f.id} selected={form.fastingProtocol === f.id} onClick={() => set('fastingProtocol', f.id)} emoji={f.emoji} label={f.label} />
+          ))}
+        </div>
+      </div>
+
       {/* Q1 */}
       <div className="ob-field">
-        <label className="ob-label">1. What's your main goal? <span className="ob-label-note">(pick all that apply)</span></label>
+        <label className="ob-label">3. What's your main goal? <span className="ob-label-note">(pick all that apply)</span></label>
         <div className="ob-chip-wrap">
           {GOALS.map(g => (
             <ChipBtn key={g.id} selected={goals.includes(g.id)} onClick={() => toggleGoal(g.id)}
@@ -117,7 +149,7 @@ function QuestionnaireScreen({ form, setForm, onNext, onBack, saving }) {
 
       {/* Q2 */}
       <div className="ob-field">
-        <label className="ob-label">2. How active are you right now?</label>
+        <label className="ob-label">4. How active are you right now?</label>
         <div className="ob-chip-wrap">
           {ACTIVITY_LEVELS.map(a => (
             <ChipBtn key={a.id} selected={form.activityLevel === a.id} onClick={() => set('activityLevel', a.id)}
@@ -128,7 +160,7 @@ function QuestionnaireScreen({ form, setForm, onNext, onBack, saving }) {
 
       {/* Q3 */}
       <div className="ob-field">
-        <label className="ob-label">3. How many days a week can you work out?</label>
+        <label className="ob-label">5. How many days a week can you work out?</label>
         <div className="ob-chip-wrap">
           {WORKOUT_DAYS.map(d => (
             <ChipBtn key={d.id} selected={form.workoutDays === d.id} onClick={() => set('workoutDays', d.id)}
@@ -139,7 +171,7 @@ function QuestionnaireScreen({ form, setForm, onNext, onBack, saving }) {
 
       {/* Q4 */}
       <div className="ob-field">
-        <label className="ob-label">4. When do you prefer to work out?</label>
+        <label className="ob-label">6. When do you prefer to work out?</label>
         <div className="ob-chip-wrap">
           {WORKOUT_TIMES.map(t => (
             <ChipBtn key={t.id} selected={form.workoutTime === t.id} onClick={() => set('workoutTime', t.id)}
@@ -150,7 +182,7 @@ function QuestionnaireScreen({ form, setForm, onNext, onBack, saving }) {
 
       {/* Q5 */}
       <div className="ob-field">
-        <label className="ob-label">5. What's your biggest challenge right now?</label>
+        <label className="ob-label">7. What's your biggest challenge right now?</label>
         <div className="ob-chip-wrap">
           {CHALLENGES.map(c => (
             <ChipBtn key={c.id} selected={form.biggestChallenge === c.id} onClick={() => set('biggestChallenge', c.id)}
@@ -460,6 +492,8 @@ export default function Onboarding({ user, onComplete }) {
     workoutDays: '',
     workoutTime: '',
     biggestChallenge: '',
+    mealFrequency: '',
+    fastingProtocol: '',
     sections: [],
     joyNote: '',
   });
@@ -467,6 +501,31 @@ export default function Onboarding({ user, onComplete }) {
   async function handleComplete() {
     setSaving(true);
     try {
+      // Normalise to cm / kg for BMR calculation
+      const heightCm = form.heightUnit === 'cm'
+        ? parseFloat(form.heightCm) || 0
+        : ((parseFloat(form.heightFt) || 0) * 30.48 + (parseFloat(form.heightIn) || 0) * 2.54);
+      const weightKg = form.weightUnit === 'kg'
+        ? parseFloat(form.weightKg) || 0
+        : (parseFloat(form.weightLbs) || 0) / 2.2046;
+      const age = parseInt(form.age) || 0;
+
+      // Mifflin-St Jeor (female)
+      const bmr = heightCm && weightKg && age
+        ? Math.round(10 * weightKg + 6.25 * heightCm - 5 * age - 161)
+        : null;
+
+      // TDEE per day type (TDEE = BMR × activity multiplier)
+      const tdee = bmr ? {
+        strength: Math.round(bmr * 1.55),  // Mon/Wed/Thu — heavy lifting
+        light:    Math.round(bmr * 1.375), // Tue/Fri/Sat/Sun — pilates, bike, back
+      } : null;
+      // Deficit target: TDEE - 400 kcal
+      const deficit = tdee ? {
+        strength: tdee.strength - 400,
+        light:    tdee.light - 400,
+      } : null;
+
       const height = form.heightUnit === 'cm'
         ? (form.heightCm ? `${form.heightCm} cm` : '')
         : (form.heightFt ? `${form.heightFt}'${form.heightIn || '0'}"` : '');
@@ -491,6 +550,11 @@ export default function Onboarding({ user, onComplete }) {
         biggestChallenge: form.biggestChallenge,
         sections: ['workouts', ...form.sections],
         joyNote: form.joyNote.trim(),
+        mealFrequency: form.mealFrequency,
+        fastingProtocol: form.fastingProtocol,
+        bmrKcal: bmr,
+        tdeeKcal: tdee,
+        deficitKcal: deficit,
         termsAccepted: true,
         termsAcceptedAt: serverTimestamp(),
         createdAt: serverTimestamp(),

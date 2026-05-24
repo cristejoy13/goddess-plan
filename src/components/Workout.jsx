@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import PetalAccordion from './PetalAccordion';
 import { WORKOUT_DAYS } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
+import { FOODS, FOOD_CATS } from '../data/foods';
 
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
 ];
+// Mon(0), Wed(2), Thu(3) = strength; rest = light
+const DAY_TYPES = ['strength', 'light', 'strength', 'strength', 'light', 'light', 'light'];
 
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
@@ -23,15 +26,17 @@ function MealBox({ meals, onIngredientClick }) {
         <div key={i} className="meal-row">
           <span className="meal-t">{r.time}</span>
           <div className="meal-ingr-list">
-            {r.ingredients.map((ingr, j) =>
-              ingr.key ? (
+            {r.ingredients.map((ingr, j) => {
+              const next = r.ingredients[j + 1];
+              const comma = !ingr.key && next && !next.key;
+              return ingr.key ? (
                 <button key={j} className="meal-ingr-chip" onClick={() => onIngredientClick(ingr)}>
                   {ingr.name}
                 </button>
               ) : (
-                <span key={j} className="meal-ingr-plain">{ingr.name}</span>
-              )
-            )}
+                <span key={j} className="meal-ingr-plain">{ingr.name}{comma ? ',' : ''}</span>
+              );
+            })}
           </div>
         </div>
       ))}
@@ -39,7 +44,177 @@ function MealBox({ meals, onIngredientClick }) {
   );
 }
 
-function WorkoutDay({ day, id, open, onToggle, isToday, onIngredientClick }) {
+function CalorieBanner({ tdee, deficit }) {
+  if (!tdee) return null;
+  return (
+    <div className="cal-banner splash-item">
+      <span className="cal-banner-item">🔥 Maintenance <strong>{tdee} kcal</strong></span>
+      <span className="cal-banner-sep">·</span>
+      <span className="cal-banner-item">🎯 Deficit target <strong>{deficit} kcal</strong></span>
+    </div>
+  );
+}
+
+/* ─── Custom Meal Builder ─── */
+function useDayMeals(dayId) {
+  const key = `gp_meal_${dayId}`;
+  const [items, setItems] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+  });
+  const save = useCallback((next) => {
+    setItems(next);
+    try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
+  }, [key]);
+  return [items, save];
+}
+
+function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
+  const [custom, saveCustom] = useDayMeals(dayId);
+  const [query, setQuery]    = useState('');
+  const [browse, setBrowse]  = useState(false);
+  const holdRef = useRef({});
+
+  const filtered = query.trim().length > 0
+    ? FOODS.filter(f => f.name.toLowerCase().includes(query.toLowerCase()))
+    : [];
+
+  function addFood(food) {
+    if (custom.find(c => c.name === food.name)) return;
+    saveCustom([...custom, { name: food.name, emoji: food.emoji, meal: food.meal }]);
+    setQuery('');
+    setBrowse(false);
+  }
+
+  function startHold(name) {
+    holdRef.current[name] = setTimeout(() => {
+      if (window.confirm(`Remove "${name}" from this day's meal?`)) {
+        saveCustom(custom.filter(c => c.name !== name));
+      }
+    }, 500);
+  }
+  function cancelHold(name) { clearTimeout(holdRef.current[name]); }
+
+  // Merge custom into base meal rows
+  const mealSlotMap = { morning: 0, snack: null, lunch: 1, dinner: 2 };
+  const rows = baseMeals.rows.map(r => ({ ...r, ingredients: [...r.ingredients] }));
+  // Add a "snack" row if any custom items belong there
+  const snackItems = custom.filter(c => c.meal === 'snack');
+  const hasSnackRow = rows.some(r => r.time.toLowerCase().includes('snack'));
+  if (snackItems.length > 0 && !hasSnackRow) {
+    rows.splice(1, 0, { time: 'Snack', ingredients: [] });
+  }
+  custom.forEach(c => {
+    const ingr = { name: `${c.emoji} ${c.name}`, key: null, custom: true };
+    if (c.meal === 'morning' && rows[0]) rows[0].ingredients.push(ingr);
+    else if (c.meal === 'snack') {
+      const si = rows.findIndex(r => r.time === 'Snack');
+      if (si >= 0) rows[si].ingredients.push(ingr);
+    } else if (c.meal === 'lunch' && rows[1]) rows[1].ingredients.push(ingr);
+    else if (c.meal === 'dinner' && rows[rows.length - 1]) rows[rows.length - 1].ingredients.push(ingr);
+    else if (rows[rows.length - 1]) rows[rows.length - 1].ingredients.push(ingr);
+  });
+
+  return (
+    <div className="meal-builder">
+      {/* Custom ingredient chips */}
+      {custom.length > 0 && (
+        <div className="mb-custom-chips">
+          {custom.map(c => (
+            <button
+              key={c.name}
+              className="mb-chip"
+              onMouseDown={() => startHold(c.name)}
+              onMouseUp={() => cancelHold(c.name)}
+              onMouseLeave={() => cancelHold(c.name)}
+              onTouchStart={() => startHold(c.name)}
+              onTouchEnd={() => cancelHold(c.name)}
+              title="Hold to remove"
+            >
+              {c.emoji} {c.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Search bar */}
+      <div className="mb-search-wrap">
+        <input
+          className="mb-search"
+          type="text"
+          placeholder="🔍 Add ingredient to your meal..."
+          value={query}
+          onChange={e => { setQuery(e.target.value); setBrowse(false); }}
+          onFocus={() => { if (!query) setBrowse(true); }}
+        />
+        <button className="mb-az-btn" onClick={() => { setBrowse(b => !b); setQuery(''); }}>A–Z</button>
+      </div>
+
+      {/* Search results */}
+      {filtered.length > 0 && (
+        <div className="mb-results">
+          {filtered.map(f => (
+            <button key={f.name} className="mb-result-item" onClick={() => addFood(f)}>
+              <span className="mb-result-em">{f.emoji}</span>
+              <span className="mb-result-name">{f.name}</span>
+              <span className="mb-result-cat">{f.cat}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Browse A-Z */}
+      {browse && query === '' && (
+        <div className="mb-browse">
+          {FOOD_CATS.map(cat => {
+            const catFoods = FOODS.filter(f => f.cat === cat);
+            return (
+              <div key={cat} className="mb-cat">
+                <div className="mb-cat-label">{cat}</div>
+                <div className="mb-cat-items">
+                  {catFoods.map(f => (
+                    <button key={f.name} className="mb-cat-item" onClick={() => addFood(f)}>
+                      {f.emoji} {f.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Meal plan with custom ingredients merged in */}
+      <div className="meal-box">
+        <div className="meal-lbl">{baseMeals.label}</div>
+        {custom.length > 0 && (
+          <div className="mb-plan-note">✨ Your added ingredients are included below.</div>
+        )}
+        {rows.map((r, i) => (
+          <div key={i} className="meal-row">
+            <span className="meal-t">{r.time}</span>
+            <div className="meal-ingr-list">
+              {r.ingredients.map((ingr, j) => {
+                const next = r.ingredients[j + 1];
+                const comma = !ingr.key && !ingr.custom && next && !next.key && !next.custom;
+                return ingr.key ? (
+                  <button key={j} className="meal-ingr-chip" onClick={() => onIngredientClick(ingr)}>
+                    {ingr.name}
+                  </button>
+                ) : (
+                  <span key={j} className={`meal-ingr-plain${ingr.custom ? ' custom' : ''}`}>
+                    {ingr.name}{comma ? ',' : ''}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WorkoutDay({ day, id, open, onToggle, isToday, onIngredientClick, tdee, deficit }) {
   return (
     <PetalAccordion
       id={id}
@@ -52,20 +227,32 @@ function WorkoutDay({ day, id, open, onToggle, isToday, onIngredientClick }) {
       onToggle={onToggle}
       isToday={isToday}
     >
+      <CalorieBanner tdee={tdee} deficit={deficit} />
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
+      <div className="exercise-hint">👆 Tap any exercise to watch how to do it.</div>
       <ul className="workout-list">
         {day.exercises.map((ex, i) => (
-          <li key={i}><strong>{ex.name}</strong> — {ex.detail}</li>
+          <li key={i}>
+            <a
+              className="ex-link"
+              href={`https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >{ex.name}</a>
+            {' '}— {ex.detail}
+          </li>
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBox meals={day.meals} onIngredientClick={onIngredientClick} />
+      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} />
     </PetalAccordion>
   );
 }
 
-export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack }) {
+export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, profile }) {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const tdeeByType   = profile?.tdeeKcal   || null;
+  const deficitByType = profile?.deficitKcal || null;
   const todayDay = WORKOUT_DAYS[todayIndex];
   const todayId  = DAY_IDS[todayIndex];
 
@@ -125,30 +312,45 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         <span className="today-banner-text">{todayDay.emoji} {todayDay.day} — {todayDay.title}</span>
       </div>
 
-      {WORKOUT_DAYS.map((day, i) => (
-        <WorkoutDay
-          key={i}
-          day={day}
-          id={DAY_IDS[i]}
-          open={openId === DAY_IDS[i]}
-          onToggle={() => toggleDay(DAY_IDS[i])}
-          isToday={i === todayIndex}
-          onIngredientClick={selectIngredient}
-        />
-      ))}
+      {WORKOUT_DAYS.map((day, i) => {
+        const dtype = DAY_TYPES[i];
+        return (
+          <WorkoutDay
+            key={i}
+            day={day}
+            id={DAY_IDS[i]}
+            open={openId === DAY_IDS[i]}
+            onToggle={() => toggleDay(DAY_IDS[i])}
+            isToday={i === todayIndex}
+            onIngredientClick={selectIngredient}
+            tdee={tdeeByType?.[dtype]}
+            deficit={deficitByType?.[dtype]}
+          />
+        );
+      })}
 
       <div className="divider splash-item">Weekly Blueprint</div>
-      <div className="g-card splash-item">
-        <p><span className="pill pr">Mon</span> Strength A — Hip Thrust · RDL · Kickback</p>
-        <p style={{ marginTop: 6 }}><span className="pill py">Tue</span> Pilates 1 — The Hundred · Single Leg Stretch · Roll-Up</p>
-        <p style={{ marginTop: 6 }}><span className="pill pr">Wed</span> Sprint Day — Dynamic Warm-Up · Sprints or Intervals · Stretch</p>
-        <p style={{ marginTop: 6 }}><span className="pill pr">Thu</span> Strength B — Split Squat · Sumo Squat · Clamshell</p>
-        <p style={{ marginTop: 6 }}><span className="pill py">Fri</span> Pilates 2 — Leg Circles · Side Kick Series · Swimming</p>
-        <p style={{ marginTop: 6 }}><span className="pill pg">Sat</span> Bike — Warm-Up Ride · Steady State · Cool-Down</p>
-        <p style={{ marginTop: 6 }}><span className="pill pg">Sun</span> Back — Superman Hold · Band Row · Cat-Cow Thread</p>
-        <p style={{ marginTop: 14, fontSize: 13, color: 'var(--text-mid)' }}>
-          <strong>Progressive overload:</strong> Weeks 1–2 learn the movements. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If every set feels easy, increase load. If form breaks, increase reps first.
-        </p>
+      <div className="week-grid splash-item">
+        {[
+          { lbl: 'Mon', emoji: '🔥', name: 'Strength A', focus: 'Glutes · Hamstrings',   color: 'pr' },
+          { lbl: 'Tue', emoji: '🧘', name: 'Pilates 1',   focus: 'Core · TVA',            color: 'py' },
+          { lbl: 'Wed', emoji: '⚡', name: 'Sprints',     focus: 'Cardio · Full Body',    color: 'pr' },
+          { lbl: 'Thu', emoji: '🍑', name: 'Strength B', focus: 'Glute Med · Shape',      color: 'pr' },
+          { lbl: 'Fri', emoji: '🌿', name: 'Pilates 2',  focus: 'Spine · Side Body',      color: 'py' },
+          { lbl: 'Sat', emoji: '🚴', name: 'Bike',       focus: 'Cardio · Endurance',     color: 'pg' },
+          { lbl: 'Sun', emoji: '💪', name: 'Back',       focus: 'Posture · Upper Body',   color: 'pg' },
+        ].map((d, i) => (
+          <div key={d.lbl} className={`wg-day${i === todayIndex ? ' wg-today' : ''}`}>
+            <div className={`wg-dot wg-dot-${d.color}`} />
+            <div className="wg-emoji">{d.emoji}</div>
+            <div className="wg-lbl">{d.lbl}</div>
+            <div className="wg-name">{d.name}</div>
+            <div className="wg-focus">{d.focus}</div>
+          </div>
+        ))}
+      </div>
+      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8 }}>
+        <strong>Progressive overload:</strong> Weeks 1–2 learn the movements. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If every set feels easy, increase load. If form breaks, increase reps first.
       </div>
 
       {onNavigate && (

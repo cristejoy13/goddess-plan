@@ -1,11 +1,18 @@
 import { useState } from 'react';
 
-export default function RoutineStep({ num, cat, name, children }) {
-  const [open, setOpen] = useState(false);
+export default function RoutineStep({ num, cat, name, children, open: controlledOpen, onToggle }) {
+  const isControlled = controlledOpen !== undefined;
+  const [internal, setInternal] = useState(false);
+  const open = isControlled ? controlledOpen : internal;
+
+  function handleToggle() {
+    if (isControlled) onToggle?.();
+    else setInternal(o => !o);
+  }
 
   return (
     <div className={`rstep${open ? ' is-open' : ''}`}>
-      <button className="rs-trigger" onClick={() => setOpen(o => !o)}>
+      <button className="rs-trigger" onClick={handleToggle}>
         <div className="rs-num">{num}</div>
         <div className="rs-wrap">
           <div className="rs-cat">{cat}</div>

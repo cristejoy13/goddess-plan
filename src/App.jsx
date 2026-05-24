@@ -9,7 +9,6 @@ import Challenges from './components/Challenges';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import HairCare from './components/HairCare';
-import AntiAging from './components/AntiAging';
 import Settings from './components/Settings';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
@@ -25,7 +24,6 @@ const NAV_ITEMS = [
   { id: 'nutrition',  label: 'Nutrition' },
   { id: 'skincare',   label: 'Skincare' },
   { id: 'haircare',   label: 'Hair Care' },
-  { id: 'antiaging',  label: 'Anti-Aging' },
 ];
 
 const SEARCH_INDEX = [
@@ -65,11 +63,11 @@ const SEARCH_INDEX = [
   { label: 'Camellia Oil Ritual',          hint: 'Hair Care', section: 'haircare' },
   { label: 'Rosemary Oil for Hair Growth', hint: 'Hair Care', section: 'haircare' },
   { label: 'Argan Oil Shine',              hint: 'Hair Care', section: 'haircare' },
-  { label: 'Sleep Protocol',               hint: 'Anti-Aging → Sleep',    section: 'antiaging' },
-  { label: 'Cortisol Management',          hint: 'Anti-Aging → Cortisol', section: 'antiaging' },
-  { label: 'Hormone-Protective Eating',    hint: 'Anti-Aging → Hormones', section: 'antiaging' },
-  { label: 'Skin Longevity Nutrients',     hint: 'Anti-Aging → Skin',     section: 'antiaging' },
-  { label: 'Supplement Stack',             hint: 'Anti-Aging',            section: 'antiaging' },
+  { label: 'Sleep Protocol',               hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
+  { label: 'Cortisol Management',          hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
+  { label: 'Hormone-Protective Eating',    hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
+  { label: 'Skin Longevity Nutrients',     hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
+  { label: 'Supplement Stack',             hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Monthly Challenges',           hint: 'Challenges', section: 'challenges' },
   { label: 'January Challenge',            hint: 'Challenges', section: 'challenges' },
 ];
@@ -245,6 +243,7 @@ export default function App() {
   const lastTapRef = useRef({ time: 0, x: 0, y: 0 });
 
   const navigate = (id, tab = null, scrollTo = null) => {
+    if (id === 'antiaging') { id = 'skincare'; tab = tab ?? 'antiaging'; }
     clearInnerBack(); // entering a new section clears any inner sub-page history
     const cur = activeRef.current;
     if (id !== cur.section || tab !== cur.tab) {
@@ -446,12 +445,11 @@ export default function App() {
         onTouchEnd={handleTouchEnd}
       >
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
         {active === 'challenges' && <Challenges />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
-        {active === 'antiaging'  && <AntiAging />}
         {active === 'settings'   && <Settings onNavigate={navigate} user={user} profile={profile} onProfileUpdate={p => setProfile(p)} />}
       </div>
 

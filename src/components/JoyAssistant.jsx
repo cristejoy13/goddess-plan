@@ -54,8 +54,10 @@ export default function JoyAssistant({ forceOpen, onClose }) {
   const [messages, setMessages] = useState([{ from: 'joy', text: JOY_INTROS[0] }]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
-  /* drag state */
-  const [pos, setPos] = useState(null);          // null = use CSS default position
+  /* drag state — position persisted in localStorage */
+  const [pos, setPos] = useState(() => {
+    try { const s = localStorage.getItem('gp_joy_pos'); return s ? JSON.parse(s) : null; } catch { return null; }
+  });
   const [dragMode, setDragMode] = useState(false);
   const dragModeRef = useRef(false);
   const pressTimerRef = useRef(null);
@@ -63,6 +65,10 @@ export default function JoyAssistant({ forceOpen, onClose }) {
 
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (pos) try { localStorage.setItem('gp_joy_pos', JSON.stringify(pos)); } catch {}
+  }, [pos]);
 
   useEffect(() => {
     if (forceOpen) setOpen(true);
