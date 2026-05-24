@@ -68,7 +68,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
   }
 
   function startHold(rawName) {
-    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 3000);
+    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 2000);
   }
   function cancelHold(rawName) { clearTimeout(holdRef.current[rawName]); }
 
@@ -157,7 +157,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
       <div className="meal-box">
         <div className="meal-lbl">{baseMeals.label}</div>
         {custom.length > 0 && (
-          <div className="mb-plan-note">✨ Your added ingredients are below. Hold 3 sec to remove.</div>
+          <div className="mb-plan-note">✨ Your added ingredients are below. Hold 2 sec to remove.</div>
         )}
         {rows.map((r, i) => (
           <div key={i} className="meal-row">
