@@ -81,13 +81,15 @@ function getReminderBody(reminder) {
 
 function fireReminder(reminder) {
   playChime();
-  if (Notification.permission === 'granted') {
-    new Notification(`${reminder.emoji} ${reminder.label}`, {
-      body: getReminderBody(reminder),
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
-      tag: reminder.id,
-    });
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      new Notification(`${reminder.emoji} ${reminder.label}`, {
+        body: getReminderBody(reminder),
+        icon: '/icon-192.png',
+        badge: '/icon-192.png',
+        tag: reminder.id,
+      });
+    } catch { /* unsupported on this browser */ }
   }
 }
 
@@ -114,7 +116,7 @@ let intervalId = null;
 
 export function scheduleReminders(reminders) {
   if (intervalId) clearInterval(intervalId);
-  if (Notification.permission !== 'granted') return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
   checkAndFire(reminders); // immediate check in case app opened mid-minute
   intervalId = setInterval(() => checkAndFire(reminders), 60_000);
 }
