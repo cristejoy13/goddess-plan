@@ -4518,6 +4518,54 @@ body {
   margin-left: 4px;
 }
 
+/* Day + time row in reminder */
+.rem-day-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rem-days-mini {
+  display: flex;
+  gap: 2px;
+}
+.rem-day-dot {
+  font-size: 9px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  color: rgba(255,255,255,0.2);
+  width: 16px;
+  text-align: center;
+}
+.rem-day-dot.on { color: var(--rose); }
+
+/* Day chips in edit panel */
+.rem-day-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.rem-day-chip {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-soft);
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.rem-day-chip.on {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: #fff;
+}
+
 .rem-edit-panel {
   padding: 10px 0 14px;
   display: flex;

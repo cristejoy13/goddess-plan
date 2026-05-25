@@ -28,32 +28,41 @@ export async function registerFCMToken(userId) {
 export async function syncRemindersToFirestore(userId, reminders) {
   try {
     await setDoc(doc(db, 'users', userId), {
-      remindersV2: reminders.map(({ id, emoji, label, enabled, time, body }) =>
-        ({ id, emoji, label, enabled, time, body: body ?? null })),
+      remindersV2: reminders.map(({ id, emoji, label, enabled, time, body, days }) =>
+        ({ id, emoji, label, enabled, time, body: body ?? null, days: days ?? ALL_DAYS })),
     }, { merge: true });
   } catch {}
 }
 
+// days: JS getDay() values  0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+// Strength/Sprint days: Mon(1) Wed(3) Thu(4) — full eating window
+// Pilates/Rest/Bike days: Tue(2) Fri(5) Sat(6) Sun(0) — fasting until noon
+export const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
+const EAT_DAYS = [1, 3, 4]; // Strength + Sprints: breakfast fires
+const FAST_DAYS = [0, 2, 5, 6]; // Pilates + Rest: first meal at noon
+
 export const DEFAULT_REMINDERS = [
-  { id: 'sunlight',  emoji: '☀️',  label: 'Morning Sunlight',   time: '06:30', enabled: true,
+  { id: 'sunlight',  emoji: '☀️',  label: 'Morning Sunlight',   time: '06:30', enabled: true, days: ALL_DAYS,
     body: 'Get 10–20 min of morning sunlight to anchor your circadian rhythm! 🌿' },
-  { id: 'am_skin',   emoji: '✨',  label: 'AM Skincare',        time: '07:00', enabled: true,
+  { id: 'am_skin',   emoji: '✨',  label: 'AM Skincare',        time: '07:00', enabled: true, days: ALL_DAYS,
     body: 'AM routine time — cleanser, toner, vitamin C, sunscreen! 🌸' },
-  { id: 'breakfast', emoji: '🥣',  label: 'Breakfast (Meal 1)', time: '07:30', enabled: true,
+  { id: 'breakfast', emoji: '🥣',  label: 'Breakfast (Meal 1)', time: '07:30', enabled: true, days: EAT_DAYS,
     body: 'Fuel up with your first meal of the day, goddess! 💕' },
-  { id: 'workout',   emoji: '💪',  label: 'Workout Time',       time: '08:00', enabled: true,
+  { id: 'workout',   emoji: '💪',  label: 'Workout Time',       time: '08:00', enabled: true, days: ALL_DAYS,
     body: null }, // dynamic per day-of-week
-  { id: 'lunch',     emoji: '🥗',  label: 'Lunch (Meal 2)',     time: '12:00', enabled: true,
+  { id: 'lunch',     emoji: '🥗',  label: 'Lunch (Meal 2)',     time: '12:00', enabled: true, days: ALL_DAYS,
     body: 'Midday nourishment! Stay hydrated too 💧' },
-  { id: 'snack',     emoji: '🍌',  label: 'Afternoon Snack',    time: '14:30', enabled: true,
+  { id: 'fast_break',emoji: '🍽️', label: 'Break Fast (Noon)',  time: '12:00', enabled: true, days: FAST_DAYS,
+    body: 'Fasting window done! First meal of the day — keep it protein-rich 🌿' },
+  { id: 'snack',     emoji: '🍌',  label: 'Afternoon Snack',    time: '14:30', enabled: true, days: ALL_DAYS,
     body: 'Snack time — banana nice cream or chia pudding! 💕' },
-  { id: 'last_meal', emoji: '🍽️', label: 'Last Meal (Meal 4)', time: '16:00', enabled: true,
+  { id: 'last_meal', emoji: '🍽️', label: 'Last Meal (Meal 4)', time: '16:00', enabled: true, days: ALL_DAYS,
     body: 'Last meal of the day — keep it light and nourishing! 🌿' },
-  { id: 'pm_skin',   emoji: '🌙',  label: 'PM Skincare',        time: '20:00', enabled: true,
+  { id: 'pm_skin',   emoji: '🌙',  label: 'PM Skincare',        time: '20:00', enabled: true, days: ALL_DAYS,
     body: 'Evening glow-up! Double cleanse, retinoid, moisturizer 🌸' },
-  { id: 'wind_down', emoji: '💆', label: 'Wind Down',           time: '21:00', enabled: true,
+  { id: 'wind_down', emoji: '💆', label: 'Wind Down',           time: '21:00', enabled: true, days: ALL_DAYS,
     body: 'Dim the lights, no screens, gentle stretch 💤' },
-  { id: 'sleep',     emoji: '😴',  label: 'Sleep Time',         time: '21:30', enabled: true,
+  { id: 'sleep',     emoji: '😴',  label: 'Sleep Time',         time: '21:30', enabled: true, days: ALL_DAYS,
     body: 'Beauty sleep starts now! Aim for 7.5–9 hours 🌙' },
 ];
 
@@ -74,11 +83,16 @@ export function loadReminders() {
     return saved.map(s => {
       const def = DEFAULT_REMINDERS.find(d => d.id === s.id);
       if (def) {
-        // Saved label/emoji overrides the default (for renamed reminders)
-        return { ...def, enabled: s.enabled, time: s.time, label: s.label ?? def.label, emoji: s.emoji ?? def.emoji };
+        return {
+          ...def,
+          enabled: s.enabled,
+          time: s.time,
+          label: s.label ?? def.label,
+          emoji: s.emoji ?? def.emoji,
+          days: s.days ?? def.days,
+        };
       }
-      // User-added custom reminder — use it as-is
-      return { emoji: '⏰', body: null, ...s };
+      return { emoji: '⏰', body: null, days: [0,1,2,3,4,5,6], ...s };
     });
   } catch {
     return DEFAULT_REMINDERS;
@@ -87,8 +101,8 @@ export function loadReminders() {
 
 export function saveReminders(reminders) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(
-    reminders.map(({ id, emoji, label, enabled, time, body }) =>
-      ({ id, emoji, label, enabled, time, body: body ?? null }))
+    reminders.map(({ id, emoji, label, enabled, time, body, days }) =>
+      ({ id, emoji, label, enabled, time, body: body ?? null, days: days ?? [0,1,2,3,4,5,6] }))
   ));
 }
 
@@ -144,7 +158,8 @@ function checkAndFire(reminders) {
   try { fired = JSON.parse(localStorage.getItem(FIRED_KEY)) || {}; } catch { fired = {}; }
   if (fired.date !== today) fired = { date: today };
 
-  reminders.filter(r => r.enabled && r.time === hm && !fired[r.id]).forEach(r => {
+  const todayDow = new Date().getDay();
+  reminders.filter(r => r.enabled && r.time === hm && !fired[r.id] && (r.days ?? ALL_DAYS).includes(todayDow)).forEach(r => {
     fired[r.id] = true;
     fireReminder(r);
   });

@@ -11,7 +11,7 @@ import { AVATARS, getAvatarByProfile } from '../avatars';
 import {
   loadReminders, saveReminders, requestNotificationPermission,
   scheduleReminders, playChime, registerFCMToken, syncRemindersToFirestore,
-  clearFiredReminder,
+  clearFiredReminder, ALL_DAYS,
 } from '../utils/notifications';
 
 /* ─── Helpers ─── */
@@ -191,9 +191,11 @@ function PasswordScreen({ user, onBack }) {
       else if (e.code === 'auth/requires-recent-login')
         setError('Session expired for security. Sign out, sign back in, then try again.');
       else if (e.code === 'auth/email-already-in-use')
-        setError('A password is already set for this account. Sign out and back in, then try Change Password.');
+        setError('A password is already set for this account. Sign out, sign back in with email/password, then change it.');
       else if (e.code === 'auth/provider-already-linked')
         setError('Email/password is already linked. Use Change Password to update it.');
+      else if (e.code === 'auth/operation-not-allowed')
+        setError('Email/Password sign-in is not enabled yet. The admin needs to go to Firebase Console → Authentication → Sign-in Methods → Email/Password → Enable.');
       else
         setError(`Error: ${e.code || e.message}`);
     } finally {
@@ -482,21 +484,28 @@ function AboutScreen({ onBack }) {
   );
 }
 
-/* ─── Swipeable Reminder Row ─── */
-function RemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
+const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+/* ─── Reminder Row ─── */
+function RemRow({ reminder, onToggle, onUpdate, onDelete }) {
   const [open, setOpen]           = useState(false);
   const [labelEdit, setLabelEdit] = useState(reminder.label);
   const [timeEdit, setTimeEdit]   = useState(reminder.time);
+  const [daysEdit, setDaysEdit]   = useState(reminder.days ?? ALL_DAYS);
+
+  function toggleDay(d) {
+    if (daysEdit.includes(d) && daysEdit.length === 1) return; // must have ≥1 day
+    setDaysEdit(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d].sort((a,b)=>a-b));
+  }
 
   function save() {
-    const trimmed = labelEdit.trim();
-    if (trimmed && trimmed !== reminder.label) onRename(reminder.id, trimmed);
-    if (timeEdit !== reminder.time) {
-      clearFiredReminder(reminder.id); // allow it to fire at the new time today
-      onUpdateTime(reminder.id, timeEdit);
-    }
+    const trimmed = labelEdit.trim() || reminder.label;
+    if (timeEdit !== reminder.time) clearFiredReminder(reminder.id);
+    onUpdate(reminder.id, { label: trimmed, time: timeEdit, days: daysEdit });
     setOpen(false);
   }
+
+  const activeDays = reminder.days ?? ALL_DAYS;
 
   return (
     <div className="rem-row-wrap">
@@ -504,7 +513,14 @@ function RemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
         <span className="rem-emoji">{reminder.emoji}</span>
         <div className="rem-info">
           <div className="rem-label">{reminder.label}</div>
-          <div className="rem-time-display">{to12h(reminder.time)}</div>
+          <div className="rem-day-time">
+            <span className="rem-time-display">{to12h(reminder.time)}</span>
+            <span className="rem-days-mini">
+              {DAY_LABELS.map((l, i) => (
+                <span key={i} className={`rem-day-dot${activeDays.includes(i) ? ' on' : ''}`}>{l}</span>
+              ))}
+            </span>
+          </div>
         </div>
         <button
           className={`rem-toggle${reminder.enabled ? ' on' : ''}`}
@@ -532,9 +548,20 @@ function RemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
             className="rem-time-input"
             value={timeEdit}
             onChange={e => setTimeEdit(e.target.value)}
-            style={{ width: '100%', marginBottom: 12 }}
+            style={{ width: '100%' }}
           />
-          <div className="rem-edit-btns">
+          <label className="rem-edit-lbl" style={{ marginTop: 10 }}>Days</label>
+          <div className="rem-day-chips">
+            {DAY_LABELS.map((l, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`rem-day-chip${daysEdit.includes(i) ? ' on' : ''}`}
+                onClick={() => toggleDay(i)}
+              >{l}</button>
+            ))}
+          </div>
+          <div className="rem-edit-btns" style={{ marginTop: 14 }}>
             <button className="ob-btn-primary" onClick={save}>Save ✓</button>
             <button className="rem-delete-btn" onClick={() => onDelete(reminder.id)}>Delete 🗑️</button>
           </div>
@@ -584,8 +611,7 @@ function RemindersScreen({ onBack, user }) {
   }
 
   function toggle(id) { applyUpdate(reminders.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r)); }
-  function updateTime(id, time) { applyUpdate(reminders.map(r => r.id === id ? { ...r, time } : r)); }
-  function renameReminder(id, label) { applyUpdate(reminders.map(r => r.id === id ? { ...r, label } : r)); }
+  function updateReminder(id, changes) { applyUpdate(reminders.map(r => r.id === id ? { ...r, ...changes } : r)); }
   function deleteReminder(id) { applyUpdate(reminders.filter(r => r.id !== id)); }
 
   function addReminder() {
@@ -597,6 +623,7 @@ function RemindersScreen({ onBack, user }) {
       time: newTime,
       enabled: true,
       body: null,
+      days: ALL_DAYS,
     };
     applyUpdate([...reminders, newR]);
     setNewLabel(''); setNewEmoji('⏰'); setNewTime('09:00'); setAddOpen(false);
@@ -647,14 +674,16 @@ function RemindersScreen({ onBack, user }) {
       )}
 
       <div className="g-card splash-item">
-        <div className="settings-section-title" style={{ marginBottom: 14 }}>⏰ Daily Schedule</div>
+        <div className="settings-section-title" style={{ marginBottom: 4 }}>⏰ Daily Schedule</div>
+        <p style={{ fontSize: 11.5, color: 'var(--text-soft)', marginBottom: 14, lineHeight: 1.5 }}>
+          Tap any reminder to edit name, time, and which days it fires. The Workout reminder message changes automatically each day.
+        </p>
         {reminders.map(r => (
           <RemRow
             key={r.id}
             reminder={r}
             onToggle={toggle}
-            onUpdateTime={updateTime}
-            onRename={renameReminder}
+            onUpdate={updateReminder}
             onDelete={deleteReminder}
           />
         ))}
@@ -680,9 +709,33 @@ function RemindersScreen({ onBack, user }) {
         <button className="rem-add-btn splash-item" onClick={() => setAddOpen(true)}>+ Add Reminder</button>
       )}
 
+      <div className="g-card splash-item" style={{ marginTop: 10 }}>
+        <div className="settings-section-title" style={{ marginBottom: 10 }}>📅 This Week's Workout Schedule</div>
+        {[
+          { d: 'Mon', emoji: '🔥', name: 'Strength A', type: 'eating' },
+          { d: 'Tue', emoji: '🧘', name: 'Pilates 1',  type: 'fasting' },
+          { d: 'Wed', emoji: '⚡', name: 'Sprints',    type: 'eating' },
+          { d: 'Thu', emoji: '🍑', name: 'Strength B', type: 'eating' },
+          { d: 'Fri', emoji: '🌿', name: 'Pilates 2',  type: 'fasting' },
+          { d: 'Sat', emoji: '🚴', name: 'Bike',       type: 'fasting' },
+          { d: 'Sun', emoji: '💪', name: 'Back',       type: 'fasting' },
+        ].map(w => (
+          <div key={w.d} style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 6, paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <span style={{ width: 28, fontSize: 12, fontWeight: 700, color: 'var(--text-soft)' }}>{w.d}</span>
+            <span style={{ fontSize: 16 }}>{w.emoji}</span>
+            <span style={{ flex: 1, fontSize: 12, color: 'var(--text-main)' }}>{w.name}</span>
+            <span style={{ fontSize: 11, color: w.type === 'eating' ? 'var(--rose)' : 'var(--gold)', fontWeight: 600 }}>
+              {w.type === 'eating' ? '🍳 Breakfast' : '⏱ Fast till noon'}
+            </span>
+          </div>
+        ))}
+        <p style={{ fontSize: 11, color: 'var(--text-soft)', marginTop: 10 }}>
+          Breakfast reminder only fires on eating days (Mon/Wed/Thu) by default. You can adjust the days on any reminder.
+        </p>
+      </div>
+
       <p className="settings-about-text splash-item" style={{ marginTop: 14, textAlign: 'center', fontSize: 12 }}>
-        Tap any reminder row to edit its name or time. 💕<br />
-        Install the app on your home screen for background notifications.
+        Install the app on your home screen for background notifications. 💕
       </p>
     </div>
   );
