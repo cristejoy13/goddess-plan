@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { WORKOUT_DAYS } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import { FOODS, FOOD_CATS } from '../data/foods';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
@@ -37,7 +39,7 @@ function CalorieBanner({ tdee, deficit }) {
   );
 }
 
-function useDayMeals(dayId) {
+function useDayMeals(dayId, userId) {
   const key = `gp_meal_${dayId}`;
   const [items, setItems] = useState(() => {
     try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
@@ -45,12 +47,17 @@ function useDayMeals(dayId) {
   const save = useCallback((next) => {
     setItems(next);
     try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
-  }, [key]);
+    if (userId) {
+      setDoc(doc(db, 'users', userId), {
+        customMeals: { [dayId]: next },
+      }, { merge: true }).catch(() => {});
+    }
+  }, [key, dayId, userId]);
   return [items, save];
 }
 
-function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
-  const [custom, saveCustom] = useDayMeals(dayId);
+function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
+  const [custom, saveCustom] = useDayMeals(dayId, userId);
   const [query, setQuery]    = useState('');
   const [browse, setBrowse]  = useState(false);
   const [deletingName, setDeletingName] = useState(null);
@@ -68,7 +75,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
   }
 
   function startHold(rawName) {
-    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 2000);
+    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 1500);
   }
   function cancelHold(rawName) { clearTimeout(holdRef.current[rawName]); }
 
@@ -203,7 +210,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick }) {
   );
 }
 
-function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onBack }) {
+function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onBack, userId }) {
   return (
     <div className="day-detail-page">
       <button className="day-detail-back" onClick={onBack}>← Back to Week</button>
@@ -235,16 +242,17 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} />
+      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} userId={userId} />
     </div>
   );
 }
 
-export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, profile }) {
+export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, profile, user }) {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [selectedDayIdx, setSelectedDayIdx]         = useState(null);
   const tdeeByType    = profile?.tdeeKcal    || null;
   const deficitByType = profile?.deficitKcal || null;
+  const userId        = user?.uid || null;
   const todayDay = WORKOUT_DAYS[todayIndex];
 
   useEffect(() => {
@@ -309,6 +317,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           tdee={tdeeByType?.[dtype]}
           deficit={deficitByType?.[dtype]}
           onBack={closeDay}
+          userId={userId}
         />
       </div>
     );

@@ -159,6 +159,7 @@ function PasswordScreen({ user, onBack }) {
   const [confirmPw, setConfirmPw] = useState('');
   const [saving, setSaving]       = useState(false);
   const [error, setError]         = useState('');
+  const [showPw, setShowPw]       = useState(false);
 
   async function handleSave() {
     if (newPw.length < 8) { setError('Password must be at least 8 characters.'); return; }
@@ -215,18 +216,24 @@ function PasswordScreen({ user, onBack }) {
         <>
           {error && <p className="ep-error">{error}</p>}
           <div className="g-card splash-item">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <span style={{ fontSize: 13, color: 'var(--text-soft)' }}>Passwords</span>
+              <button type="button" className="login-pw-toggle" onClick={() => setShowPw(v => !v)}>
+                {showPw ? '🙈 Hide' : '👁 Show'}
+              </button>
+            </div>
             {hasPassword && (
               <>
                 <div className="settings-section-title">Current Password</div>
-                <input className="ob-input" type="password" placeholder="Enter current password"
+                <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="Enter current password"
                   value={currentPw} onChange={e => setCurrentPw(e.target.value)} style={{ marginBottom: 14 }} />
               </>
             )}
             <div className="settings-section-title">{hasPassword ? 'New Password' : 'Choose a Password'}</div>
-            <input className="ob-input" type="password" placeholder="At least 8 characters"
+            <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="At least 8 characters"
               value={newPw} onChange={e => setNewPw(e.target.value)} style={{ marginBottom: 14 }} />
             <div className="settings-section-title">Confirm Password</div>
-            <input className="ob-input" type="password" placeholder="Repeat your new password"
+            <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="Repeat your new password"
               value={confirmPw} onChange={e => setConfirmPw(e.target.value)} />
           </div>
           <button className="ob-btn-primary splash-item" onClick={handleSave} disabled={saving} style={{ marginTop: 4 }}>
@@ -360,6 +367,74 @@ function AboutScreen({ onBack }) {
   );
 }
 
+/* ─── Swipeable Reminder Row ─── */
+function SwipeRemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
+  const [swiped, setSwiped] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [labelEdit, setLabelEdit] = useState(reminder.label);
+  const touchStartX = useRef(0);
+
+  function handleTouchStart(e) { touchStartX.current = e.touches[0].clientX; }
+  function handleTouchEnd(e) {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (dx < -55) setSwiped(true);
+    else if (dx > 20) setSwiped(false);
+  }
+
+  function saveLabel() {
+    setEditing(false);
+    const trimmed = labelEdit.trim();
+    if (trimmed && trimmed !== reminder.label) onRename(reminder.id, trimmed);
+  }
+
+  return (
+    <div className="rem-swipe-wrap">
+      <div
+        className={`rem-row rem-slide${swiped ? ' swiped' : ''}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <span className="rem-emoji">{reminder.emoji}</span>
+        <div className="rem-info">
+          {editing ? (
+            <input
+              autoFocus
+              className="rem-label-edit"
+              value={labelEdit}
+              onChange={e => setLabelEdit(e.target.value)}
+              onBlur={saveLabel}
+              onKeyDown={e => e.key === 'Enter' && saveLabel()}
+              maxLength={32}
+            />
+          ) : (
+            <div className="rem-label rem-label-tap" onClick={() => { setEditing(true); setSwiped(false); }}>
+              {reminder.label}
+            </div>
+          )}
+          <input
+            type="time"
+            className="rem-time-input"
+            value={reminder.time}
+            disabled={!reminder.enabled}
+            onChange={e => onUpdateTime(reminder.id, e.target.value)}
+          />
+        </div>
+        <button
+          className={`rem-toggle${reminder.enabled ? ' on' : ''}`}
+          onClick={() => onToggle(reminder.id)}
+          aria-label={reminder.enabled ? 'Disable' : 'Enable'}
+        >
+          <div className="rem-toggle-knob" />
+        </button>
+      </div>
+      <div className={`rem-swipe-actions${swiped ? ' visible' : ''}`}>
+        <button className="rem-action-edit" onClick={() => { setEditing(true); setSwiped(false); }}>✏️</button>
+        <button className="rem-action-del" onClick={() => onDelete(reminder.id)}>🗑️</button>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Reminders Screen ─── */
 function RemindersScreen({ onBack, user }) {
   const [reminders, setReminders] = useState(loadReminders);
@@ -369,13 +444,14 @@ function RemindersScreen({ onBack, user }) {
   });
   const [testPlayed, setTestPlayed] = useState(false);
   const [fcmRegistered, setFcmRegistered] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newEmoji, setNewEmoji] = useState('⏰');
+  const [newLabel, setNewLabel] = useState('');
+  const [newTime, setNewTime] = useState('09:00');
 
-  // Register FCM token whenever permission is granted
   useEffect(() => {
     if (permission === 'granted' && user?.uid && !fcmRegistered) {
-      registerFCMToken(user.uid).then(token => {
-        if (token) setFcmRegistered(true);
-      });
+      registerFCMToken(user.uid).then(token => { if (token) setFcmRegistered(true); });
     }
   }, [permission, user?.uid, fcmRegistered]);
 
@@ -391,27 +467,33 @@ function RemindersScreen({ onBack, user }) {
     }
   }
 
-  function toggle(id) {
-    const updated = reminders.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r);
+  function applyUpdate(updated) {
     setReminders(updated);
     saveReminders(updated);
     if (permission === 'granted') scheduleReminders(updated);
     if (user?.uid) syncRemindersToFirestore(user.uid, updated);
   }
 
-  function updateTime(id, time) {
-    const updated = reminders.map(r => r.id === id ? { ...r, time } : r);
-    setReminders(updated);
-    saveReminders(updated);
-    if (permission === 'granted') scheduleReminders(updated);
-    if (user?.uid) syncRemindersToFirestore(user.uid, updated);
+  function toggle(id) { applyUpdate(reminders.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r)); }
+  function updateTime(id, time) { applyUpdate(reminders.map(r => r.id === id ? { ...r, time } : r)); }
+  function renameReminder(id, label) { applyUpdate(reminders.map(r => r.id === id ? { ...r, label } : r)); }
+  function deleteReminder(id) { applyUpdate(reminders.filter(r => r.id !== id)); }
+
+  function addReminder() {
+    if (!newLabel.trim()) return;
+    const newR = {
+      id: `custom_${Date.now()}`,
+      emoji: newEmoji.trim() || '⏰',
+      label: newLabel.trim(),
+      time: newTime,
+      enabled: true,
+      body: null,
+    };
+    applyUpdate([...reminders, newR]);
+    setNewLabel(''); setNewEmoji('⏰'); setNewTime('09:00'); setAddOpen(false);
   }
 
-  function handleTest() {
-    playChime();
-    setTestPlayed(true);
-    setTimeout(() => setTestPlayed(false), 2000);
-  }
+  function handleTest() { playChime(); setTestPlayed(true); setTimeout(() => setTestPlayed(false), 2000); }
 
   return (
     <div className="section">
@@ -419,7 +501,7 @@ function RemindersScreen({ onBack, user }) {
       <div className="s-header" style={{ marginBottom: 20 }}>
         <div className="s-tag">Daily Reminders</div>
         <h2 className="s-title">Your <em>Reminders</em></h2>
-        <p className="s-desc">Get notified at the right time for every part of your goddess routine.</p>
+        <p className="s-desc">Swipe a reminder left to rename or delete it. Tap the name to edit inline.</p>
       </div>
 
       {permission !== 'granted' && (
@@ -430,8 +512,8 @@ function RemindersScreen({ onBack, user }) {
           </div>
           <div className="rem-perm-desc">
             {permission === 'denied'
-              ? 'Notifications are blocked in your browser. Open browser site settings, allow notifications for this site, then reload.'
-              : 'Allow notifications so Goddess Plan can remind you of your routines even when the app is in the background.'}
+              ? 'Notifications are blocked in your browser. Open browser site settings, allow notifications, then reload.'
+              : 'Allow notifications so Goddess Plan can remind you of your routines even when the app is closed.'}
           </div>
           {permission !== 'denied' && (
             <button className="ob-btn-primary" style={{ marginTop: 14 }} onClick={handleEnable}>
@@ -448,46 +530,50 @@ function RemindersScreen({ onBack, user }) {
               🔔 Notifications Active {fcmRegistered && <span style={{ fontSize: 11, color: 'var(--gold)', marginLeft: 6 }}>· Background push on ✓</span>}
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-soft)' }}>
-              {fcmRegistered
-                ? 'Reminders will fire even when the app is fully closed.'
-                : 'Reminders fire when the app is open. Background push registering…'}
+              {fcmRegistered ? 'Reminders fire even when the app is fully closed.' : 'Reminders fire when the app is open.'}
             </div>
           </div>
-          <button className="rem-test-btn" onClick={handleTest}>
-            {testPlayed ? '✓ Played!' : '🎵 Test'}
-          </button>
+          <button className="rem-test-btn" onClick={handleTest}>{testPlayed ? '✓ Played!' : '🎵 Test'}</button>
         </div>
       )}
 
       <div className="g-card splash-item">
         <div className="settings-section-title" style={{ marginBottom: 14 }}>⏰ Daily Schedule</div>
         {reminders.map(r => (
-          <div key={r.id} className="rem-row">
-            <span className="rem-emoji">{r.emoji}</span>
-            <div className="rem-info">
-              <div className="rem-label">{r.label}</div>
-              <input
-                type="time"
-                className="rem-time-input"
-                value={r.time}
-                disabled={!r.enabled}
-                onChange={e => updateTime(r.id, e.target.value)}
-              />
-            </div>
-            <button
-              className={`rem-toggle${r.enabled ? ' on' : ''}`}
-              onClick={() => toggle(r.id)}
-              aria-label={r.enabled ? 'Disable reminder' : 'Enable reminder'}
-            >
-              <div className="rem-toggle-knob" />
-            </button>
-          </div>
+          <SwipeRemRow
+            key={r.id}
+            reminder={r}
+            onToggle={toggle}
+            onUpdateTime={updateTime}
+            onRename={renameReminder}
+            onDelete={deleteReminder}
+          />
         ))}
       </div>
 
+      {addOpen ? (
+        <div className="g-card splash-item rem-add-form">
+          <div className="settings-section-title" style={{ marginBottom: 12 }}>New Reminder</div>
+          <div className="rem-add-row">
+            <input className="rem-add-emoji-input" value={newEmoji}
+              onChange={e => setNewEmoji(e.target.value)} maxLength={2} placeholder="⏰" />
+            <input className="rem-add-label-input ob-input" value={newLabel}
+              onChange={e => setNewLabel(e.target.value)} placeholder="Reminder name..." maxLength={32} />
+          </div>
+          <input type="time" className="rem-time-input" value={newTime}
+            onChange={e => setNewTime(e.target.value)} style={{ marginTop: 10, marginBottom: 14 }} />
+          <div className="rem-add-btns">
+            <button className="ob-btn-primary" onClick={addReminder} disabled={!newLabel.trim()}>Add →</button>
+            <button className="ob-btn-secondary" onClick={() => setAddOpen(false)}>Cancel</button>
+          </div>
+        </div>
+      ) : (
+        <button className="rem-add-btn splash-item" onClick={() => setAddOpen(true)}>+ Add Reminder</button>
+      )}
+
       <p className="settings-about-text splash-item" style={{ marginTop: 14, textAlign: 'center', fontSize: 12 }}>
-        Reminders fire daily at the times above. Tap the time field to change it. 💕<br />
-        Install the app on your phone for the best background notification support.
+        Swipe left on a reminder to rename or delete it. 💕<br />
+        Install the app on your home screen for background notifications.
       </p>
     </div>
   );
@@ -529,7 +615,7 @@ function AppearanceScreen({ onBack, colorMode, setColorMode }) {
 }
 
 /* ─── Admin Screen ─── */
-const ADMIN_EMAILS = ['joy@remoteimagingconsultants.com'];
+const ADMIN_EMAILS = ['joy@remoteimagingconsultants.com', 'cristejoycalosor13@gmail.com'];
 
 function AdminScreen({ onBack, profile, themeOverride, setThemeOverride, onPreviewOnboarding }) {
   const activeTheme = themeOverride !== null ? themeOverride : (profile?.gender || 'female');

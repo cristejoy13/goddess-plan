@@ -24,11 +24,12 @@ export async function registerFCMToken(userId) {
   return null;
 }
 
-/* Sync reminder settings to Firestore so Cloud Functions can read them */
+/* Sync full reminder data to Firestore (cross-device + Cloud Functions) */
 export async function syncRemindersToFirestore(userId, reminders) {
   try {
     await setDoc(doc(db, 'users', userId), {
-      reminders: reminders.map(({ id, enabled, time }) => ({ id, enabled, time })),
+      remindersV2: reminders.map(({ id, emoji, label, enabled, time, body }) =>
+        ({ id, emoji, label, enabled, time, body: body ?? null })),
     }, { merge: true });
   } catch {}
 }
@@ -69,10 +70,15 @@ const WORKOUT_BODIES = [
 export function loadReminders() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!saved) return DEFAULT_REMINDERS;
-    return DEFAULT_REMINDERS.map(def => {
-      const found = saved.find(r => r.id === def.id);
-      return found ? { ...def, enabled: found.enabled, time: found.time } : def;
+    if (!saved || !Array.isArray(saved) || saved.length === 0) return DEFAULT_REMINDERS;
+    return saved.map(s => {
+      const def = DEFAULT_REMINDERS.find(d => d.id === s.id);
+      if (def) {
+        // Saved label/emoji overrides the default (for renamed reminders)
+        return { ...def, enabled: s.enabled, time: s.time, label: s.label ?? def.label, emoji: s.emoji ?? def.emoji };
+      }
+      // User-added custom reminder — use it as-is
+      return { emoji: '⏰', body: null, ...s };
     });
   } catch {
     return DEFAULT_REMINDERS;
@@ -81,7 +87,8 @@ export function loadReminders() {
 
 export function saveReminders(reminders) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(
-    reminders.map(({ id, enabled, time }) => ({ id, enabled, time }))
+    reminders.map(({ id, emoji, label, enabled, time, body }) =>
+      ({ id, emoji, label, enabled, time, body: body ?? null }))
   ));
 }
 

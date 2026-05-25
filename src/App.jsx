@@ -209,13 +209,30 @@ export default function App() {
     return unsub;
   }, []);
 
-  // When user changes, fetch their Firestore profile
+  // When user changes, fetch their Firestore profile and restore cross-device data
   useEffect(() => {
     if (user === undefined) return;
     if (!user) { setProfile(undefined); stopReminders(); return; }
     setProfile(undefined);
     getDoc(doc(db, 'users', user.uid))
-      .then(snap => setProfile(snap.exists() ? snap.data() : null))
+      .then(snap => {
+        const data = snap.exists() ? snap.data() : null;
+        setProfile(data);
+        if (data) {
+          // Restore reminders from Firestore (cross-device sync)
+          if (Array.isArray(data.remindersV2) && data.remindersV2.length > 0) {
+            localStorage.setItem('gp_reminders', JSON.stringify(data.remindersV2));
+          }
+          // Restore custom meal additions from Firestore
+          if (data.customMeals && typeof data.customMeals === 'object') {
+            Object.entries(data.customMeals).forEach(([dayId, items]) => {
+              if (Array.isArray(items)) {
+                localStorage.setItem(`gp_meal_${dayId}`, JSON.stringify(items));
+              }
+            });
+          }
+        }
+      })
       .catch(() => setProfile(null));
   }, [user?.uid]); // eslint-disable-line
 
@@ -488,7 +505,7 @@ export default function App() {
         onTouchEnd={handleTouchEnd}
       >
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} user={user} />}
         {active === 'challenges' && <Challenges />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
@@ -514,12 +531,12 @@ export default function App() {
           Step-by-Step.
         </h2>
         <p className="mot-p">
-          Set a goal today and envision your long-term goal. What matters is today. Multiply your "todays" and it compounds and becomes a year.
+          Choose yourself today. Envision your long-term goal. Multiply your "NOW," it compounds and becomes a year.
         </p>
         <p className="mot-p">
-          Don't wait for the right time. It's your choice to make it the right time — which is the <em>NOW.</em>
+          Don't wait for the perfect time. You get to create it.
         </p>
-        <div className="mot-q">It's your choice. Make it now. 🌸</div>
+        <div className="mot-q">Start NOW. 🌸</div>
       </div>
     </>
   );
