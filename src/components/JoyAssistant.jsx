@@ -417,6 +417,13 @@ function joyReply(msg) {
   return JOY_REPLIES[Math.floor(Math.random() * JOY_REPLIES.length)];
 }
 
+/* ─────────── Context memory ─────────── */
+
+// Detects phrases meaning "take me to what we were just discussing"
+function parseTakeMeThere(msg) {
+  return /\b(take me there|go there|bring me there|open it|open that|let'?s go there|navigate there|take me|yes open|yes go|yes take|show me that)\b/i.test(msg);
+}
+
 /* ─────────── Component ─────────── */
 
 export default function JoyAssistant({ forceOpen, onClose, user, onNavigate }) {
@@ -433,6 +440,8 @@ export default function JoyAssistant({ forceOpen, onClose, user, onNavigate }) {
   const movedRef = useRef(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+  // Remembers the last navigable topic discussed so "take me there" works
+  const lastContextRef = useRef(null);
 
   useEffect(() => {
     if (pos) try { localStorage.setItem('gp_joy_pos', JSON.stringify(pos)); } catch {}
@@ -490,6 +499,20 @@ export default function JoyAssistant({ forceOpen, onClose, user, onNavigate }) {
     setTimeout(async () => {
       setTyping(false);
       let reply = '';
+
+      // 0. "Take me there" — use last discussed context
+      if (parseTakeMeThere(msg)) {
+        const ctx = lastContextRef.current;
+        if (ctx) {
+          const labels = { home: 'Home', workout: 'Workouts', nutrition: 'Nutrition', skincare: 'Skincare', haircare: 'Hair Care', challenges: 'Challenges', settings: 'Settings' };
+          onNavigate?.(ctx.section, ctx.tab || null, ctx.scrollTo || null);
+          closeModal();
+          setMessages(prev => [...prev, { from: 'joy', text: `Taking you to ${ctx.label || labels[ctx.section] || ctx.section} now! 🌸✨` }]);
+          return;
+        }
+        setMessages(prev => [...prev, { from: 'joy', text: "Hmm, I'm not sure where you'd like to go! Tell me what you'd like to see — workouts, skincare, nutrition, hair care? 🌸" }]);
+        return;
+      }
 
       // 1. Navigation
       const nav = parseNavCommand(msg);
@@ -566,6 +589,7 @@ export default function JoyAssistant({ forceOpen, onClose, user, onNavigate }) {
       // 3. Workout meals (add/remove/show)
       const mealCmd = parseMealCommand(msg);
       if (mealCmd) {
+        if (mealCmd.day) lastContextRef.current = { section: 'workout', scrollTo: mealCmd.day, tab: null, label: `${DAY_SHORT[mealCmd.day] || 'that day'}\'s workout` };
         if (mealCmd.action === 'show_meals') {
           reply = buildMealShowReply(mealCmd.day);
         } else if (mealCmd.action === 'add_meal') {
@@ -605,10 +629,9 @@ export default function JoyAssistant({ forceOpen, onClose, user, onNavigate }) {
       // 4. Workout info (what's my workout on X)
       const wkCmd = parseWorkoutInfoCommand(msg);
       if (wkCmd) {
-        reply = buildWorkoutInfoReply(wkCmd.day || (() => {
-          const days = ['day-sunday','day-monday','day-tuesday','day-wednesday','day-thursday','day-friday','day-saturday'];
-          return days[new Date().getDay()];
-        })());
+        const wkDayId = wkCmd.day || (['day-sunday','day-monday','day-tuesday','day-wednesday','day-thursday','day-friday','day-saturday'][new Date().getDay()]);
+        reply = buildWorkoutInfoReply(wkDayId);
+        lastContextRef.current = { section: 'workout', scrollTo: wkDayId, tab: null, label: `${DAY_SHORT[wkDayId]} workout` };
         setMessages(prev => [...prev, { from: 'joy', text: reply }]);
         return;
       }
@@ -618,8 +641,11 @@ export default function JoyAssistant({ forceOpen, onClose, user, onNavigate }) {
       if (shCmd) {
         if (shCmd.section === 'skincare') {
           reply = buildSkincareReply(shCmd.tab);
+          const tabLabel = { am: 'AM Skincare', pm: 'PM Skincare', retinoid: 'Retinoid Roadmap', body: 'Body Care', antiaging: 'Anti-Aging' };
+          lastContextRef.current = { section: 'skincare', tab: shCmd.tab, label: tabLabel[shCmd.tab] || 'Skincare' };
         } else {
           reply = buildHairReply(shCmd);
+          lastContextRef.current = { section: 'haircare', tab: null, label: 'Hair Care' };
         }
         setMessages(prev => [...prev, { from: 'joy', text: reply }]);
         return;
