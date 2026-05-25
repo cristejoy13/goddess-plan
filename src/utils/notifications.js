@@ -78,7 +78,7 @@ export function loadReminders() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!saved || !Array.isArray(saved) || saved.length === 0) return DEFAULT_REMINDERS;
-    return saved.map(s => {
+    const list = saved.map(s => {
       const def = DEFAULT_REMINDERS.find(d => d.id === s.id);
       if (def) {
         return {
@@ -92,6 +92,7 @@ export function loadReminders() {
       }
       return { emoji: '⏰', body: null, days: [0,1,2,3,4,5,6], ...s };
     });
+    return list.sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0);
   } catch {
     return DEFAULT_REMINDERS;
   }
