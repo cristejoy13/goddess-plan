@@ -35,34 +35,32 @@ export async function syncRemindersToFirestore(userId, reminders) {
 }
 
 // days: JS getDay() values  0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
-// Strength/Sprint days: Mon(1) Wed(3) Thu(4) — full eating window
-// Pilates/Rest/Bike days: Tue(2) Fri(5) Sat(6) Sun(0) — fasting until noon
-export const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
-const EAT_DAYS = [1, 3, 4]; // Strength + Sprints: breakfast fires
+// Strength/Sprint days: Mon(1) Wed(3) Thu(4) — 3 meals: 8am, 12pm, 3pm
+// Pilates/Rest/Bike days: Tue(2) Fri(5) Sat(6) Sun(0) — 2 meals: 12pm, 3pm (fast until noon)
+export const ALL_DAYS  = [0, 1, 2, 3, 4, 5, 6];
+const EAT_DAYS  = [1, 3, 4]; // Strength + Sprints: breakfast fires at 8am
 const FAST_DAYS = [0, 2, 5, 6]; // Pilates + Rest: first meal at noon
 
 export const DEFAULT_REMINDERS = [
-  { id: 'sunlight',  emoji: '☀️',  label: 'Morning Sunlight',   time: '06:30', enabled: true, days: ALL_DAYS,
+  { id: 'sunlight',   emoji: '☀️',  label: 'Morning Sunlight',    time: '06:30', enabled: true, days: ALL_DAYS,
     body: 'Get 10–20 min of morning sunlight to anchor your circadian rhythm! 🌿' },
-  { id: 'am_skin',   emoji: '✨',  label: 'AM Skincare',        time: '07:00', enabled: true, days: ALL_DAYS,
+  { id: 'am_skin',    emoji: '✨',        label: 'AM Skincare',         time: '07:00', enabled: true, days: ALL_DAYS,
     body: 'AM routine time — cleanser, toner, vitamin C, sunscreen! 🌸' },
-  { id: 'breakfast', emoji: '🥣',  label: 'Breakfast (Meal 1)', time: '07:30', enabled: true, days: EAT_DAYS,
+  { id: 'breakfast',  emoji: '🥣',  label: 'Meal 1 — Breakfast', time: '08:00', enabled: true, days: EAT_DAYS,
     body: 'Fuel up with your first meal of the day, goddess! 💕' },
-  { id: 'workout',   emoji: '💪',  label: 'Workout Time',       time: '08:00', enabled: true, days: ALL_DAYS,
+  { id: 'workout',    emoji: '💪',  label: 'Workout Time',        time: '08:30', enabled: true, days: ALL_DAYS,
     body: null }, // dynamic per day-of-week
-  { id: 'lunch',     emoji: '🥗',  label: 'Lunch (Meal 2)',     time: '12:00', enabled: true, days: ALL_DAYS,
+  { id: 'lunch',      emoji: '🥗',  label: 'Meal 2 — Lunch',    time: '12:00', enabled: true, days: EAT_DAYS,
     body: 'Midday nourishment! Stay hydrated too 💧' },
-  { id: 'fast_break',emoji: '🍽️', label: 'Break Fast (Noon)',  time: '12:00', enabled: true, days: FAST_DAYS,
+  { id: 'fast_break', emoji: '⏱️',  label: 'Break Fast — Noon', time: '12:00', enabled: true, days: FAST_DAYS,
     body: 'Fasting window done! First meal of the day — keep it protein-rich 🌿' },
-  { id: 'snack',     emoji: '🍌',  label: 'Afternoon Snack',    time: '14:30', enabled: true, days: ALL_DAYS,
-    body: 'Snack time — banana nice cream or chia pudding! 💕' },
-  { id: 'last_meal', emoji: '🍽️', label: 'Last Meal (Meal 4)', time: '16:00', enabled: true, days: ALL_DAYS,
-    body: 'Last meal of the day — keep it light and nourishing! 🌿' },
-  { id: 'pm_skin',   emoji: '🌙',  label: 'PM Skincare',        time: '20:00', enabled: true, days: ALL_DAYS,
+  { id: 'last_meal',  emoji: '🍽️', label: 'Last Meal — 3:00 PM', time: '15:00', enabled: true, days: ALL_DAYS,
+    body: 'Last meal of the day — keep it light and nourishing! No food after this 🌿' },
+  { id: 'pm_skin',    emoji: '🌙',  label: 'PM Skincare',         time: '20:00', enabled: true, days: ALL_DAYS,
     body: 'Evening glow-up! Double cleanse, retinoid, moisturizer 🌸' },
-  { id: 'wind_down', emoji: '💆', label: 'Wind Down',           time: '21:00', enabled: true, days: ALL_DAYS,
+  { id: 'wind_down',  emoji: '💆',  label: 'Wind Down',           time: '21:00', enabled: true, days: ALL_DAYS,
     body: 'Dim the lights, no screens, gentle stretch 💤' },
-  { id: 'sleep',     emoji: '😴',  label: 'Sleep Time',         time: '21:30', enabled: true, days: ALL_DAYS,
+  { id: 'sleep',      emoji: '😴',  label: 'Sleep Time',          time: '21:30', enabled: true, days: ALL_DAYS,
     body: 'Beauty sleep starts now! Aim for 7.5–9 hours 🌙' },
 ];
 

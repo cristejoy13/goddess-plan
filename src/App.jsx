@@ -529,7 +529,7 @@ export default function App() {
           />}
       </div>
 
-      <JoyAssistant forceOpen={joyOpen} onClose={() => setJoyOpen(false)} />
+      <JoyAssistant forceOpen={joyOpen} onClose={() => setJoyOpen(false)} user={user} onNavigate={navigate} />
 
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>

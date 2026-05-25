@@ -604,10 +604,11 @@ function RemindersScreen({ onBack, user }) {
   }
 
   function applyUpdate(updated) {
-    setReminders(updated);
-    saveReminders(updated);
-    if (permission === 'granted') scheduleReminders(updated);
-    if (user?.uid) syncRemindersToFirestore(user.uid, updated);
+    const sorted = [...updated].sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0);
+    setReminders(sorted);
+    saveReminders(sorted);
+    if (permission === 'granted') scheduleReminders(sorted);
+    if (user?.uid) syncRemindersToFirestore(user.uid, sorted);
   }
 
   function toggle(id) { applyUpdate(reminders.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r)); }
