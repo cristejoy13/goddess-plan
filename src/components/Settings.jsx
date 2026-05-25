@@ -3,9 +3,9 @@ import {
   signOut, updateProfile,
   updatePassword, reauthenticateWithCredential,
   EmailAuthProvider, linkWithCredential,
-  sendPasswordResetEmail,
+  sendPasswordResetEmail, deleteUser,
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, serverTimestamp, getDocs, query, collection, where } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import {
@@ -88,19 +88,25 @@ function EditProfileScreen({ user, profile, onSave, onBack }) {
   const avatarList = AVATARS[gender] || [];
 
   async function handleSave() {
-    if (username.trim().length < 2) { setError('Username must be at least 2 characters.'); return; }
+    const trimmed = username.trim();
+    if (trimmed.length < 2) { setError('Username must be at least 2 characters.'); return; }
     if (!avatarId) { setError('Please choose an avatar.'); return; }
     setError('');
     setSaving(true);
     try {
-      const updated = { ...profile, username: username.trim(), gender, avatarId, updatedAt: serverTimestamp() };
+      // Check username uniqueness
+      const snap = await getDocs(query(collection(db, 'users'), where('username', '==', trimmed)));
+      const taken = snap.docs.find(d => d.id !== user.uid);
+      if (taken) { setError('That username is already taken — try a different one.'); setSaving(false); return; }
+
+      const updated = { ...profile, username: trimmed, gender, avatarId, updatedAt: serverTimestamp() };
       await setDoc(doc(db, 'users', user.uid), updated, { merge: true });
-      await updateProfile(auth.currentUser, { displayName: username.trim() });
+      await updateProfile(auth.currentUser, { displayName: trimmed });
       setSaved(true);
       onSave(updated);
       setTimeout(onBack, 900);
-    } catch {
-      setError('Could not save changes. Please try again.');
+    } catch (e) {
+      setError(`Could not save changes. (${e.code || e.message})`);
     } finally {
       setSaving(false);
     }
@@ -179,13 +185,17 @@ function PasswordScreen({ user, onBack }) {
       setMode('sent');
     } catch (e) {
       if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')
-        setError('Current password is incorrect.');
+        setError('Current password is incorrect. Try "Send reset email" below if you forgot it.');
       else if (e.code === 'auth/weak-password')
-        setError('Password is too weak — use 8+ characters.');
+        setError('Password is too weak — use 8+ characters including a number.');
       else if (e.code === 'auth/requires-recent-login')
-        setError('Session expired. Sign out and sign back in, then try again.');
+        setError('Session expired for security. Sign out, sign back in, then try again.');
+      else if (e.code === 'auth/email-already-in-use')
+        setError('A password is already set for this account. Sign out and back in, then try Change Password.');
+      else if (e.code === 'auth/provider-already-linked')
+        setError('Email/password is already linked. Use Change Password to update it.');
       else
-        setError(`Could not update password. (${e.code || e.message})`);
+        setError(`Error: ${e.code || e.message}`);
     } finally {
       setSaving(false);
     }
@@ -269,6 +279,75 @@ function PasswordScreen({ user, onBack }) {
   );
 }
 
+/* ─── Delete Account Screen ─── */
+function DeleteAccountScreen({ user, onBack }) {
+  const [confirmed, setConfirmed] = useState(false);
+  const [deleting, setDeleting]   = useState(false);
+  const [error, setError]         = useState('');
+
+  async function handleDelete() {
+    setDeleting(true);
+    setError('');
+    try {
+      await deleteDoc(doc(db, 'users', user.uid));
+      Object.keys(localStorage).filter(k => k.startsWith('gp_')).forEach(k => localStorage.removeItem(k));
+      await deleteUser(auth.currentUser);
+      // auth state change triggers app to show login screen
+    } catch (e) {
+      if (e.code === 'auth/requires-recent-login') {
+        setError('For security, sign out and sign back in, then delete your account.');
+      } else {
+        setError(`Could not delete account. (${e.code || e.message})`);
+      }
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <div className="section">
+      <button className="section-back-btn" onClick={onBack}>‹ Account</button>
+      <div className="s-header" style={{ marginBottom: 20 }}>
+        <div className="s-tag">Danger Zone</div>
+        <h2 className="s-title">Delete <em>Account</em></h2>
+        <p className="s-desc">This permanently deletes your account, profile, and all progress. You can sign up again any time.</p>
+      </div>
+
+      <div className="g-card splash-item" style={{ borderColor: 'rgba(239,68,68,0.35)' }}>
+        <p style={{ fontSize: 13, color: 'var(--text-soft)', marginBottom: 16, lineHeight: 1.6 }}>
+          ⚠️ <strong>This cannot be undone.</strong> Your profile, workout history, custom meals, and reminder settings will be permanently removed.
+        </p>
+        {!confirmed ? (
+          <button
+            style={{ width: '100%', padding: 14, background: 'rgba(239,68,68,0.12)', border: '1.5px solid rgba(239,68,68,0.4)', borderRadius: 14, color: '#f87171', fontFamily: 'Outfit, sans-serif', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+            onClick={() => setConfirmed(true)}
+          >
+            Delete My Account 🗑️
+          </button>
+        ) : (
+          <>
+            <p style={{ fontSize: 13, fontWeight: 700, color: '#f87171', marginBottom: 14 }}>
+              Are you sure? This is permanent and cannot be reversed.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                style={{ flex: 1, padding: 14, background: 'rgba(239,68,68,0.25)', border: '1.5px solid rgba(239,68,68,0.6)', borderRadius: 14, color: '#f87171', fontFamily: 'Outfit, sans-serif', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting…' : 'Yes, Delete Everything'}
+              </button>
+              <button className="ob-btn-secondary" onClick={() => setConfirmed(false)} style={{ flex: 1 }}>
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+        {error && <p className="ep-error" style={{ marginTop: 12 }}>{error}</p>}
+      </div>
+    </div>
+  );
+}
+
 /* ─── 12-hour time helper ─── */
 function to12h(time) {
   const [h, m] = time.split(':').map(Number);
@@ -293,6 +372,9 @@ function AccountScreen({ user, profile, onProfileUpdate, onBack, pushBack, clear
   }
   if (screen === 'password') {
     return <PasswordScreen user={user} onBack={() => setScreen('main')} />;
+  }
+  if (screen === 'delete') {
+    return <DeleteAccountScreen user={user} onBack={() => setScreen('main')} />;
   }
 
   return (
@@ -325,6 +407,8 @@ function AccountScreen({ user, profile, onProfileUpdate, onBack, pushBack, clear
         <SettingsPill icon="🔑" label={user?.providerData?.some(p => p.providerId === 'password') ? 'Change Password' : 'Set a Password'}
           desc={user?.providerData?.some(p => p.providerId === 'password') ? 'Update your sign-in password' : 'Add a password to your account'}
           onClick={() => openSubScreen('password')} />
+        <SettingsPill icon="🗑️" label="Delete Account"
+          desc="Permanently remove your account and all data" onClick={() => openSubScreen('delete')} danger />
       </div>
     </div>
   );

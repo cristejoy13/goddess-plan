@@ -507,8 +507,10 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
     joyNote: '',
   });
 
+  const [previewDone, setPreviewDone] = useState(false);
+
   async function handleComplete() {
-    if (isPreview) { onComplete(null); return; }
+    if (isPreview) { setPreviewDone(true); return; }
     setSaving(true);
     try {
       // Normalise to cm / kg for BMR calculation
@@ -584,6 +586,25 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
       console.error('Onboarding save failed:', e);
       setSaving(false);
     }
+  }
+
+  if (previewDone) {
+    return (
+      <div className="ob-wrap">
+        <div className="ob-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <div style={{ fontSize: 56, marginBottom: 16 }}>✅</div>
+          <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 26, marginBottom: 10 }}>
+            Preview Complete!
+          </h2>
+          <p style={{ color: 'var(--text-soft)', fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>
+            That's the full sign-up flow. Nothing was saved — you're still logged in as yourself. 🌸
+          </p>
+          <button className="ob-btn-primary" onClick={() => onComplete(null)}>
+            Back to Settings →
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
