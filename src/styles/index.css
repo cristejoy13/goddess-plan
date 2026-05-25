@@ -4445,6 +4445,70 @@ body {
 }
 .rem-toggle.on .rem-toggle-knob { transform: translateX(18px); }
 
+/* ── Reminder Tap-to-Edit UI ── */
+.rem-row-wrap {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.rem-row-wrap:last-child { border-bottom: none; }
+
+.rem-row {
+  cursor: pointer;
+  border-bottom: none;
+}
+.rem-row:active { opacity: 0.8; }
+
+.rem-time-display {
+  font-size: 12px;
+  color: var(--rose);
+  font-family: 'Outfit', sans-serif;
+}
+
+.rem-expand-arrow {
+  font-size: 10px;
+  color: var(--text-soft);
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.rem-edit-panel {
+  padding: 10px 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.rem-edit-lbl {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rem-edit-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.rem-edit-btns .ob-btn-primary { flex: 1; }
+
+.rem-delete-btn {
+  flex: 1;
+  padding: 12px;
+  background: rgba(239,68,68,0.12);
+  border: 1.5px solid rgba(239,68,68,0.35);
+  border-radius: 14px;
+  color: #f87171;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.rem-delete-btn:hover { background: rgba(239,68,68,0.22); }
+
 /* ── Reminder Swipe UI ── */
 .rem-swipe-wrap {
   position: relative;

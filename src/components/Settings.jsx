@@ -368,69 +368,60 @@ function AboutScreen({ onBack }) {
 }
 
 /* ─── Swipeable Reminder Row ─── */
-function SwipeRemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
-  const [swiped, setSwiped] = useState(false);
-  const [editing, setEditing] = useState(false);
+function RemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
+  const [open, setOpen]           = useState(false);
   const [labelEdit, setLabelEdit] = useState(reminder.label);
-  const touchStartX = useRef(0);
+  const [timeEdit, setTimeEdit]   = useState(reminder.time);
 
-  function handleTouchStart(e) { touchStartX.current = e.touches[0].clientX; }
-  function handleTouchEnd(e) {
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (dx < -55) setSwiped(true);
-    else if (dx > 20) setSwiped(false);
-  }
-
-  function saveLabel() {
-    setEditing(false);
+  function save() {
     const trimmed = labelEdit.trim();
     if (trimmed && trimmed !== reminder.label) onRename(reminder.id, trimmed);
+    if (timeEdit !== reminder.time) onUpdateTime(reminder.id, timeEdit);
+    setOpen(false);
   }
 
   return (
-    <div className="rem-swipe-wrap">
-      <div
-        className={`rem-row rem-slide${swiped ? ' swiped' : ''}`}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
+    <div className="rem-row-wrap">
+      <div className="rem-row" onClick={() => setOpen(o => !o)}>
         <span className="rem-emoji">{reminder.emoji}</span>
         <div className="rem-info">
-          {editing ? (
-            <input
-              autoFocus
-              className="rem-label-edit"
-              value={labelEdit}
-              onChange={e => setLabelEdit(e.target.value)}
-              onBlur={saveLabel}
-              onKeyDown={e => e.key === 'Enter' && saveLabel()}
-              maxLength={32}
-            />
-          ) : (
-            <div className="rem-label rem-label-tap" onClick={() => { setEditing(true); setSwiped(false); }}>
-              {reminder.label}
-            </div>
-          )}
-          <input
-            type="time"
-            className="rem-time-input"
-            value={reminder.time}
-            disabled={!reminder.enabled}
-            onChange={e => onUpdateTime(reminder.id, e.target.value)}
-          />
+          <div className="rem-label">{reminder.label}</div>
+          <div className="rem-time-display">{reminder.time}</div>
         </div>
         <button
           className={`rem-toggle${reminder.enabled ? ' on' : ''}`}
-          onClick={() => onToggle(reminder.id)}
+          onClick={e => { e.stopPropagation(); onToggle(reminder.id); }}
           aria-label={reminder.enabled ? 'Disable' : 'Enable'}
         >
           <div className="rem-toggle-knob" />
         </button>
+        <span className="rem-expand-arrow">{open ? '▲' : '▼'}</span>
       </div>
-      <div className={`rem-swipe-actions${swiped ? ' visible' : ''}`}>
-        <button className="rem-action-edit" onClick={() => { setEditing(true); setSwiped(false); }}>✏️</button>
-        <button className="rem-action-del" onClick={() => onDelete(reminder.id)}>🗑️</button>
-      </div>
+      {open && (
+        <div className="rem-edit-panel">
+          <label className="rem-edit-lbl">Name</label>
+          <input
+            className="rem-label-edit"
+            value={labelEdit}
+            onChange={e => setLabelEdit(e.target.value)}
+            placeholder="Reminder name"
+            maxLength={32}
+            autoFocus
+          />
+          <label className="rem-edit-lbl" style={{ marginTop: 10 }}>Time</label>
+          <input
+            type="time"
+            className="rem-time-input"
+            value={timeEdit}
+            onChange={e => setTimeEdit(e.target.value)}
+            style={{ width: '100%', marginBottom: 12 }}
+          />
+          <div className="rem-edit-btns">
+            <button className="ob-btn-primary" onClick={save}>Save ✓</button>
+            <button className="rem-delete-btn" onClick={() => onDelete(reminder.id)}>Delete 🗑️</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -501,7 +492,7 @@ function RemindersScreen({ onBack, user }) {
       <div className="s-header" style={{ marginBottom: 20 }}>
         <div className="s-tag">Daily Reminders</div>
         <h2 className="s-title">Your <em>Reminders</em></h2>
-        <p className="s-desc">Swipe a reminder left to rename or delete it. Tap the name to edit inline.</p>
+        <p className="s-desc">Tap any reminder to edit its name, time, or delete it.</p>
       </div>
 
       {permission !== 'granted' && (
@@ -540,7 +531,7 @@ function RemindersScreen({ onBack, user }) {
       <div className="g-card splash-item">
         <div className="settings-section-title" style={{ marginBottom: 14 }}>⏰ Daily Schedule</div>
         {reminders.map(r => (
-          <SwipeRemRow
+          <RemRow
             key={r.id}
             reminder={r}
             onToggle={toggle}
@@ -572,7 +563,7 @@ function RemindersScreen({ onBack, user }) {
       )}
 
       <p className="settings-about-text splash-item" style={{ marginTop: 14, textAlign: 'center', fontSize: 12 }}>
-        Swipe left on a reminder to rename or delete it. 💕<br />
+        Tap any reminder row to edit its name or time. 💕<br />
         Install the app on your home screen for background notifications.
       </p>
     </div>

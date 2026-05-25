@@ -75,7 +75,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
   }
 
   function startHold(rawName) {
-    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 1500);
+    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 1000);
   }
   function cancelHold(rawName) { clearTimeout(holdRef.current[rawName]); }
 

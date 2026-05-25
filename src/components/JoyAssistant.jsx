@@ -124,7 +124,7 @@ export default function JoyAssistant({ forceOpen, onClose }) {
       dragModeRef.current = true;
       setDragMode(true);
       navigator.vibrate?.(80);
-    }, 1500);
+    }, 1000);
   }
 
   function handleFabEnd() {
