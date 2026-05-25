@@ -20,29 +20,69 @@
   --card:       rgba(16, 5, 22, 0.88);
 }
 
-/* ─── MALE THEME ─── */
+/* ─── MALE THEME — sky blue · yellow · dark navy ─── */
 [data-theme="male"] {
-  --rose:       #2d9cff;
-  --rose-deep:  #1a7fd8;
-  --rose-pale:  #0a1628;
-  --blush:      #080d18;
-  --gold:       #00c7b5;
-  --gold-light: #00e5d8;
-  --gold-pale:  #041010;
-  --gold-shine: #00e5d8;
-  --text-mid:   #80b4d8;
-  --text-soft:  #6099c0;
-  --border-g:   rgba(0,199,181,0.22);
-  --border-r:   rgba(45,156,255,0.32);
+  --rose:       #38bdf8;
+  --rose-deep:  #0284c7;
+  --rose-pale:  #0b1a2e;
+  --blush:      #050d1a;
+  --gold:       #eab308;
+  --gold-light: #fde047;
+  --gold-pale:  #0d0c02;
+  --gold-shine: #fde047;
+  --text-mid:   #90c4e0;
+  --text-soft:  #6ea8cc;
+  --border-g:   rgba(234,179,8,0.28);
+  --border-r:   rgba(56,189,248,0.35);
+  --card:       rgba(8, 18, 34, 0.90);
 }
 [data-theme="male"] .bg-layer {
   background:
-    radial-gradient(ellipse 78% 48% at 50% 22%, rgba(30,100,220,0.48) 0%, rgba(0,180,200,0.20) 38%, transparent 68%),
-    #07040f;
+    radial-gradient(ellipse 78% 48% at 50% 22%, rgba(10,50,110,0.60) 0%, rgba(56,189,248,0.14) 38%, transparent 68%),
+    #020812;
 }
 [data-theme="male"] .bg-aurora {
   background:
-    radial-gradient(ellipse 60% 30% at 50% 20%, rgba(30,100,220,0.10) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 30% at 50% 20%, rgba(10,50,110,0.14) 0%, transparent 60%);
+}
+
+/* ─── LIGHT MODE ─── */
+:root[data-mode="light"] {
+  --rose-pale: #fce4f0;
+  --blush:     #fff5fb;
+  --gold-pale: #fffbe8;
+  --card:      rgba(255, 248, 253, 0.97);
+  --text:      #1a0a28;
+  --text-mid:  #8a3068;
+  --text-soft: #b05090;
+}
+[data-mode="light"] body { background: #fff5fb; }
+[data-mode="light"] .bg-layer {
+  background:
+    radial-gradient(ellipse 78% 48% at 50% 22%, rgba(255,100,180,0.18) 0%, rgba(255,200,80,0.10) 38%, transparent 68%),
+    #fff5fb;
+  animation: none;
+}
+[data-mode="light"] .bg-aurora  { display: none; }
+[data-mode="light"] .sparkle-layer { display: none; }
+[data-mode="light"] .cloud-layer { opacity: 0.25; }
+[data-mode="light"] .petal { opacity: 0.6; }
+
+[data-theme="male"][data-mode="light"] {
+  --rose-pale: #dbeafe;
+  --blush:     #eff6ff;
+  --gold-pale: #fefce8;
+  --card:      rgba(239, 246, 255, 0.97);
+  --text:      #0c1828;
+  --text-mid:  #1e4f8c;
+  --text-soft: #3070b0;
+}
+[data-theme="male"][data-mode="light"] body { background: #eff6ff; }
+[data-theme="male"][data-mode="light"] .bg-layer {
+  background:
+    radial-gradient(ellipse 78% 48% at 50% 22%, rgba(14,80,180,0.18) 0%, rgba(56,189,248,0.10) 38%, transparent 68%),
+    #eff6ff;
+  animation: none;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2282,9 +2322,71 @@ body {
   font-size: 13px;
   color: var(--text-soft);
   line-height: 1.7;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
+.signout-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-g);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+.signout-save-email {
+  font-size: 11px;
+  color: var(--text-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.signout-save-btn {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--border-g);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.signout-save-btn:hover { background: rgba(240,204,96,0.1); }
+.signout-save-btn.saved { color: var(--text-soft); cursor: default; }
 .signout-modal-btns { display: flex; flex-direction: column; gap: 10px; }
+
+/* ─── Onboarding preview banner ─── */
+.ob-preview-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(234,179,8,0.92);
+  color: #000;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.ob-preview-close {
+  background: rgba(0,0,0,0.18);
+  border: none;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+}
 .signout-stay-btn {
   width: 100%;
   padding: 12px;

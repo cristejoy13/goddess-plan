@@ -42,7 +42,7 @@ function emailError(code) {
 
 export default function Login() {
   const [tab, setTab] = useState('signin');   // 'signin' | 'signup'
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => localStorage.getItem('gp_saved_email') || '');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPw, setConfirmPw] = useState('');

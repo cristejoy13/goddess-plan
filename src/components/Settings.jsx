@@ -39,15 +39,36 @@ function SettingsPill({ icon, label, desc, onClick, danger }) {
   );
 }
 
-function SignOutModal({ onConfirm, onCancel }) {
+function SignOutModal({ onConfirm, onCancel, user }) {
+  const [emailSaved, setEmailSaved] = useState(false);
+
+  function handleSaveEmail() {
+    if (user?.email) {
+      localStorage.setItem('gp_saved_email', user.email);
+      setEmailSaved(true);
+    }
+  }
+
   return (
     <div className="signout-overlay">
       <div className="signout-modal">
         <div className="signout-modal-icon">🌸</div>
         <h3 className="signout-modal-title">Ready to leave?</h3>
-        <p className="signout-modal-body">Your progress and profile are safely saved.<br />See you soon, goddess! 💕</p>
+        <p className="signout-modal-body">Your profile is safely saved in the cloud.<br />See you soon! 💕</p>
+        {user?.email && (
+          <div className="signout-save-row">
+            <span className="signout-save-email">{user.email}</span>
+            <button
+              className={`signout-save-btn${emailSaved ? ' saved' : ''}`}
+              onClick={handleSaveEmail}
+              disabled={emailSaved}
+            >
+              {emailSaved ? '✓ Saved' : '💾 Remember email'}
+            </button>
+          </div>
+        )}
         <div className="signout-modal-btns">
-          <button className="signout-stay-btn" onClick={onCancel}>Actually, I'll stay 🌸</button>
+          <button className="signout-stay-btn" onClick={onCancel}>Stay 🌸</button>
           <button className="signout-confirm-btn" onClick={onConfirm}>🚪 Sign Out</button>
         </div>
       </div>
@@ -472,10 +493,113 @@ function RemindersScreen({ onBack, user }) {
   );
 }
 
+/* ─── Appearance Screen ─── */
+function AppearanceScreen({ onBack, colorMode, setColorMode }) {
+  return (
+    <div className="section">
+      <button className="section-back-btn" onClick={onBack}>‹ Settings</button>
+      <div className="s-header" style={{ marginBottom: 20 }}>
+        <div className="s-tag">Appearance</div>
+        <h2 className="s-title">App <em>Appearance</em></h2>
+        <p className="s-desc">Choose how the app looks on your device. Your choice is saved automatically.</p>
+      </div>
+      <div className="g-card splash-item">
+        <div className="settings-section-title" style={{ marginBottom: 14 }}>🎨 Color Mode</div>
+        <div className="ob-gender-btns">
+          <button
+            className={`ob-gender-btn${colorMode === 'dark' ? ' selected' : ''}`}
+            onClick={() => setColorMode('dark')}
+          >
+            🌙 Dark Mode
+          </button>
+          <button
+            className={`ob-gender-btn${colorMode === 'light' ? ' selected' : ''}`}
+            onClick={() => setColorMode('light')}
+          >
+            ☀️ Light Mode
+          </button>
+        </div>
+        <p style={{ fontSize: 12, color: 'var(--text-soft)', marginTop: 14, lineHeight: 1.6 }}>
+          Dark mode: deep backgrounds, easy on the eyes at night.<br />
+          Light mode: bright backgrounds, great for daytime use.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Admin Screen ─── */
+const ADMIN_EMAILS = ['joy@remoteimagingconsultants.com'];
+
+function AdminScreen({ onBack, profile, themeOverride, setThemeOverride, onPreviewOnboarding }) {
+  const activeTheme = themeOverride !== null ? themeOverride : (profile?.gender || 'female');
+
+  return (
+    <div className="section">
+      <button className="section-back-btn" onClick={onBack}>‹ Settings</button>
+      <div className="s-header" style={{ marginBottom: 20 }}>
+        <div className="s-tag">Admin</div>
+        <h2 className="s-title">Admin <em>Panel</em></h2>
+        <p className="s-desc">Preview how the app looks for different user types. No data is changed.</p>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="settings-section-title" style={{ marginBottom: 6 }}>🎨 Preview Theme</div>
+        <p style={{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 14 }}>
+          Switch between female (pink/gold) and male (sky blue/yellow) themes.
+          {themeOverride !== null && (
+            <span style={{ color: 'var(--gold)', marginLeft: 6 }}>Override active</span>
+          )}
+        </p>
+        <div className="ob-gender-btns">
+          <button
+            className={`ob-gender-btn${activeTheme !== 'male' ? ' selected' : ''}`}
+            onClick={() => setThemeOverride('female')}
+          >
+            🌸 Female Theme
+          </button>
+          <button
+            className={`ob-gender-btn${activeTheme === 'male' ? ' selected' : ''}`}
+            onClick={() => setThemeOverride('male')}
+          >
+            ⚡ Male Theme
+          </button>
+        </div>
+        {themeOverride !== null && (
+          <button
+            className="section-back-btn"
+            style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
+            onClick={() => setThemeOverride(null)}
+          >
+            Reset to My Theme ({profile?.gender || 'female'})
+          </button>
+        )}
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="settings-section-title" style={{ marginBottom: 6 }}>🔄 Preview Sign-up Flow</div>
+        <p style={{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 14 }}>
+          See the full onboarding experience from start to finish. Your profile won't be affected.
+        </p>
+        <button className="ob-btn-primary" onClick={onPreviewOnboarding}>
+          Preview Onboarding →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main Settings ─── */
-export default function Settings({ onNavigate, user, profile, onProfileUpdate }) {
+export default function Settings({
+  onNavigate, user, profile, onProfileUpdate,
+  colorMode, setColorMode,
+  themeOverride, setThemeOverride,
+  onPreviewOnboarding,
+}) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [screen, setScreen] = useState('main'); // 'main' | 'account' | 'navigate' | 'about' | 'reminders'
+  const [screen, setScreen] = useState('main');
+
+  const isAdmin = ADMIN_EMAILS.includes(user?.email) || profile?.isAdmin === true;
 
   async function handleLogout() {
     try { await signOut(auth); } catch (e) { console.error('Sign out failed:', e); }
@@ -485,26 +609,32 @@ export default function Settings({ onNavigate, user, profile, onProfileUpdate })
     return <AccountScreen user={user} profile={profile}
       onProfileUpdate={onProfileUpdate} onBack={() => setScreen('main')} />;
   }
-  if (screen === 'navigate') {
-    return <NavigateScreen onBack={() => setScreen('main')} />;
+  if (screen === 'navigate') return <NavigateScreen onBack={() => setScreen('main')} />;
+  if (screen === 'about')    return <AboutScreen onBack={() => setScreen('main')} />;
+  if (screen === 'reminders') return <RemindersScreen onBack={() => setScreen('main')} user={user} />;
+  if (screen === 'appearance') {
+    return <AppearanceScreen onBack={() => setScreen('main')} colorMode={colorMode} setColorMode={setColorMode} />;
   }
-  if (screen === 'about') {
-    return <AboutScreen onBack={() => setScreen('main')} />;
-  }
-  if (screen === 'reminders') {
-    return <RemindersScreen onBack={() => setScreen('main')} user={user} />;
+  if (screen === 'admin') {
+    return <AdminScreen
+      onBack={() => setScreen('main')}
+      profile={profile}
+      themeOverride={themeOverride}
+      setThemeOverride={setThemeOverride}
+      onPreviewOnboarding={onPreviewOnboarding}
+    />;
   }
 
   return (
     <>
       {showConfirm && (
-        <SignOutModal onConfirm={handleLogout} onCancel={() => setShowConfirm(false)} />
+        <SignOutModal onConfirm={handleLogout} onCancel={() => setShowConfirm(false)} user={user} />
       )}
       <div className="section">
         <div className="s-header">
           <div className="s-tag">App Settings</div>
           <h2 className="s-title">Settings</h2>
-          <p className="s-desc">Manage your account, learn how to use the app, and more.</p>
+          <p className="s-desc">Manage your account, appearance, and notifications.</p>
         </div>
 
         <div className="settings-pills-list splash-item">
@@ -512,10 +642,16 @@ export default function Settings({ onNavigate, user, profile, onProfileUpdate })
             desc="Edit profile, avatar, password" onClick={() => setScreen('account')} />
           <SettingsPill icon="🔔" label="Reminders"
             desc="Daily notifications with sound" onClick={() => setScreen('reminders')} />
+          <SettingsPill icon="🎨" label="Appearance"
+            desc={`${colorMode === 'light' ? '☀️ Light' : '🌙 Dark'} mode · color theme`} onClick={() => setScreen('appearance')} />
           <SettingsPill icon="🗂️" label="Navigate the App"
             desc="Gestures, shortcuts, tips" onClick={() => setScreen('navigate')} />
           <SettingsPill icon="🌸" label="About & Help"
             desc="About the Goddess Plan" onClick={() => setScreen('about')} />
+          {isAdmin && (
+            <SettingsPill icon="🛠️" label="Admin Panel"
+              desc="Preview themes and sign-up flow" onClick={() => setScreen('admin')} />
+          )}
           <SettingsPill icon="🚪" label="Sign Out"
             desc="You can always come back" onClick={() => setShowConfirm(true)} danger />
         </div>

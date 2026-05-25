@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
 import { db, auth } from '../firebase';
@@ -280,6 +280,15 @@ function TermsScreen({ onAgree }) {
 function ProfileScreen({ form, setForm, onNext }) {
   const avatarList = form.gender ? AVATARS[form.gender] : [];
 
+  // Live theme preview as user picks their gender
+  useEffect(() => {
+    if (form.gender === 'male') {
+      document.documentElement.setAttribute('data-theme', 'male');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }, [form.gender]);
+
   function canContinue() {
     return form.username.trim().length >= 2 && form.gender && form.avatarId;
   }
@@ -474,7 +483,7 @@ function DoneScreen({ username }) {
   );
 }
 
-export default function Onboarding({ user, onComplete }) {
+export default function Onboarding({ user, onComplete, isPreview = false }) {
   const [step, setStep] = useState('terms');
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -499,6 +508,7 @@ export default function Onboarding({ user, onComplete }) {
   });
 
   async function handleComplete() {
+    if (isPreview) { onComplete(null); return; }
     setSaving(true);
     try {
       // Normalise to cm / kg for BMR calculation
@@ -578,6 +588,12 @@ export default function Onboarding({ user, onComplete }) {
 
   return (
     <div className="ob-wrap">
+      {isPreview && (
+        <div className="ob-preview-banner">
+          👀 Preview Mode — nothing will be saved
+          <button className="ob-preview-close" onClick={() => onComplete(null)}>✕ Exit</button>
+        </div>
+      )}
       <div className="ob-card">
         {step === 'terms'         && <TermsScreen         onAgree={() => setStep('profile')} />}
         {step === 'profile'       && <ProfileScreen       form={form} setForm={setForm} onNext={() => setStep('body')} />}

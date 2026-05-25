@@ -200,6 +200,9 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [joyOpen, setJoyOpen] = useState(false);
+  const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
+  const [themeOverride, setThemeOverride] = useState(null); // null | 'male' | 'female'
+  const [previewOnboarding, setPreviewOnboarding] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => { setUser(u ?? null); });
@@ -223,14 +226,25 @@ export default function App() {
     return stopReminders;
   }, [user?.uid]); // eslint-disable-line
 
-  // Apply gender-based color theme
+  // Apply gender-based color theme (admin themeOverride takes precedence)
   useEffect(() => {
-    if (profile?.gender === 'male') {
+    const gender = themeOverride !== null ? themeOverride : profile?.gender;
+    if (gender === 'male') {
       document.documentElement.setAttribute('data-theme', 'male');
     } else {
       document.documentElement.removeAttribute('data-theme');
     }
-  }, [profile?.gender]); // eslint-disable-line
+  }, [profile?.gender, themeOverride]); // eslint-disable-line
+
+  // Apply dark/light mode
+  useEffect(() => {
+    if (colorMode === 'light') {
+      document.documentElement.setAttribute('data-mode', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-mode');
+    }
+    localStorage.setItem('gp_color_mode', colorMode);
+  }, [colorMode]);
 
   const historyRef = useRef([]);
   useEffect(() => { historyRef.current = history; }, [history]);
@@ -379,6 +393,26 @@ export default function App() {
     return <>{background}<Onboarding user={user} onComplete={(p) => setProfile(p)} /></>;
   }
 
+  // Admin onboarding preview
+  if (previewOnboarding) {
+    return (
+      <>
+        {background}
+        <Onboarding
+          user={user}
+          isPreview
+          onComplete={() => {
+            setPreviewOnboarding(false);
+            // Restore actual theme after preview ends
+            const gender = themeOverride !== null ? themeOverride : profile?.gender;
+            if (gender === 'male') document.documentElement.setAttribute('data-theme', 'male');
+            else document.documentElement.removeAttribute('data-theme');
+          }}
+        />
+      </>
+    );
+  }
+
   // Logged in and has profile — show the full app
   const avatar = getAvatarByProfile(profile);
 
@@ -459,7 +493,17 @@ export default function App() {
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'haircare'   && <HairCare />}
-        {active === 'settings'   && <Settings onNavigate={navigate} user={user} profile={profile} onProfileUpdate={p => setProfile(p)} />}
+        {active === 'settings'   && <Settings
+            onNavigate={navigate}
+            user={user}
+            profile={profile}
+            onProfileUpdate={p => setProfile(p)}
+            colorMode={colorMode}
+            setColorMode={setColorMode}
+            themeOverride={themeOverride}
+            setThemeOverride={setThemeOverride}
+            onPreviewOnboarding={() => setPreviewOnboarding(true)}
+          />}
       </div>
 
       <JoyAssistant forceOpen={joyOpen} onClose={() => setJoyOpen(false)} />
