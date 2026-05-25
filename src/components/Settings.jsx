@@ -11,6 +11,7 @@ import { AVATARS, getAvatarByProfile } from '../avatars';
 import {
   loadReminders, saveReminders, requestNotificationPermission,
   scheduleReminders, playChime, registerFCMToken, syncRemindersToFirestore,
+  clearFiredReminder,
 } from '../utils/notifications';
 
 /* ─── Helpers ─── */
@@ -376,7 +377,10 @@ function RemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
   function save() {
     const trimmed = labelEdit.trim();
     if (trimmed && trimmed !== reminder.label) onRename(reminder.id, trimmed);
-    if (timeEdit !== reminder.time) onUpdateTime(reminder.id, timeEdit);
+    if (timeEdit !== reminder.time) {
+      clearFiredReminder(reminder.id); // allow it to fire at the new time today
+      onUpdateTime(reminder.id, timeEdit);
+    }
     setOpen(false);
   }
 

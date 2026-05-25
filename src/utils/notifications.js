@@ -164,6 +164,15 @@ export function stopReminders() {
   if (intervalId) { clearInterval(intervalId); intervalId = null; }
 }
 
+/* Clear a reminder's "already fired today" flag so it can fire at its new time */
+export function clearFiredReminder(id) {
+  try {
+    const fired = JSON.parse(localStorage.getItem(FIRED_KEY)) || {};
+    delete fired[id];
+    localStorage.setItem(FIRED_KEY, JSON.stringify(fired));
+  } catch {}
+}
+
 export async function requestNotificationPermission() {
   if (!('Notification' in window)) return 'unsupported';
   if (Notification.permission !== 'default') return Notification.permission;
