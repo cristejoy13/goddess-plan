@@ -2457,6 +2457,54 @@ body {
   padding: 4px;
   line-height: 1;
 }
+
+/* Password field wrapper with eye icon */
+.pw-field-wrap {
+  position: relative;
+  margin-bottom: 14px;
+}
+.pw-field-wrap .ob-input {
+  width: 100%;
+  padding-right: 50px;
+}
+.pw-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+}
+.pw-eye-btn:hover { opacity: 1; }
+
+/* Appearance mode grid */
+.app-mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.app-mode-option {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.app-mode-btn { width: 100%; }
+.app-mode-desc {
+  font-size: 11.5px;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
 .login-info {
   margin-top: 14px;
   padding: 10px 14px;

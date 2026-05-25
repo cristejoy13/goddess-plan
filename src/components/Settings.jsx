@@ -178,9 +178,14 @@ function PasswordScreen({ user, onBack }) {
       }
       setMode('sent');
     } catch (e) {
-      if (e.code === 'auth/wrong-password') setError('Current password is incorrect.');
-      else if (e.code === 'auth/weak-password') setError('Password is too weak. Use 8+ characters.');
-      else setError('Could not update password. Please try again.');
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')
+        setError('Current password is incorrect.');
+      else if (e.code === 'auth/weak-password')
+        setError('Password is too weak — use 8+ characters.');
+      else if (e.code === 'auth/requires-recent-login')
+        setError('Session expired. Sign out and sign back in, then try again.');
+      else
+        setError(`Could not update password. (${e.code || e.message})`);
     } finally {
       setSaving(false);
     }
@@ -217,25 +222,37 @@ function PasswordScreen({ user, onBack }) {
         <>
           {error && <p className="ep-error">{error}</p>}
           <div className="g-card splash-item">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <span style={{ fontSize: 13, color: 'var(--text-soft)' }}>Passwords</span>
-              <button type="button" className="login-pw-toggle" onClick={() => setShowPw(v => !v)}>
-                {showPw ? '🙈 Hide' : '👁 Show'}
-              </button>
-            </div>
             {hasPassword && (
               <>
                 <div className="settings-section-title">Current Password</div>
-                <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="Enter current password"
-                  value={currentPw} onChange={e => setCurrentPw(e.target.value)} style={{ marginBottom: 14 }} />
+                <div className="pw-field-wrap">
+                  <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="Enter current password"
+                    value={currentPw} onChange={e => setCurrentPw(e.target.value)} />
+                  <button type="button" className="pw-eye-btn" onClick={() => setShowPw(v => !v)}
+                    aria-label={showPw ? 'Hide password' : 'Show password'}>
+                    {showPw ? '🙈' : '👁️'}
+                  </button>
+                </div>
               </>
             )}
             <div className="settings-section-title">{hasPassword ? 'New Password' : 'Choose a Password'}</div>
-            <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="At least 8 characters"
-              value={newPw} onChange={e => setNewPw(e.target.value)} style={{ marginBottom: 14 }} />
+            <div className="pw-field-wrap">
+              <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="At least 8 characters"
+                value={newPw} onChange={e => setNewPw(e.target.value)} />
+              <button type="button" className="pw-eye-btn" onClick={() => setShowPw(v => !v)}
+                aria-label={showPw ? 'Hide password' : 'Show password'}>
+                {showPw ? '🙈' : '👁️'}
+              </button>
+            </div>
             <div className="settings-section-title">Confirm Password</div>
-            <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="Repeat your new password"
-              value={confirmPw} onChange={e => setConfirmPw(e.target.value)} />
+            <div className="pw-field-wrap">
+              <input className="ob-input" type={showPw ? 'text' : 'password'} placeholder="Repeat your new password"
+                value={confirmPw} onChange={e => setConfirmPw(e.target.value)} />
+              <button type="button" className="pw-eye-btn" onClick={() => setShowPw(v => !v)}
+                aria-label={showPw ? 'Hide password' : 'Show password'}>
+                {showPw ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
           <button className="ob-btn-primary splash-item" onClick={handleSave} disabled={saving} style={{ marginTop: 4 }}>
             {saving ? 'Saving…' : hasPassword ? 'Update Password →' : 'Set Password →'}
@@ -252,10 +269,23 @@ function PasswordScreen({ user, onBack }) {
   );
 }
 
+/* ─── 12-hour time helper ─── */
+function to12h(time) {
+  const [h, m] = time.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
 /* ─── Account Screen ─── */
-function AccountScreen({ user, profile, onProfileUpdate, onBack }) {
+function AccountScreen({ user, profile, onProfileUpdate, onBack, pushBack, clearInnerBack }) {
   const [screen, setScreen] = useState('main'); // 'main' | 'edit' | 'password'
   const avatar = getAvatarByProfile(profile);
+
+  function openSubScreen(s) {
+    pushBack?.(() => { clearInnerBack?.(); setScreen('main'); });
+    setScreen(s);
+  }
 
   if (screen === 'edit') {
     return <EditProfileScreen user={user} profile={profile}
@@ -291,10 +321,10 @@ function AccountScreen({ user, profile, onProfileUpdate, onBack }) {
 
       <div className="settings-pills-list">
         <SettingsPill icon="✏️" label="Edit Name & Avatar"
-          desc="Change your display name and avatar" onClick={() => setScreen('edit')} />
+          desc="Change your display name and avatar" onClick={() => openSubScreen('edit')} />
         <SettingsPill icon="🔑" label={user?.providerData?.some(p => p.providerId === 'password') ? 'Change Password' : 'Set a Password'}
           desc={user?.providerData?.some(p => p.providerId === 'password') ? 'Update your sign-in password' : 'Add a password to your account'}
-          onClick={() => setScreen('password')} />
+          onClick={() => openSubScreen('password')} />
       </div>
     </div>
   );
@@ -390,7 +420,7 @@ function RemRow({ reminder, onToggle, onUpdateTime, onRename, onDelete }) {
         <span className="rem-emoji">{reminder.emoji}</span>
         <div className="rem-info">
           <div className="rem-label">{reminder.label}</div>
-          <div className="rem-time-display">{reminder.time}</div>
+          <div className="rem-time-display">{to12h(reminder.time)}</div>
         </div>
         <button
           className={`rem-toggle${reminder.enabled ? ' on' : ''}`}
@@ -586,31 +616,33 @@ function AppearanceScreen({ onBack, colorMode, setColorMode }) {
       </div>
       <div className="g-card splash-item">
         <div className="settings-section-title" style={{ marginBottom: 14 }}>🎨 Color Mode</div>
-        <div className="ob-gender-btns">
-          <button
-            className={`ob-gender-btn${colorMode === 'dark' ? ' selected' : ''}`}
-            onClick={() => setColorMode('dark')}
-          >
-            🌙 Dark Mode
-          </button>
-          <button
-            className={`ob-gender-btn${colorMode === 'light' ? ' selected' : ''}`}
-            onClick={() => setColorMode('light')}
-          >
-            ☀️ Light Mode
-          </button>
+        <div className="app-mode-grid">
+          <div className="app-mode-option">
+            <button
+              className={`ob-gender-btn app-mode-btn${colorMode === 'dark' ? ' selected' : ''}`}
+              onClick={() => setColorMode('dark')}
+            >
+              🌙 Dark Mode
+            </button>
+            <p className="app-mode-desc">Deep backgrounds, easy on the eyes at night.</p>
+          </div>
+          <div className="app-mode-option">
+            <button
+              className={`ob-gender-btn app-mode-btn${colorMode === 'light' ? ' selected' : ''}`}
+              onClick={() => setColorMode('light')}
+            >
+              ☀️ Light Mode
+            </button>
+            <p className="app-mode-desc">Bright backgrounds, great for daytime use.</p>
+          </div>
         </div>
-        <p style={{ fontSize: 12, color: 'var(--text-soft)', marginTop: 14, lineHeight: 1.6 }}>
-          Dark mode: deep backgrounds, easy on the eyes at night.<br />
-          Light mode: bright backgrounds, great for daytime use.
-        </p>
       </div>
     </div>
   );
 }
 
 /* ─── Admin Screen ─── */
-const ADMIN_EMAILS = ['joy@remoteimagingconsultants.com', 'cristejoycalosor13@gmail.com'];
+const ADMIN_EMAILS = ['joy@remoteimagingconsultants.com'];
 
 function AdminScreen({ onBack, profile, themeOverride, setThemeOverride, onPreviewOnboarding }) {
   const activeTheme = themeOverride !== null ? themeOverride : (profile?.gender || 'female');
@@ -676,11 +708,17 @@ export default function Settings({
   colorMode, setColorMode,
   themeOverride, setThemeOverride,
   onPreviewOnboarding,
+  pushBack, clearInnerBack,
 }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [screen, setScreen] = useState('main');
 
   const isAdmin = ADMIN_EMAILS.includes(user?.email) || profile?.isAdmin === true;
+
+  function openScreen(s) {
+    pushBack?.(() => { clearInnerBack?.(); setScreen('main'); });
+    setScreen(s);
+  }
 
   async function handleLogout() {
     try { await signOut(auth); } catch (e) { console.error('Sign out failed:', e); }
@@ -688,7 +726,8 @@ export default function Settings({
 
   if (screen === 'account') {
     return <AccountScreen user={user} profile={profile}
-      onProfileUpdate={onProfileUpdate} onBack={() => setScreen('main')} />;
+      onProfileUpdate={onProfileUpdate} onBack={() => setScreen('main')}
+      pushBack={pushBack} clearInnerBack={clearInnerBack} />;
   }
   if (screen === 'navigate') return <NavigateScreen onBack={() => setScreen('main')} />;
   if (screen === 'about')    return <AboutScreen onBack={() => setScreen('main')} />;
@@ -720,18 +759,18 @@ export default function Settings({
 
         <div className="settings-pills-list splash-item">
           <SettingsPill icon="👤" label="Account"
-            desc="Edit profile, avatar, password" onClick={() => setScreen('account')} />
+            desc="Edit profile, avatar, password" onClick={() => openScreen('account')} />
           <SettingsPill icon="🔔" label="Reminders"
-            desc="Daily notifications with sound" onClick={() => setScreen('reminders')} />
+            desc="Daily notifications with sound" onClick={() => openScreen('reminders')} />
           <SettingsPill icon="🎨" label="Appearance"
-            desc={`${colorMode === 'light' ? '☀️ Light' : '🌙 Dark'} mode · color theme`} onClick={() => setScreen('appearance')} />
+            desc={`${colorMode === 'light' ? '☀️ Light' : '🌙 Dark'} mode · color theme`} onClick={() => openScreen('appearance')} />
           <SettingsPill icon="🗂️" label="Navigate the App"
-            desc="Gestures, shortcuts, tips" onClick={() => setScreen('navigate')} />
+            desc="Gestures, shortcuts, tips" onClick={() => openScreen('navigate')} />
           <SettingsPill icon="🌸" label="About & Help"
-            desc="About the Goddess Plan" onClick={() => setScreen('about')} />
+            desc="About the Goddess Plan" onClick={() => openScreen('about')} />
           {isAdmin && (
             <SettingsPill icon="🛠️" label="Admin Panel"
-              desc="Preview themes and sign-up flow" onClick={() => setScreen('admin')} />
+              desc="Preview themes and sign-up flow" onClick={() => openScreen('admin')} />
           )}
           <SettingsPill icon="🚪" label="Sign Out"
             desc="You can always come back" onClick={() => setShowConfirm(true)} danger />

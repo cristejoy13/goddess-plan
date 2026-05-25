@@ -203,6 +203,8 @@ export default function App() {
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
   const [themeOverride, setThemeOverride] = useState(null); // null | 'male' | 'female'
   const [previewOnboarding, setPreviewOnboarding] = useState(false);
+  const previewRef = useRef(false);
+  useEffect(() => { previewRef.current = previewOnboarding; }, [previewOnboarding]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => { setUser(u ?? null); });
@@ -303,6 +305,8 @@ export default function App() {
   };
 
   const goBack = () => {
+    /* Exit onboarding preview before doing anything else */
+    if (previewRef.current) { setPreviewOnboarding(false); return; }
     /* First drain inner back stack (sub-page navigation within a section) */
     if (innerBackStackRef.current.length > 0) {
       const stack = innerBackStackRef.current;
@@ -520,6 +524,8 @@ export default function App() {
             themeOverride={themeOverride}
             setThemeOverride={setThemeOverride}
             onPreviewOnboarding={() => setPreviewOnboarding(true)}
+            pushBack={pushBack}
+            clearInnerBack={clearInnerBack}
           />}
       </div>
 
