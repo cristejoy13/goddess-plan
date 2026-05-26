@@ -21,16 +21,6 @@ const WEEK_PILLS = [
   { label: 'Sun', emoji: '💪', dayId: 'day-sunday'    },
 ];
 
-const GOALS = [
-  { label: '🌸 Flat Stomach at Rest', section: 'nutrition',  tab: 'guide'     },
-  { label: '✨ Clear, Bright Skin',    section: 'skincare',   tab: 'am'        },
-  { label: '💪 Round Glutes',          section: 'workout',    tab: null        },
-  { label: '🌿 Low Inflammation',      section: 'nutrition',  tab: 'guide'     },
-  { label: '🌺 Healthy Hormones',      section: 'skincare',   tab: 'antiaging' },
-  { label: '💎 Shiny Wavy Hair',       section: 'haircare',   tab: null        },
-  { label: '🧠 Brain Health',          section: 'skincare',   tab: 'antiaging' },
-  { label: '💧 Less Puffiness',        section: 'nutrition',  tab: 'hydration' },
-];
 
 function DayCard({ icon, label, title, sub, onClick }) {
   return (
@@ -106,21 +96,10 @@ export default function Hero({ onNavigate }) {
         />
       </div>
 
-      <div className="hero-goals splash-item">
-        {GOALS.map(g => (
-          <button
-            key={g.label}
-            className="goal-pill"
-            onClick={() => onNavigate(g.section, g.tab)}
-          >
-            {g.label}
-          </button>
-        ))}
-      </div>
-
       {/* PFBS Motto + Rules */}
       <div className="hero-pfbs splash-item">
-        <div className="hero-pfbs-heading">👑 The PFBS Code</div>
+        <div className="hero-pfbs-quote">"Pffff, bullsh*t"</div>
+        <div className="hero-pfbs-heading">— in short, PFBS 👑</div>
         <div className="hero-pfbs-grid">
           <div className="hero-pfbs-item">
             <span className="hero-pfbs-letter">P</span>
@@ -132,7 +111,7 @@ export default function Hero({ onNavigate }) {
           </div>
           <div className="hero-pfbs-item">
             <span className="hero-pfbs-letter">B</span>
-            <div><strong>Bland</strong> foods first<br /><span>Less bloating & puffiness</span></div>
+            <div><strong>Bland</strong> foods<br /><span>Less puffiness & less bloat</span></div>
           </div>
           <div className="hero-pfbs-item">
             <span className="hero-pfbs-letter">S</span>
