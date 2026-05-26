@@ -17,42 +17,42 @@ const MOODS = [
 ];
 
 const PRIMARY_GOALS = [
-  { id: 'lose_fat',      emoji: '🔥', label: 'Lose fat', sub: 'Tone up & burn fat' },
-  { id: 'build_muscle',  emoji: '💪', label: 'Build muscle', sub: 'Get stronger & leaner' },
-  { id: 'maintain',      emoji: '⚖️', label: 'Maintain', sub: 'Stay healthy & fit' },
+  { id: 'lose_fat',     emoji: '🔥', label: 'Lose fat' },
+  { id: 'build_muscle', emoji: '💪', label: 'Build muscle' },
+  { id: 'maintain',     emoji: '⚖️', label: 'Maintain' },
 ];
 
 const GOAL_CHIPS = [
-  { id: 'stronger',   emoji: '💪', label: 'Get stronger' },
-  { id: 'loseweight', emoji: '🔥', label: 'Lose weight' },
-  { id: 'flexible',   emoji: '🧘', label: 'More flexibility' },
-  { id: 'energy',     emoji: '⚡', label: 'More energy' },
-  { id: 'sleep',      emoji: '😴', label: 'Better sleep' },
-  { id: 'wellness',   emoji: '🌿', label: 'Overall wellness' },
-  { id: 'glow',       emoji: '✨', label: 'Skin & hair glow' },
-  { id: 'confidence', emoji: '👑', label: 'More confidence' },
+  { id: 'stronger',   label: 'Get stronger' },
+  { id: 'loseweight', label: 'Lose weight' },
+  { id: 'flexible',   label: 'More flexibility' },
+  { id: 'energy',     label: 'More energy' },
+  { id: 'sleep',      label: 'Better sleep' },
+  { id: 'wellness',   label: 'Overall wellness' },
+  { id: 'glow',       label: 'Skin & hair glow' },
+  { id: 'confidence', label: 'More confidence' },
 ];
 
 const CHALLENGES = [
-  { id: 'time',       emoji: '⏰', label: 'Finding time' },
-  { id: 'energy',     emoji: '😴', label: 'Low energy' },
-  { id: 'eating',     emoji: '🍕', label: 'Eating habits' },
-  { id: 'consistent', emoji: '🔄', label: 'Staying consistent' },
-  { id: 'stress',     emoji: '😣', label: 'Stress & recovery' },
-  { id: 'unsure',     emoji: '🙋', label: 'Not sure where to start' },
+  { id: 'time',       label: 'Finding time' },
+  { id: 'energy',     label: 'Low energy' },
+  { id: 'eating',     label: 'Eating habits' },
+  { id: 'consistent', label: 'Staying consistent' },
+  { id: 'stress',     label: 'Stress & recovery' },
+  { id: 'unsure',     label: 'Not sure where to start' },
 ];
 
 const ACTIVITY_LEVELS = [
-  { id: 'sedentary', emoji: '🌱', label: 'Mostly sitting', sub: 'Desk job, minimal movement' },
-  { id: 'light',     emoji: '🚶', label: 'Lightly active', sub: '1–3 days/week of movement' },
-  { id: 'moderate',  emoji: '🏃', label: 'Moderately active', sub: '3–5 days/week' },
-  { id: 'active',    emoji: '💪', label: 'Very active', sub: '6–7 days/week, intense' },
+  { id: 'sedentary', label: 'Mostly sitting',     sub: 'Desk job, minimal movement' },
+  { id: 'light',     label: 'Lightly active',     sub: '1–3 days/week' },
+  { id: 'moderate',  label: 'Moderately active',  sub: '3–5 days/week' },
+  { id: 'active',    label: 'Very active',        sub: '6–7 days/week' },
 ];
 
 const EXPERIENCE_LEVELS = [
-  { id: 'beginner',     emoji: '🌱', label: 'Beginner', sub: 'New to working out' },
-  { id: 'intermediate', emoji: '🏃', label: 'Intermediate', sub: '1–2 years of training' },
-  { id: 'advanced',     emoji: '🔥', label: 'Advanced', sub: '3+ years, consistent' },
+  { id: 'beginner',     label: 'Beginner',     sub: 'New to working out' },
+  { id: 'intermediate', label: 'Intermediate', sub: '1–2 years' },
+  { id: 'advanced',     label: 'Advanced',     sub: '3+ years' },
 ];
 
 const WORKOUT_DAYS = [
@@ -62,18 +62,18 @@ const WORKOUT_DAYS = [
 ];
 
 const WORKOUT_TIMES = [
-  { id: 'morning',   emoji: '🌅', label: 'Morning' },
-  { id: 'afternoon', emoji: '☀️', label: 'Afternoon' },
-  { id: 'evening',   emoji: '🌙', label: 'Evening' },
-  { id: 'anytime',   emoji: '🤷', label: 'No preference' },
+  { id: 'morning',   label: 'Morning' },
+  { id: 'afternoon', label: 'Afternoon' },
+  { id: 'evening',   label: 'Evening' },
+  { id: 'anytime',   label: 'No preference' },
 ];
 
 const EQUIPMENT = [
-  { id: 'none',      emoji: '🏠', label: 'No equipment' },
-  { id: 'bands',     emoji: '💛', label: 'Resistance bands' },
-  { id: 'dumbbells', emoji: '🏋️', label: 'Dumbbells' },
-  { id: 'barbell',   emoji: '⚡', label: 'Barbell' },
-  { id: 'gym',       emoji: '🏟️', label: 'Full gym' },
+  { id: 'none',      label: 'None' },
+  { id: 'bands',     label: 'Resistance bands' },
+  { id: 'dumbbells', label: 'Dumbbells' },
+  { id: 'barbell',   label: 'Barbell' },
+  { id: 'gym',       label: 'Full gym' },
 ];
 
 const MEAL_FREQ = [
@@ -84,51 +84,51 @@ const MEAL_FREQ = [
 ];
 
 const DIET_TYPES = [
-  { id: 'balanced',    emoji: '🥗', label: 'Balanced' },
-  { id: 'vegetarian',  emoji: '🥦', label: 'Vegetarian' },
-  { id: 'vegan',       emoji: '🌱', label: 'Vegan' },
-  { id: 'keto',        emoji: '🥑', label: 'Keto' },
-  { id: 'paleo',       emoji: '🥩', label: 'Paleo' },
+  { id: 'balanced',   label: 'Balanced' },
+  { id: 'vegetarian', label: 'Vegetarian' },
+  { id: 'vegan',      label: 'Vegan' },
+  { id: 'keto',       label: 'Keto' },
+  { id: 'paleo',      label: 'Paleo' },
 ];
 
 const FASTING = [
-  { id: 'none', emoji: '🍽️', label: 'No fasting' },
-  { id: '16:8', emoji: '⏱️', label: '16:8' },
-  { id: '18:6', emoji: '⏱️', label: '18:6' },
-  { id: '20:4', emoji: '⏱️', label: '20:4' },
+  { id: 'none', label: 'No fasting' },
+  { id: '16:8', label: '16:8' },
+  { id: '18:6', label: '18:6' },
+  { id: '20:4', label: '20:4' },
 ];
 
 const SKIN_TYPES = [
-  { id: 'normal',      emoji: '✨', label: 'Normal' },
-  { id: 'dry',         emoji: '🌵', label: 'Dry' },
-  { id: 'oily',        emoji: '💧', label: 'Oily' },
-  { id: 'combination', emoji: '⚖️', label: 'Combination' },
-  { id: 'sensitive',   emoji: '🌸', label: 'Sensitive' },
+  { id: 'normal',      label: 'Normal' },
+  { id: 'dry',         label: 'Dry' },
+  { id: 'oily',        label: 'Oily' },
+  { id: 'combination', label: 'Combination' },
+  { id: 'sensitive',   label: 'Sensitive' },
 ];
 
 const SKIN_CONCERNS = [
-  { id: 'acne',             emoji: '😟', label: 'Acne / breakouts' },
-  { id: 'dryness',          emoji: '🌵', label: 'Dryness / flaking' },
-  { id: 'hyperpigmentation',emoji: '🌑', label: 'Dark spots' },
-  { id: 'aging',            emoji: '⌛', label: 'Fine lines / aging' },
-  { id: 'redness',          emoji: '🔴', label: 'Redness / irritation' },
-  { id: 'dullness',         emoji: '😐', label: 'Dullness / glow' },
+  { id: 'acne',              label: 'Acne / breakouts' },
+  { id: 'dryness',           label: 'Dryness / flaking' },
+  { id: 'hyperpigmentation', label: 'Dark spots' },
+  { id: 'aging',             label: 'Fine lines / aging' },
+  { id: 'redness',           label: 'Redness / irritation' },
+  { id: 'dullness',          label: 'Dullness' },
 ];
 
 const HAIR_TEXTURES = [
-  { id: 'straight', emoji: '📏', label: 'Straight' },
-  { id: 'wavy',     emoji: '〰️', label: 'Wavy' },
-  { id: 'curly',    emoji: '🌀', label: 'Curly' },
-  { id: 'coily',    emoji: '🔄', label: 'Coily / kinky' },
+  { id: 'straight', label: 'Straight' },
+  { id: 'wavy',     label: 'Wavy' },
+  { id: 'curly',    label: 'Curly' },
+  { id: 'coily',    label: 'Coily / kinky' },
 ];
 
 const HAIR_CONCERNS = [
-  { id: 'dryness',   emoji: '🌵', label: 'Dryness' },
-  { id: 'breakage',  emoji: '💔', label: 'Breakage' },
-  { id: 'frizz',     emoji: '⚡', label: 'Frizz' },
-  { id: 'thinning',  emoji: '🍃', label: 'Thinning' },
-  { id: 'dandruff',  emoji: '❄️', label: 'Dandruff' },
-  { id: 'growth',    emoji: '🌱', label: 'Slow growth' },
+  { id: 'dryness',  label: 'Dryness' },
+  { id: 'breakage', label: 'Breakage' },
+  { id: 'frizz',    label: 'Frizz' },
+  { id: 'thinning', label: 'Thinning' },
+  { id: 'dandruff', label: 'Dandruff' },
+  { id: 'growth',   label: 'Slow growth' },
 ];
 
 const PLAN_SECTIONS = [
@@ -279,12 +279,11 @@ function BodyScreen({ form, setForm, onNext, onBack }) {
   return (
     <div className="ob-screen">
       <StepDots current="body" />
-      <div className="ob-icon">💕</div>
-      <h2 className="ob-title">Your body, your baseline</h2>
-      <p className="ob-subtitle">Used to calculate your personal calorie & macro targets</p>
+      <h2 className="ob-title">Your body</h2>
+      <p className="ob-subtitle">We use this to calculate your calorie target.</p>
 
       <div className="ob-field">
-        <label className="ob-label">Primary goal</label>
+        <label className="ob-label">What's your main goal?</label>
         <div className="ob-primary-goal-grid">
           {PRIMARY_GOALS.map(g => (
             <button key={g.id} type="button"
@@ -292,7 +291,6 @@ function BodyScreen({ form, setForm, onNext, onBack }) {
               onClick={() => update('primaryGoal', g.id)}>
               <span className="ob-pg-emoji">{g.emoji}</span>
               <span className="ob-pg-label">{g.label}</span>
-              <span className="ob-pg-sub">{g.sub}</span>
             </button>
           ))}
         </div>
@@ -367,15 +365,14 @@ function GoalsScreen({ form, setForm, onNext, onBack }) {
   return (
     <div className="ob-screen">
       <StepDots current="goals" />
-      <div className="ob-icon">🎯</div>
-      <h2 className="ob-title">What drives you?</h2>
-      <p className="ob-subtitle">Pick everything that resonates — Joy will keep these in mind</p>
+      <h2 className="ob-title">Goals & challenges</h2>
+      <p className="ob-subtitle">Be honest. No judgment here.</p>
 
       <div className="ob-field">
-        <label className="ob-label">Your goals <span className="ob-label-note">(pick all that apply)</span></label>
+        <label className="ob-label">What do you want? <span className="ob-label-note">(pick all that apply)</span></label>
         <div className="ob-chip-wrap">
           {GOAL_CHIPS.map(g => (
-            <ChipBtn key={g.id} selected={goals.includes(g.id)} onClick={() => toggleGoal(g.id)} emoji={g.emoji} label={g.label} />
+            <ChipBtn key={g.id} selected={goals.includes(g.id)} onClick={() => toggleGoal(g.id)} label={g.label} />
           ))}
         </div>
       </div>
@@ -384,7 +381,7 @@ function GoalsScreen({ form, setForm, onNext, onBack }) {
         <label className="ob-label">Biggest challenge right now</label>
         <div className="ob-chip-wrap">
           {CHALLENGES.map(c => (
-            <ChipBtn key={c.id} selected={form.biggestChallenge === c.id} onClick={() => set('biggestChallenge', c.id)} emoji={c.emoji} label={c.label} />
+            <ChipBtn key={c.id} selected={form.biggestChallenge === c.id} onClick={() => set('biggestChallenge', c.id)} label={c.label} />
           ))}
         </div>
       </div>
@@ -413,12 +410,11 @@ function LifestyleScreen({ form, setForm, onNext, onBack }) {
   return (
     <div className="ob-screen">
       <StepDots current="lifestyle" />
-      <div className="ob-icon">🌙</div>
-      <h2 className="ob-title">Your daily rhythm</h2>
-      <p className="ob-subtitle">Your meal and reminder times are built around your sleep schedule</p>
+      <h2 className="ob-title">Sleep & lifestyle</h2>
+      <p className="ob-subtitle">Your reminders and meal times are built around your sleep.</p>
 
       <div className="ob-field">
-        <label className="ob-label">Daily schedule</label>
+        <label className="ob-label">When do you wake up and sleep?</label>
         <div className="ob-time-row">
           <div className="ob-time-field">
             <span className="ob-time-label">☀️ Wake up</span>
@@ -460,13 +456,12 @@ function LifestyleScreen({ form, setForm, onNext, onBack }) {
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Activity level outside of workouts</label>
+        <label className="ob-label">How active are you day-to-day? <span className="ob-label-note">(outside workouts)</span></label>
         <div className="ob-exp-grid">
           {ACTIVITY_LEVELS.map(a => (
             <button key={a.id} type="button"
               className={`ob-exp-btn${form.activityLevel === a.id ? ' selected' : ''}`}
               onClick={() => set('activityLevel', a.id)}>
-              <span className="ob-exp-emoji">{a.emoji}</span>
               <span className="ob-exp-label">{a.label}</span>
               <span className="ob-exp-sub">{a.sub}</span>
             </button>
@@ -493,9 +488,8 @@ function FitnessScreen({ form, setForm, onNext, onBack }) {
   return (
     <div className="ob-screen">
       <StepDots current="fitness" />
-      <div className="ob-icon">💪</div>
-      <h2 className="ob-title">Your fitness setup</h2>
-      <p className="ob-subtitle">Helps us match you to the right workout intensity and schedule</p>
+      <h2 className="ob-title">Fitness</h2>
+      <p className="ob-subtitle">Tell us where you're at and we'll work with it.</p>
 
       <div className="ob-field">
         <label className="ob-label">Training experience</label>
@@ -504,7 +498,6 @@ function FitnessScreen({ form, setForm, onNext, onBack }) {
             <button key={e.id} type="button"
               className={`ob-exp-btn${form.experienceLevel === e.id ? ' selected' : ''}`}
               onClick={() => set('experienceLevel', e.id)}>
-              <span className="ob-exp-emoji">{e.emoji}</span>
               <span className="ob-exp-label">{e.label}</span>
               <span className="ob-exp-sub">{e.sub}</span>
             </button>
@@ -513,7 +506,7 @@ function FitnessScreen({ form, setForm, onNext, onBack }) {
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Days per week you can work out</label>
+        <label className="ob-label">How many days a week can you work out?</label>
         <div className="ob-chip-wrap">
           {WORKOUT_DAYS.map(d => (
             <ChipBtn key={d.id} selected={form.workoutDays === d.id} onClick={() => set('workoutDays', d.id)} label={d.label} />
@@ -522,19 +515,19 @@ function FitnessScreen({ form, setForm, onNext, onBack }) {
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Preferred workout time</label>
+        <label className="ob-label">Preferred time to work out</label>
         <div className="ob-chip-wrap">
           {WORKOUT_TIMES.map(t => (
-            <ChipBtn key={t.id} selected={form.workoutTime === t.id} onClick={() => set('workoutTime', t.id)} emoji={t.emoji} label={t.label} />
+            <ChipBtn key={t.id} selected={form.workoutTime === t.id} onClick={() => set('workoutTime', t.id)} label={t.label} />
           ))}
         </div>
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Equipment available <span className="ob-label-note">(pick all that apply)</span></label>
+        <label className="ob-label">Equipment you have access to <span className="ob-label-note">(pick all that apply)</span></label>
         <div className="ob-chip-wrap">
           {EQUIPMENT.map(e => (
-            <ChipBtn key={e.id} selected={eq.includes(e.id)} onClick={() => toggleEq(e.id)} emoji={e.emoji} label={e.label} />
+            <ChipBtn key={e.id} selected={eq.includes(e.id)} onClick={() => toggleEq(e.id)} label={e.label} />
           ))}
         </div>
       </div>
@@ -558,12 +551,11 @@ function NutritionScreen({ form, setForm, onNext, onBack }) {
   return (
     <div className="ob-screen">
       <StepDots current="nutrition" />
-      <div className="ob-icon">🥗</div>
-      <h2 className="ob-title">How you eat</h2>
-      <p className="ob-subtitle">Your meals will respect your schedule — protein every time 🥚</p>
+      <h2 className="ob-title">Nutrition</h2>
+      <p className="ob-subtitle">Protein every meal. Always.</p>
 
       <div className="ob-field">
-        <label className="ob-label">Meals per day</label>
+        <label className="ob-label">How many meals a day do you prefer?</label>
         <div className="ob-chip-wrap">
           {MEAL_FREQ.map(m => (
             <ChipBtn key={m.id} selected={form.mealFrequency === m.id} onClick={() => set('mealFrequency', m.id)} label={m.label} />
@@ -575,29 +567,29 @@ function NutritionScreen({ form, setForm, onNext, onBack }) {
         <label className="ob-label">Diet style</label>
         <div className="ob-chip-wrap">
           {DIET_TYPES.map(d => (
-            <ChipBtn key={d.id} selected={form.dietType === d.id} onClick={() => set('dietType', d.id)} emoji={d.emoji} label={d.label} />
+            <ChipBtn key={d.id} selected={form.dietType === d.id} onClick={() => set('dietType', d.id)} label={d.label} />
           ))}
         </div>
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Intermittent fasting?</label>
+        <label className="ob-label">Do you fast? <span className="ob-label-note">(on rest days we fast by default)</span></label>
         <div className="ob-chip-wrap">
           {FASTING.map(f => (
-            <ChipBtn key={f.id} selected={form.fastingProtocol === f.id} onClick={() => set('fastingProtocol', f.id)} emoji={f.emoji} label={f.label} />
+            <ChipBtn key={f.id} selected={form.fastingProtocol === f.id} onClick={() => set('fastingProtocol', f.id)} label={f.label} />
           ))}
         </div>
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Food allergies or restrictions <span className="ob-label-note">(optional)</span></label>
+        <label className="ob-label">Any food allergies or restrictions? <span className="ob-label-note">(optional)</span></label>
         <textarea className="ob-textarea" rows={2}
           placeholder="e.g. gluten-free, no dairy, nut allergy"
           value={form.allergies} onChange={e => set('allergies', e.target.value)} />
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Add to your Goddess Plan</label>
+        <label className="ob-label">What do you want included in your plan?</label>
         <p className="ob-sections-note">Workouts are always included 💪</p>
         <div className="ob-sections-list">
           {PLAN_SECTIONS.map(s => (
@@ -636,15 +628,14 @@ function SkincareScreen({ form, setForm, onNext, onBack, saving }) {
   return (
     <div className="ob-screen">
       <StepDots current="skincare" />
-      <div className="ob-icon">🌸</div>
       <h2 className="ob-title">Skin & hair</h2>
-      <p className="ob-subtitle">Joy will give you personalised skincare and haircare advice</p>
+      <p className="ob-subtitle">Joy uses this to give you targeted advice.</p>
 
       <div className="ob-field">
-        <label className="ob-label">Skin type</label>
+        <label className="ob-label">What's your skin type?</label>
         <div className="ob-chip-wrap">
           {SKIN_TYPES.map(s => (
-            <ChipBtn key={s.id} selected={form.skinType === s.id} onClick={() => set('skinType', s.id)} emoji={s.emoji} label={s.label} />
+            <ChipBtn key={s.id} selected={form.skinType === s.id} onClick={() => set('skinType', s.id)} label={s.label} />
           ))}
         </div>
       </div>
@@ -653,7 +644,7 @@ function SkincareScreen({ form, setForm, onNext, onBack, saving }) {
         <label className="ob-label">Skin concerns <span className="ob-label-note">(pick all that apply)</span></label>
         <div className="ob-chip-wrap">
           {SKIN_CONCERNS.map(s => (
-            <ChipBtn key={s.id} selected={sc.includes(s.id)} onClick={() => toggleConcern(s.id)} emoji={s.emoji} label={s.label} />
+            <ChipBtn key={s.id} selected={sc.includes(s.id)} onClick={() => toggleConcern(s.id)} label={s.label} />
           ))}
         </div>
       </div>
@@ -662,7 +653,7 @@ function SkincareScreen({ form, setForm, onNext, onBack, saving }) {
         <label className="ob-label">Hair texture</label>
         <div className="ob-chip-wrap">
           {HAIR_TEXTURES.map(h => (
-            <ChipBtn key={h.id} selected={form.hairTexture === h.id} onClick={() => set('hairTexture', h.id)} emoji={h.emoji} label={h.label} />
+            <ChipBtn key={h.id} selected={form.hairTexture === h.id} onClick={() => set('hairTexture', h.id)} label={h.label} />
           ))}
         </div>
       </div>
@@ -671,22 +662,22 @@ function SkincareScreen({ form, setForm, onNext, onBack, saving }) {
         <label className="ob-label">Hair concerns <span className="ob-label-note">(pick all that apply)</span></label>
         <div className="ob-chip-wrap">
           {HAIR_CONCERNS.map(h => (
-            <ChipBtn key={h.id} selected={hc.includes(h.id)} onClick={() => toggleHairConcern(h.id)} emoji={h.emoji} label={h.label} />
+            <ChipBtn key={h.id} selected={hc.includes(h.id)} onClick={() => toggleHairConcern(h.id)} label={h.label} />
           ))}
         </div>
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Any health conditions or symptoms? <span className="ob-label-note">(optional)</span></label>
+        <label className="ob-label">Any health conditions? <span className="ob-label-note">(optional)</span></label>
         <textarea className="ob-textarea" rows={2}
-          placeholder="e.g. PCOS, lower back pain, postpartum — or leave blank"
+          placeholder="e.g. PCOS, back pain, postpartum — or leave blank"
           value={form.illnesses} onChange={e => set('illnesses', e.target.value)} />
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Anything for Joy to know? <span className="ob-label-note">(optional)</span></label>
+        <label className="ob-label">Anything else for Joy? <span className="ob-label-note">(optional)</span></label>
         <textarea className="ob-textarea" rows={2}
-          placeholder="Your lifestyle, specific goals, things you love or hate — anything helps!"
+          placeholder="Goals, preferences, things you hate — anything goes"
           value={form.joyNote} onChange={e => set('joyNote', e.target.value)} />
       </div>
 
