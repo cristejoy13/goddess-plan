@@ -42,26 +42,33 @@ const EAT_DAYS  = [1, 3, 4]; // Strength + Sprints: breakfast fires at 8am
 const FAST_DAYS = [0, 2, 5, 6]; // Pilates + Rest: first meal at noon
 
 export const DEFAULT_REMINDERS = [
-  { id: 'sunlight',   emoji: '☀️',  label: 'Morning Sunlight',    time: '06:30', enabled: true, days: ALL_DAYS,
+  { id: 'sunlight',      emoji: '☀️',  label: 'Morning Sunlight',    time: '06:30', enabled: true, days: ALL_DAYS,
     body: 'Get 10–20 min of morning sunlight to anchor your circadian rhythm! 🌿' },
-  { id: 'am_skin',    emoji: '✨',        label: 'AM Skincare',         time: '07:00', enabled: true, days: ALL_DAYS,
+  { id: 'am_skin',       emoji: '✨',  label: 'AM Skincare',          time: '07:00', enabled: true, days: ALL_DAYS,
     body: 'AM routine time — cleanser, toner, vitamin C, sunscreen! 🌸' },
-  { id: 'breakfast',  emoji: '🥣',  label: 'Meal 1 — Breakfast', time: '08:00', enabled: true, days: EAT_DAYS,
-    body: 'Fuel up with your first meal of the day, goddess! 💕' },
-  { id: 'workout',    emoji: '💪',  label: 'Workout Time',        time: '08:30', enabled: true, days: ALL_DAYS,
-    body: null }, // dynamic per day-of-week
-  { id: 'lunch',      emoji: '🥗',  label: 'Meal 2 — Lunch',    time: '12:00', enabled: true, days: EAT_DAYS,
-    body: 'Midday nourishment! Stay hydrated too 💧' },
-  { id: 'fast_break', emoji: '⏱️',  label: 'Break Fast — Noon', time: '12:00', enabled: true, days: FAST_DAYS,
-    body: 'Fasting window done! First meal of the day — keep it protein-rich 🌿' },
-  { id: 'last_meal',  emoji: '🍽️', label: 'Last Meal — 3:00 PM', time: '15:00', enabled: true, days: ALL_DAYS,
-    body: 'Last meal of the day — keep it light and nourishing! No food after this 🌿' },
-  { id: 'pm_skin',    emoji: '🌙',  label: 'PM Skincare',         time: '20:00', enabled: true, days: ALL_DAYS,
+  // Strength/Sprint days (Mon/Wed/Thu) — eat anytime, breakfast at 8am
+  { id: 'breakfast',     emoji: '🥣',  label: 'Meal 1 — Breakfast',  time: '08:00', enabled: true, days: EAT_DAYS,
+    body: 'Strength day fuel! Protein first — PFBS 🥚💪 Walk after eating 🚶' },
+  { id: 'workout',       emoji: '💪',  label: 'Workout Time',         time: '08:30', enabled: true, days: EAT_DAYS,
+    body: null },
+  { id: 'lunch',         emoji: '🥗',  label: 'Meal 2 — Lunch',      time: '12:00', enabled: true, days: EAT_DAYS,
+    body: 'Meal 2 — protein + fiber + veg! 80% full 💕 Walk after 🚶' },
+  // Rest/Light days (Sun/Tue/Fri/Sat) — fast minimum 14 hours, break at noon
+  { id: 'workout_light', emoji: '🧘',  label: 'Workout Time',         time: '07:00', enabled: true, days: FAST_DAYS,
+    body: null },
+  { id: 'fast_break',    emoji: '⏱️', label: 'Break Fast',           time: '12:00', enabled: true, days: FAST_DAYS,
+    body: '14h fast done! First meal — protein + fiber, small portion 🥚🥦 Walk after 🚶' },
+  { id: 'fast_lunch',    emoji: '🍽️', label: 'Meal 2',               time: '15:00', enabled: true, days: FAST_DAYS,
+    body: 'Meal 2 — keep it bland, light, and protein-rich! 80% full 💕' },
+  // Shared — last meal for everyone
+  { id: 'last_meal',     emoji: '🌙',  label: 'Last Meal',            time: '17:30', enabled: true, days: ALL_DAYS,
+    body: 'Last meal of the day! Walk 10 min after 🚶 No food after this — Goddess rule 🌿' },
+  { id: 'pm_skin',       emoji: '✨',  label: 'PM Skincare',          time: '20:00', enabled: true, days: ALL_DAYS,
     body: 'Evening glow-up! Double cleanse, retinoid, moisturizer 🌸' },
-  { id: 'wind_down',  emoji: '💆',  label: 'Wind Down',           time: '21:00', enabled: true, days: ALL_DAYS,
+  { id: 'wind_down',     emoji: '💆',  label: 'Wind Down',            time: '21:00', enabled: true, days: ALL_DAYS,
     body: 'Dim the lights, no screens, gentle stretch 💤' },
-  { id: 'sleep',      emoji: '😴',  label: 'Sleep Time',          time: '21:30', enabled: true, days: ALL_DAYS,
-    body: 'Beauty sleep starts now! Aim for 7.5–9 hours 🌙' },
+  { id: 'sleep',         emoji: '😴',  label: 'Sleep Time',           time: '22:00', enabled: true, days: ALL_DAYS,
+    body: 'Beauty sleep — 7.5 to 9 hours, non-negotiable! 🌙' },
 ];
 
 const WORKOUT_BODIES = [

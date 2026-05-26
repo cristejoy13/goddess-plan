@@ -117,6 +117,37 @@ export default function Hero({ onNavigate }) {
           </button>
         ))}
       </div>
+
+      {/* PFBS Motto + Rules */}
+      <div className="hero-pfbs splash-item">
+        <div className="hero-pfbs-heading">👑 The PFBS Code</div>
+        <div className="hero-pfbs-grid">
+          <div className="hero-pfbs-item">
+            <span className="hero-pfbs-letter">P</span>
+            <div><strong>Protein</strong> every meal<br /><span>No insulin spikes</span></div>
+          </div>
+          <div className="hero-pfbs-item">
+            <span className="hero-pfbs-letter">F</span>
+            <div><strong>Fiber</strong> once a day<br /><span>Happy gut = happy body</span></div>
+          </div>
+          <div className="hero-pfbs-item">
+            <span className="hero-pfbs-letter">B</span>
+            <div><strong>Bland</strong> foods first<br /><span>Less bloating & puffiness</span></div>
+          </div>
+          <div className="hero-pfbs-item">
+            <span className="hero-pfbs-letter">S</span>
+            <div><strong>Small</strong> portions<br /><span>80% full — still breathing 💕</span></div>
+          </div>
+        </div>
+
+        <div className="hero-rules">
+          <div className="hero-rule"><span>🌙</span><span>No eating 3–5 hrs before sleep</span></div>
+          <div className="hero-rule"><span>⏳</span><span>3 hrs minimum gap between meals</span></div>
+          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — non-negotiable</span></div>
+          <div className="hero-rule"><span>🚶</span><span>Walk 10 min after every big meal</span></div>
+          <div className="hero-rule"><span>🍽️</span><span>Fast on rest days · Eat on strength days</span></div>
+        </div>
+      </div>
     </div>
   );
 }

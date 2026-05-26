@@ -427,6 +427,76 @@ body {
   transform: translateY(-2px) scale(1.04);
   color: var(--rose);
 }
+/* ─── PFBS + Rules block on Hero ─── */
+.hero-pfbs {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.hero-pfbs-heading {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+.hero-pfbs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.hero-pfbs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 12px 12px;
+  font-size: 12px;
+  color: var(--text-mid);
+  line-height: 1.4;
+}
+.hero-pfbs-item strong { color: var(--text); display: block; }
+.hero-pfbs-item span { font-size: 11px; color: var(--text-soft); }
+.hero-pfbs-letter {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--rose);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.hero-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.hero-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-mid);
+  line-height: 1.4;
+}
+.hero-rule > span:first-child { font-size: 15px; flex-shrink: 0; }
+
 .hero-cta {
   margin-top: 44px;
   display: flex;
@@ -3313,6 +3383,228 @@ body {
   color: var(--text-mid);
 }
 .ob-section-item.selected .ob-section-label { color: var(--text); font-weight: 600; }
+
+/* ─── ONBOARDING EXTENSIONS ─── */
+
+/* PFBS motto card */
+.ob-pfbs-card {
+  background: linear-gradient(135deg, rgba(255,92,157,0.1), rgba(240,204,96,0.06));
+  border: 1px solid rgba(255,92,157,0.25);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  width: 100%;
+}
+.ob-pfbs-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 12px;
+}
+.ob-pfbs-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 9px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.4;
+}
+.ob-pfbs-row:last-child { margin-bottom: 0; }
+.ob-pfbs-row strong { color: var(--text); }
+.ob-pfbs-letter {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--rose);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -1px;
+}
+[data-theme="male"] .ob-pfbs-letter { background: var(--rose); }
+
+/* Goddess rules block — terms & done screens */
+.ob-goddess-rules {
+  background: rgba(255,92,157,0.07);
+  border: 1px solid rgba(255,92,157,0.18);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.ob-goddess-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+.ob-goddess-rule > span:first-child { font-size: 16px; flex-shrink: 0; }
+
+/* Primary goal grid — body step */
+.ob-primary-goal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.ob-primary-goal-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.ob-primary-goal-btn:hover { border-color: rgba(255,92,157,0.3); }
+.ob-primary-goal-btn.selected {
+  border-color: var(--rose);
+  background: rgba(255,92,157,0.1);
+}
+.ob-pg-emoji { font-size: 22px; }
+.ob-pg-label { font-size: 12px; font-weight: 700; color: var(--text); letter-spacing: 0.3px; }
+.ob-pg-sub { font-size: 10px; color: var(--text-soft); line-height: 1.3; }
+
+/* Time row — lifestyle step */
+.ob-time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.ob-time-field { display: flex; flex-direction: column; gap: 6px; }
+.ob-time-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-soft);
+  letter-spacing: 0.3px;
+}
+.ob-time-input {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.ob-time-input:focus { outline: none; border-color: rgba(240,204,96,0.45); }
+.ob-time-input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
+
+/* Last meal banner */
+.ob-last-meal-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(240,204,96,0.08);
+  border: 1px solid rgba(240,204,96,0.25);
+  border-radius: 12px;
+  margin-top: 4px;
+}
+.ob-lm-icon { font-size: 22px; flex-shrink: 0; }
+.ob-lm-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.ob-lm-title strong { color: var(--gold); }
+.ob-lm-sub { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+
+/* Sleep warning */
+.ob-sleep-warn {
+  font-size: 12px;
+  color: #f59e0b;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(245,158,11,0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(245,158,11,0.2);
+}
+
+/* Experience / activity grid */
+.ob-exp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.ob-exp-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.ob-exp-btn:hover { border-color: rgba(255,92,157,0.3); }
+.ob-exp-btn.selected {
+  border-color: var(--rose);
+  background: rgba(255,92,157,0.08);
+}
+.ob-exp-emoji { font-size: 18px; margin-bottom: 2px; }
+.ob-exp-label { font-size: 13px; font-weight: 700; color: var(--text); }
+.ob-exp-sub { font-size: 10px; color: var(--text-soft); line-height: 1.3; }
+
+/* Plan summary — done screen */
+.ob-plan-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+.ob-plan-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  text-align: left;
+}
+.ob-plan-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--rose);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.ob-plan-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 13px;
+  color: var(--text-mid);
+}
+.ob-plan-item:last-child { border-bottom: none; }
+.ob-plan-item strong { color: var(--text); font-weight: 600; }
+
+/* Activity grid — 2 or 4-up */
+.ob-exp-grid.four-up { grid-template-columns: repeat(2, 1fr); }
 
 /* ─── JOY ASSISTANT ─── */
 .joy-fab {

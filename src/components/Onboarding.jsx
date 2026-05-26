@@ -3,55 +3,34 @@ import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import { AVATARS } from '../avatars';
+import { generatePlan } from '../utils/planGenerator';
+import { saveReminders, scheduleReminders, syncRemindersToFirestore } from '../utils/notifications';
+
+// ─── Static data ──────────────────────────────────────────────────────────────
 
 const MOODS = [
-  { id: 'exhausted',  emoji: '😴', label: 'Exhausted' },
-  { id: 'notgreat',   emoji: '😕', label: 'Not great' },
-  { id: 'good',       emoji: '😊', label: 'Good' },
-  { id: 'great',      emoji: '😄', label: 'Great' },
-  { id: 'energetic',  emoji: '⚡', label: 'Energetic' },
+  { id: 'exhausted', emoji: '😴', label: 'Exhausted' },
+  { id: 'notgreat',  emoji: '😕', label: 'Not great' },
+  { id: 'good',      emoji: '😊', label: 'Good' },
+  { id: 'great',     emoji: '😄', label: 'Great' },
+  { id: 'energetic', emoji: '⚡', label: 'Energetic' },
 ];
 
-const STEPS = ['profile', 'body', 'health', 'questionnaire'];
-
-function StepDots({ current }) {
-  return (
-    <div className="ob-dots">
-      {STEPS.map((s, i) => (
-        <div key={s} className={`ob-dot${current === s ? ' active' : STEPS.indexOf(current) > i ? ' done' : ''}`} />
-      ))}
-    </div>
-  );
-}
-
-const GOALS = [
-  { id: 'stronger',    emoji: '💪', label: 'Get stronger' },
-  { id: 'loseweight',  emoji: '🔥', label: 'Lose weight' },
-  { id: 'flexible',    emoji: '🧘', label: 'More flexibility' },
-  { id: 'energy',      emoji: '⚡', label: 'More energy' },
-  { id: 'sleep',       emoji: '😴', label: 'Better sleep' },
-  { id: 'wellness',    emoji: '🌿', label: 'Overall wellness' },
+const PRIMARY_GOALS = [
+  { id: 'lose_fat',      emoji: '🔥', label: 'Lose fat', sub: 'Tone up & burn fat' },
+  { id: 'build_muscle',  emoji: '💪', label: 'Build muscle', sub: 'Get stronger & leaner' },
+  { id: 'maintain',      emoji: '⚖️', label: 'Maintain', sub: 'Stay healthy & fit' },
 ];
 
-const ACTIVITY_LEVELS = [
-  { id: 'beginner',    emoji: '🌱', label: 'Just starting out' },
-  { id: 'light',       emoji: '🚶', label: 'Lightly active' },
-  { id: 'moderate',    emoji: '🏃', label: 'Moderately active' },
-  { id: 'active',      emoji: '💪', label: 'Very active (4+/week)' },
-];
-
-const WORKOUT_DAYS = [
-  { id: '1-2', label: '1–2 days' },
-  { id: '3-4', label: '3–4 days' },
-  { id: '5-6', label: '5–6 days' },
-  { id: '7',   label: 'Every day' },
-];
-
-const WORKOUT_TIMES = [
-  { id: 'morning',   emoji: '🌅', label: 'Morning' },
-  { id: 'afternoon', emoji: '☀️', label: 'Afternoon' },
-  { id: 'evening',   emoji: '🌙', label: 'Evening' },
-  { id: 'anytime',   emoji: '🤷', label: 'No preference' },
+const GOAL_CHIPS = [
+  { id: 'stronger',   emoji: '💪', label: 'Get stronger' },
+  { id: 'loseweight', emoji: '🔥', label: 'Lose weight' },
+  { id: 'flexible',   emoji: '🧘', label: 'More flexibility' },
+  { id: 'energy',     emoji: '⚡', label: 'More energy' },
+  { id: 'sleep',      emoji: '😴', label: 'Better sleep' },
+  { id: 'wellness',   emoji: '🌿', label: 'Overall wellness' },
+  { id: 'glow',       emoji: '✨', label: 'Skin & hair glow' },
+  { id: 'confidence', emoji: '👑', label: 'More confidence' },
 ];
 
 const CHALLENGES = [
@@ -63,10 +42,38 @@ const CHALLENGES = [
   { id: 'unsure',     emoji: '🙋', label: 'Not sure where to start' },
 ];
 
-const SECTIONS = [
-  { id: 'nutrition', emoji: '🥗', label: 'Nutrition Plan' },
-  { id: 'skincare',  emoji: '✨', label: 'Skincare Routine' },
-  { id: 'haircare',  emoji: '💆', label: 'Hair Care' },
+const ACTIVITY_LEVELS = [
+  { id: 'sedentary', emoji: '🌱', label: 'Mostly sitting', sub: 'Desk job, minimal movement' },
+  { id: 'light',     emoji: '🚶', label: 'Lightly active', sub: '1–3 days/week of movement' },
+  { id: 'moderate',  emoji: '🏃', label: 'Moderately active', sub: '3–5 days/week' },
+  { id: 'active',    emoji: '💪', label: 'Very active', sub: '6–7 days/week, intense' },
+];
+
+const EXPERIENCE_LEVELS = [
+  { id: 'beginner',     emoji: '🌱', label: 'Beginner', sub: 'New to working out' },
+  { id: 'intermediate', emoji: '🏃', label: 'Intermediate', sub: '1–2 years of training' },
+  { id: 'advanced',     emoji: '🔥', label: 'Advanced', sub: '3+ years, consistent' },
+];
+
+const WORKOUT_DAYS = [
+  { id: '1-2', label: '1–2 days' },
+  { id: '3-4', label: '3–4 days' },
+  { id: '5+',  label: '5+ days' },
+];
+
+const WORKOUT_TIMES = [
+  { id: 'morning',   emoji: '🌅', label: 'Morning' },
+  { id: 'afternoon', emoji: '☀️', label: 'Afternoon' },
+  { id: 'evening',   emoji: '🌙', label: 'Evening' },
+  { id: 'anytime',   emoji: '🤷', label: 'No preference' },
+];
+
+const EQUIPMENT = [
+  { id: 'none',      emoji: '🏠', label: 'No equipment' },
+  { id: 'bands',     emoji: '💛', label: 'Resistance bands' },
+  { id: 'dumbbells', emoji: '🏋️', label: 'Dumbbells' },
+  { id: 'barbell',   emoji: '⚡', label: 'Barbell' },
+  { id: 'gym',       emoji: '🏟️', label: 'Full gym' },
 ];
 
 const MEAL_FREQ = [
@@ -75,166 +82,93 @@ const MEAL_FREQ = [
   { id: '4', label: '4 meals' },
   { id: '5', label: '5 meals' },
 ];
-const FASTING = [
-  { id: 'none',  emoji: '🍽️', label: 'No fasting' },
-  { id: '16:8',  emoji: '⏱️', label: '16:8' },
-  { id: '18:6',  emoji: '⏱️', label: '18:6' },
-  { id: '20:4',  emoji: '⏱️', label: '20:4' },
+
+const DIET_TYPES = [
+  { id: 'balanced',    emoji: '🥗', label: 'Balanced' },
+  { id: 'vegetarian',  emoji: '🥦', label: 'Vegetarian' },
+  { id: 'vegan',       emoji: '🌱', label: 'Vegan' },
+  { id: 'keto',        emoji: '🥑', label: 'Keto' },
+  { id: 'paleo',       emoji: '🥩', label: 'Paleo' },
 ];
 
-function ChipBtn({ selected, onClick, emoji, label, multi }) {
+const FASTING = [
+  { id: 'none', emoji: '🍽️', label: 'No fasting' },
+  { id: '16:8', emoji: '⏱️', label: '16:8' },
+  { id: '18:6', emoji: '⏱️', label: '18:6' },
+  { id: '20:4', emoji: '⏱️', label: '20:4' },
+];
+
+const SKIN_TYPES = [
+  { id: 'normal',      emoji: '✨', label: 'Normal' },
+  { id: 'dry',         emoji: '🌵', label: 'Dry' },
+  { id: 'oily',        emoji: '💧', label: 'Oily' },
+  { id: 'combination', emoji: '⚖️', label: 'Combination' },
+  { id: 'sensitive',   emoji: '🌸', label: 'Sensitive' },
+];
+
+const SKIN_CONCERNS = [
+  { id: 'acne',             emoji: '😟', label: 'Acne / breakouts' },
+  { id: 'dryness',          emoji: '🌵', label: 'Dryness / flaking' },
+  { id: 'hyperpigmentation',emoji: '🌑', label: 'Dark spots' },
+  { id: 'aging',            emoji: '⌛', label: 'Fine lines / aging' },
+  { id: 'redness',          emoji: '🔴', label: 'Redness / irritation' },
+  { id: 'dullness',         emoji: '😐', label: 'Dullness / glow' },
+];
+
+const HAIR_TEXTURES = [
+  { id: 'straight', emoji: '📏', label: 'Straight' },
+  { id: 'wavy',     emoji: '〰️', label: 'Wavy' },
+  { id: 'curly',    emoji: '🌀', label: 'Curly' },
+  { id: 'coily',    emoji: '🔄', label: 'Coily / kinky' },
+];
+
+const HAIR_CONCERNS = [
+  { id: 'dryness',   emoji: '🌵', label: 'Dryness' },
+  { id: 'breakage',  emoji: '💔', label: 'Breakage' },
+  { id: 'frizz',     emoji: '⚡', label: 'Frizz' },
+  { id: 'thinning',  emoji: '🍃', label: 'Thinning' },
+  { id: 'dandruff',  emoji: '❄️', label: 'Dandruff' },
+  { id: 'growth',    emoji: '🌱', label: 'Slow growth' },
+];
+
+const PLAN_SECTIONS = [
+  { id: 'nutrition', emoji: '🥗', label: 'Nutrition Plan' },
+  { id: 'skincare',  emoji: '✨', label: 'Skincare Routine' },
+  { id: 'haircare',  emoji: '💆', label: 'Hair Care' },
+];
+
+const STEP_ORDER = ['profile', 'body', 'goals', 'lifestyle', 'fitness', 'nutrition', 'skincare'];
+
+// ─── Shared components ────────────────────────────────────────────────────────
+
+function StepDots({ current }) {
+  const idx = STEP_ORDER.indexOf(current);
   return (
-    <button
-      type="button"
-      className={`ob-chip${selected ? ' selected' : ''}`}
-      onClick={onClick}
-    >
+    <div className="ob-dots">
+      {STEP_ORDER.map((s, i) => (
+        <div key={s} className={`ob-dot${i === idx ? ' active' : i < idx ? ' done' : ''}`} />
+      ))}
+    </div>
+  );
+}
+
+function ChipBtn({ selected, onClick, emoji, label }) {
+  return (
+    <button type="button" className={`ob-chip${selected ? ' selected' : ''}`} onClick={onClick}>
       {emoji && <span className="ob-chip-em">{emoji}</span>}
       <span>{label}</span>
     </button>
   );
 }
 
-function QuestionnaireScreen({ form, setForm, onNext, onBack, saving }) {
-  function toggleGoal(id) {
-    const goals = form.goals || [];
-    setForm(f => ({ ...f, goals: goals.includes(id) ? goals.filter(g => g !== id) : [...goals, id] }));
-  }
-  function toggleSection(id) {
-    const sections = form.sections || [];
-    setForm(f => ({ ...f, sections: sections.includes(id) ? sections.filter(s => s !== id) : [...sections, id] }));
-  }
-  function set(key, val) { setForm(f => ({ ...f, [key]: val })); }
-
-  const goals    = form.goals    || [];
-  const sections = form.sections || [];
-
-  return (
-    <div className="ob-screen">
-      <StepDots current="questionnaire" />
-      <div className="ob-icon">✨</div>
-      <h2 className="ob-title">Let's build your plan</h2>
-      <p className="ob-subtitle">5 quick questions — Joy will use these to personalise everything for you</p>
-
-      {/* Meals per day */}
-      <div className="ob-field">
-        <label className="ob-label">1. How many meals per day do you prefer?</label>
-        <div className="ob-chip-wrap">
-          {MEAL_FREQ.map(m => (
-            <ChipBtn key={m.id} selected={form.mealFrequency === m.id} onClick={() => set('mealFrequency', m.id)} label={m.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Fasting */}
-      <div className="ob-field">
-        <label className="ob-label">2. Do you want to try intermittent fasting?</label>
-        <div className="ob-chip-wrap">
-          {FASTING.map(f => (
-            <ChipBtn key={f.id} selected={form.fastingProtocol === f.id} onClick={() => set('fastingProtocol', f.id)} emoji={f.emoji} label={f.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Q1 */}
-      <div className="ob-field">
-        <label className="ob-label">3. What's your main goal? <span className="ob-label-note">(pick all that apply)</span></label>
-        <div className="ob-chip-wrap">
-          {GOALS.map(g => (
-            <ChipBtn key={g.id} selected={goals.includes(g.id)} onClick={() => toggleGoal(g.id)}
-              emoji={g.emoji} label={g.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Q2 */}
-      <div className="ob-field">
-        <label className="ob-label">4. How active are you right now?</label>
-        <div className="ob-chip-wrap">
-          {ACTIVITY_LEVELS.map(a => (
-            <ChipBtn key={a.id} selected={form.activityLevel === a.id} onClick={() => set('activityLevel', a.id)}
-              emoji={a.emoji} label={a.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Q3 */}
-      <div className="ob-field">
-        <label className="ob-label">5. How many days a week can you work out?</label>
-        <div className="ob-chip-wrap">
-          {WORKOUT_DAYS.map(d => (
-            <ChipBtn key={d.id} selected={form.workoutDays === d.id} onClick={() => set('workoutDays', d.id)}
-              label={d.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Q4 */}
-      <div className="ob-field">
-        <label className="ob-label">6. When do you prefer to work out?</label>
-        <div className="ob-chip-wrap">
-          {WORKOUT_TIMES.map(t => (
-            <ChipBtn key={t.id} selected={form.workoutTime === t.id} onClick={() => set('workoutTime', t.id)}
-              emoji={t.emoji} label={t.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Q5 */}
-      <div className="ob-field">
-        <label className="ob-label">7. What's your biggest challenge right now?</label>
-        <div className="ob-chip-wrap">
-          {CHALLENGES.map(c => (
-            <ChipBtn key={c.id} selected={form.biggestChallenge === c.id} onClick={() => set('biggestChallenge', c.id)}
-              emoji={c.emoji} label={c.label} />
-          ))}
-        </div>
-      </div>
-
-      {/* Section checklist */}
-      <div className="ob-field">
-        <label className="ob-label">Which sections would you like in your plan?</label>
-        <p className="ob-sections-note">Workouts are always included 💪 — choose any extras below:</p>
-        <div className="ob-sections-list">
-          {SECTIONS.map(s => (
-            <button
-              key={s.id}
-              type="button"
-              className={`ob-section-item${sections.includes(s.id) ? ' selected' : ''}`}
-              onClick={() => toggleSection(s.id)}
-            >
-              <span className="ob-section-check">{sections.includes(s.id) ? '✓' : ''}</span>
-              <span className="ob-section-emoji">{s.emoji}</span>
-              <span className="ob-section-label">{s.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Open text */}
-      <div className="ob-field">
-        <label className="ob-label">Anything else for Joy to know? <span className="ob-label-note">(optional)</span></label>
-        <textarea className="ob-textarea" rows={3}
-          placeholder="Your lifestyle, specific goals, things you love or hate about fitness — anything helps!"
-          value={form.joyNote || ''} onChange={e => set('joyNote', e.target.value)} />
-      </div>
-
-      <div className="ob-nav-row">
-        <button className="ob-btn-secondary" onClick={onBack}>← Back</button>
-        <button className="ob-btn-primary" onClick={onNext} disabled={saving}>
-          {saving ? 'Saving…' : 'Complete Setup →'}
-        </button>
-      </div>
-    </div>
-  );
-}
+// ─── Step screens ─────────────────────────────────────────────────────────────
 
 function TermsScreen({ onAgree }) {
   return (
     <div className="ob-screen">
       <div className="ob-icon">🌸</div>
       <h2 className="ob-title">Welcome to The Goddess Plan</h2>
-      <p className="ob-subtitle">Before we begin, a few things to note</p>
+      <p className="ob-subtitle">Before we begin, a few things to know</p>
 
       <div className="ob-terms-scroll">
         <div className="ob-terms-section">
@@ -256,12 +190,6 @@ function TermsScreen({ onAgree }) {
           </div>
         </div>
         <div className="ob-terms-section">
-          <span className="ob-terms-emoji">💫</span>
-          <div>
-            <strong>We genuinely care.</strong> Every part of this app was built with love and intention. We want you to thrive — but results will naturally vary based on your individual health, consistency, and dedication.
-          </div>
-        </div>
-        <div className="ob-terms-section">
           <span className="ob-terms-emoji">👑</span>
           <div>
             <strong>You own your journey.</strong> This plan is a guide, a companion, and a cheerleader — but the goddess doing the work is <em>you</em>.
@@ -270,9 +198,7 @@ function TermsScreen({ onAgree }) {
         <p className="ob-terms-note">By continuing, you acknowledge and agree to these terms.</p>
       </div>
 
-      <button className="ob-btn-primary" onClick={onAgree}>
-        I Agree &amp; Continue →
-      </button>
+      <button className="ob-btn-primary" onClick={onAgree}>I Agree &amp; Continue →</button>
     </div>
   );
 }
@@ -280,7 +206,6 @@ function TermsScreen({ onAgree }) {
 function ProfileScreen({ form, setForm, onNext }) {
   const avatarList = form.gender ? AVATARS[form.gender] : [];
 
-  // Live theme preview as user picks their gender
   useEffect(() => {
     if (form.gender === 'male') {
       document.documentElement.setAttribute('data-theme', 'male');
@@ -302,25 +227,16 @@ function ProfileScreen({ form, setForm, onNext }) {
 
       <div className="ob-field">
         <label className="ob-label">Your display name</label>
-        <input
-          className="ob-input"
-          type="text"
-          placeholder="e.g. Goddess Joy"
-          value={form.username}
-          onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-          maxLength={32}
-        />
+        <input className="ob-input" type="text" placeholder="e.g. Goddess Joy" maxLength={32}
+          value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
       </div>
 
       <div className="ob-field">
         <label className="ob-label">I am a</label>
         <div className="ob-gender-btns">
           {['female', 'male'].map(g => (
-            <button
-              key={g}
-              className={`ob-gender-btn${form.gender === g ? ' selected' : ''}`}
-              onClick={() => setForm(f => ({ ...f, gender: g, avatarId: '' }))}
-            >
+            <button key={g} className={`ob-gender-btn${form.gender === g ? ' selected' : ''}`}
+              onClick={() => setForm(f => ({ ...f, gender: g, avatarId: '' }))}>
               {g === 'female' ? '🌸 Female' : '⚡ Male'}
             </button>
           ))}
@@ -332,13 +248,8 @@ function ProfileScreen({ form, setForm, onNext }) {
           <label className="ob-label">Choose your avatar <span className="ob-label-note">(more designs coming soon)</span></label>
           <div className="ob-avatar-grid">
             {avatarList.map(av => (
-              <button
-                key={av.id}
-                className={`ob-avatar-item${form.avatarId === av.id ? ' selected' : ''}`}
-                style={{ background: av.bg }}
-                onClick={() => setForm(f => ({ ...f, avatarId: av.id }))}
-                aria-label={av.label}
-              >
+              <button key={av.id} className={`ob-avatar-item${form.avatarId === av.id ? ' selected' : ''}`}
+                style={{ background: av.bg }} onClick={() => setForm(f => ({ ...f, avatarId: av.id }))} aria-label={av.label}>
                 <span className="ob-avatar-emoji">{av.emoji}</span>
                 <span className="ob-avatar-label">{av.label}</span>
               </button>
@@ -347,9 +258,7 @@ function ProfileScreen({ form, setForm, onNext }) {
         </div>
       )}
 
-      <button className="ob-btn-primary" onClick={onNext} disabled={!canContinue()}>
-        Continue →
-      </button>
+      <button className="ob-btn-primary" onClick={onNext} disabled={!canContinue()}>Continue →</button>
     </div>
   );
 }
@@ -357,19 +266,31 @@ function ProfileScreen({ form, setForm, onNext }) {
 function BodyScreen({ form, setForm, onNext, onBack }) {
   const [hu, setHu] = useState(form.heightUnit || 'cm');
   const [wu, setWu] = useState(form.weightUnit || 'kg');
-
   function update(key, val) { setForm(f => ({ ...f, [key]: val })); }
 
-  function canContinue() {
-    return form.age && form.age > 0;
-  }
+  const showGoalWeight = form.primaryGoal === 'lose_fat' || form.primaryGoal === 'build_muscle';
 
   return (
     <div className="ob-screen">
       <StepDots current="body" />
       <div className="ob-icon">💕</div>
-      <h2 className="ob-title">Tell us about yourself</h2>
-      <p className="ob-subtitle">This helps us tailor your wellness journey</p>
+      <h2 className="ob-title">Your body, your baseline</h2>
+      <p className="ob-subtitle">Used to calculate your personal calorie & macro targets</p>
+
+      <div className="ob-field">
+        <label className="ob-label">Primary goal</label>
+        <div className="ob-primary-goal-grid">
+          {PRIMARY_GOALS.map(g => (
+            <button key={g.id} type="button"
+              className={`ob-primary-goal-btn${form.primaryGoal === g.id ? ' selected' : ''}`}
+              onClick={() => update('primaryGoal', g.id)}>
+              <span className="ob-pg-emoji">{g.emoji}</span>
+              <span className="ob-pg-label">{g.label}</span>
+              <span className="ob-pg-sub">{g.sub}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="ob-field">
         <label className="ob-label">Age</label>
@@ -380,8 +301,8 @@ function BodyScreen({ form, setForm, onNext, onBack }) {
       <div className="ob-field">
         <label className="ob-label">Height
           <div className="ob-unit-toggle">
-            <button className={hu === 'cm' ? 'active' : ''} onClick={() => { setHu('cm'); update('heightUnit','cm'); }}>cm</button>
-            <button className={hu === 'ft' ? 'active' : ''} onClick={() => { setHu('ft'); update('heightUnit','ft'); }}>ft</button>
+            <button className={hu === 'cm' ? 'active' : ''} onClick={() => { setHu('cm'); update('heightUnit', 'cm'); }}>cm</button>
+            <button className={hu === 'ft' ? 'active' : ''} onClick={() => { setHu('ft'); update('heightUnit', 'ft'); }}>ft</button>
           </div>
         </label>
         {hu === 'cm' ? (
@@ -398,10 +319,10 @@ function BodyScreen({ form, setForm, onNext, onBack }) {
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Weight
+        <label className="ob-label">Current weight
           <div className="ob-unit-toggle">
-            <button className={wu === 'kg' ? 'active' : ''} onClick={() => { setWu('kg'); update('weightUnit','kg'); }}>kg</button>
-            <button className={wu === 'lbs' ? 'active' : ''} onClick={() => { setWu('lbs'); update('weightUnit','lbs'); }}>lbs</button>
+            <button className={wu === 'kg' ? 'active' : ''} onClick={() => { setWu('kg'); update('weightUnit', 'kg'); }}>kg</button>
+            <button className={wu === 'lbs' ? 'active' : ''} onClick={() => { setWu('lbs'); update('weightUnit', 'lbs'); }}>lbs</button>
           </div>
         </label>
         {wu === 'kg' ? (
@@ -413,52 +334,53 @@ function BodyScreen({ form, setForm, onNext, onBack }) {
         )}
       </div>
 
+      {showGoalWeight && (
+        <div className="ob-field">
+          <label className="ob-label">Goal weight <span className="ob-label-note">(optional, {wu})</span></label>
+          <input className="ob-input" type="number" placeholder={wu === 'kg' ? 'e.g. 52' : 'e.g. 115'}
+            value={form.goalWeight} onChange={e => update('goalWeight', e.target.value)} />
+        </div>
+      )}
+
       <div className="ob-nav-row">
         <button className="ob-btn-secondary" onClick={onBack}>← Back</button>
-        <button className="ob-btn-primary" onClick={onNext} disabled={!canContinue()}>Continue →</button>
+        <button className="ob-btn-primary" onClick={onNext}>Continue →</button>
       </div>
     </div>
   );
 }
 
-function HealthScreen({ form, setForm, onNext, onBack }) {
-  function update(key, val) { setForm(f => ({ ...f, [key]: val })); }
+function GoalsScreen({ form, setForm, onNext, onBack }) {
+  function toggleGoal(id) {
+    const goals = form.goals || [];
+    setForm(f => ({ ...f, goals: goals.includes(id) ? goals.filter(g => g !== id) : [...goals, id] }));
+  }
+  function set(key, val) { setForm(f => ({ ...f, [key]: val })); }
+  const goals = form.goals || [];
 
   return (
     <div className="ob-screen">
-      <StepDots current="health" />
-      <div className="ob-icon">🌿</div>
-      <h2 className="ob-title">Your wellness picture</h2>
-      <p className="ob-subtitle">This is optional — everything here helps us support you better</p>
+      <StepDots current="goals" />
+      <div className="ob-icon">🎯</div>
+      <h2 className="ob-title">What drives you?</h2>
+      <p className="ob-subtitle">Pick everything that resonates — Joy will keep these in mind</p>
 
       <div className="ob-field">
-        <label className="ob-label">How are you feeling lately?</label>
-        <div className="ob-mood-row">
-          {MOODS.map(m => (
-            <button
-              key={m.id}
-              className={`ob-mood-btn${form.generalFeeling === m.id ? ' selected' : ''}`}
-              onClick={() => update('generalFeeling', m.id)}
-            >
-              <span className="ob-mood-emoji">{m.emoji}</span>
-              <span className="ob-mood-label">{m.label}</span>
-            </button>
+        <label className="ob-label">Your goals <span className="ob-label-note">(pick all that apply)</span></label>
+        <div className="ob-chip-wrap">
+          {GOAL_CHIPS.map(g => (
+            <ChipBtn key={g.id} selected={goals.includes(g.id)} onClick={() => toggleGoal(g.id)} emoji={g.emoji} label={g.label} />
           ))}
         </div>
       </div>
 
       <div className="ob-field">
-        <label className="ob-label">Any existing health conditions or symptoms? <span className="ob-label-note">(optional)</span></label>
-        <textarea className="ob-textarea" rows={3}
-          placeholder="e.g. PCOS, lower back pain, asthma — or leave blank if none"
-          value={form.illnesses} onChange={e => update('illnesses', e.target.value)} />
-      </div>
-
-      <div className="ob-field">
-        <label className="ob-label">Anything else we should know? <span className="ob-label-note">(optional)</span></label>
-        <textarea className="ob-textarea" rows={2}
-          placeholder="e.g. postpartum recovery, training for an event, managing stress"
-          value={form.otherDetails} onChange={e => update('otherDetails', e.target.value)} />
+        <label className="ob-label">Biggest challenge right now</label>
+        <div className="ob-chip-wrap">
+          {CHALLENGES.map(c => (
+            <ChipBtn key={c.id} selected={form.biggestChallenge === c.id} onClick={() => set('biggestChallenge', c.id)} emoji={c.emoji} label={c.label} />
+          ))}
+        </div>
       </div>
 
       <div className="ob-nav-row">
@@ -469,23 +391,376 @@ function HealthScreen({ form, setForm, onNext, onBack }) {
   );
 }
 
-function DoneScreen({ username }) {
+function calcLastMealPreview(sleepTime) {
+  if (!sleepTime) return null;
+  const [h, m] = sleepTime.split(':').map(Number);
+  let total = (h * 60 + m - 270 + 1440) % 1440;
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+}
+
+function LifestyleScreen({ form, setForm, onNext, onBack }) {
+  function set(key, val) { setForm(f => ({ ...f, [key]: val })); }
+  const lastMeal = calcLastMealPreview(form.sleepTime);
+  const isBefore12 = form.sleepTime ? form.sleepTime < '24:00' && form.sleepTime <= '23:59' : true;
+  const sleepWarning = form.sleepTime && form.sleepTime >= '00:00' && form.sleepTime <= '04:00';
+
   return (
-    <div className="ob-screen ob-done-screen">
-      <div className="ob-done-crown">👑</div>
-      <h2 className="ob-done-title">Welcome, {username || 'Goddess'}!</h2>
-      <p className="ob-done-sub">Your Goddess Plan is ready and waiting for you.</p>
-      <p className="ob-done-note">
-        Every workout, meal, skincare step, and challenge has been curated with you in mind.<br />
-        This is your year. 💕
-      </p>
+    <div className="ob-screen">
+      <StepDots current="lifestyle" />
+      <div className="ob-icon">🌙</div>
+      <h2 className="ob-title">Your daily rhythm</h2>
+      <p className="ob-subtitle">Your meal and reminder times are built around your sleep schedule</p>
+
+      <div className="ob-field">
+        <label className="ob-label">Daily schedule</label>
+        <div className="ob-time-row">
+          <div className="ob-time-field">
+            <span className="ob-time-label">☀️ Wake up</span>
+            <input type="time" className="ob-time-input"
+              value={form.wakeTime} onChange={e => set('wakeTime', e.target.value)} />
+          </div>
+          <div className="ob-time-field">
+            <span className="ob-time-label">🌙 Bedtime</span>
+            <input type="time" className="ob-time-input"
+              value={form.sleepTime} onChange={e => set('sleepTime', e.target.value)} />
+          </div>
+        </div>
+        {lastMeal && (
+          <div className="ob-last-meal-banner">
+            <span className="ob-lm-icon">🍽️</span>
+            <div>
+              <div className="ob-lm-title">Your last meal: <strong>{lastMeal}</strong></div>
+              <div className="ob-lm-sub">No food after this — the Goddess Plan rule 🌿</div>
+            </div>
+          </div>
+        )}
+        {sleepWarning && (
+          <div className="ob-sleep-warn">⚠️ Try to sleep before midnight for best results</div>
+        )}
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">How are you feeling lately?</label>
+        <div className="ob-mood-row">
+          {MOODS.map(m => (
+            <button key={m.id} type="button"
+              className={`ob-mood-btn${form.generalFeeling === m.id ? ' selected' : ''}`}
+              onClick={() => set('generalFeeling', m.id)}>
+              <span className="ob-mood-emoji">{m.emoji}</span>
+              <span className="ob-mood-label">{m.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Activity level outside of workouts</label>
+        <div className="ob-exp-grid">
+          {ACTIVITY_LEVELS.map(a => (
+            <button key={a.id} type="button"
+              className={`ob-exp-btn${form.activityLevel === a.id ? ' selected' : ''}`}
+              onClick={() => set('activityLevel', a.id)}>
+              <span className="ob-exp-emoji">{a.emoji}</span>
+              <span className="ob-exp-label">{a.label}</span>
+              <span className="ob-exp-sub">{a.sub}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-nav-row">
+        <button className="ob-btn-secondary" onClick={onBack}>← Back</button>
+        <button className="ob-btn-primary" onClick={onNext}>Continue →</button>
+      </div>
     </div>
   );
 }
 
+function FitnessScreen({ form, setForm, onNext, onBack }) {
+  function set(key, val) { setForm(f => ({ ...f, [key]: val })); }
+  function toggleEq(id) {
+    const eq = form.equipment || [];
+    setForm(f => ({ ...f, equipment: eq.includes(id) ? eq.filter(e => e !== id) : [...eq, id] }));
+  }
+  const eq = form.equipment || [];
+
+  return (
+    <div className="ob-screen">
+      <StepDots current="fitness" />
+      <div className="ob-icon">💪</div>
+      <h2 className="ob-title">Your fitness setup</h2>
+      <p className="ob-subtitle">Helps us match you to the right workout intensity and schedule</p>
+
+      <div className="ob-field">
+        <label className="ob-label">Training experience</label>
+        <div className="ob-exp-grid">
+          {EXPERIENCE_LEVELS.map(e => (
+            <button key={e.id} type="button"
+              className={`ob-exp-btn${form.experienceLevel === e.id ? ' selected' : ''}`}
+              onClick={() => set('experienceLevel', e.id)}>
+              <span className="ob-exp-emoji">{e.emoji}</span>
+              <span className="ob-exp-label">{e.label}</span>
+              <span className="ob-exp-sub">{e.sub}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Days per week you can work out</label>
+        <div className="ob-chip-wrap">
+          {WORKOUT_DAYS.map(d => (
+            <ChipBtn key={d.id} selected={form.workoutDays === d.id} onClick={() => set('workoutDays', d.id)} label={d.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Preferred workout time</label>
+        <div className="ob-chip-wrap">
+          {WORKOUT_TIMES.map(t => (
+            <ChipBtn key={t.id} selected={form.workoutTime === t.id} onClick={() => set('workoutTime', t.id)} emoji={t.emoji} label={t.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Equipment available <span className="ob-label-note">(pick all that apply)</span></label>
+        <div className="ob-chip-wrap">
+          {EQUIPMENT.map(e => (
+            <ChipBtn key={e.id} selected={eq.includes(e.id)} onClick={() => toggleEq(e.id)} emoji={e.emoji} label={e.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-nav-row">
+        <button className="ob-btn-secondary" onClick={onBack}>← Back</button>
+        <button className="ob-btn-primary" onClick={onNext}>Continue →</button>
+      </div>
+    </div>
+  );
+}
+
+function NutritionScreen({ form, setForm, onNext, onBack }) {
+  function set(key, val) { setForm(f => ({ ...f, [key]: val })); }
+  function toggleSection(id) {
+    const sections = form.sections || [];
+    setForm(f => ({ ...f, sections: sections.includes(id) ? sections.filter(s => s !== id) : [...sections, id] }));
+  }
+  const sections = form.sections || [];
+
+  return (
+    <div className="ob-screen">
+      <StepDots current="nutrition" />
+      <div className="ob-icon">🥗</div>
+      <h2 className="ob-title">How you eat</h2>
+      <p className="ob-subtitle">Your meals will respect your schedule — protein every time 🥚</p>
+
+      <div className="ob-field">
+        <label className="ob-label">Meals per day</label>
+        <div className="ob-chip-wrap">
+          {MEAL_FREQ.map(m => (
+            <ChipBtn key={m.id} selected={form.mealFrequency === m.id} onClick={() => set('mealFrequency', m.id)} label={m.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Diet style</label>
+        <div className="ob-chip-wrap">
+          {DIET_TYPES.map(d => (
+            <ChipBtn key={d.id} selected={form.dietType === d.id} onClick={() => set('dietType', d.id)} emoji={d.emoji} label={d.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Intermittent fasting?</label>
+        <div className="ob-chip-wrap">
+          {FASTING.map(f => (
+            <ChipBtn key={f.id} selected={form.fastingProtocol === f.id} onClick={() => set('fastingProtocol', f.id)} emoji={f.emoji} label={f.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Food allergies or restrictions <span className="ob-label-note">(optional)</span></label>
+        <textarea className="ob-textarea" rows={2}
+          placeholder="e.g. gluten-free, no dairy, nut allergy"
+          value={form.allergies} onChange={e => set('allergies', e.target.value)} />
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Add to your Goddess Plan</label>
+        <p className="ob-sections-note">Workouts are always included 💪</p>
+        <div className="ob-sections-list">
+          {PLAN_SECTIONS.map(s => (
+            <button key={s.id} type="button"
+              className={`ob-section-item${sections.includes(s.id) ? ' selected' : ''}`}
+              onClick={() => toggleSection(s.id)}>
+              <span className="ob-section-check">{sections.includes(s.id) ? '✓' : ''}</span>
+              <span className="ob-section-emoji">{s.emoji}</span>
+              <span className="ob-section-label">{s.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-nav-row">
+        <button className="ob-btn-secondary" onClick={onBack}>← Back</button>
+        <button className="ob-btn-primary" onClick={onNext}>Continue →</button>
+      </div>
+    </div>
+  );
+}
+
+function SkincareScreen({ form, setForm, onNext, onBack, saving }) {
+  function set(key, val) { setForm(f => ({ ...f, [key]: val })); }
+  function toggleConcern(id) {
+    const sc = form.skinConcerns || [];
+    setForm(f => ({ ...f, skinConcerns: sc.includes(id) ? sc.filter(x => x !== id) : [...sc, id] }));
+  }
+  function toggleHairConcern(id) {
+    const hc = form.hairConcerns || [];
+    setForm(f => ({ ...f, hairConcerns: hc.includes(id) ? hc.filter(x => x !== id) : [...hc, id] }));
+  }
+  const sc = form.skinConcerns || [];
+  const hc = form.hairConcerns || [];
+
+  return (
+    <div className="ob-screen">
+      <StepDots current="skincare" />
+      <div className="ob-icon">🌸</div>
+      <h2 className="ob-title">Skin & hair</h2>
+      <p className="ob-subtitle">Joy will give you personalised skincare and haircare advice</p>
+
+      <div className="ob-field">
+        <label className="ob-label">Skin type</label>
+        <div className="ob-chip-wrap">
+          {SKIN_TYPES.map(s => (
+            <ChipBtn key={s.id} selected={form.skinType === s.id} onClick={() => set('skinType', s.id)} emoji={s.emoji} label={s.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Skin concerns <span className="ob-label-note">(pick all that apply)</span></label>
+        <div className="ob-chip-wrap">
+          {SKIN_CONCERNS.map(s => (
+            <ChipBtn key={s.id} selected={sc.includes(s.id)} onClick={() => toggleConcern(s.id)} emoji={s.emoji} label={s.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Hair texture</label>
+        <div className="ob-chip-wrap">
+          {HAIR_TEXTURES.map(h => (
+            <ChipBtn key={h.id} selected={form.hairTexture === h.id} onClick={() => set('hairTexture', h.id)} emoji={h.emoji} label={h.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Hair concerns <span className="ob-label-note">(pick all that apply)</span></label>
+        <div className="ob-chip-wrap">
+          {HAIR_CONCERNS.map(h => (
+            <ChipBtn key={h.id} selected={hc.includes(h.id)} onClick={() => toggleHairConcern(h.id)} emoji={h.emoji} label={h.label} />
+          ))}
+        </div>
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Any health conditions or symptoms? <span className="ob-label-note">(optional)</span></label>
+        <textarea className="ob-textarea" rows={2}
+          placeholder="e.g. PCOS, lower back pain, postpartum — or leave blank"
+          value={form.illnesses} onChange={e => set('illnesses', e.target.value)} />
+      </div>
+
+      <div className="ob-field">
+        <label className="ob-label">Anything for Joy to know? <span className="ob-label-note">(optional)</span></label>
+        <textarea className="ob-textarea" rows={2}
+          placeholder="Your lifestyle, specific goals, things you love or hate — anything helps!"
+          value={form.joyNote} onChange={e => set('joyNote', e.target.value)} />
+      </div>
+
+      <div className="ob-nav-row">
+        <button className="ob-btn-secondary" onClick={onBack}>← Back</button>
+        <button className="ob-btn-primary" onClick={onNext} disabled={saving}>
+          {saving ? 'Building your plan…' : 'Complete Setup →'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DoneScreen({ username, plan, form }) {
+  const goalLabel = PRIMARY_GOALS.find(g => g.id === form.primaryGoal)?.label || '';
+  const calTarget = plan?.deficitKcal ?? plan?.tdeeKcal;
+
+  return (
+    <div className="ob-screen ob-done-screen">
+      <div className="ob-done-crown">👑</div>
+      <h2 className="ob-done-title">Welcome, {username || 'Goddess'}!</h2>
+      <p className="ob-done-sub">Your personalised Goddess Plan is ready.</p>
+
+      {plan && (
+        <div className="ob-plan-summary">
+          <div className="ob-plan-card">
+            <div className="ob-plan-card-title">🕐 Your daily schedule</div>
+            <div className="ob-plan-item"><span>☀️ Wake up</span><strong>{form.wakeTime}</strong></div>
+            <div className="ob-plan-item"><span>🍽️ Last meal</span><strong>{plan.lastMealTime}</strong></div>
+            <div className="ob-plan-item"><span>🌙 Bedtime</span><strong>{form.sleepTime}</strong></div>
+          </div>
+
+          {calTarget && (
+            <div className="ob-plan-card">
+              <div className="ob-plan-card-title">🔥 Your daily target</div>
+              <div className="ob-plan-item"><span>Goal</span><strong>{goalLabel}</strong></div>
+              <div className="ob-plan-item"><span>Calories</span><strong>{calTarget} kcal</strong></div>
+              {plan.tdeeKcal && plan.deficitKcal !== plan.tdeeKcal && (
+                <div className="ob-plan-item"><span>Maintenance</span><strong>{plan.tdeeKcal} kcal</strong></div>
+              )}
+            </div>
+          )}
+
+          <div className="ob-plan-card">
+            <div className="ob-plan-card-title">✨ Your plan includes</div>
+            <div className="ob-plan-item"><span>💪</span><strong>Workouts (always)</strong></div>
+            {form.sections?.includes('nutrition') && <div className="ob-plan-item"><span>🥗</span><strong>Nutrition Plan</strong></div>}
+            {form.sections?.includes('skincare') && <div className="ob-plan-item"><span>✨</span><strong>Skincare Routine</strong></div>}
+            {form.sections?.includes('haircare') && <div className="ob-plan-item"><span>💆</span><strong>Hair Care</strong></div>}
+          </div>
+        </div>
+      )}
+
+      <div className="ob-pfbs-card" style={{ marginTop: 14, width: '100%' }}>
+        <div className="ob-pfbs-title">Your PFBS Daily Code</div>
+        <div className="ob-pfbs-row"><span className="ob-pfbs-letter">P</span><div><strong>Protein</strong><span> — every single meal</span></div></div>
+        <div className="ob-pfbs-row"><span className="ob-pfbs-letter">F</span><div><strong>Fiber</strong><span> — once a day minimum</span></div></div>
+        <div className="ob-pfbs-row"><span className="ob-pfbs-letter">B</span><div><strong>Bland foods</strong><span> — your gut will thank you</span></div></div>
+        <div className="ob-pfbs-row"><span className="ob-pfbs-letter">S</span><div><strong>Small portions</strong><span> — 80% full & breathing 💕</span></div></div>
+      </div>
+
+      <div className="ob-goddess-rules" style={{ marginTop: 10, width: '100%' }}>
+        <div className="ob-goddess-rule"><span>🌙</span><span>No eating after {plan?.lastMealTime || '17:30'}</span></div>
+        <div className="ob-goddess-rule"><span>⏳</span><span>3 hrs min gap between meals</span></div>
+        <div className="ob-goddess-rule"><span>😴</span><span>7.5–9 hours of sleep every night</span></div>
+        <div className="ob-goddess-rule"><span>🚶</span><span>Walk 10 min after every big meal</span></div>
+        <div className="ob-goddess-rule"><span>🍽️</span><span>Fast on rest days · Eat on strength days</span></div>
+      </div>
+
+      <p className="ob-done-note">Every workout, meal, and skincare step has been curated with you in mind.<br />This is your year. 💕</p>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export default function Onboarding({ user, onComplete, isPreview = false }) {
   const [step, setStep] = useState('terms');
   const [saving, setSaving] = useState(false);
+  const [generatedPlan, setGeneratedPlan] = useState(null);
   const [form, setForm] = useState({
     username: user?.displayName || '',
     avatarId: '',
@@ -493,17 +768,28 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
     age: '',
     heightCm: '', heightFt: '', heightIn: '', heightUnit: 'cm',
     weightKg: '', weightLbs: '', weightUnit: 'kg',
-    illnesses: '',
-    generalFeeling: '',
-    otherDetails: '',
+    primaryGoal: '',
+    goalWeight: '',
     goals: [],
+    biggestChallenge: '',
+    wakeTime: '06:30',
+    sleepTime: '22:00',
+    generalFeeling: '',
     activityLevel: '',
+    experienceLevel: '',
     workoutDays: '',
     workoutTime: '',
-    biggestChallenge: '',
-    mealFrequency: '',
+    equipment: [],
+    mealFrequency: '3',
+    dietType: '',
     fastingProtocol: '',
-    sections: [],
+    allergies: '',
+    sections: ['nutrition', 'skincare', 'haircare'],
+    skinType: '',
+    skinConcerns: [],
+    hairTexture: '',
+    hairConcerns: [],
+    illnesses: '',
     joyNote: '',
   });
 
@@ -513,30 +799,35 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
     if (isPreview) { setPreviewDone(true); return; }
     setSaving(true);
     try {
-      // Normalise to cm / kg for BMR calculation
+      // Normalise units
       const heightCm = form.heightUnit === 'cm'
         ? parseFloat(form.heightCm) || 0
         : ((parseFloat(form.heightFt) || 0) * 30.48 + (parseFloat(form.heightIn) || 0) * 2.54);
       const weightKg = form.weightUnit === 'kg'
         ? parseFloat(form.weightKg) || 0
         : (parseFloat(form.weightLbs) || 0) / 2.2046;
-      const age = parseInt(form.age) || 0;
 
-      // Mifflin-St Jeor (female)
-      const bmr = heightCm && weightKg && age
-        ? Math.round(10 * weightKg + 6.25 * heightCm - 5 * age - 161)
-        : null;
+      const mealsPerDay = parseInt(form.mealFrequency) || 3;
 
-      // TDEE per day type (TDEE = BMR × activity multiplier)
-      const tdee = bmr ? {
-        strength: Math.round(bmr * 1.55),  // Mon/Wed/Thu — heavy lifting
-        light:    Math.round(bmr * 1.375), // Tue/Fri/Sat/Sun — pilates, bike, back
-      } : null;
-      // Deficit target: TDEE - 400 kcal
-      const deficit = tdee ? {
-        strength: tdee.strength - 400,
-        light:    tdee.light - 400,
-      } : null;
+      // Generate personalised reminders + TDEE
+      const plan = generatePlan({
+        gender: form.gender,
+        age: form.age,
+        heightCm,
+        weightKg,
+        activityLevel: form.activityLevel || 'moderate',
+        primaryGoal: form.primaryGoal || 'maintain',
+        wakeTime: form.wakeTime,
+        sleepTime: form.sleepTime,
+        mealsPerDay,
+      });
+      setGeneratedPlan(plan);
+
+      // Save reminders to localStorage + schedule
+      if (plan.remindersV2?.length) {
+        saveReminders(plan.remindersV2);
+        scheduleReminders(plan.remindersV2);
+      }
 
       const height = form.heightUnit === 'cm'
         ? (form.heightCm ? `${form.heightCm} cm` : '')
@@ -552,21 +843,37 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
         age: form.age ? Number(form.age) : null,
         height,
         weight,
-        illnesses: form.illnesses.trim(),
-        generalFeeling: form.generalFeeling,
-        otherDetails: form.otherDetails.trim(),
+        heightCm: heightCm || null,
+        weightKg: weightKg || null,
+        primaryGoal: form.primaryGoal,
+        goalWeight: form.goalWeight ? Number(form.goalWeight) : null,
         goals: form.goals,
+        biggestChallenge: form.biggestChallenge,
+        wakeTime: form.wakeTime,
+        sleepTime: form.sleepTime,
+        generalFeeling: form.generalFeeling,
         activityLevel: form.activityLevel,
+        experienceLevel: form.experienceLevel,
         workoutDays: form.workoutDays,
         workoutTime: form.workoutTime,
-        biggestChallenge: form.biggestChallenge,
-        sections: ['workouts', ...form.sections],
-        joyNote: form.joyNote.trim(),
+        equipment: form.equipment,
         mealFrequency: form.mealFrequency,
+        mealsPerDay,
+        dietType: form.dietType,
         fastingProtocol: form.fastingProtocol,
-        bmrKcal: bmr,
-        tdeeKcal: tdee,
-        deficitKcal: deficit,
+        allergies: form.allergies.trim(),
+        sections: ['workouts', ...form.sections],
+        skinType: form.skinType,
+        skinConcerns: form.skinConcerns,
+        hairTexture: form.hairTexture,
+        hairConcerns: form.hairConcerns,
+        illnesses: form.illnesses.trim(),
+        joyNote: form.joyNote.trim(),
+        bmrKcal: null,
+        tdeeKcal: plan.tdeeKcal,
+        deficitKcal: plan.deficitKcal,
+        lastMealTime: plan.lastMealTime,
+        remindersV2: plan.remindersV2 ?? [],
         termsAccepted: true,
         termsAcceptedAt: serverTimestamp(),
         createdAt: serverTimestamp(),
@@ -580,8 +887,13 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
         await updateProfile(auth.currentUser, { displayName: form.username.trim() });
       }
 
+      // Sync reminders to Firestore too
+      if (plan.remindersV2?.length) {
+        await syncRemindersToFirestore(user.uid, plan.remindersV2);
+      }
+
       setStep('done');
-      setTimeout(() => onComplete(profileData), 2400);
+      setTimeout(() => onComplete(profileData), 2800);
     } catch (e) {
       console.error('Onboarding save failed:', e);
       setSaving(false);
@@ -599,13 +911,22 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
           <p style={{ color: 'var(--text-soft)', fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>
             That's the full sign-up flow. Nothing was saved — you're still logged in as yourself. 🌸
           </p>
-          <button className="ob-btn-primary" onClick={() => onComplete(null)}>
-            Back to Settings →
-          </button>
+          <button className="ob-btn-primary" onClick={() => onComplete(null)}>Back to Settings →</button>
         </div>
       </div>
     );
   }
+
+  const nav = {
+    terms:     () => setStep('profile'),
+    profile:   { next: () => setStep('body'),      back: () => setStep('terms') },
+    body:      { next: () => setStep('goals'),     back: () => setStep('profile') },
+    goals:     { next: () => setStep('lifestyle'), back: () => setStep('body') },
+    lifestyle: { next: () => setStep('fitness'),   back: () => setStep('goals') },
+    fitness:   { next: () => setStep('nutrition'), back: () => setStep('lifestyle') },
+    nutrition: { next: () => setStep('skincare'),  back: () => setStep('fitness') },
+    skincare:  { next: handleComplete,             back: () => setStep('nutrition') },
+  };
 
   return (
     <div className="ob-wrap">
@@ -616,12 +937,15 @@ export default function Onboarding({ user, onComplete, isPreview = false }) {
         </div>
       )}
       <div className="ob-card">
-        {step === 'terms'         && <TermsScreen         onAgree={() => setStep('profile')} />}
-        {step === 'profile'       && <ProfileScreen       form={form} setForm={setForm} onNext={() => setStep('body')} />}
-        {step === 'body'          && <BodyScreen          form={form} setForm={setForm} onNext={() => setStep('health')} onBack={() => setStep('profile')} />}
-        {step === 'health'        && <HealthScreen        form={form} setForm={setForm} onNext={() => setStep('questionnaire')} onBack={() => setStep('body')} />}
-        {step === 'questionnaire' && <QuestionnaireScreen form={form} setForm={setForm} onNext={handleComplete} onBack={() => setStep('health')} saving={saving} />}
-        {step === 'done'          && <DoneScreen          username={form.username} />}
+        {step === 'terms'     && <TermsScreen     onAgree={nav.terms} />}
+        {step === 'profile'   && <ProfileScreen   form={form} setForm={setForm} onNext={nav.profile.next} onBack={nav.profile.back} />}
+        {step === 'body'      && <BodyScreen      form={form} setForm={setForm} onNext={nav.body.next}      onBack={nav.body.back} />}
+        {step === 'goals'     && <GoalsScreen     form={form} setForm={setForm} onNext={nav.goals.next}    onBack={nav.goals.back} />}
+        {step === 'lifestyle' && <LifestyleScreen form={form} setForm={setForm} onNext={nav.lifestyle.next} onBack={nav.lifestyle.back} />}
+        {step === 'fitness'   && <FitnessScreen   form={form} setForm={setForm} onNext={nav.fitness.next}  onBack={nav.fitness.back} />}
+        {step === 'nutrition' && <NutritionScreen form={form} setForm={setForm} onNext={nav.nutrition.next} onBack={nav.nutrition.back} />}
+        {step === 'skincare'  && <SkincareScreen  form={form} setForm={setForm} onNext={nav.skincare.next} onBack={nav.skincare.back} saving={saving} />}
+        {step === 'done'      && <DoneScreen      username={form.username} plan={generatedPlan} form={form} />}
       </div>
     </div>
   );

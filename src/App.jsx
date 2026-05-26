@@ -224,6 +224,7 @@ export default function App() {
           // Restore reminders from Firestore (cross-device sync)
           if (Array.isArray(data.remindersV2) && data.remindersV2.length > 0) {
             localStorage.setItem('gp_reminders', JSON.stringify(data.remindersV2));
+            scheduleReminders(data.remindersV2);
           }
           // Restore custom meal additions from Firestore
           if (data.customMeals && typeof data.customMeals === 'object') {
