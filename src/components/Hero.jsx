@@ -125,7 +125,7 @@ export default function Hero({ onNavigate }) {
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — non-negotiable</span></div>
           <div className="hero-rule"><span>🚶</span><span>Walk 10 min after every big meal</span></div>
           <div className="hero-rule"><span>🍽️</span><span>Fast on rest days · Eat on strength days</span></div>
-          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Drink water first. Wait 10 min. Still hungry? Eat. Not hungry? Go do something — workout, walk, play, read, write.</span></div>
+          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Drink water first. Wait 10 min. Still hungry? Eat. Not hungry? Go do something — workout, walk, play, read, write, whatever btch, I'm not your mother.</span></div>
         </div>
       </div>
     </div>
