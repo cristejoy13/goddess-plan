@@ -195,6 +195,12 @@ function TermsScreen({ onAgree }) {
             <strong>You own your journey.</strong> This plan is a guide, a companion, and a cheerleader — but the goddess doing the work is <em>you</em>.
           </div>
         </div>
+        <div className="ob-terms-section">
+          <span className="ob-terms-emoji">😂</span>
+          <div>
+            <strong>About our language.</strong> Any colourful words, phrases, or expressions used in this app — "bullsh*t", "btch", and the like — are purely for personality, humour, and motivation. They carry zero negative intent. This app loves you. We're just not here to sugarcoat things.
+          </div>
+        </div>
         <p className="ob-terms-note">By continuing, you acknowledge and agree to these terms.</p>
       </div>
 
