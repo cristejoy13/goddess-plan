@@ -8,7 +8,6 @@ import Workout from './components/Workout';
 import Challenges from './components/Challenges';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
-import HairCare from './components/HairCare';
 import Settings from './components/Settings';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
@@ -22,8 +21,7 @@ const NAV_ITEMS = [
   { id: 'workout',    label: 'Workouts' },
   { id: 'challenges', label: 'Challenges' },
   { id: 'nutrition',  label: 'Nutrition' },
-  { id: 'skincare',   label: 'Skincare' },
-  { id: 'haircare',   label: 'Hair Care' },
+  { id: 'skincare',   label: 'Body' },
 ];
 
 const SEARCH_INDEX = [
@@ -60,9 +58,9 @@ const SEARCH_INDEX = [
   { label: 'Shower Body Care',             hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
   { label: 'Body SPF & Moisturiser',       hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
   { label: 'Vaseline Heels & Elbows',      hint: 'Skincare → Body Care',           section: 'skincare', tab: 'body'     },
-  { label: 'Camellia Oil Ritual',          hint: 'Hair Care', section: 'haircare' },
-  { label: 'Rosemary Oil for Hair Growth', hint: 'Hair Care', section: 'haircare' },
-  { label: 'Argan Oil Shine',              hint: 'Hair Care', section: 'haircare' },
+  { label: 'Camellia Oil Ritual',          hint: 'Body → Hair', section: 'skincare', tab: 'hair' },
+  { label: 'Rosemary Oil for Hair Growth', hint: 'Body → Hair', section: 'skincare', tab: 'hair' },
+  { label: 'Argan Oil Shine',              hint: 'Body → Hair', section: 'skincare', tab: 'hair' },
   { label: 'Sleep Protocol',               hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Cortisol Management',          hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Hormone-Protective Eating',    hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
@@ -514,7 +512,6 @@ export default function App() {
         {active === 'challenges' && <Challenges />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
-        {active === 'haircare'   && <HairCare />}
         {active === 'settings'   && <Settings
             onNavigate={navigate}
             user={user}

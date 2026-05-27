@@ -151,7 +151,6 @@ function AMFace() {
         <ProductCard brand="Round Lab" name="Birch Juice Moisturizing Sun Cream SPF 50+" badges={['SPF 50+', 'Birch Juice', 'Hydrating', 'Moisturiser + SPF']} why="Deeply hydrating sunscreen that doubles as a moisturiser. Especially good for days when you want minimal layering in your routine." />
         <div className="step-note">⚠️ UV exposure directly enlarges pores, worsens redness, creates texture, and prevents ALL your actives from working. Apply generously. Reapply every 2 hours when outdoors.</div>
       </RoutineStep>
-
       <div className="note-box note-rose" style={{ marginTop: 16 }}>
         📅 <strong>Saturday AM:</strong> Do your clay mask before your morning shower, then follow your full routine. <strong>Saturday PM:</strong> Retinol (Month 2+) + Gua Sha after moisturiser. <strong>Wednesday PM:</strong> Gua Sha after moisturiser. <strong>Month 2+ Saturdays:</strong> AHA alternative on nights before Retinol is introduced.
       </div>
@@ -318,7 +317,7 @@ function Retinoid() {
   );
 }
 
-/* ─── Anti-Aging (inlined from AntiAging.jsx) ─── */
+/* ─── Anti-Aging ─── */
 const AG_CARDS = [
   {
     ico: '🛌', t: 'Sleep — Master Hormone', group: 'Daily Rhythms',
@@ -433,11 +432,580 @@ function AntiAgingTab({ selected, onSelect, onBack }) {
   );
 }
 
-/* ─── resolve initial tab → top + sub ─── */
+/* ─── Hair Care (integrated) ─── */
+const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAY_NAMES   = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+const OIL_SCHEDULE = [
+  [ // Week A
+    [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }],
+    [{ e: '✨', n: 'Argan' }],
+    [{ e: '🌼', n: 'Jojoba' }],
+    [],
+    [{ e: '🌸', n: 'Camellia' }],
+    [{ e: '✨', n: 'Argan' }],
+    [],
+  ],
+  [ // Week B
+    [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }],
+    [{ e: '✨', n: 'Argan' }],
+    [{ e: '🌼', n: 'Jojoba' }, { e: '🥥', n: 'Coconut' }],
+    [],
+    [{ e: '🌸', n: 'Camellia' }],
+    [{ e: '✨', n: 'Argan' }],
+    [],
+  ],
+];
+
+const OIL_COLORS = {
+  Camellia: 'rgba(255,92,157,0.18)',
+  Rosemary: 'rgba(240,204,96,0.14)',
+  Argan:    'rgba(255,232,122,0.16)',
+  Jojoba:   'rgba(240,204,96,0.10)',
+  Coconut:  'rgba(255,255,255,0.08)',
+};
+
+const OIL_GUIDE = {
+  Camellia: {
+    emoji: '🌸',
+    how: 'Warm 3–5 drops in your palms and apply to scalp and mid-lengths. Massage firmly for 5 minutes. Leave on 45–60 min, then shampoo out — apply shampoo to dry hair first for best removal.',
+    tip: 'Your hero oil. Penetrates the shaft without weighing fine strands down.',
+  },
+  Rosemary: {
+    emoji: '🌿',
+    how: 'Use your pre-diluted blend only — never apply rosemary neat to skin. Apply to scalp parting lines, massage 5 min. Leave 45–60 min, shampoo twice to fully remove.',
+    tip: 'Always diluted. Clinical studies show it matches minoxidil for density over 6 months.',
+  },
+  Argan: {
+    emoji: '✨',
+    how: '1–2 drops only on damp hair after washing. Apply mid-length to ends — never the scalp. Leave in, do not rinse. Scrunch upward to enhance your wave pattern.',
+    tip: 'Finishing oil only. Controls frizz and adds shine after every wash.',
+  },
+  Jojoba: {
+    emoji: '🌼',
+    how: '3–4 drops applied directly to scalp parting lines. Massage 3–5 min. Leave 45 min, then shampoo out.',
+    tip: "Closest match to your scalp's own sebum. Best carrier oil for rosemary blend.",
+  },
+  Coconut: {
+    emoji: '🥥',
+    how: '1–2 drops on the very ends only — not scalp, not mid-shaft. Set a 20-min timer. Always shampoo out completely.',
+    tip: 'Once every 2 weeks maximum. Overuse causes protein overload on fine hair.',
+  },
+};
+
+const OIL_BENEFITS = {
+  Camellia: {
+    emoji: '🌸',
+    tagline: 'Your hero oil for fine, wavy strands',
+    color: 'rgba(255,92,157,0.12)',
+    borderColor: 'rgba(255,92,157,0.3)',
+    science: 'Camellia oil (Tsubaki) is composed of 80–85% oleic acid — a long-chain fatty acid that can penetrate the hair cortex rather than sitting on top of it like heavier oils. This means it adds moisture and strength from the inside without the greasy feel that weighs down fine hair.',
+    benefits: [
+      { icon: '💧', title: 'Deep shaft hydration', body: 'Oleic acid is small enough to pass through the cuticle layer into the cortex, replenishing moisture where it matters most.' },
+      { icon: '🛡️', title: 'Reduces breakage', body: 'Strengthens the internal structure of each strand, reducing the brittleness that leads to mid-shaft splits and breakage.' },
+      { icon: '✨', title: 'Frizz control without weight', body: 'Smooths the cuticle and seals moisture in — eliminating frizz without flattening your natural wave pattern.' },
+      { icon: '🌿', title: 'Scalp health', body: 'Anti-inflammatory properties soothe dry, itchy scalp and support a healthy follicle environment for growth.' },
+      { icon: '🌸', title: 'Wavy hair-safe', body: 'Unlike coconut oil, camellia does not cause protein overload on fine or wavy hair — safe to use multiple times a week.' },
+    ],
+    bestFor: 'Fine, wavy, or colour-treated hair',
+    frequency: '2–3× per week (pre-wash treatment)',
+  },
+  Rosemary: {
+    emoji: '🌿',
+    tagline: 'Clinically proven to match minoxidil for hair density',
+    color: 'rgba(240,204,96,0.10)',
+    borderColor: 'rgba(240,204,96,0.28)',
+    science: 'A 2023 randomised controlled trial published in Skinmed Journal found that rosemary oil applied to the scalp for 6 months produced equivalent hair count increases to 2% minoxidil — without the side effects. The active compound, carnosic acid, stimulates blood flow to hair follicles and inhibits DHT (the hormone responsible for hair miniaturisation).',
+    benefits: [
+      { icon: '🩸', title: 'Increases scalp blood flow', body: 'Stimulates microcirculation at the follicle level, delivering more oxygen and nutrients to actively growing hairs.' },
+      { icon: '🔬', title: 'DHT inhibition', body: 'Carnosic acid partially blocks the enzyme 5-alpha reductase, reducing DHT — the key driver of hair thinning and miniaturisation.' },
+      { icon: '💪', title: 'Supports hair density', body: 'Clinical trials show statistically significant increases in hair count after 6 months of consistent scalp application.' },
+      { icon: '🛡️', title: 'Antioxidant protection', body: 'Rich in rosmarinic acid — a potent antioxidant that protects follicles from oxidative stress that accelerates shedding.' },
+      { icon: '⚠️', title: 'Must always be diluted', body: 'Rosemary essential oil is potent. Never apply neat to skin. Always dilute in a carrier oil (jojoba or camellia) before applying.' },
+    ],
+    bestFor: 'Anyone wanting to support hair density and reduce seasonal shedding',
+    frequency: '1–2× per week (always diluted, pre-wash)',
+  },
+  Argan: {
+    emoji: '✨',
+    tagline: 'Liquid gold for frizz, shine, and wave definition',
+    color: 'rgba(255,232,122,0.10)',
+    borderColor: 'rgba(255,232,122,0.3)',
+    science: "Argan oil is cold-pressed from the kernels of the Moroccan argan tree. It is uniquely high in Vitamin E (tocopherols) and unsaturated fatty acids (oleic and linoleic acid), making it an exceptional finishing oil. Unlike penetrating oils, argan is a surface-active oil — it coats the cuticle to seal moisture in and smooth the hair's external texture.",
+    benefits: [
+      { icon: '✨', title: 'Frizz elimination', body: 'Coats and seals the cuticle layer, preventing humidity from lifting cuticle scales and causing frizz — especially effective on wavy hair.' },
+      { icon: '💎', title: 'Mirror-like shine', body: 'High Vitamin E content reflects light off a smooth cuticle surface, creating the glass-hair effect without silicone.' },
+      { icon: '🌊', title: 'Wave definition', body: 'Applied to damp hair and scrunched upward, it clumps your natural wave pattern without crunch or stiffness.' },
+      { icon: '🛡️', title: 'Heat protection', body: 'Creates a light protective barrier against heat tools — but is not a substitute for a dedicated heat protectant above 180°C.' },
+      { icon: '🌿', title: 'Scalp-free application', body: 'Applied only to mid-lengths and ends. Using on the scalp will cause greasiness — it is a finishing oil, not a treatment oil.' },
+    ],
+    bestFor: 'Post-wash finishing on all hair types, especially wavy and frizz-prone',
+    frequency: 'After every wash (1–2 drops on damp hair, leave-in)',
+  },
+  Jojoba: {
+    emoji: '🌼',
+    tagline: "The oil that mimics your scalp's own sebum",
+    color: 'rgba(240,204,96,0.08)',
+    borderColor: 'rgba(240,204,96,0.22)',
+    science: "Jojoba is technically a liquid wax, not an oil — and this makes it uniquely compatible with human sebum. Its molecular structure is so similar to the natural wax esters produced by scalp sebaceous glands that the scalp recognises it as its own. This means it regulates oil production, soothes inflammation, and is virtually non-comedogenic.",
+    benefits: [
+      { icon: '🔬', title: 'Sebum mimic', body: 'Structurally identical to scalp sebum — absorbs completely without residue and signals sebaceous glands to balance oil production.' },
+      { icon: '⚖️', title: 'Scalp balance', body: 'Works for both oily and dry scalps — regulates oil glands that overproduce (oily) and replenishes moisture where glands underperform (dry).' },
+      { icon: '🌿', title: 'Anti-inflammatory', body: 'Contains myristic acid and zinc — both with documented anti-inflammatory effects that soothe irritated, flaky, or sensitive scalp skin.' },
+      { icon: '🧪', title: 'Best carrier for rosemary', body: 'Its neutral, non-comedogenic base makes it the ideal carrier to dilute rosemary essential oil for scalp application without clogging follicles.' },
+      { icon: '💧', title: 'Lightweight hydration', body: 'Deeply moisturises without heaviness — safe for fine hair as a scalp treatment, unlike thicker oils that coat strands.' },
+    ],
+    bestFor: 'Scalp treatments, rosemary dilution, all hair types',
+    frequency: '1× per week (pre-wash scalp treatment, or as needed)',
+  },
+  Coconut: {
+    emoji: '🥥',
+    tagline: 'Powerful ends treatment — use with care',
+    color: 'rgba(255,255,255,0.05)',
+    borderColor: 'rgba(255,255,255,0.15)',
+    science: 'Coconut oil is high in lauric acid — a medium-chain fatty acid with a small molecular size that can penetrate the hair shaft. Clinical studies show it reduces protein loss from hair better than mineral oil or sunflower oil. However, for fine or wavy hair, overuse causes protein overload — the hair becomes stiff, brittle, and prone to breakage as the shaft becomes over-saturated.',
+    benefits: [
+      { icon: '🛡️', title: 'Protein loss prevention', body: 'Lauric acid binds to hair protein (keratin) and partially penetrates the cortex, significantly reducing the amount of protein lost during washing.' },
+      { icon: '💧', title: 'Deep end conditioning', body: 'A small amount on dry, split ends can dramatically improve their feel and appearance, sealing damaged cuticle edges temporarily.' },
+      { icon: '⚠️', title: 'Fine hair caution', body: 'Fine and wavy hair is prone to protein overload. Signs: hair feels straw-like, loses elasticity, snaps instead of stretches. Use 1–2 drops, ends only.' },
+      { icon: '⏱️', title: '20-minute maximum', body: 'Unlike penetrating oils, coconut oil can cause protein buildup over long exposures on fine hair. Set a timer and always shampoo out fully.' },
+      { icon: '📅', title: 'Once every 2 weeks maximum', body: 'Appears only in Week B of your rotation to enforce the right frequency. Do not use outside your scheduled rotation day.' },
+    ],
+    bestFor: 'Dry, porous, or thick hair. Use with strict frequency limits on fine/wavy hair.',
+    frequency: 'Once every 2 weeks maximum (Week B only, ends only)',
+  },
+};
+
+function getMonthWeeks(year, monthIdx) {
+  const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+  const firstDow = (new Date(year, monthIdx, 1).getDay() + 6) % 7;
+  const weeks = [];
+  let week = Array(7).fill(null);
+  let day = 1;
+  for (let d = firstDow; d < 7 && day <= daysInMonth; d++, day++) week[d] = day;
+  weeks.push([...week]);
+  while (day <= daysInMonth) {
+    week = Array(7).fill(null);
+    for (let d = 0; d < 7 && day <= daysInMonth; d++, day++) week[d] = day;
+    weeks.push([...week]);
+  }
+  return weeks;
+}
+
+function OilDayModal({ day, monthIdx, year, oils, dayName, onClose }) {
+  const dateLabel = `${DAY_NAMES[dayName]}, ${MONTH_NAMES[monthIdx]} ${day}`;
+  const isRest = oils.length === 0;
+  return (
+    <div className="oil-modal-overlay" onClick={onClose}>
+      <div className="oil-modal" onClick={e => e.stopPropagation()}>
+        <button className="oil-modal-close" onClick={onClose}>✕</button>
+        <div className="oil-modal-date">{dateLabel}</div>
+        {isRest ? (
+          <div className="oil-modal-rest">
+            <div className="oil-modal-rest-icon">🌿</div>
+            <p className="oil-modal-rest-text">Rest day — no oils today.</p>
+            <p className="oil-modal-rest-sub">Let your scalp breathe and recover. 🌸</p>
+          </div>
+        ) : (
+          <>
+            <div className="oil-modal-oils-row">
+              {oils.map(o => (
+                <span key={o.n} className="oil-modal-chip">{o.e} {o.n}</span>
+              ))}
+            </div>
+            {oils.map(o => {
+              const g = OIL_GUIDE[o.n];
+              if (!g) return null;
+              return (
+                <div key={o.n} className="oil-modal-card">
+                  <div className="oil-modal-card-title">{g.emoji} {o.n} Oil</div>
+                  <p className="oil-modal-card-how">{g.how}</p>
+                  <p className="oil-modal-card-tip">💡 {g.tip}</p>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function OilBenefitsPage({ oilName, onBack }) {
+  const b = OIL_BENEFITS[oilName];
+  if (!b) return null;
+  return (
+    <div className="section">
+      <button className="ag-detail-back" onClick={onBack}>← Back to Body</button>
+      <div className="oil-detail-header splash-item" style={{ borderColor: b.borderColor, background: b.color }}>
+        <div className="oil-detail-emoji">{b.emoji}</div>
+        <h2 className="oil-detail-title">{oilName} Oil</h2>
+        <p className="oil-detail-tagline">{b.tagline}</p>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">🔬 The Science</div>
+        <p className="ag-detail-body">{b.science}</p>
+      </div>
+      <div className="divider splash-item">Key Benefits</div>
+      {b.benefits.map((benefit, i) => (
+        <div key={i} className="oil-benefit-card splash-item">
+          <span className="oil-benefit-icon">{benefit.icon}</span>
+          <div>
+            <div className="oil-benefit-title">{benefit.title}</div>
+            <p className="oil-benefit-body">{benefit.body}</p>
+          </div>
+        </div>
+      ))}
+      <div className="g-card splash-item" style={{ marginTop: 8 }}>
+        <div className="ag-detail-section-title">💆 How to Use</div>
+        <p className="ag-detail-body">{OIL_GUIDE[oilName]?.how}</p>
+      </div>
+      <div className="oil-detail-meta splash-item">
+        <div className="oil-detail-meta-row">
+          <span className="oil-detail-meta-label">Best for</span>
+          <span className="oil-detail-meta-value">{b.bestFor}</span>
+        </div>
+        <div className="oil-detail-meta-row">
+          <span className="oil-detail-meta-label">Frequency</span>
+          <span className="oil-detail-meta-value">{b.frequency}</span>
+        </div>
+        <div className="oil-detail-meta-row">
+          <span className="oil-detail-meta-label">Pro tip</span>
+          <span className="oil-detail-meta-value">💡 {OIL_GUIDE[oilName]?.tip}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OilRotationCalendar({ onSelectOil }) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const monthIdx = now.getMonth();
+  const today = now.getDate();
+  const weeks = getMonthWeeks(year, monthIdx);
+  const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+  const [selected, setSelected] = useState(null);
+
+  const counts = { Camellia: 0, Rosemary: 0, Argan: 0, Jojoba: 0, Coconut: 0 };
+  weeks.forEach((week, wi) => {
+    const wType = wi % 2;
+    week.forEach((day, di) => {
+      if (!day) return;
+      OIL_SCHEDULE[wType][di].forEach(o => { counts[o.n]++; });
+    });
+  });
+
+  return (
+    <div className="oil-rotation splash-item">
+      {selected && (
+        <OilDayModal
+          day={selected.day}
+          monthIdx={monthIdx}
+          year={year}
+          oils={selected.oils}
+          dayName={selected.dayName}
+          onClose={() => setSelected(null)}
+        />
+      )}
+      <div className="oil-rot-month-label">
+        {MONTH_NAMES[monthIdx]} {year}
+        <span className="oil-rot-cal-hint"> · Tap any date to see your oil guide</span>
+      </div>
+      <div className="oil-rot-cal">
+        <div className="oil-rot-cal-header">
+          {DAY_LETTERS.map(d => <div key={d} className="oil-rot-dh">{d}</div>)}
+        </div>
+        {weeks.map((week, wi) => {
+          const wType = wi % 2;
+          return (
+            <div key={wi} className="oil-rot-cal-week">
+              {week.map((day, di) => {
+                if (!day) return <div key={di} className="oil-rot-day oil-rot-day-empty" />;
+                const oils = OIL_SCHEDULE[wType][di];
+                const isToday = day === today;
+                const bg = oils.length > 0 ? OIL_COLORS[oils[0].n] : 'transparent';
+                return (
+                  <button
+                    key={di}
+                    className={`oil-rot-day oil-rot-day-btn${oils.length === 0 ? ' oil-rot-day-rest' : ''}${isToday ? ' oil-rot-day-today' : ''}`}
+                    style={{ background: isToday ? undefined : bg }}
+                    onClick={() => setSelected({ day, oils, dayName: di })}
+                    aria-label={`${MONTH_NAMES[monthIdx]} ${day}`}
+                  >
+                    <span className="oil-rot-day-num">{day}</span>
+                    <div className="oil-rot-day-oils">
+                      {oils.map(o => (
+                        <span key={o.n} className="oil-rot-day-em" title={o.n}>{o.e}</span>
+                      ))}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+      <div className="oil-rot-summary">
+        <div className="oil-rot-summary-label">Your {MONTH_NAMES[monthIdx]} sessions — {daysInMonth} days</div>
+        <div className="oil-rot-summary-grid">
+          {Object.entries(counts).map(([name, n]) => (
+            <button key={name} className="oil-rot-summary-item oil-rot-summary-btn" onClick={() => onSelectOil(name)}>
+              <span className="oil-rot-summary-em">
+                {name === 'Camellia' ? '🌸' : name === 'Rosemary' ? '🌿' : name === 'Argan' ? '✨' : name === 'Jojoba' ? '🌼' : '🥥'}
+              </span>
+              <span className="oil-rot-summary-name">{name}</span>
+              <span className="oil-rot-summary-count">{n}×</span>
+            </button>
+          ))}
+        </div>
+        <p className="oil-rot-summary-tap-hint">Tap an oil above to learn its benefits →</p>
+      </div>
+    </div>
+  );
+}
+
+function HairTab({ onSelectOil }) {
+  return (
+    <>
+      <div className="s-header" style={{ paddingTop: 0 }}>
+        <div className="s-tag">Wavy · Thin Strands</div>
+        <p className="s-desc">Your monthly oil rotation calendar — tap any date to see which oils to use and how to apply them.</p>
+      </div>
+      <div className="divider divider-center splash-item">2-Week Oil Rotation</div>
+      <OilRotationCalendar onSelectOil={onSelectOil} />
+      <div className="note-box note-rose splash-item">
+        🚫 <strong>Avoid for thin strands:</strong> castor oil, sweet almond oil (too heavy), sleeping without a silk cap on oiling nights, brushing dry wavy hair, and coconut oil more than once every 2 weeks. A silk pillowcase alone reduces breakage and frizz noticeably every single night.
+      </div>
+    </>
+  );
+}
+
+/* ─── Underarm Routine ─── */
+function UnderarmRoutine() {
+  const [openStep, setOpenStep] = useState(null);
+  function tog(id) { setOpenStep(p => p === id ? null : id); }
+  return (
+    <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        Your underarm routine brightens dark spots, reduces friction damage, and keeps skin smooth. Results take 4–6 weeks of consistent use — the key is applying actives on dry skin only and not layering too much at once.
+      </div>
+      <RoutineStep num="1" cat="First Step — Exfoliate" name="Glycolic Acid" open={openStep==='1'} onToggle={() => tog('1')}>
+        <div className="prod-item">
+          <div className="prod-badge">Glycolic Acid 7–10%</div>
+          <div>
+            <div className="prod-name">Glycolic Acid Toner or Pads</div>
+            <div className="prod-why">Glycolic acid is an AHA that exfoliates the dead skin cells causing dark spots, rough texture, and uneven tone. Apply to completely clean, dry underarms using a cotton pad. Dry skin is critical — glycolic on damp skin causes stinging and irritation. Do not apply immediately after shaving.</div>
+          </div>
+        </div>
+        <div className="step-note">Use 3–4 nights per week. Never on freshly shaved skin — wait at least 24 hours after shaving before applying. If skin is sensitive, start at 1× per week and build gradually over 4 weeks.</div>
+      </RoutineStep>
+      <RoutineStep num="2" cat="Second Step — Brighten" name="Vitamin C Serum" open={openStep==='2'} onToggle={() => tog('2')}>
+        <div className="prod-item">
+          <div className="prod-badge">Vitamin C or Niacinamide</div>
+          <div>
+            <div className="prod-name">Vitamin C Serum or Niacinamide Serum</div>
+            <div className="prod-why">Vitamin C inhibits tyrosinase — the enzyme responsible for dark pigmentation. Apply 2–3 drops to underarms after glycolic acid has absorbed (wait 5 minutes). Niacinamide is a gentler alternative that also brightens dark spots and reduces friction-related discolouration. Use one — not both at the same time.</div>
+          </div>
+        </div>
+        <div className="step-note">Let the glycolic acid absorb for 5 minutes before applying. On nights when you skip glycolic acid, Vitamin C can still be used alone. Store Vitamin C in a cool dark place — it oxidises quickly in heat and light.</div>
+      </RoutineStep>
+      <RoutineStep num="3" cat="Third Step — Moisturise" name="Underarm Cream" open={openStep==='3'} onToggle={() => tog('3')}>
+        <div className="prod-item">
+          <div className="prod-badge">Gentle Cream</div>
+          <div>
+            <div className="prod-name">Fragrance-Free Body Lotion or Shea Butter Cream</div>
+            <div className="prod-why">Lock in moisture after actives. Dry underarm skin responds slower to brightening treatments — keeping skin hydrated accelerates results and reduces the irritation risk from exfoliating acids. CeraVe Moisturizing Cream or a basic shea butter lotion both work well. Apply a generous layer and let it absorb fully before getting dressed.</div>
+          </div>
+        </div>
+        <div className="step-note">Morning routine: skip glycolic and Vitamin C — apply only a light fragrance-free moisturiser, let it absorb, then use deodorant over the top. All actives are evening-only.</div>
+      </RoutineStep>
+      <div className="note-box note-rose" style={{ marginTop: 16 }}>
+        ⚠️ <strong>Shaving tips for better skin tone:</strong> Shave in the direction of hair growth to reduce friction and darkening. Never dry-shave — always use shaving cream or body wash as a buffer. After shaving, skip all actives for 24 hours and apply moisturiser only. Epilating or waxing creates less friction than shaving and is better for long-term underarm skin tone.
+      </div>
+    </>
+  );
+}
+
+/* ─── Teeth Routine ─── */
+function TeethRoutine() {
+  return (
+    <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        Crest Whitestrips are clinically proven for surface and below-surface stain removal. Consistent use over 2–4 weeks produces visible whitening. Do not use more frequently than directed — over-whitening causes sensitivity and enamel thinning.
+      </div>
+      <div className="note-box note-rose" style={{ marginBottom: 14 }}>
+        ⚠️ Do not use whitening strips if you have untreated cavities, active gum disease, or dental veneers or crowns on front teeth. Consult a dentist first if unsure.
+      </div>
+      <div className="divider divider-center splash-item">Crest Whitestrips — Step by Step</div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Step 1 — Before Applying</div>
+        <ul className="ag-detail-list">
+          <li>Brush your teeth 30 minutes BEFORE applying strips — do not apply right after brushing, as fluoride temporarily reduces whitening effectiveness</li>
+          <li>Dry your teeth gently with a tissue or cloth — strips adhere much better to dry teeth</li>
+          <li>Wash your hands before handling the strips</li>
+          <li>Do not eat or drink anything (except water) for 30 minutes before applying</li>
+        </ul>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Step 2 — Applying the Strips</div>
+        <ul className="ag-detail-list">
+          <li>Remove the gel strip from the backing — the gel side faces your teeth</li>
+          <li>Align the straight edge of the strip with your gumline — do not overlap onto gum tissue</li>
+          <li>Press the strip firmly against teeth and fold any excess behind your teeth</li>
+          <li>Repeat with the bottom strip on your lower teeth</li>
+          <li>Leave on for the time shown on the box — typically 30 minutes for standard strips</li>
+          <li>Avoid talking, eating, or drinking while strips are on</li>
+        </ul>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Step 3 — After Removing</div>
+        <ul className="ag-detail-list">
+          <li>Peel off and discard both strips — never reuse</li>
+          <li>Rinse mouth thoroughly with water to remove any remaining gel</li>
+          <li>Wait 30 minutes before brushing — enamel is temporarily softened after whitening</li>
+          <li>Avoid dark-staining food and drinks for at least 1 hour after: coffee, tea, red wine, tomato sauce, berries</li>
+        </ul>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Schedule & Frequency</div>
+        <ul className="ag-detail-list">
+          <li><strong>Standard whitening course:</strong> Once daily for 14–20 consecutive days</li>
+          <li><strong>Express 1-hour strips:</strong> Once daily for 7–10 days</li>
+          <li><strong>Maintenance after completing a course:</strong> 1–2 strips per month to maintain results</li>
+          <li><strong>Sensitivity days:</strong> Skip a day and resume the next — sensitivity is temporary and resolves within 24 hours</li>
+        </ul>
+      </div>
+      <div className="note-box note-gold" style={{ marginTop: 16 }}>
+        💡 <strong>Sensitivity tip:</strong> Use a sensitivity toothpaste (Sensodyne) for 2 weeks before starting your whitening course and throughout treatment. After removing strips, apply a small amount of toothpaste with potassium nitrate directly to your teeth, leave for a few minutes, then rinse — this significantly reduces whitening discomfort.
+      </div>
+    </>
+  );
+}
+
+/* ─── Makeup Routine ─── */
+function MakeupRoutine() {
+  const [openStep, setOpenStep] = useState(null);
+  function tog(id) { setOpenStep(p => p === id ? null : id); }
+  return (
+    <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        A clean makeup routine starts with good skin prep. These steps build a flawless, long-lasting base. A lash lift is the highest-ROI single treatment you can do — it eliminates the eye routine almost entirely.
+      </div>
+      <div className="divider divider-center splash-item">Lash Lift</div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">What Is a Lash Lift?</div>
+        <p className="ag-detail-body">A lash lift is a semi-permanent treatment that curls your natural lashes from the root — creating the effect of longer, wider, more open eyes without extensions or daily curling. Results last 6–8 weeks. Paired with a lash tint, it eliminates the need for mascara almost entirely.</p>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Before Your Appointment</div>
+        <ul className="ag-detail-list">
+          <li>Come with completely clean, dry lashes — no mascara, oil, or eye makeup</li>
+          <li>Avoid waterproof mascara for 48 hours before your appointment</li>
+          <li>Do not curl lashes with a heated curler the day before</li>
+          <li>Remove contact lenses before the treatment begins</li>
+        </ul>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">After Your Lash Lift — 48-Hour Rule</div>
+        <ul className="ag-detail-list">
+          <li>Keep lashes completely dry for 48 hours — no water, steam, or humidity</li>
+          <li>No mascara, eye makeup, or eye cream near lashes for 48 hours</li>
+          <li>Sleep on your back for the first 2 nights — avoid face-down sleeping</li>
+          <li>After 48 hours: apply a nourishing lash serum nightly to strengthen and grow lashes between treatments</li>
+        </ul>
+      </div>
+      <div className="divider divider-center splash-item">Step-by-Step Makeup</div>
+      <RoutineStep num="1" cat="Base Prep" name="Skincare First" open={openStep==='1'} onToggle={() => tog('1')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>Complete your full AM skincare routine first — cleanser, toner, serum, moisturiser</li>
+          <li>Wait 5–10 minutes for skincare to fully absorb before touching makeup</li>
+          <li>Apply your SPF 50+ — non-negotiable even under makeup</li>
+          <li>For extra glow: mix 1–2 drops of facial oil into your moisturiser before applying</li>
+        </ul>
+        <div className="step-note">Never skip the wait time — applying primer or foundation over still-wet skincare causes pilling and uneven blending.</div>
+      </RoutineStep>
+      <RoutineStep num="2" cat="Primer" name="Pore-Minimising Primer" open={openStep==='2'} onToggle={() => tog('2')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>Apply a pore-minimising primer over your T-zone and any areas with visible texture</li>
+          <li>Press — do not rub — with a damp beauty sponge</li>
+          <li>A silicone primer creates a smooth canvas and extends foundation wear significantly</li>
+          <li>Allow 1–2 minutes to set before applying foundation</li>
+        </ul>
+        <div className="step-note">Primer is especially important in Philippine heat and humidity — it prevents foundation from sliding or separating throughout the day.</div>
+      </RoutineStep>
+      <RoutineStep num="3" cat="Foundation" name="Base Coverage" open={openStep==='3'} onToggle={() => tog('3')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>For a natural look: use a skin tint or BB cream blended with a damp sponge</li>
+          <li>For fuller coverage: apply liquid foundation in small dots to the centre of the face and blend outward</li>
+          <li>Always blend downward on facial hair to avoid reverse-brushed texture</li>
+          <li>Build coverage only where needed — under eyes, around the nose, any redness patches</li>
+        </ul>
+        <div className="step-note">Start with less — it is always easier to build coverage than to remove excess product from the skin.</div>
+      </RoutineStep>
+      <RoutineStep num="4" cat="Concealer" name="Spot & Under-Eye" open={openStep==='4'} onToggle={() => tog('4')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>Apply concealer 1–2 shades lighter than skin tone under the eyes in an inverted triangle shape</li>
+          <li>Blend downward and outward with a damp sponge or ring finger</li>
+          <li>For blemishes: use a small flat brush and tap product precisely onto the spot only</li>
+          <li>Set immediately with a fine translucent powder to prevent creasing</li>
+        </ul>
+        <div className="step-note">The inverted triangle brightens the whole under-eye area and lifts the face — not just a small crescent beneath the eye.</div>
+      </RoutineStep>
+      <RoutineStep num="5" cat="Contour & Blush" name="Sculpt & Flush" open={openStep==='5'} onToggle={() => tog('5')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li><strong>Contour:</strong> Apply a cool-toned matte powder 2–3 shades darker than skin in the hollows of cheeks, temples, and along the jawline</li>
+          <li>Blend with a fluffy brush in back-and-forth strokes until no harsh lines remain</li>
+          <li><strong>Blush:</strong> Smile and apply a warm blush to the apples of cheeks, blending upward toward the temples</li>
+          <li>Tap off excess product before each application — heavy blush is difficult to soften</li>
+        </ul>
+        <div className="step-note">For a sun-kissed look: sweep blush lightly across the nose bridge too. For a lifted look: apply blush high on the cheekbones close to the temples.</div>
+      </RoutineStep>
+      <RoutineStep num="6" cat="Eyes" name="Eye Makeup" open={openStep==='6'} onToggle={() => tog('6')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li><strong>Brows:</strong> Fill sparse areas with a brow pencil matching your hair using light feathery strokes; set with a clear or tinted brow gel</li>
+          <li><strong>Eyeshadow:</strong> Apply a neutral matte shade across the lid, a slightly darker tone in the crease, blend well</li>
+          <li><strong>Liner:</strong> A thin line close to the lash line — tightline the upper waterline for maximum definition without heavy liner</li>
+          <li><strong>Mascara:</strong> If not lash-lifted, apply 1–2 coats from root to tip with a wiggling motion at the base</li>
+          <li>If you have a lash lift + tint: 1 light coat of clear mascara, or skip entirely</li>
+        </ul>
+        <div className="step-note">Lash lift + tint eliminates most of the eye routine — fill brows, and you are camera-ready.</div>
+      </RoutineStep>
+      <RoutineStep num="7" cat="Lips" name="Lip Look" open={openStep==='7'} onToggle={() => tog('7')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>Exfoliate lips 2× per week with a sugar scrub for a smooth base</li>
+          <li>Apply a nourishing lip balm 5 minutes before any lip colour</li>
+          <li>For an everyday no-makeup look: tinted balm or MLBB lipstick (a shade 1–2 tones deeper than your natural lip colour)</li>
+          <li>For a defined look: line with a matching lip liner before applying lipstick for longer wear and sharper edges</li>
+        </ul>
+        <div className="step-note">MLBB (my lips but better) is the most flattering everyday lip — a barely-there tint that looks like your own lips, enhanced.</div>
+      </RoutineStep>
+      <RoutineStep num="8" cat="Set & Finish" name="Setting Spray" open={openStep==='8'} onToggle={() => tog('8')}>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>Hold setting spray 25–30 cm from face and mist in an X and T pattern over finished makeup</li>
+          <li>Let dry completely — do not touch your face or fan it while it sets</li>
+          <li>For dewy finish: hydrating setting spray; for long wear in heat: matte or oil-control formula</li>
+          <li>A light dusting of translucent powder on the T-zone first extends wear in humid weather</li>
+        </ul>
+        <div className="step-note">Setting spray is the single biggest difference between makeup that lasts 2 hours and makeup that lasts all day in Manila heat.</div>
+      </RoutineStep>
+      <div className="note-box note-rose" style={{ marginTop: 16 }}>
+        🌸 <strong>Makeup removal is skincare:</strong> Never sleep in makeup. Use a micellar water or cleansing balm to remove everything first, then follow your full double-cleanse PM routine. One night of sleeping in makeup sets back your skin results significantly.
+      </div>
+    </>
+  );
+}
+
+/* ─── Tab config ─── */
 function resolveInitial(initialTab) {
-  if (initialTab === 'pm')       return { top: 'evening', mSub: 'face', eSub: 'face' };
-  if (initialTab === 'body')     return { top: 'morning', mSub: 'body', eSub: 'face' };
+  if (initialTab === 'pm')       return { top: 'evening',  mSub: 'face', eSub: 'face' };
+  if (initialTab === 'body')     return { top: 'morning',  mSub: 'body', eSub: 'face' };
   if (initialTab === 'retinoid') return { top: 'retinoid', mSub: 'face', eSub: 'face' };
+  if (initialTab === 'hair')     return { top: 'hair',     mSub: 'face', eSub: 'face' };
+  if (initialTab === 'makeup')   return { top: 'makeup',   mSub: 'face', eSub: 'face' };
+  if (initialTab === 'teeth')    return { top: 'teeth',    mSub: 'face', eSub: 'face' };
+  if (initialTab === 'underarm') return { top: 'underarm', mSub: 'face', eSub: 'face' };
   return { top: 'morning', mSub: 'face', eSub: 'face' };
 }
 
@@ -446,7 +1014,12 @@ const TOP_TABS = [
   { id: 'evening',   label: '🌙 Evening' },
   { id: 'retinoid',  label: '✨ Retinoid' },
   { id: 'antiaging', label: '🌿 Anti-Aging' },
+  { id: 'hair',      label: '💆 Hair' },
+  { id: 'underarm',  label: '🌟 Underarm' },
+  { id: 'teeth',     label: '🦷 Teeth' },
+  { id: 'makeup',    label: '💄 Makeup' },
 ];
+
 const SUB_TABS = [
   { id: 'face', label: '💆 Face' },
   { id: 'body', label: '🫧 Body' },
@@ -454,29 +1027,34 @@ const SUB_TABS = [
 
 export default function Skincare({ initialTab }) {
   const init = resolveInitial(initialTab);
-  const [topTab, setTopTab]   = useState(init.top);
-  const [mSub,   setMSub]     = useState(init.mSub);
-  const [eSub,   setESub]     = useState(init.eSub);
+  const [topTab, setTopTab]     = useState(init.top);
+  const [mSub,   setMSub]       = useState(init.mSub);
+  const [eSub,   setESub]       = useState(init.eSub);
   const [agSelected, setAgSelected] = useState(null);
+  const [selectedOil, setSelectedOil] = useState(null);
 
   function switchTop(id) {
     setTopTab(id);
     setAgSelected(null);
+    setSelectedOil(null);
+  }
+
+  if (selectedOil) {
+    return <OilBenefitsPage oilName={selectedOil} onBack={() => setSelectedOil(null)} />;
   }
 
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Your Personalised Skin Protocol</div>
-        <h2 className="s-title">Glass Skin <em>Plan</em></h2>
-        <p className="s-desc">Your complete guide for face and body — tap a routine below to dive in.</p>
+        <div className="s-tag">Your Complete Body Protocol</div>
+        <h2 className="s-title">Body <em>Care</em></h2>
+        <p className="s-desc">Face · Body · Hair · Makeup · Teeth · Underarm — everything in one place.</p>
       </div>
 
       <div className="note-box note-gold splash-item" style={{ marginBottom: 20 }}>
         🛍 <strong>Where to buy:</strong> All products are available in the Philippines on <strong>Shopee</strong>, <strong>Lazada</strong>, and <strong>Watsons</strong>. Search the exact product name shown on each card. Most are under ₱500–₱1,200.
       </div>
 
-      {/* Top-level tabs */}
       <div className="sk-top-tabs splash-item">
         {TOP_TABS.map(t => (
           <button key={t.id} className={`sk-top-tab${topTab === t.id ? ' active' : ''}`} onClick={() => switchTop(t.id)}>
@@ -485,7 +1063,6 @@ export default function Skincare({ initialTab }) {
         ))}
       </div>
 
-      {/* Morning */}
       {topTab === 'morning' && (
         <>
           <div className="sk-tabs splash-item">
@@ -500,7 +1077,6 @@ export default function Skincare({ initialTab }) {
         </>
       )}
 
-      {/* Evening */}
       {topTab === 'evening' && (
         <>
           <div className="sk-tabs splash-item">
@@ -515,10 +1091,8 @@ export default function Skincare({ initialTab }) {
         </>
       )}
 
-      {/* Retinoid */}
-      {topTab === 'retinoid' && <Retinoid />}
+      {topTab === 'retinoid'  && <Retinoid />}
 
-      {/* Anti-Aging */}
       {topTab === 'antiaging' && (
         <AntiAgingTab
           selected={agSelected}
@@ -526,6 +1100,11 @@ export default function Skincare({ initialTab }) {
           onBack={() => setAgSelected(null)}
         />
       )}
+
+      {topTab === 'hair'     && <HairTab onSelectOil={setSelectedOil} />}
+      {topTab === 'underarm' && <UnderarmRoutine />}
+      {topTab === 'teeth'    && <TeethRoutine />}
+      {topTab === 'makeup'   && <MakeupRoutine />}
     </div>
   );
 }
