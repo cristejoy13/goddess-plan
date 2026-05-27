@@ -24,6 +24,25 @@ const BRAND_COLOR = {
   'St. Ives':         '#60a850',
   'Vaseline':         '#4878a0',
   'The Ordinary':     '#505050',
+  'Medicube':         '#e05070',
+  'Neogen':           '#5a8050',
+  'Organic Skin Japan': '#c85480',
+  'Luxe Organix':     '#c07070',
+  'Charlotte Tilbury': '#c89060',
+  'e.l.f.':           '#c05080',
+  'NARS':             '#303030',
+  'Rare Beauty':      '#d05060',
+  'Laura Mercier':    '#b09870',
+  'Urban Decay':      '#604080',
+  'MAC':              '#404040',
+  'Apagard':          '#4870b0',
+  'Milk Makeup':      '#d07080',
+  'Maybelline':       '#c03060',
+  'Armani Beauty':    '#806050',
+  'Boka':             '#408880',
+  'Sensodyne':        '#4060a0',
+  'Skintific':        '#7060c0',
+  'Dr. Jart+':        '#4090c0',
 };
 
 function ProductCard({ brand, name, badges = [], why, primary = false }) {
@@ -789,40 +808,45 @@ function UnderarmRoutine() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Your underarm routine brightens dark spots, reduces friction damage, and keeps skin smooth. Results take 4–6 weeks of consistent use — the key is applying actives on dry skin only and not layering too much at once.
+        Korean beauty has cracked the underarm code — the same ingredients that brighten your face work even faster here. Results in 4–6 weeks with consistent use. Key rule: actives on dry skin only, evening only.
       </div>
-      <RoutineStep num="1" cat="First Step — Exfoliate" name="Glycolic Acid" open={openStep==='1'} onToggle={() => tog('1')}>
-        <div className="prod-item">
-          <div className="prod-badge">Glycolic Acid 7–10%</div>
-          <div>
-            <div className="prod-name">Glycolic Acid Toner or Pads</div>
-            <div className="prod-why">Glycolic acid is an AHA that exfoliates the dead skin cells causing dark spots, rough texture, and uneven tone. Apply to completely clean, dry underarms using a cotton pad. Dry skin is critical — glycolic on damp skin causes stinging and irritation. Do not apply immediately after shaving.</div>
-          </div>
-        </div>
-        <div className="step-note">Use 3–4 nights per week. Never on freshly shaved skin — wait at least 24 hours after shaving before applying. If skin is sensitive, start at 1× per week and build gradually over 4 weeks.</div>
+
+      <RoutineStep num="1" cat="First Step — Exfoliate (3–4× per week, evening)" name="AHA / Glycolic Acid Pads" open={openStep==='1'} onToggle={() => tog('1')}>
+        <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot', 'Pore Clearing']} why="The triple-acid toner that works on underarms. Saturate a cotton pad and swipe over completely dry underarms. AHA exfoliates dead skin causing darkening, BHA penetrates pores, PHA is gentle enough for sensitive skin. One of the most-used Korean products for underarm brightening on Shopee PH." />
+        <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked dual-sided pads — textured side to exfoliate, smooth side to soothe. Panthenol repairs the barrier while acids work. Visible results in 10–14 days. Available on YesStyle and Olive Young Global." />
+        <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget', 'Dark Spot']} why="Budget cult classic. Apply with a cotton pad on completely dry underarms. Hugely popular on TikTok and Reddit specifically for underarm darkening. Available on Shopee PH, Lazada, and BeautyMNL at a very low price point." />
+        <div className="step-note">Apply to completely dry underarms — glycolic acid on damp skin stings. Never within 24 hours of shaving. Start 1× per week and build to 3–4× over 4 weeks.</div>
       </RoutineStep>
-      <RoutineStep num="2" cat="Second Step — Brighten" name="Vitamin C Serum" open={openStep==='2'} onToggle={() => tog('2')}>
-        <div className="prod-item">
-          <div className="prod-badge">Vitamin C or Niacinamide</div>
-          <div>
-            <div className="prod-name">Vitamin C Serum or Niacinamide Serum</div>
-            <div className="prod-why">Vitamin C inhibits tyrosinase — the enzyme responsible for dark pigmentation. Apply 2–3 drops to underarms after glycolic acid has absorbed (wait 5 minutes). Niacinamide is a gentler alternative that also brightens dark spots and reduces friction-related discolouration. Use one — not both at the same time.</div>
-          </div>
-        </div>
-        <div className="step-note">Let the glycolic acid absorb for 5 minutes before applying. On nights when you skip glycolic acid, Vitamin C can still be used alone. Store Vitamin C in a cool dark place — it oxidises quickly in heat and light.</div>
+
+      <RoutineStep num="2" cat="Second Step — Brighten (daily, after acid has absorbed)" name="Niacinamide Serum" open={openStep==='2'} onToggle={() => tog('2')}>
+        <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Brightening', 'Dark Spot']} why="Niacinamide + yuja fruit (a Korean citrus packed with Vitamin C) = the dual brightening approach. Niacinamide blocks melanin transfer while yuja fades existing dark spots. Apply 3–4 drops after your acid step has absorbed. One of the most-recommended Korean serums specifically for underarm darkening." />
+        <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength', 'Barrier Support']} why="High-strength niacinamide — 2 drops patted into underarms after exfoliation. Regulates melanin, reduces inflammation-related darkening, and strengthens the skin barrier. Use on nights when you skip acid." />
+        <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing', 'Gentle']} why="The gentler option — propolis calms post-shaving irritation while niacinamide works on pigmentation. Best for sensitive underarms or your first 2 weeks." />
+        <div className="step-note">Wait 5 minutes after your acid step before applying serum. Use one serum — not two at the same time. Store serums in a cool, dark place.</div>
       </RoutineStep>
-      <RoutineStep num="3" cat="Third Step — Moisturise" name="Underarm Cream" open={openStep==='3'} onToggle={() => tog('3')}>
-        <div className="prod-item">
-          <div className="prod-badge">Gentle Cream</div>
-          <div>
-            <div className="prod-name">Fragrance-Free Body Lotion or Shea Butter Cream</div>
-            <div className="prod-why">Lock in moisture after actives. Dry underarm skin responds slower to brightening treatments — keeping skin hydrated accelerates results and reduces the irritation risk from exfoliating acids. CeraVe Moisturizing Cream or a basic shea butter lotion both work well. Apply a generous layer and let it absorb fully before getting dressed.</div>
-          </div>
-        </div>
-        <div className="step-note">Morning routine: skip glycolic and Vitamin C — apply only a light fragrance-free moisturiser, let it absorb, then use deodorant over the top. All actives are evening-only.</div>
+
+      <RoutineStep num="3" cat="Third Step — Repair (every night)" name="Barrier Repair Cream" open={openStep==='3'} onToggle={() => tog('3')}>
+        <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair', 'Anti-Inflammatory']} why="Panthenol heals the skin barrier and stops the dark-spot cycle caused by friction damage. Madecassoside calms the inflammation that drives underarm pigmentation. Apply a generous layer after serum every night — this is what protects skin between active treatments." />
+        <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Centella asiatica (tiger grass) calms post-acid and post-shaving inflammation. Restores skin barrier overnight. Apply a pea-sized amount after your brightening serum." />
+        <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free', 'Barrier Repair']} why="Most accessible option — ceramides repair the moisture barrier stripped by acid exfoliation. Available at any Watsons or Mercury Drug in the Philippines." />
+        <div className="step-note">Morning: skip all actives. Apply only a fragrance-free moisturiser, then your whitening deodorant on top.</div>
       </RoutineStep>
+
+      <div className="divider divider-center splash-item">Daytime — Whitening Deodorant</div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Organic Skin Japan (OSJ) — Intensive Whitening Underarm Deo Mist</div>
+        <p className="ag-detail-body">The standout Filipino-Korean product for daytime. Contains Glutathione + Alpha Arbutin + Niacinamide + Kojic Acid + Vitamin C — five brightening actives in one deodorant spray. Works as your deodorant AND your daytime treatment so you get consistent active exposure without adding a step. One of the top-ranked underarm products on Shopee PH and Calyxta.</p>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li>Apply to completely dry underarms after showering</li>
+          <li>Hold 10–15 cm away and mist evenly — let dry 30 seconds before dressing</li>
+          <li>Use every morning, replaces your regular deodorant entirely</li>
+          <li>Alternative: <strong>Belo Intense White Deo Spray</strong> — available at any Mercury Drug or Watsons PH</li>
+        </ul>
+        <div className="pc-find">🛍 <strong>Find it:</strong> Search "Organic Skin Japan Whitening Deo Mist" on Shopee PH, Lazada, or Calyxta.</div>
+      </div>
+
       <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        ⚠️ <strong>Shaving tips for better skin tone:</strong> Shave in the direction of hair growth to reduce friction and darkening. Never dry-shave — always use shaving cream or body wash as a buffer. After shaving, skip all actives for 24 hours and apply moisturiser only. Epilating or waxing creates less friction than shaving and is better for long-term underarm skin tone.
+        ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and tiny nicks that trigger inflammation-driven darkening — a main cause of underarm pigmentation. Waxing removes hair from the root with less surface friction and results last 3–4 weeks. If you shave, always use shaving cream, shave in the direction of hair growth, and wait 24 hours before any actives. Long-term, waxing or laser produces noticeably better skin tone.
       </div>
     </>
   );
@@ -833,52 +857,116 @@ function TeethRoutine() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Crest Whitestrips are clinically proven for surface and below-surface stain removal. Consistent use over 2–4 weeks produces visible whitening. Do not use more frequently than directed — over-whitening causes sensitivity and enamel thinning.
+        A complete teeth routine covers four things: daily mechanical cleaning, remineralisation with hydroxyapatite, whitening, and gum health. Do these consistently and you won't need expensive dental whitening treatments.
       </div>
-      <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        ⚠️ Do not use whitening strips if you have untreated cavities, active gum disease, or dental veneers or crowns on front teeth. Consult a dentist first if unsure.
-      </div>
-      <div className="divider divider-center splash-item">Crest Whitestrips — Step by Step</div>
+
+      <div className="divider divider-center splash-item">☀️ Morning Routine</div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 1 — Before Applying</div>
+        <div className="ag-detail-section-title">Step 1 — Oil Pulling (10–15 min, before anything else)</div>
         <ul className="ag-detail-list">
-          <li>Brush your teeth 30 minutes BEFORE applying strips — do not apply right after brushing, as fluoride temporarily reduces whitening effectiveness</li>
-          <li>Dry your teeth gently with a tissue or cloth — strips adhere much better to dry teeth</li>
-          <li>Wash your hands before handling the strips</li>
-          <li>Do not eat or drink anything (except water) for 30 minutes before applying</li>
+          <li>Take 1 tablespoon of virgin coconut oil on an empty stomach — before brushing, before drinking water</li>
+          <li>Swish gently (not vigorously — your jaw will tire) for 10–15 minutes while you shower or get dressed</li>
+          <li>Spit into the trash, never the sink — coconut oil solidifies in pipes and causes clogs</li>
+          <li>Rinse mouth with warm water, then proceed to brushing</li>
+          <li>Do 3–5× per week — it does not need to be daily</li>
+        </ul>
+        <p className="ag-detail-body" style={{ marginTop: 8 }}>Oil pulling traps fat-soluble bacteria in the mouth that are linked to bad breath, gum inflammation, and surface staining — pulling them out reduces bacteria at the source. 3–5× per week is enough to see results over 4–8 weeks.</p>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Step 2 — Brush with Hydroxyapatite Toothpaste (2 min)</div>
+        <ul className="ag-detail-list">
+          <li>Soft-bristle toothbrush at a 45° angle to the gumline — gentle circular strokes, never hard scrubbing</li>
+          <li>Brush all surfaces: outer, inner, and chewing surfaces of every tooth, plus the tongue</li>
+          <li><strong>Do NOT rinse with water after brushing</strong> — spit only, and leave the toothpaste film on teeth. This lets hydroxyapatite continue remineralising enamel for 30+ minutes</li>
+        </ul>
+        <div className="note-box note-rose" style={{ margin: '12px 0 0' }}>
+          💡 <strong>Why hydroxyapatite?</strong> Your tooth enamel is made of hydroxyapatite (HA) crystals. Fluoride toothpaste creates a protective layer; HA toothpaste directly deposits new crystals into micro-lesions and early cavities — it rebuilds enamel rather than just coating it. It also whitens naturally by filling surface irregularities that scatter light.
+        </div>
+      </div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Step 3 — Floss or Water Flosser</div>
+        <ul className="ag-detail-list">
+          <li>Floss between every tooth — reach below the gumline with a C-shape around each tooth</li>
+          <li>Or use a water flosser (Waterpik or any Shopee brand) for 60 seconds along the gumline — easier to maintain daily</li>
+          <li>Flossing removes plaque no toothbrush can reach — skipping it leaves 35% of tooth surfaces uncleaned</li>
         </ul>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 2 — Applying the Strips</div>
+        <div className="ag-detail-section-title">Step 4 — Tongue Scraper</div>
         <ul className="ag-detail-list">
-          <li>Remove the gel strip from the backing — the gel side faces your teeth</li>
-          <li>Align the straight edge of the strip with your gumline — do not overlap onto gum tissue</li>
-          <li>Press the strip firmly against teeth and fold any excess behind your teeth</li>
-          <li>Repeat with the bottom strip on your lower teeth</li>
-          <li>Leave on for the time shown on the box — typically 30 minutes for standard strips</li>
-          <li>Avoid talking, eating, or drinking while strips are on</li>
+          <li>Use a metal or plastic tongue scraper — not your toothbrush (it pushes bacteria around rather than removing it)</li>
+          <li>Start at the back of the tongue, pull forward with light pressure — 5–7 strokes, rinsing scraper between each</li>
+          <li>Tongue bacteria are the #1 cause of bad breath — this single step makes the biggest difference</li>
+        </ul>
+      </div>
+
+      <div className="divider divider-center splash-item">🌙 Night Routine</div>
+      <div className="g-card splash-item">
+        <ul className="ag-detail-list">
+          <li><strong>Floss first</strong> — remove food debris before brushing so toothpaste can reach all surfaces</li>
+          <li><strong>Brush 2 minutes</strong> with hydroxyapatite toothpaste — same 45° angle technique</li>
+          <li><strong>Do not rinse</strong> — spit only. Overnight is your longest remineralisation window</li>
+          <li><strong>No eating or drinking</strong> (except plain water) after brushing</li>
+        </ul>
+      </div>
+
+      <div className="divider divider-center splash-item">🧂 Salt Water Rinse</div>
+      <div className="g-card splash-item">
+        <p className="ag-detail-body">Salt water rinse is a targeted treatment — not a daily step. Use it for gum irritation, mouth sores, or sensitivity flare-ups.</p>
+        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>How to Make It</div>
+        <ul className="ag-detail-list">
+          <li>½ teaspoon fine salt dissolved in 240 ml warm water</li>
+          <li>Swish gently 30 seconds — spit, do not swallow</li>
+          <li>Rinse with plain water after, then brush — use it before brushing, not after</li>
+        </ul>
+        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>When to Use</div>
+        <ul className="ag-detail-list">
+          <li>Gum soreness or bleeding gums</li>
+          <li>After tooth extraction — wait 24 hours first</li>
+          <li>Canker sores or mouth ulcers</li>
+          <li>Use 2–3× per week until the issue resolves</li>
+        </ul>
+      </div>
+
+      <div className="divider divider-center splash-item">✨ Whitening Strips — Schedule</div>
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">Before You Start</div>
+        <ul className="ag-detail-list">
+          <li>Use Sensodyne for 2 weeks before starting a course — builds potassium nitrate in dentinal tubules and significantly reduces whitening sensitivity</li>
+          <li>Do not use if you have untreated cavities, active gum disease, or dental veneers on front teeth — consult your dentist first</li>
+          <li>Brush your teeth 30 minutes BEFORE applying strips — fluoride right before temporarily reduces whitening effectiveness</li>
+          <li>Dry teeth with a tissue before applying — strips adhere far better to dry enamel</li>
+        </ul>
+        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>Applying</div>
+        <ul className="ag-detail-list">
+          <li>Peel strip from backing — gel side faces teeth</li>
+          <li>Align the straight edge with your gumline — do not overlap onto gum tissue</li>
+          <li>Press firmly and fold excess behind teeth</li>
+          <li>Leave on for the directed time (usually 30 min for standard, 60 min for express strips)</li>
+          <li>Do not eat, drink, or talk with strips on</li>
+        </ul>
+        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>After</div>
+        <ul className="ag-detail-list">
+          <li>Peel off and discard — never reuse</li>
+          <li>Rinse with water, then wait 30 minutes before brushing — enamel is softened directly after whitening</li>
+          <li>Avoid coffee, tea, berries, and tomato sauce for 1 hour after</li>
+          <li>Sensitivity tip: apply a small amount of Sensodyne directly to teeth after strips, leave 5 min, then rinse</li>
         </ul>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 3 — After Removing</div>
-        <ul className="ag-detail-list">
-          <li>Peel off and discard both strips — never reuse</li>
-          <li>Rinse mouth thoroughly with water to remove any remaining gel</li>
-          <li>Wait 30 minutes before brushing — enamel is temporarily softened after whitening</li>
-          <li>Avoid dark-staining food and drinks for at least 1 hour after: coffee, tea, red wine, tomato sauce, berries</li>
-        </ul>
+        <div className="ag-detail-section-title">Frequency</div>
+        <div className="prod-item"><div className="prod-badge">Course</div><div><div className="prod-name">Once daily for 14–20 days (standard) or 7–10 days (express 1-hour strips)</div><div className="prod-why">One course per quarter — every 3 months — maintains noticeably white teeth without over-whitening or enamel damage.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after completing a course</div><div className="prod-why">Maintains your result between courses without committing to a full 2-week treatment.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day on high-sensitivity days and resume the next</div><div className="prod-why">Sensitivity is temporary and resolves within 24 hours — pushing through will cause more harm than skipping a day.</div></div></div>
       </div>
+
+      <div className="divider divider-center splash-item">🛍 Products</div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Schedule & Frequency</div>
-        <ul className="ag-detail-list">
-          <li><strong>Standard whitening course:</strong> Once daily for 14–20 consecutive days</li>
-          <li><strong>Express 1-hour strips:</strong> Once daily for 7–10 days</li>
-          <li><strong>Maintenance after completing a course:</strong> 1–2 strips per month to maintain results</li>
-          <li><strong>Sensitivity days:</strong> Skip a day and resume the next — sensitivity is temporary and resolves within 24 hours</li>
-        </ul>
-      </div>
-      <div className="note-box note-gold" style={{ marginTop: 16 }}>
-        💡 <strong>Sensitivity tip:</strong> Use a sensitivity toothpaste (Sensodyne) for 2 weeks before starting your whitening course and throughout treatment. After removing strips, apply a small amount of toothpaste with potassium nitrate directly to your teeth, leave for a few minutes, then rinse — this significantly reduces whitening discomfort.
+        <div className="prod-item"><div className="prod-badge">HA Toothpaste ★</div><div><div className="prod-name">Apagard Premio — Japanese, most clinically studied HA formula</div><div className="prod-why">The original hydroxyapatite toothpaste from Japan. Remineralises micro-cavities, whitens naturally, reduces sensitivity. Search "Apagard Premio" on Shopee PH or Lazada — widely available and affordable.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">HA Toothpaste</div><div><div className="prod-name">Boka Ela Mint — US brand, popular on TikTok and Reddit</div><div className="prod-why">Clean-ingredient HA formula loved by dentists and remineralisation communities. Available on iHerb (ships to PH).</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Sensodyne Pronamel or Rapid Relief</div><div className="prod-why">Use for 2 weeks before any whitening course and throughout. Available at Mercury Drug, Watsons, and Shopee PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Oil Pulling</div><div><div className="prod-name">Virgin or refined coconut oil — 1 tablespoon per session</div><div className="prod-why">Refined coconut oil has a neutral taste if virgin is too strong. Any grocery brand works — no special formulation needed.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Whitening ★</div><div><div className="prod-name">Crest 3D Whitestrips Professional Effects</div><div className="prod-why">Most effective OTC whitening strip available. Search on Shopee PH, Lazada, or iHerb. Look for Professional Effects or Glamorous White variants.</div></div></div>
       </div>
     </>
   );
@@ -891,107 +979,196 @@ function MakeupRoutine() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        A clean makeup routine starts with good skin prep. These steps build a flawless, long-lasting base. A lash lift is the highest-ROI single treatment you can do — it eliminates the eye routine almost entirely.
+        The secret to non-cakey makeup: less product, more prep. Your skincare the night before and morning of matters more than any foundation formula. Below is the full step-by-step with holy-grail products — then Goddess Extras at the bottom for features that make you look effortlessly high-maintenance.
       </div>
-      <div className="divider divider-center splash-item">Lash Lift</div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">What Is a Lash Lift?</div>
-        <p className="ag-detail-body">A lash lift is a semi-permanent treatment that curls your natural lashes from the root — creating the effect of longer, wider, more open eyes without extensions or daily curling. Results last 6–8 weeks. Paired with a lash tint, it eliminates the need for mascara almost entirely.</p>
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Before Your Appointment</div>
-        <ul className="ag-detail-list">
-          <li>Come with completely clean, dry lashes — no mascara, oil, or eye makeup</li>
-          <li>Avoid waterproof mascara for 48 hours before your appointment</li>
-          <li>Do not curl lashes with a heated curler the day before</li>
-          <li>Remove contact lenses before the treatment begins</li>
+
+      <div className="g-card splash-item" style={{ marginBottom: 16 }}>
+        <div className="ag-detail-section-title">The Charlotte Tilbury Sandwich Hack — Used by MUAs Globally</div>
+        <p className="ag-detail-body">Spritz setting spray on bare skin → skincare + primer + foundation → spritz setting spray → powder T-zone only → final setting spray. Three spray layers melt all products into skin so nothing looks powdery or cakey. Foundation sits inside the skin, not on top of it.</p>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li><strong>Damp beauty sponge always</strong> — bouncing, never dragging. Dry sponge = cakey without exception</li>
+          <li>Powder the T-zone only — never powder cheeks or nose if you want a skin-like finish</li>
+          <li>Apply foundation in thin layers and build only where needed</li>
+          <li>Hydrate skin the night before any important makeup day — plump, hydrated skin holds makeup longer</li>
+          <li><strong>Skin flooding:</strong> toner → essence → serum → moisturiser (all absorbed) = the plumpest possible base</li>
         </ul>
       </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">After Your Lash Lift — 48-Hour Rule</div>
-        <ul className="ag-detail-list">
-          <li>Keep lashes completely dry for 48 hours — no water, steam, or humidity</li>
-          <li>No mascara, eye makeup, or eye cream near lashes for 48 hours</li>
-          <li>Sleep on your back for the first 2 nights — avoid face-down sleeping</li>
-          <li>After 48 hours: apply a nourishing lash serum nightly to strengthen and grow lashes between treatments</li>
-        </ul>
-      </div>
-      <div className="divider divider-center splash-item">Step-by-Step Makeup</div>
+
       <RoutineStep num="1" cat="Base Prep" name="Skincare First" open={openStep==='1'} onToggle={() => tog('1')}>
         <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>Complete your full AM skincare routine first — cleanser, toner, serum, moisturiser</li>
+          <li>Full AM skincare routine — cleanser, toner, serum, moisturiser</li>
           <li>Wait 5–10 minutes for skincare to fully absorb before touching makeup</li>
-          <li>Apply your SPF 50+ — non-negotiable even under makeup</li>
-          <li>For extra glow: mix 1–2 drops of facial oil into your moisturiser before applying</li>
+          <li>Apply SPF 50+ — non-negotiable even under makeup</li>
+          <li>Optional: mix 1–2 drops of facial oil into moisturiser for an extra glow base</li>
+          <li><strong>Ice roll for 2 minutes</strong> before moisturiser on important days — minimises pores and reduces puffiness significantly before any base goes on</li>
         </ul>
-        <div className="step-note">Never skip the wait time — applying primer or foundation over still-wet skincare causes pilling and uneven blending.</div>
+        <div className="step-note">Never skip the wait time — applying primer over still-wet skincare causes pilling and uneven blending.</div>
       </RoutineStep>
-      <RoutineStep num="2" cat="Primer" name="Pore-Minimising Primer" open={openStep==='2'} onToggle={() => tog('2')}>
-        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>Apply a pore-minimising primer over your T-zone and any areas with visible texture</li>
-          <li>Press — do not rub — with a damp beauty sponge</li>
-          <li>A silicone primer creates a smooth canvas and extends foundation wear significantly</li>
+
+      <RoutineStep num="2" cat="Primer" name="Grip + Blur Primer" open={openStep==='2'} onToggle={() => tog('2')}>
+        <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">e.l.f. Power Grip Primer</div><div className="prod-why">Thick, tacky gel with glycerin + hyaluronic acid that grips makeup and holds it in place all day. TikTok-viral as the closest budget match to Milk Hydro Grip at a fraction of the price. Available on Shopee PH and BeautyMNL.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Splurge</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Primer</div><div className="prod-why">Blurs and grips — specifically designed for the CT sandwich hack. Gives a soft-focus, filter-like finish before any base product. Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Milk Makeup Hydro Grip Primer</div><div className="prod-why">The original hydration-grip primer with blue agave + niacinamide. Lighter texture than e.l.f. — great for dry skin types.</div></div></div>
+        <ul className="ag-detail-list" style={{ marginTop: 12 }}>
+          <li>Press — do not rub — with a damp beauty sponge over T-zone and visible pores</li>
           <li>Allow 1–2 minutes to set before applying foundation</li>
+          <li>Match formula: silicone primer under silicone-based foundation, water-based under water-based</li>
         </ul>
-        <div className="step-note">Primer is especially important in Philippine heat and humidity — it prevents foundation from sliding or separating throughout the day.</div>
+        <div className="step-note">Primer is critical in Philippine heat and humidity — it prevents foundation from sliding and separating throughout the day.</div>
       </RoutineStep>
-      <RoutineStep num="3" cat="Foundation" name="Base Coverage" open={openStep==='3'} onToggle={() => tog('3')}>
-        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>For a natural look: use a skin tint or BB cream blended with a damp sponge</li>
-          <li>For fuller coverage: apply liquid foundation in small dots to the centre of the face and blend outward</li>
-          <li>Always blend downward on facial hair to avoid reverse-brushed texture</li>
-          <li>Build coverage only where needed — under eyes, around the nose, any redness patches</li>
+
+      <RoutineStep num="3" cat="Foundation" name="Your Skin But Better" open={openStep==='3'} onToggle={() => tog('3')}>
+        <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Foundation</div><div className="prod-why">Medium coverage, skin-like satin finish. Feels weightless — looks like your skin, not like makeup. Designed for the sandwich hack system and blends like water. Available at Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Armani Beauty Luminous Silk Foundation</div><div className="prod-why">The iconic silk finish. Sheer-to-medium buildable coverage that looks like filtered skin. Serum-like texture, virtually weightless. The gold standard for "your skin but better" worldwide. Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Matte + Poreless Foundation</div><div className="prod-why">The most accessible non-cakey foundation available in the Philippines. Breathable, buildable — blend with a damp sponge for the most skin-like result. Available at Watsons, SM Beauty, and Shopee PH.</div></div></div>
+        <ul className="ag-detail-list" style={{ marginTop: 12 }}>
+          <li>Apply in small dots to the centre of the face and blend outward — never start at the edges</li>
+          <li>Blend downward on fine facial hair to avoid reverse-brushed texture</li>
+          <li>Build coverage only where needed — under-eyes, around the nose, any redness</li>
+          <li>On good skin days: skin tint or BB cream instead of full foundation</li>
         </ul>
-        <div className="step-note">Start with less — it is always easier to build coverage than to remove excess product from the skin.</div>
+        <div className="step-note">Start with less — easier to build than to remove. A damp sponge makes any foundation look 10× more seamless.</div>
       </RoutineStep>
+
       <RoutineStep num="4" cat="Concealer" name="Spot & Under-Eye" open={openStep==='4'} onToggle={() => tog('4')}>
-        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>Apply concealer 1–2 shades lighter than skin tone under the eyes in an inverted triangle shape</li>
+        <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">NARS Radiant Creamy Concealer</div><div className="prod-why">Consistently ranked the world's most popular concealer — radiant, creamy, skin-like finish. Does not crease or look heavy. Used by Alix Earle and featured in virtually every professional MUA tutorial. Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Rare Beauty Liquid Touch Brightening Concealer</div><div className="prod-why">Lightweight, natural finish, buildable — loved for not settling into fine lines. Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Concealer</div><div className="prod-why">Breathable and lightweight — TikTok users consistently rate it as a near-perfect dupe for NARS. Available everywhere in the Philippines.</div></div></div>
+        <ul className="ag-detail-list" style={{ marginTop: 12 }}>
+          <li>Apply in an inverted triangle under the eyes — not just a small crescent</li>
           <li>Blend downward and outward with a damp sponge or ring finger</li>
-          <li>For blemishes: use a small flat brush and tap product precisely onto the spot only</li>
-          <li>Set immediately with a fine translucent powder to prevent creasing</li>
+          <li>Tap — never drag — onto blemishes with a small flat brush</li>
+          <li>Set immediately with translucent powder to prevent creasing</li>
         </ul>
-        <div className="step-note">The inverted triangle brightens the whole under-eye area and lifts the face — not just a small crescent beneath the eye.</div>
+        <div className="step-note">The inverted triangle shape brightens the entire under-eye area and visually lifts the face — not just covers darkness.</div>
       </RoutineStep>
-      <RoutineStep num="5" cat="Contour & Blush" name="Sculpt & Flush" open={openStep==='5'} onToggle={() => tog('5')}>
+
+      <RoutineStep num="5" cat="Setting Powder" name="Lock — T-Zone Only" open={openStep==='5'} onToggle={() => tog('5')}>
+        <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Laura Mercier Translucent Loose Setting Powder</div><div className="prod-why">Used by professional makeup artists worldwide. Sets without adding coverage or altering finish — invisible on all skin tones. Over-powdering the whole face is the most common cause of cakey makeup. Apply to T-zone and under-eyes only.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Laneige Neo Blurring Powder</div><div className="prod-why">TikTok-trending K-Beauty powder — blurs pores and blends makeup seamlessly without over-mattifying. Soft-focus result. Available on YesStyle and Shopee PH.</div></div></div>
+        <ul className="ag-detail-list" style={{ marginTop: 12 }}>
+          <li><strong>T-zone only</strong> — forehead, nose bridge, chin. Never powder cheeks or nose for a dewy, skin-like finish</li>
+          <li>Use a fluffy brush — tap off all excess before applying</li>
+          <li>"Baking" the under-eye: press powder generously under eyes, leave 5 min, then dust off — concealer stays crease-free all day</li>
+        </ul>
+        <div className="step-note">Powder kills the finish on cheeks. The secret is restraint — less powder = more skin-like.</div>
+      </RoutineStep>
+
+      <RoutineStep num="6" cat="Contour & Blush" name="Sculpt & Flush" open={openStep==='6'} onToggle={() => tog('6')}>
+        <div className="prod-item"><div className="prod-badge">★ Blush</div><div><div className="prod-name">Rare Beauty Soft Pinch Liquid Blush</div><div className="prod-why">The viral liquid blush. One tiny dot goes incredibly far — highly pigmented but buildable. Melts into skin and looks like you're genuinely flushed, not painted. Available at Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">★ Contour</div><div><div className="prod-name">Charlotte Tilbury Filmstar Bronze & Glow</div><div className="prod-why">Dual-pan bronzer + highlighter. The bronze shade is perfect for natural contouring — cool-toned and buildable. Glow side adds a lit-from-within highlight. Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Budget Blush</div><div><div className="prod-name">e.l.f. Halo Glow Blush Beauty Wand</div><div className="prod-why">Liquid blush stick — easy to blend, no tools needed, natural flush. Available on Shopee PH.</div></div></div>
+        <ul className="ag-detail-list" style={{ marginTop: 12 }}>
+          <li><strong>Contour:</strong> cool-toned matte bronzer in hollows of cheeks, temples, and jawline — blend until no harsh lines remain</li>
+          <li><strong>Blush:</strong> apply high on cheekbones, blend upward toward temples for a lifted look</li>
+          <li>For sun-kissed: sweep blush lightly across the nose bridge</li>
+          <li>Tap off excess before each application — heavy blush is difficult to soften</li>
+        </ul>
+        <div className="step-note">For a lifted look: apply blush high on the cheekbones close to the temples — not on the round of the cheeks.</div>
+      </RoutineStep>
+
+      <RoutineStep num="7" cat="Eyes" name="Eye Makeup" open={openStep==='7'} onToggle={() => tog('7')}>
         <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li><strong>Contour:</strong> Apply a cool-toned matte powder 2–3 shades darker than skin in the hollows of cheeks, temples, and along the jawline</li>
-          <li>Blend with a fluffy brush in back-and-forth strokes until no harsh lines remain</li>
-          <li><strong>Blush:</strong> Smile and apply a warm blush to the apples of cheeks, blending upward toward the temples</li>
-          <li>Tap off excess product before each application — heavy blush is difficult to soften</li>
+          <li><strong>Brows:</strong> fill sparse areas with a micro-pen brow pencil using light feathery strokes — set with clear or tinted brow gel. Budget duo: e.l.f. Instant Lift Brow Pencil + NYX Control Freak</li>
+          <li><strong>Eyeshadow:</strong> matte neutral across the lid, slightly darker in the crease, blend with a fluffy brush</li>
+          <li><strong>Tightline:</strong> dark liner along the upper waterline for maximum definition without visible liner weight</li>
+          <li><strong>Mascara:</strong> if not lash-lifted — 1–2 coats from root to tip with a zigzag motion at the base</li>
+          <li><strong>If lash-lifted + tinted:</strong> 1 light coat of clear mascara or skip entirely</li>
         </ul>
-        <div className="step-note">For a sun-kissed look: sweep blush lightly across the nose bridge too. For a lifted look: apply blush high on the cheekbones close to the temples.</div>
+        <div className="step-note">Lash lift + tint eliminates most of the eye routine — fill brows and you are camera-ready.</div>
       </RoutineStep>
-      <RoutineStep num="6" cat="Eyes" name="Eye Makeup" open={openStep==='6'} onToggle={() => tog('6')}>
+
+      <RoutineStep num="8" cat="Lips" name="Lip Look" open={openStep==='8'} onToggle={() => tog('8')}>
         <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li><strong>Brows:</strong> Fill sparse areas with a brow pencil matching your hair using light feathery strokes; set with a clear or tinted brow gel</li>
-          <li><strong>Eyeshadow:</strong> Apply a neutral matte shade across the lid, a slightly darker tone in the crease, blend well</li>
-          <li><strong>Liner:</strong> A thin line close to the lash line — tightline the upper waterline for maximum definition without heavy liner</li>
-          <li><strong>Mascara:</strong> If not lash-lifted, apply 1–2 coats from root to tip with a wiggling motion at the base</li>
-          <li>If you have a lash lift + tint: 1 light coat of clear mascara, or skip entirely</li>
+          <li>Exfoliate lips 2× per week with a sugar scrub (1 tsp honey + 1 tsp sugar) for a smooth base</li>
+          <li>Apply nourishing lip balm 5 minutes before any lip colour</li>
+          <li>For everyday: MLBB tinted balm or lipstick (1–2 shades deeper than your natural lip colour)</li>
+          <li>For defined lips: line with a matching lip liner just outside the natural lip line, fill in, then apply lipstick on top</li>
+          <li>A dot of peppermint gloss in the centre of the lips adds a natural plump effect</li>
         </ul>
-        <div className="step-note">Lash lift + tint eliminates most of the eye routine — fill brows, and you are camera-ready.</div>
+        <div className="step-note">MLBB (my lips but better) = your lips enhanced, not covered. The most flattering everyday lip.</div>
       </RoutineStep>
-      <RoutineStep num="7" cat="Lips" name="Lip Look" open={openStep==='7'} onToggle={() => tog('7')}>
-        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>Exfoliate lips 2× per week with a sugar scrub for a smooth base</li>
-          <li>Apply a nourishing lip balm 5 minutes before any lip colour</li>
-          <li>For an everyday no-makeup look: tinted balm or MLBB lipstick (a shade 1–2 tones deeper than your natural lip colour)</li>
-          <li>For a defined look: line with a matching lip liner before applying lipstick for longer wear and sharper edges</li>
+
+      <RoutineStep num="9" cat="Set & Finish" name="Setting Spray — Final Lock" open={openStep==='9'} onToggle={() => tog('9')}>
+        <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Urban Decay All Nighter Setting Spray</div><div className="prod-why">Holds makeup for up to 16 hours with zero melting or fading — the #1 rated setting spray globally by MUAs and TikTok. Especially effective in heat and humidity. The final lock layer of the CT sandwich hack. Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">MAC Fix+</div><div className="prod-why">Not a traditional setting spray — blends and melts products into skin for a natural, refreshed finish. Also use it to dampen your sponge before blending foundation for an ultra-seamless result. MAC counters, Sephora PH.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">e.l.f. Power Grip Dewy Setting Spray</div><div className="prod-why">Extends the Power Grip primer system — locks and adds a hydrated glow. Available on Shopee PH.</div></div></div>
+        <ul className="ag-detail-list" style={{ marginTop: 12 }}>
+          <li>Hold 25–30 cm from face, mist in an X then T pattern over finished makeup</li>
+          <li>Let dry completely — do not touch face or fan while setting</li>
+          <li>For dewy finish: hydrating formula. For long wear in heat: matte or oil-control formula</li>
+          <li>Light translucent powder on T-zone first, then setting spray over everything = all-day wear in Manila heat</li>
         </ul>
-        <div className="step-note">MLBB (my lips but better) is the most flattering everyday lip — a barely-there tint that looks like your own lips, enhanced.</div>
+        <div className="step-note">Setting spray is the single biggest difference between makeup that lasts 2 hours and makeup that lasts all day.</div>
       </RoutineStep>
-      <RoutineStep num="8" cat="Set & Finish" name="Setting Spray" open={openStep==='8'} onToggle={() => tog('8')}>
-        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>Hold setting spray 25–30 cm from face and mist in an X and T pattern over finished makeup</li>
-          <li>Let dry completely — do not touch your face or fan it while it sets</li>
-          <li>For dewy finish: hydrating setting spray; for long wear in heat: matte or oil-control formula</li>
-          <li>A light dusting of translucent powder on the T-zone first extends wear in humid weather</li>
-        </ul>
-        <div className="step-note">Setting spray is the single biggest difference between makeup that lasts 2 hours and makeup that lasts all day in Manila heat.</div>
-      </RoutineStep>
+
       <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        🌸 <strong>Makeup removal is skincare:</strong> Never sleep in makeup. Use a micellar water or cleansing balm to remove everything first, then follow your full double-cleanse PM routine. One night of sleeping in makeup sets back your skin results significantly.
+        🌸 <strong>Makeup removal is skincare:</strong> Never sleep in makeup. Micellar water or cleansing balm first, then your full double-cleanse PM routine. One night of sleeping in makeup significantly sets back your skin results.
+      </div>
+
+      {/* ── GODDESS EXTRAS ── */}
+      <div className="divider splash-item" style={{ marginTop: 32 }}>👑 Goddess Extras</div>
+      <p className="s-desc splash-item" style={{ marginBottom: 16 }}>High-maintenance looking features that are actually low-effort to maintain once you set them up. These are the real shortcuts to looking effortlessly done.</p>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">✨ Lash Lift + Tint</div>
+        <p className="ag-detail-body">The highest ROI single beauty treatment. Curls your natural lashes from the root — wider, more open eyes with zero daily effort. Paired with a tint it eliminates mascara almost entirely. Results last 6–8 weeks.</p>
+        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>Before Your Appointment</div>
+        <ul className="ag-detail-list">
+          <li>Come with completely clean, dry lashes — zero mascara, oil, or eye makeup</li>
+          <li>No waterproof mascara for 48 hours before</li>
+          <li>Do not curl lashes with a heated curler the day before</li>
+          <li>Remove contact lenses before the treatment</li>
+        </ul>
+        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>After — 48-Hour Rule</div>
+        <ul className="ag-detail-list">
+          <li>Keep lashes completely dry for 48 hours — no water, steam, sweat, or humidity</li>
+          <li>No mascara, eye makeup, or eye cream near lashes for 48 hours</li>
+          <li>Sleep on your back for the first 2 nights</li>
+          <li>After 48 hours: apply a nourishing lash serum nightly to strengthen lashes between treatments</li>
+        </ul>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">🫧 Face Lifting — Daily Non-Surgical Methods</div>
+        <ul className="ag-detail-list">
+          <li><strong>Gua sha daily (5 min, morning):</strong> lift from jaw to ear, neck to chin, brow to hairline — always upward and outward strokes. Reduces puffiness by draining lymph. Visible difference within 2–3 weeks of daily use</li>
+          <li><strong>Ice rolling (2 min before makeup):</strong> roll on cheeks, jaw, and brow area immediately before moisturiser — closes pores, tightens skin, reduces morning puffiness dramatically. Store roller in the freezer</li>
+          <li><strong>Mewing:</strong> rest your entire tongue flat against the roof of your mouth at all times — correct tongue posture that naturally defines the jaw and cheekbones over months</li>
+          <li><strong>Makeup contouring for a lifted look:</strong> highlight only the centre of the face (nose bridge, cupid's bow, inner eye corners, centre of forehead, chin tip) — keep temples and jaw matte. Centre-lit face always reads as more lifted and structured</li>
+          <li><strong>Blush placement:</strong> apply high on the cheekbones close to the temples (not on the round of the cheeks) — this visually pulls the face upward</li>
+        </ul>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">🤎 Brow Lamination + Darker Brows</div>
+        <p className="ag-detail-body">Brow lamination slicks brows upward and sets them in place for 6–8 weeks — the fluffy, full, brushed-up look without daily effort. It is the eyebrow version of a lash lift. Darker brows frame the face and make features look more defined without any other makeup.</p>
+        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
+          <li><strong>Brow lamination:</strong> any brow salon, lasts 6–8 weeks, can be tinted darker at the same appointment</li>
+          <li><strong>At-home soap brows (daily):</strong> wet a spoolie, drag it across a clear glycerin soap bar, brush brows upward — holds all day with no stiffness or smell. Same result as lamination, for free</li>
+          <li><strong>For darker brows:</strong> e.l.f. Instant Lift Brow Pencil (micro-pen, feathery strokes) + NYX Control Freak clear brow gel = the most natural-looking full brow on a budget</li>
+          <li><strong>Microblading:</strong> semi-permanent, lasts 1–2 years — fills sparse areas with hair-stroke tattoo marks. Consult a certified technician</li>
+        </ul>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">💋 Full, Defined Lips</div>
+        <ul className="ag-detail-list">
+          <li><strong>Sugar scrub 2× per week:</strong> 1 tsp sugar + 1 tsp honey, massage lips in circular motion for 1 min, rinse — makes lips look visibly fuller and smoother</li>
+          <li><strong>Overline technique:</strong> lip liner 1 mm just outside the natural lip line, concentrate on the cupid's bow and centre of lower lip — blend inward so there is no visible line</li>
+          <li><strong>Peppermint gloss:</strong> a dot in the centre of the lower lip creates a temporary plumping effect — adds fullness without filler</li>
+          <li><strong>Highlight the cupid's bow:</strong> a tiny swipe of shimmer highlight directly on the cupid's bow makes lips look more defined and lifted</li>
+          <li><strong>Overnight hydration:</strong> Laneige Lip Sleeping Mask every night — wakes up with noticeably softer, plumper lips by morning</li>
+        </ul>
+      </div>
+
+      <div className="g-card splash-item">
+        <div className="ag-detail-section-title">🌊 Glass Skin Before Makeup — The Night Before Trick</div>
+        <ul className="ag-detail-list">
+          <li><strong>Slugging the night before:</strong> full PM skincare → wait to absorb → thin layer of CeraVe Healing Ointment or Vaseline over everything. Creates an occlusive seal — skin wakes up plump, bouncy, and glass-like. Foundation applies effortlessly and lasts longer on this base</li>
+          <li><strong>Morning ice water dunk:</strong> fill a bowl with cold water + ice cubes, submerge your face for 10 seconds, repeat 3× — tightens skin, closes pores, reduces puffiness before any makeup</li>
+          <li><strong>Skin flooding:</strong> on no-makeup or light-makeup days, layer hydration in thin coats (toner → essence → serum → moisturiser, all absorbed) — skin looks naturally beautiful and dewy with just a skin tint + setting spray</li>
+        </ul>
       </div>
     </>
   );
