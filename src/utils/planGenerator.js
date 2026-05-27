@@ -1,7 +1,7 @@
 import { ALL_DAYS } from './notifications';
 
-const EAT_DAYS  = [1, 3, 4]; // Mon, Wed, Thu — strength/sprint
-const FAST_DAYS = [0, 2, 5, 6]; // Sun, Tue, Fri, Sat — pilates/rest
+const EAT_DAYS  = [1, 3, 5, 6]; // Mon (Sprint), Wed (Strength A), Fri (Sprint), Sat (Strength B)
+const FAST_DAYS = [0, 2, 4];    // Sun (Mobility), Tue (Pilates 1), Thu (Pilates 2)
 
 export function addMinutes(timeStr, mins) {
   const [h, m] = (timeStr || '00:00').split(':').map(Number);

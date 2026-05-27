@@ -9,19 +9,19 @@ const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
 ];
-const DAY_TYPES = ['strength', 'light', 'strength', 'strength', 'light', 'light', 'light'];
+const DAY_TYPES = ['strength', 'light', 'strength', 'light', 'strength', 'strength', 'light'];
 
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🔥', name: 'Strength A', focus: 'Glutes · Hamstrings', color: 'pr' },
-  { lbl: 'Tue', emoji: '🧘', name: 'Pilates 1',  focus: 'Core · TVA',          color: 'py' },
-  { lbl: 'Wed', emoji: '⚡', name: 'Sprints',    focus: 'Cardio · Full Body',  color: 'pr' },
-  { lbl: 'Thu', emoji: '🍑', name: 'Strength B', focus: 'Glute Med · Shape',   color: 'pr' },
-  { lbl: 'Fri', emoji: '🌿', name: 'Pilates 2',  focus: 'Spine · Side Body',   color: 'py' },
-  { lbl: 'Sat', emoji: '🚴', name: 'Bike',       focus: 'Cardio · Endurance',  color: 'pg' },
-  { lbl: 'Sun', emoji: '💪', name: 'Back',       focus: 'Posture · Upper Body',color: 'pg' },
+  { lbl: 'Mon', emoji: '🏃', name: 'Sprint',      focus: 'Norwegian 4x4 · Run or Bike', color: 'pr' },
+  { lbl: 'Tue', emoji: '🧘', name: 'Pilates 1',   focus: 'Core · TVA',                  color: 'py' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Strength A',  focus: 'Glutes · Hip Thrust · RDL',  color: 'pr' },
+  { lbl: 'Thu', emoji: '🌿', name: 'Pilates 2',   focus: 'Spine · Side Body',           color: 'py' },
+  { lbl: 'Fri', emoji: '⚡', name: 'Sprint',      focus: 'Norwegian 4x4 · Run or Bike', color: 'pr' },
+  { lbl: 'Sat', emoji: '🍑', name: 'Strength B',  focus: 'Glute Med · Split Squat',    color: 'pr' },
+  { lbl: 'Sun', emoji: '🌸', name: 'Mobility',    focus: 'Hips · Spine · Shoulders',   color: 'pg' },
 ];
 
 function NoteBox({ type, text }) {

@@ -12,13 +12,13 @@ function todayLabel() {
 }
 
 const WEEK_PILLS = [
-  { label: 'Mon', emoji: '🔥', dayId: 'day-monday'    },
+  { label: 'Mon', emoji: '🏃', dayId: 'day-monday'    },
   { label: 'Tue', emoji: '🧘', dayId: 'day-tuesday'   },
-  { label: 'Wed', emoji: '⚡', dayId: 'day-wednesday' },
-  { label: 'Thu', emoji: '🍑', dayId: 'day-thursday'  },
-  { label: 'Fri', emoji: '🌿', dayId: 'day-friday'    },
-  { label: 'Sat', emoji: '🚴', dayId: 'day-saturday'  },
-  { label: 'Sun', emoji: '💪', dayId: 'day-sunday'    },
+  { label: 'Wed', emoji: '🔥', dayId: 'day-wednesday' },
+  { label: 'Thu', emoji: '🌿', dayId: 'day-thursday'  },
+  { label: 'Fri', emoji: '⚡', dayId: 'day-friday'    },
+  { label: 'Sat', emoji: '🍑', dayId: 'day-saturday'  },
+  { label: 'Sun', emoji: '🌸', dayId: 'day-sunday'    },
 ];
 
 
@@ -92,7 +92,7 @@ export default function Hero({ onNavigate }) {
           label="Hair Care"
           title="Hair Ritual"
           sub="Oil treatment · Scalp massage"
-          onClick={() => onNavigate('haircare')}
+          onClick={() => onNavigate('skincare', 'hair')}
         />
       </div>
 
