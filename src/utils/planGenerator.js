@@ -9,8 +9,8 @@ export function addMinutes(timeStr, mins) {
   return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
-export function calcLastMealTime(sleepTime = '22:00') {
-  return addMinutes(sleepTime, -270); // 4.5 hours before sleep
+export function calcLastMealTime() {
+  return '19:00'; // 7pm every day
 }
 
 export function calcTDEE(gender, age, heightCm, weightKg, activityLevel) {
@@ -28,19 +28,8 @@ function toMins(timeStr) {
   return h * 60 + m;
 }
 
-// Returns the later of two HH:MM strings
-function laterOf(t1, t2) {
-  return toMins(t1) >= toMins(t2) ? t1 : t2;
-}
-
-// Returns the earlier of two HH:MM strings
-function earlierOf(t1, t2) {
-  return toMins(t1) <= toMins(t2) ? t1 : t2;
-}
-
 export function generateReminders(profile) {
-  const { wakeTime = '06:30', sleepTime = '22:00', mealsPerDay = 3 } = profile;
-  const lastMeal = calcLastMealTime(sleepTime); // 4.5 hours before sleep
+  const { wakeTime = '06:30', sleepTime = '22:00' } = profile;
   const rem = [];
 
   rem.push({ id: 'sunlight', emoji: '☀️', label: 'Morning Sunlight',
@@ -51,55 +40,30 @@ export function generateReminders(profile) {
     time: addMinutes(wakeTime, 20), enabled: true, days: ALL_DAYS,
     body: 'AM routine time — cleanse, tone, protect! 🌸' });
 
-  // ── STRENGTH / SPRINT DAYS (Mon/Wed/Thu) — eat anytime, no fasting ──
-  // Breakfast 60 min after wake, then meals every 3h+
-  const breakfastTime = addMinutes(wakeTime, 60);
-  rem.push({ id: 'breakfast', emoji: '🥣', label: 'Meal 1 — Breakfast',
-    time: breakfastTime, enabled: true, days: EAT_DAYS,
-    body: 'Strength day fuel! Protein first — PFBS 🥚💪 Walk after eating 🚶' });
+  // ── HARD DAYS (Mon/Wed/Fri/Sat) — eat from 9am, last meal 7pm ──
+  rem.push({ id: 'breakfast', emoji: '🥣', label: 'Meal 1 — 9 AM',
+    time: '09:00', enabled: true, days: EAT_DAYS,
+    body: 'Hard day fuel! Protein first — PFBS 🥚💪 Walk after eating 🚶' });
 
   rem.push({ id: 'workout', emoji: '💪', label: 'Workout Time',
     time: addMinutes(wakeTime, 90), enabled: true, days: EAT_DAYS, body: null });
 
-  // Lunch on EAT_DAYS — at least 3h after breakfast
-  const eatLunchTime = laterOf(addMinutes(breakfastTime, 180), '12:00');
-  rem.push({ id: 'lunch', emoji: '🥗', label: 'Meal 2 — Lunch',
-    time: eatLunchTime, enabled: true, days: EAT_DAYS,
+  rem.push({ id: 'lunch', emoji: '🥗', label: 'Meal 2 — 12 PM',
+    time: '12:00', enabled: true, days: EAT_DAYS,
     body: 'Meal 2 — protein + fiber + vegetables! 80% full 💕 Walk after 🚶' });
 
-  // Optional 3rd meal on EAT_DAYS — 3h after lunch, must be before last meal
-  if (mealsPerDay >= 4) {
-    const meal3Time = addMinutes(eatLunchTime, 180);
-    if (toMins(meal3Time) < toMins(lastMeal) - 60) {
-      rem.push({ id: 'snack', emoji: '🍌', label: 'Meal 3',
-        time: meal3Time, enabled: true, days: EAT_DAYS,
-        body: 'Meal 3 — light! Fruit, eggs, or protein 💕' });
-    }
-  }
-
-  // ── REST / LIGHT DAYS (Sun/Tue/Fri/Sat) — fast minimum 14 hours ──
-  // Break fast at: 14h after last meal OR noon, whichever is later
-  const fastBreakTime = laterOf('12:00', addMinutes(lastMeal, 14 * 60));
-
+  // ── LIGHT DAYS (Tue/Thu/Sun) — eat from 3pm, last meal 7pm ──
   rem.push({ id: 'workout_light', emoji: '🧘', label: 'Workout Time',
     time: addMinutes(wakeTime, 30), enabled: true, days: FAST_DAYS, body: null });
 
-  rem.push({ id: 'fast_break', emoji: '⏱️', label: 'Break Fast',
-    time: fastBreakTime, enabled: true, days: FAST_DAYS,
-    body: `14h fast done! First meal — protein + fiber, small portion 🥚🥦 Walk after 🚶` });
+  rem.push({ id: 'fast_break', emoji: '🍽️', label: 'First Meal — 3 PM',
+    time: '15:00', enabled: true, days: FAST_DAYS,
+    body: 'Eating window open! First meal — keep it light, protein + fruit 🥗 Walk after 🚶' });
 
-  // Second meal on FAST_DAYS — 3h after break fast, if there's room
-  const fastLunchTime = addMinutes(fastBreakTime, 180);
-  if (mealsPerDay >= 3 && toMins(fastLunchTime) < toMins(lastMeal) - 60) {
-    rem.push({ id: 'fast_lunch', emoji: '🍽️', label: 'Meal 2',
-      time: fastLunchTime, enabled: true, days: FAST_DAYS,
-      body: 'Meal 2 — keep it bland, light, and protein-rich! 80% full 💕' });
-  }
-
-  // ── SHARED ──
-  rem.push({ id: 'last_meal', emoji: '🌙', label: 'Last Meal',
-    time: lastMeal, enabled: true, days: ALL_DAYS,
-    body: 'Last meal of the day! Walk 10 min after 🚶 No food after this — Goddess rule 🌿' });
+  // ── SHARED — last meal 7pm every day ──
+  rem.push({ id: 'last_meal', emoji: '🌙', label: 'Last Meal — 7 PM',
+    time: '19:00', enabled: true, days: ALL_DAYS,
+    body: 'Last meal of the day! Walk 10 min after 🚶 No food after 7 PM — Goddess rule 🌿' });
 
   rem.push({ id: 'pm_skin', emoji: '✨', label: 'PM Skincare',
     time: addMinutes(sleepTime, -120), enabled: true, days: ALL_DAYS,
@@ -119,7 +83,7 @@ export function generateReminders(profile) {
 export function generatePlan(profile) {
   const { gender, age, heightCm, weightKg, activityLevel, primaryGoal } = profile;
   const tdeeKcal = calcTDEE(gender, age, heightCm, weightKg, activityLevel);
-  const lastMealTime = calcLastMealTime(profile.sleepTime || '22:00');
+  const lastMealTime = calcLastMealTime();
   const deficitKcal = tdeeKcal
     ? primaryGoal === 'lose_fat'     ? Math.max(1200, tdeeKcal - 400)
     : primaryGoal === 'build_muscle' ? tdeeKcal + 300

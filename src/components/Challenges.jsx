@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { MONTHS } from '../data/months';
+import IngredientDetailPage from './IngredientDetailPage';
+import { MeatDays, LightDays, RecipesPanel, FoodGuide, TABS } from './Nutrition';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
@@ -40,11 +42,9 @@ function clearProgress() {
 function loadState() {
   try {
     const storedYear = parseInt(localStorage.getItem('gp_year') || '0', 10);
-    // First launch — stamp the year
     if (storedYear === 0) {
       localStorage.setItem('gp_year', String(CURRENT_YEAR));
     }
-    // New year — auto-reset progress so the app starts fresh each calendar year
     if (storedYear !== 0 && storedYear !== CURRENT_YEAR) {
       clearProgress();
       return { daily: {}, done: {}, autoReset: true };
@@ -93,15 +93,11 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, is
       <div className={`m-detail-body${isOpen ? ' open' : ''}`}>
         <div className="m-detail-inner">
           <div className="cal-grid">
-            {/* Day-of-week headers */}
             <div className="cal-header">
               {DAY_LETTERS.map(l => <div key={l} className="cal-dh">{l}</div>)}
             </div>
-
-            {/* Week rows */}
             {weeks.map((week, wi) => (
               <div key={wi} className="cal-week-wrap">
-                {/* Weekly challenge label — shown for weeks 0–3 */}
                 {month.tasks[wi] && (
                   <div className="cal-challenge-label">
                     {month.tasks[wi]}
@@ -129,7 +125,6 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, is
             ))}
           </div>
 
-          {/* Progress */}
           <div className="prog-wrap" style={{ marginTop: 16 }}>
             <div className="prog-bg">
               <div className="prog-fill" style={{ width: `${pct}%` }} />
@@ -146,18 +141,27 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, is
   );
 }
 
-export default function Challenges() {
+const NUTR_TABS = [
+  { id: 'meat',    icon: '🔥', label: 'Strength & Sprint' },
+  { id: 'light',   icon: '🌿', label: 'Pilates & Rest' },
+  { id: 'recipes', icon: '🥘', label: 'Recipes' },
+  { id: 'guide',   icon: '📊', label: 'Food Guide' },
+];
+
+export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
   const [state, setState] = useState(loadState);
-  // Single-open month card; default to current month
   const currentMonth = new Date().getMonth();
   const [openMonthIdx, setOpenMonthIdx] = useState(currentMonth);
   const currentMonthRef = useRef(null);
+
+  // Nutrition state
+  const [nutrTab, setNutrTab] = useState(null);
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
 
   function toggleMonth(idx) {
     setOpenMonthIdx(prev => prev === idx ? null : idx);
   }
 
-  // Scroll current month into view on mount
   useEffect(() => {
     if (currentMonthRef.current) {
       setTimeout(() => currentMonthRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
@@ -184,6 +188,33 @@ export default function Challenges() {
     if (!window.confirm('Reset all progress? Every checked day and completed month will be cleared. This cannot be undone.')) return;
     clearProgress();
     setState({ daily: {}, done: {}, autoReset: false });
+  }
+
+  function openIngredient(item) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setSelectedIngredient(item);
+    pushBack?.(() => {
+      setSelectedIngredient(null);
+      clearInnerBack?.();
+    });
+  }
+
+  function closeIngredient() {
+    clearInnerBack?.();
+    setSelectedIngredient(null);
+  }
+
+  // Full-screen ingredient detail
+  if (selectedIngredient) {
+    return (
+      <IngredientDetailPage
+        ingredientKey={selectedIngredient.key}
+        ingredientName={selectedIngredient.name}
+        backLabel="Nutrition"
+        onBack={closeIngredient}
+        pushBack={pushBack}
+      />
+    );
   }
 
   const completedMonths = Object.values(state.done).filter(Boolean).length;
@@ -220,7 +251,6 @@ export default function Challenges() {
         ))}
       </div>
 
-      {/* ── Reset All Progress ── */}
       <div className="challenges-reset-section splash-item">
         <div className="challenges-reset-summary">
           {completedMonths} month{completedMonths !== 1 ? 's' : ''} complete · {totalChecked} day{totalChecked !== 1 ? 's' : ''} checked
@@ -233,6 +263,29 @@ export default function Challenges() {
           Progress also resets automatically each new year so you always start fresh.
         </p>
       </div>
+
+      {/* ── Nutrition & Meals ── */}
+      <div className="divider splash-item" style={{ marginTop: 36 }}>🍽️ Nutrition &amp; Meals</div>
+      <p className="s-desc splash-item" style={{ marginBottom: 16 }}>
+        Hard days (Mon/Wed/Fri/Sat): eat 9 AM – 7 PM · Light days (Tue/Thu/Sun): eat 3 PM – 7 PM
+      </p>
+
+      <div className="sk-top-tabs splash-item">
+        {NUTR_TABS.map(t => (
+          <button
+            key={t.id}
+            className={`sk-top-tab${nutrTab === t.id ? ' active' : ''}`}
+            onClick={() => setNutrTab(nutrTab === t.id ? null : t.id)}
+          >
+            {t.icon} {t.label}
+          </button>
+        ))}
+      </div>
+
+      {nutrTab === 'meat'    && <MeatDays />}
+      {nutrTab === 'light'   && <LightDays />}
+      {nutrTab === 'recipes' && <RecipesPanel onSelectRecipe={openIngredient} />}
+      {nutrTab === 'guide'   && <FoodGuide />}
     </div>
   );
 }

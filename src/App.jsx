@@ -20,7 +20,6 @@ const NAV_ITEMS = [
   { id: 'home',       label: '🌸 Home' },
   { id: 'workout',    label: 'Workouts' },
   { id: 'challenges', label: 'Challenges' },
-  { id: 'nutrition',  label: 'Nutrition' },
   { id: 'skincare',   label: 'Body' },
 ];
 
@@ -509,7 +508,7 @@ export default function App() {
       >
         {active === 'home'       && <Hero onNavigate={navigate} />}
         {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} user={user} />}
-        {active === 'challenges' && <Challenges />}
+        {active === 'challenges' && <Challenges onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings

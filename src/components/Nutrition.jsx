@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
-const TABS = [
-  { id: 'meat',    icon: '🔥', title: 'Strength & Sprint Days', desc: 'Monday, Wednesday, Thursday — high protein fuel for your heaviest training days.' },
-  { id: 'light',   icon: '🌿', title: 'Pilates & Rest Days',    desc: 'Tuesday, Friday, Saturday, Sunday — digestive rest and plant-based meals.' },
+export const TABS = [
+  { id: 'meat',    icon: '🔥', title: 'Strength & Sprint Days', desc: 'Monday, Wednesday, Friday, Saturday — high protein fuel for your hardest training days. Eating window: 9 AM – 7 PM.' },
+  { id: 'light',   icon: '🌿', title: 'Pilates & Rest Days',    desc: 'Tuesday, Thursday, Sunday — digestive rest and light meals. Eating window: 3 PM – 7 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'How to prepare every ingredient in your plan. Tap any food to see three preparation methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',              desc: 'Glycemic load of every food in your plan and why it matters.' },
 ];
@@ -47,14 +47,14 @@ const RECIPE_CATEGORIES = [
 ];
 
 /* ─── MEAT DAYS ─── */
-function MeatDays() {
+export function MeatDays() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🔥 <strong>Meat days: Monday, Wednesday, Thursday.</strong> Your body needs heavier fuel on the days it works hardest. Chicken, fish, and lean beef on these 3 days. Always eat protein first. Four meals — last one by 4 PM.
+        🔥 <strong>Strength & sprint days: Monday, Wednesday, Friday, Saturday.</strong> Eating window 9 AM – 7 PM. Protein-heavy meals to fuel your hardest sessions. Always eat protein first.
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        💡 <strong>Should you eat meat every day?</strong> No — and this is intentional. Your digestive system processes meat slowly (2–5 hours). Eating it only on heavy training days means your gut is never overworked, your body fully absorbs the protein it receives, and your lighter days feel genuinely lighter. Fish is the exception — it digests in under 2 hours and can be eaten any day.
+        💡 <strong>Why protein only on hard days?</strong> Your digestive system processes meat slowly (2–5 hours). Eating it only on hard training days means your gut is never overworked, your body fully absorbs the protein it receives, and your lighter days feel genuinely lighter. Fish is the exception — it digests in under 2 hours and can be eaten any day.
       </div>
       <div className="calorie-banner splash-item" style={{ marginBottom: 18 }}>
         <div className="cal-block">
@@ -72,90 +72,76 @@ function MeatDays() {
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">7:00 AM</div>
+            <div className="hyd-time">9:00 AM</div>
             <div>
               <div className="hyd-d">Meal 1 — Light pre-workout fuel</div>
-              <div className="hyd-n">½ banana + 1 egg + green tea · OR · small bowl oatmeal + green tea · OR · small bowl papaya + 1 egg + ginger tea</div>
+              <div className="hyd-n">½ banana + 1–2 eggs + green tea · OR · small bowl oatmeal + green tea · OR · papaya + 1 egg + ginger tea</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">11:00 AM</div>
+            <div className="hyd-time">12:00 PM</div>
             <div>
               <div className="hyd-d">Meal 2 — Main protein meal (post-workout)</div>
               <div className="hyd-n">Eat protein first. Chicken 150g or fish 150g or lean beef 120g + steamed broccoli + ½ cup sweet potato + collagen water</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">2:00 PM</div>
+            <div className="hyd-time">4:00 PM</div>
             <div>
-              <div className="hyd-d">Sweet Snack — Healthy dessert</div>
-              <div className="hyd-n">See Recipes tab — one dessert snack per day, naturally sweet, high in fibre or protein</div>
+              <div className="hyd-d">Sweet Snack (optional)</div>
+              <div className="hyd-n">See Recipes tab — one dessert snack, naturally sweet, high in fibre or protein</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">4:00 PM</div>
+            <div className="hyd-time">7:00 PM</div>
             <div>
               <div className="hyd-d">Last Meal — Light protein finish · No food after this</div>
-              <div className="hyd-n">Fish 120g + salad · OR · chicken 100g + broth + vegetables · OR · 1 egg + avocado + warm broth</div>
+              <div className="hyd-n">Fish 120g + salad · OR · chicken 100g + steamed vegetables · OR · 1 egg + avocado + warm broth</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🥩 <strong>Protein target at 48 kg:</strong> 77–96g per day on training days. Chicken 150g = 37g · Fish 150g = 33g · Lean beef 120g = 29g · 1 egg = 6g.
+        🥩 <strong>Protein target:</strong> 77–96g per day on training days. Chicken 150g = 37g · Fish 150g = 33g · Lean beef 120g = 29g · 1 egg = 6g.
       </div>
     </>
   );
 }
 
 /* ─── LIGHT DAYS ─── */
-function LightDays() {
+export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🌿 <strong>Light days: Tuesday, Friday, Saturday, Sunday.</strong> No heavy meat. Max 2 eggs for the whole day. Your digestive system gets real rest, your gut lining repairs, and you arrive at Monday feeling genuinely fresh.
+        🌿 <strong>Light days: Tuesday, Thursday, Sunday.</strong> Eating window 3 PM – 7 PM. Only 2 meals. No heavy protein — your digestive system gets genuine rest, your gut lining repairs, and you arrive at the next hard day feeling genuinely fresh.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">8:00 AM</div>
+            <div className="hyd-time">3:00 PM</div>
             <div>
-              <div className="hyd-d">Meal 1 — Gentle morning meal</div>
-              <div className="hyd-n">Chia pudding + papaya + green tea · OR · oats + sliced banana + cinnamon · OR · 1 egg + small bowl papaya + ginger tea</div>
+              <div className="hyd-d">First Meal — Main meal of the day</div>
+              <div className="hyd-n">1 egg + large salad + collagen water · OR · chia pudding + papaya + mixed nuts · OR · oats + pineapple + kiwi · OR · fish 100g + steamed vegetables</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">12:00 PM</div>
-            <div>
-              <div className="hyd-d">Meal 2 — Light midday meal</div>
-              <div className="hyd-n">1 egg + large salad + collagen water · OR · chia pudding + kiwi + mixed nuts · OR · oats + pineapple slices</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">2:00 PM</div>
-            <div>
-              <div className="hyd-d">Sweet Snack — Healthy dessert</div>
-              <div className="hyd-n">See Recipes tab — one dessert snack per day, naturally sweet, high in fibre or protein</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">4:00 PM</div>
+            <div className="hyd-time">7:00 PM</div>
             <div>
               <div className="hyd-d">Last Meal — Very light finish · No food after this</div>
-              <div className="hyd-n">Salad + ½ avocado + 1 egg + chamomile tea · OR · chia pudding + kiwi · OR · oats (plain) + papaya</div>
+              <div className="hyd-n">Salad + ½ avocado + 1 egg + chamomile tea · OR · chia pudding + berries · OR · papaya + spearmint tea · OR · oats (plain) + kiwi</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 Light days are not cheat days — they are intentional digestive rest. Your gut repairs, inflammation drops, and you absorb nutrients from meat days more effectively.
+        🌸 Light days are not cheat days — they are intentional digestive rest. 20 hours fasting (from 7 PM prior evening to 3 PM today) supports fat adaptation, reduces inflammation, and makes your hard training days significantly more effective.
       </div>
     </>
   );
 }
 
 /* ─── RECIPE CARD ─── */
-function RecipeCard({ itemKey, label, onSelect }) {
+export function RecipeCard({ itemKey, label, onSelect }) {
   const data = INGREDIENT_RECIPES[itemKey];
   if (!data) return null;
   return (
@@ -204,7 +190,7 @@ function HydrationSection() {
 }
 
 /* ─── RECIPES PANEL ─── */
-function RecipesPanel({ onSelectRecipe }) {
+export function RecipesPanel({ onSelectRecipe }) {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
@@ -226,7 +212,7 @@ function RecipesPanel({ onSelectRecipe }) {
 }
 
 /* ─── FOOD GUIDE ─── */
-function FoodGuide() {
+export function FoodGuide() {
   const rows = [
     { food: 'Sweet potato (roasted)', gl: 11, note: 'Best training-day carb. Add cinnamon to lower GL further.' },
     { food: 'Oatmeal (rolled oats)', gl: 9, note: 'Best rest/pilates day carb. Overnight soaking reduces GL.' },

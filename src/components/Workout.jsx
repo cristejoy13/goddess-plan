@@ -359,7 +359,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
 
       {onNavigate && (
         <div className="workout-nutrition-row splash-item">
-          <button className="workout-nutrition-pill" onClick={() => onNavigate('nutrition')}>
+          <button className="workout-nutrition-pill" onClick={() => onNavigate('challenges')}>
             🥗 Nutrition &amp; Recipes →
           </button>
         </div>
