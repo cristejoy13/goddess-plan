@@ -234,24 +234,35 @@ body {
 .sidebar::-webkit-scrollbar { display: none; }
 
 .nav-btn {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   background: none;
   border: none;
   border-left: 3px solid transparent;
-  padding: 13px 12px 13px 14px;
+  padding: 12px 8px;
   font-family: 'Outfit', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
   color: var(--text-soft);
   cursor: pointer;
-  text-align: left;
-  line-height: 1.35;
-  white-space: normal;
+  text-align: center;
   position: relative;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  gap: 4px;
+}
+.nav-icon {
+  font-size: 20px;
+  line-height: 1;
+  display: block;
+}
+.nav-label {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  line-height: 1;
+  display: block;
 }
 .nav-btn:hover {
   color: var(--gold-light);
@@ -1160,7 +1171,15 @@ body {
 /* ─── MOBILE ─── */
 @media (max-width: 768px) {
   .nav { padding: 0 10px; gap: 0; }
-  .nav-btn { padding: 8px 11px; font-size: 9.5px; letter-spacing: 1.5px; }
+  .nav-btn {
+    flex-direction: row;
+    text-align: left;
+    padding: 18px 20px;
+    gap: 14px;
+    border-left-width: 4px;
+  }
+  .nav-icon { font-size: 28px; flex-shrink: 0; }
+  .nav-label { font-size: 15px; letter-spacing: 0.3px; text-transform: none; font-weight: 600; }
 
   .hero { padding: 70px 20px 48px; }
   .hero h1 { letter-spacing: -1px; }
@@ -1204,7 +1223,9 @@ body {
   .hero-cta { flex-direction: column; align-items: center; }
   .cta-btn { width: 100%; max-width: 300px; text-align: center; }
   .hero-goals { gap: 6px; }
-  .nav-btn { font-size: 9px; letter-spacing: 1px; padding: 7px 9px; }
+  .nav-btn { padding: 16px 18px; }
+  .nav-icon { font-size: 26px; }
+  .nav-label { font-size: 14px; }
   .rs-trigger { padding: 13px 14px; }
   .rs-name { font-size: 16px; }
 }
@@ -1493,25 +1514,27 @@ body {
 /* ── Skincare Top-Level Pills (Face / Body) ── */
 .sk-top-tabs {
   display: flex;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 24px;
   justify-content: center;
 }
 .sk-top-tab {
-  flex: 1;
-  max-width: 240px;
-  padding: 18px 20px;
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 14px 18px;
   border-radius: 18px;
   border: 1.5px solid var(--border-g);
   background: rgba(15,5,10,0.6);
   font-family: 'Outfit', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-mid);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
   text-align: center;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 .sk-top-tab:hover {
   border-color: var(--rose);
@@ -1528,8 +1551,13 @@ body {
 }
 
 @media (max-width: 768px) {
-  .sk-top-tabs { gap: 10px; }
-  .sk-top-tab { font-size: 13px; padding: 14px 16px; }
+  .sk-top-tabs { gap: 8px; justify-content: flex-start; }
+  .sk-top-tab {
+    flex: 0 1 calc(50% - 4px);
+    font-size: 13px;
+    padding: 13px 10px;
+    border-radius: 14px;
+  }
 }
 
 /* ── Install Banner ── */

@@ -17,10 +17,10 @@ import { loadReminders, scheduleReminders, stopReminders } from './utils/notific
 import './styles/index.css';
 
 const NAV_ITEMS = [
-  { id: 'home',       label: '🌸 Home' },
-  { id: 'workout',    label: 'Workouts' },
-  { id: 'challenges', label: 'Challenges' },
-  { id: 'skincare',   label: 'Body' },
+  { id: 'home',       label: 'Home',       icon: '🌸' },
+  { id: 'workout',    label: 'Workouts',   icon: '💪' },
+  { id: 'challenges', label: 'Challenges', icon: '🏆' },
+  { id: 'skincare',   label: 'Body',       icon: '✨' },
 ];
 
 const SEARCH_INDEX = [
@@ -495,8 +495,10 @@ export default function App() {
             key={item.id}
             className={`nav-btn${active === item.id ? ' active' : ''}`}
             onClick={() => navigate(item.id)}
+            title={item.label}
           >
-            {item.label}
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
           </button>
         ))}
       </nav>
