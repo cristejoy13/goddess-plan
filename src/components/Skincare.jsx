@@ -43,6 +43,11 @@ const BRAND_COLOR = {
   'Sensodyne':        '#4060a0',
   'Skintific':        '#7060c0',
   'Dr. Jart+':        '#4090c0',
+  'Crest':            '#0055b3',
+  'Oral-B':           '#0070c4',
+  'Listerine':        '#c8a000',
+  'TheraBreath':      '#3a7a5a',
+  'Colgate':          '#c83030',
 };
 
 function ProductCard({ brand, name, badges = [], why, primary = false }) {
@@ -803,61 +808,117 @@ function HairTab({ onSelectOil }) {
 
 /* ─── Underarm Routine ─── */
 function UnderarmRoutine() {
-  const [openStep, setOpenStep] = useState(null);
-  function tog(id) { setOpenStep(p => p === id ? null : id); }
+  const [sub, setSub] = useState('morning');
+  const UNDERARM_TABS = [
+    { id: 'morning', label: '☀️ Morning' },
+    { id: 'night',   label: '🌙 Night' },
+  ];
   return (
     <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Korean beauty has cracked the underarm code — the same ingredients that brighten your face work even faster here. Results in 4–6 weeks with consistent use. Key rule: actives on dry skin only, evening only.
+      <div className="sk-tabs splash-item">
+        {UNDERARM_TABS.map(t => (
+          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => setSub(t.id)}>
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      <RoutineStep num="1" cat="First Step — Exfoliate (3–4× per week, evening)" name="AHA / Glycolic Acid Pads" open={openStep==='1'} onToggle={() => tog('1')}>
-        <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot', 'Pore Clearing']} why="The triple-acid toner that works on underarms. Saturate a cotton pad and swipe over completely dry underarms. AHA exfoliates dead skin causing darkening, BHA penetrates pores, PHA is gentle enough for sensitive skin. One of the most-used Korean products for underarm brightening on Shopee PH." />
-        <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked dual-sided pads — textured side to exfoliate, smooth side to soothe. Panthenol repairs the barrier while acids work. Visible results in 10–14 days. Available on YesStyle and Olive Young Global." />
-        <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget', 'Dark Spot']} why="Budget cult classic. Apply with a cotton pad on completely dry underarms. Hugely popular on TikTok and Reddit specifically for underarm darkening. Available on Shopee PH, Lazada, and BeautyMNL at a very low price point." />
-        <div className="step-note">Apply to completely dry underarms — glycolic acid on damp skin stings. Never within 24 hours of shaving. Start 1× per week and build to 3–4× over 4 weeks.</div>
-      </RoutineStep>
+      {sub === 'morning' && (
+        <>
+          <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+            Morning is simple — shower, dry completely, then apply your whitening deodorant spray. That's it. All actives are evening-only.
+          </div>
+          <div className="g-card splash-item">
+            <div className="ag-detail-section-title">Steps</div>
+            <ul className="ag-detail-list">
+              <li>Shower as usual — pat underarms completely dry before applying anything</li>
+              <li>Apply whitening deo mist from 10–15 cm away — even coverage across both underarms</li>
+              <li>Wait 30 seconds to dry before dressing — never apply on damp skin</li>
+              <li>This replaces your regular deodorant entirely — it works as both odour control and brightening treatment</li>
+            </ul>
+          </div>
+          <div className="divider divider-center splash-item">Products</div>
+          <ProductCard brand="Organic Skin Japan" primary name="Intensive Whitening Underarm Deo Mist" badges={['Glutathione', 'Alpha Arbutin', 'Niacinamide', 'Kojic Acid', 'Vitamin C']} why="Five brightening actives in one deodorant spray — it works as your deodorant AND your daily brightening treatment. Top-ranked on Shopee PH and Calyxta. Search 'OSJ Whitening Deo Mist' on Shopee PH or Lazada." />
+          <ProductCard brand="Luxe Organix" name="Belo Intense White Deo Spray" badges={['Whitening', 'Antiperspirant', 'PH Brand']} why="Filipino medical brand, widely available at Mercury Drug and Watsons PH. Gentler formula — good starting option if OSJ isn't available locally." />
+          <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free, hypoallergenic — best backup option for very sensitive underarm skin or after waxing. Focuses on barrier-protecting moisturisation rather than whitening. Available everywhere in the Philippines.</div></div></div>
+        </>
+      )}
 
-      <RoutineStep num="2" cat="Second Step — Brighten (daily, after acid has absorbed)" name="Niacinamide Serum" open={openStep==='2'} onToggle={() => tog('2')}>
-        <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Brightening', 'Dark Spot']} why="Niacinamide + yuja fruit (a Korean citrus packed with Vitamin C) = the dual brightening approach. Niacinamide blocks melanin transfer while yuja fades existing dark spots. Apply 3–4 drops after your acid step has absorbed. One of the most-recommended Korean serums specifically for underarm darkening." />
-        <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength', 'Barrier Support']} why="High-strength niacinamide — 2 drops patted into underarms after exfoliation. Regulates melanin, reduces inflammation-related darkening, and strengthens the skin barrier. Use on nights when you skip acid." />
-        <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing', 'Gentle']} why="The gentler option — propolis calms post-shaving irritation while niacinamide works on pigmentation. Best for sensitive underarms or your first 2 weeks." />
-        <div className="step-note">Wait 5 minutes after your acid step before applying serum. Use one serum — not two at the same time. Store serums in a cool, dark place.</div>
-      </RoutineStep>
+      {sub === 'night' && (
+        <>
+          <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+            Evening is when the real brightening work happens. Three steps: exfoliate → brighten → repair. All actives go on dry skin only.
+          </div>
+          <div className="g-card splash-item">
+            <div className="ag-detail-section-title">Step 1 — Exfoliate (3–4× per week)</div>
+            <ul className="ag-detail-list">
+              <li>Apply to completely dry underarms — glycolic on damp skin stings</li>
+              <li>Saturate a cotton pad and swipe once; do not scrub</li>
+              <li>Never apply within 24 hours of shaving — wait until skin heals first</li>
+              <li>Start 1× per week and build to 3–4× over 4 weeks</li>
+            </ul>
+          </div>
+          <div className="g-card splash-item">
+            <div className="ag-detail-section-title">Step 2 — Brighten (daily, 5 min after exfoliant)</div>
+            <ul className="ag-detail-list">
+              <li>Apply 3–4 drops of niacinamide serum after the acid step has absorbed</li>
+              <li>Pat in gently — niacinamide blocks melanin transfer and fades dark spots over 4–8 weeks</li>
+              <li>On nights you skip acid, you can still apply the serum alone</li>
+            </ul>
+          </div>
+          <div className="g-card splash-item">
+            <div className="ag-detail-section-title">Step 3 — Repair (every night)</div>
+            <ul className="ag-detail-list">
+              <li>Apply a generous layer of barrier repair cream after the serum absorbs</li>
+              <li>This seals in the actives and prevents friction-induced inflammation overnight</li>
+              <li>Keeping the barrier intact is what allows brightening actives to work faster</li>
+            </ul>
+          </div>
+          <div className="note-box note-rose" style={{ marginTop: 8, marginBottom: 16 }}>
+            ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and tiny nicks that trigger the inflammation driving underarm darkening. Waxing removes hair from the root with far less surface damage. If you shave, use shaving cream, shave with the grain, and wait 24 hours before any actives. Laser is the best long-term option for skin tone.
+          </div>
 
-      <RoutineStep num="3" cat="Third Step — Repair (every night)" name="Barrier Repair Cream" open={openStep==='3'} onToggle={() => tog('3')}>
-        <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair', 'Anti-Inflammatory']} why="Panthenol heals the skin barrier and stops the dark-spot cycle caused by friction damage. Madecassoside calms the inflammation that drives underarm pigmentation. Apply a generous layer after serum every night — this is what protects skin between active treatments." />
-        <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Centella asiatica (tiger grass) calms post-acid and post-shaving inflammation. Restores skin barrier overnight. Apply a pea-sized amount after your brightening serum." />
-        <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free', 'Barrier Repair']} why="Most accessible option — ceramides repair the moisture barrier stripped by acid exfoliation. Available at any Watsons or Mercury Drug in the Philippines." />
-        <div className="step-note">Morning: skip all actives. Apply only a fragrance-free moisturiser, then your whitening deodorant on top.</div>
-      </RoutineStep>
+          <div className="divider divider-center splash-item">Exfoliant Products</div>
+          <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner that works on underarms. AHA exfoliates dark dead skin, BHA penetrates pores, PHA soothes. Most-used Korean product for underarm brightening on Shopee PH." />
+          <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget cult classic for underarm darkening — hugely popular on TikTok and Reddit. Apply with cotton pad. Available on Shopee PH, Lazada, BeautyMNL." />
+          <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads — no cotton needed. Textured side exfoliates, smooth side soothes. YesStyle and Olive Young Global." />
 
-      <div className="divider divider-center splash-item">Daytime — Whitening Deodorant</div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Organic Skin Japan (OSJ) — Intensive Whitening Underarm Deo Mist</div>
-        <p className="ag-detail-body">The standout Filipino-Korean product for daytime. Contains Glutathione + Alpha Arbutin + Niacinamide + Kojic Acid + Vitamin C — five brightening actives in one deodorant spray. Works as your deodorant AND your daytime treatment so you get consistent active exposure without adding a step. One of the top-ranked underarm products on Shopee PH and Calyxta.</p>
-        <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-          <li>Apply to completely dry underarms after showering</li>
-          <li>Hold 10–15 cm away and mist evenly — let dry 30 seconds before dressing</li>
-          <li>Use every morning, replaces your regular deodorant entirely</li>
-          <li>Alternative: <strong>Belo Intense White Deo Spray</strong> — available at any Mercury Drug or Watsons PH</li>
-        </ul>
-        <div className="pc-find">🛍 <strong>Find it:</strong> Search "Organic Skin Japan Whitening Deo Mist" on Shopee PH, Lazada, or Calyxta.</div>
-      </div>
+          <div className="divider divider-center splash-item">Brightening Serum Products</div>
+          <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot', 'Brightening']} why="Niacinamide + yuja fruit Vitamin C — most recommended Korean serum for underarm brightening. Shopee PH, Lazada, BeautyMNL." />
+          <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="High-concentration niacinamide — 2 drops patted into underarms. Use on nights you skip acid." />
+          <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing']} why="Gentler option — best for sensitive skin or first 2 weeks." />
 
-      <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and tiny nicks that trigger inflammation-driven darkening — a main cause of underarm pigmentation. Waxing removes hair from the root with less surface friction and results last 3–4 weeks. If you shave, always use shaving cream, shave in the direction of hair growth, and wait 24 hours before any actives. Long-term, waxing or laser produces noticeably better skin tone.
-      </div>
+          <div className="divider divider-center splash-item">Repair Cream Products</div>
+          <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Panthenol heals friction damage, madecassoside calms post-acid inflammation. The barrier layer that makes all other actives work faster." />
+          <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Tiger grass (centella) calms post-shaving and post-acid inflammation overnight." />
+          <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Most accessible option — ceramides repair the moisture barrier. Available at any Watsons or Mercury Drug PH." />
+        </>
+      )}
     </>
   );
 }
 
 /* ─── Teeth Routine ─── */
 function TeethRoutine() {
+  const [sub, setSub] = useState('morning');
+  const TEETH_TABS = [
+    { id: 'morning',   label: '☀️ Morning' },
+    { id: 'night',     label: '🌙 Night' },
+    { id: 'saltwater', label: '🧂 Salt Water' },
+    { id: 'whitening', label: '✨ Whitening' },
+  ];
   return (
     <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        A complete teeth routine covers four things: daily mechanical cleaning, remineralisation with hydroxyapatite, whitening, and gum health. Do these consistently and you won't need expensive dental whitening treatments.
+      <div className="sk-tabs splash-item">
+        {TEETH_TABS.map(t => (
+          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => setSub(t.id)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {sub === 'morning' && <><div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        Morning routine builds the foundation — oil pulling clears bacteria, HA toothpaste remineralises enamel, and correct brushing protects gum health.
       </div>
 
       <div className="divider divider-center splash-item">☀️ Morning Routine</div>
@@ -900,74 +961,94 @@ function TeethRoutine() {
         </ul>
       </div>
 
-      <div className="divider divider-center splash-item">🌙 Night Routine</div>
+      <div className="divider divider-center splash-item">Products</div>
+      <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="The original clinically studied HA toothpaste from Japan. Remineralises micro-cavities, whitens naturally, and reduces sensitivity. Search 'Apagard Premio' on Shopee PH or Lazada." />
+      <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free', 'Clean Formula']} why="Nano-HA for deeper enamel penetration. Popular with dentist communities on TikTok and Reddit. Available on iHerb (ships to PH)." />
+      <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="For those who prefer a familiar brand. Use for 2 weeks before any whitening course to reduce sensitivity. Watsons and Mercury Drug PH." />
+      </>}
+
+      {sub === 'night' && <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        Night routine: floss first so HA paste can reach all surfaces, then brush and leave the paste on — your longest enamel repair window of the day.
+      </div>
       <div className="g-card splash-item">
         <ul className="ag-detail-list">
-          <li><strong>Floss first</strong> — remove food debris before brushing so toothpaste can reach all surfaces</li>
-          <li><strong>Brush 2 minutes</strong> with hydroxyapatite toothpaste — same 45° angle technique</li>
-          <li><strong>Do not rinse</strong> — spit only. Overnight is your longest remineralisation window</li>
-          <li><strong>No eating or drinking</strong> (except plain water) after brushing</li>
+          <li><strong>Floss first</strong> — remove all food before brushing so HA paste reaches everywhere</li>
+          <li><strong>Brush 2 minutes</strong> with HA toothpaste — 45° angle, gentle circular strokes</li>
+          <li><strong>Do not rinse</strong> — spit only. Overnight = your longest enamel repair window</li>
+          <li><strong>No eating or drinking</strong> (except water) after brushing</li>
+          <li>Optional: salt water rinse before brushing if gums feel sore</li>
         </ul>
       </div>
+      <div className="divider divider-center splash-item">Products</div>
+      <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Overnight is the most effective window for HA remineralisation — the film stays on enamel and repairs micro-damage during sleep. Use the same paste as morning." />
+      <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper overnight penetration. iHerb ships to PH." />
+      <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Pressure sensor prevents over-brushing that erodes enamel over time. Round brush head reaches gumline more effectively than manual. The highest-impact hardware upgrade for long-term tooth health. Shopee PH." />
+      </>}
 
-      <div className="divider divider-center splash-item">🧂 Salt Water Rinse</div>
+      {sub === 'saltwater' && <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        Salt water rinse is a targeted treatment for gum irritation, sores, or sensitivity — not a daily step. Always use before brushing, not after.
+      </div>
       <div className="g-card splash-item">
-        <p className="ag-detail-body">Salt water rinse is a targeted treatment — not a daily step. Use it for gum irritation, mouth sores, or sensitivity flare-ups.</p>
-        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>How to Make It</div>
+        <div className="ag-detail-section-title">How to Make It</div>
         <ul className="ag-detail-list">
           <li>½ teaspoon fine salt dissolved in 240 ml warm water</li>
-          <li>Swish gently 30 seconds — spit, do not swallow</li>
-          <li>Rinse with plain water after, then brush — use it before brushing, not after</li>
+          <li>Swish gently for 30 seconds — spit, do not swallow</li>
+          <li>Rinse with plain water, then brush</li>
         </ul>
         <div className="ag-detail-section-title" style={{ marginTop: 12 }}>When to Use</div>
         <ul className="ag-detail-list">
-          <li>Gum soreness or bleeding gums</li>
+          <li>Gum soreness or bleeding — 2–3× per week until resolved</li>
           <li>After tooth extraction — wait 24 hours first</li>
           <li>Canker sores or mouth ulcers</li>
-          <li>Use 2–3× per week until the issue resolves</li>
+          <li>Post-whitening sensitivity — soothing rinse before you brush</li>
         </ul>
       </div>
+      <div className="divider divider-center splash-item">Products</div>
+      <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any grocery-brand fine salt works — no special formulation needed. Under ₱50 at any Philippine supermarket. The most effective and most accessible option.</div></div></div>
+      <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Pre-made alcohol-free rinse with consistent concentration. Good when you want a ready-to-use option. Available on iHerb (ships to PH)." />
+      <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="Kills bacteria without burning or oral dryness. Widely available at Watsons and Mercury Drug PH." />
+      </>}
 
-      <div className="divider divider-center splash-item">✨ Whitening Strips — Schedule</div>
+      {sub === 'whitening' && <>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        One whitening course every 3 months keeps teeth noticeably white without over-whitening. Always prep with Sensodyne for 2 weeks before starting.
+      </div>
       <div className="g-card splash-item">
         <div className="ag-detail-section-title">Before You Start</div>
         <ul className="ag-detail-list">
-          <li>Use Sensodyne for 2 weeks before starting a course — builds potassium nitrate in dentinal tubules and significantly reduces whitening sensitivity</li>
-          <li>Do not use if you have untreated cavities, active gum disease, or dental veneers on front teeth — consult your dentist first</li>
-          <li>Brush your teeth 30 minutes BEFORE applying strips — fluoride right before temporarily reduces whitening effectiveness</li>
-          <li>Dry teeth with a tissue before applying — strips adhere far better to dry enamel</li>
+          <li>Use Sensodyne for 2 weeks before — builds potassium nitrate in dentinal tubules, significantly reduces sensitivity</li>
+          <li>Do not use if you have untreated cavities, active gum disease, or veneers on front teeth</li>
+          <li>Brush 30 min BEFORE applying strips (fluoride right before reduces whitening effectiveness)</li>
+          <li>Dry teeth with a tissue — strips adhere far better to dry enamel</li>
         </ul>
         <div className="ag-detail-section-title" style={{ marginTop: 12 }}>Applying</div>
         <ul className="ag-detail-list">
-          <li>Peel strip from backing — gel side faces teeth</li>
-          <li>Align the straight edge with your gumline — do not overlap onto gum tissue</li>
-          <li>Press firmly and fold excess behind teeth</li>
-          <li>Leave on for the directed time (usually 30 min for standard, 60 min for express strips)</li>
-          <li>Do not eat, drink, or talk with strips on</li>
+          <li>Gel side faces teeth — align straight edge with gumline, do not overlap onto gum tissue</li>
+          <li>Press firmly, fold any excess behind teeth</li>
+          <li>Leave on for directed time (30 min standard, 60 min express strips)</li>
+          <li>No eating, drinking, or talking while strips are on</li>
         </ul>
         <div className="ag-detail-section-title" style={{ marginTop: 12 }}>After</div>
         <ul className="ag-detail-list">
           <li>Peel off and discard — never reuse</li>
-          <li>Rinse with water, then wait 30 minutes before brushing — enamel is softened directly after whitening</li>
-          <li>Avoid coffee, tea, berries, and tomato sauce for 1 hour after</li>
-          <li>Sensitivity tip: apply a small amount of Sensodyne directly to teeth after strips, leave 5 min, then rinse</li>
+          <li>Rinse with water, wait 30 minutes before brushing</li>
+          <li>Avoid coffee, tea, berries, tomato sauce for 1 hour after</li>
+          <li>Sensitivity tip: apply Sensodyne directly to teeth after strips, leave 5 min, rinse</li>
         </ul>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Frequency</div>
-        <div className="prod-item"><div className="prod-badge">Course</div><div><div className="prod-name">Once daily for 14–20 days (standard) or 7–10 days (express 1-hour strips)</div><div className="prod-why">One course per quarter — every 3 months — maintains noticeably white teeth without over-whitening or enamel damage.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after completing a course</div><div className="prod-why">Maintains your result between courses without committing to a full 2-week treatment.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day on high-sensitivity days and resume the next</div><div className="prod-why">Sensitivity is temporary and resolves within 24 hours — pushing through will cause more harm than skipping a day.</div></div></div>
+        <div className="ag-detail-section-title">Schedule</div>
+        <div className="prod-item" style={{ marginTop: 8 }}><div className="prod-badge">Course</div><div><div className="prod-name">Once daily for 14–20 days (standard) or 7–10 days (express)</div><div className="prod-why">One course per quarter maintains white teeth without enamel damage.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after completing a course</div><div className="prod-why">Maintains results between courses without a full treatment commitment.</div></div></div>
+        <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day when sensitive — resume the next. Resolves within 24 hours.</div></div></div>
       </div>
-
-      <div className="divider divider-center splash-item">🛍 Products</div>
-      <div className="g-card splash-item">
-        <div className="prod-item"><div className="prod-badge">HA Toothpaste ★</div><div><div className="prod-name">Apagard Premio — Japanese, most clinically studied HA formula</div><div className="prod-why">The original hydroxyapatite toothpaste from Japan. Remineralises micro-cavities, whitens naturally, reduces sensitivity. Search "Apagard Premio" on Shopee PH or Lazada — widely available and affordable.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">HA Toothpaste</div><div><div className="prod-name">Boka Ela Mint — US brand, popular on TikTok and Reddit</div><div className="prod-why">Clean-ingredient HA formula loved by dentists and remineralisation communities. Available on iHerb (ships to PH).</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Sensodyne Pronamel or Rapid Relief</div><div className="prod-why">Use for 2 weeks before any whitening course and throughout. Available at Mercury Drug, Watsons, and Shopee PH.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Oil Pulling</div><div><div className="prod-name">Virgin or refined coconut oil — 1 tablespoon per session</div><div className="prod-why">Refined coconut oil has a neutral taste if virgin is too strong. Any grocery brand works — no special formulation needed.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Whitening ★</div><div><div className="prod-name">Crest 3D Whitestrips Professional Effects</div><div className="prod-why">Most effective OTC whitening strip available. Search on Shopee PH, Lazada, or iHerb. Look for Professional Effects or Glamorous White variants.</div></div></div>
-      </div>
+      <div className="divider divider-center splash-item">Products</div>
+      <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="The most effective OTC whitening strips available globally — professional-level HP formula produces dentist-level results. Search on Shopee PH, Lazada, or iHerb." />
+      <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Lower HP concentration for those prone to sensitivity. Same visible whitening — good starting option before working up to Professional Effects." />
+      <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen for maintenance between quarterly strip courses — paint on before bed, leave overnight, no wait time. Available on Shopee PH and Lazada." />
+      </>}
     </>
   );
 }

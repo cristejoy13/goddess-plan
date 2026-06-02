@@ -48,13 +48,21 @@
 
 /* ─── LIGHT MODE ─── */
 :root[data-mode="light"] {
-  --rose-pale: #fce4f0;
-  --blush:     #fff5fb;
-  --gold-pale: #fffbe8;
-  --card:      rgba(255, 248, 253, 0.97);
-  --text:      #1a0a28;
-  --text-mid:  #8a3068;
-  --text-soft: #b05090;
+  --rose-pale:  #fce4f0;
+  --blush:      #fff5fb;
+  --gold-pale:  #fffbe8;
+  --card:       rgba(255, 248, 253, 0.97);
+  --text:       #1a0a28;
+  --text-mid:   #8a3068;
+  --text-soft:  #9a3a78;
+  /* Override dark-mode colours that are unreadable on white backgrounds */
+  --rose:       #c8176e;
+  --rose-deep:  #a00050;
+  --gold:       #9a6800;
+  --gold-light: #7d5200;
+  --gold-shine: #9a6800;
+  --border-g:   rgba(154,104,0,0.28);
+  --border-r:   rgba(200,23,110,0.28);
 }
 [data-mode="light"] body { background: #fff5fb; }
 [data-mode="light"] .bg-layer {
@@ -67,16 +75,37 @@
 [data-mode="light"] .sparkle-layer { display: none; }
 [data-mode="light"] .cloud-layer { opacity: 0.25; }
 [data-mode="light"] .petal { opacity: 0.6; }
+/* Light mode: fix hardcoded dark card/note backgrounds */
+[data-mode="light"] .note-gold { background: rgba(255,248,220,0.9); }
+[data-mode="light"] .note-rose { background: rgba(255,235,245,0.9); }
+[data-mode="light"] .sk-tab    { background: rgba(255,240,250,0.7); }
+[data-mode="light"] .sk-top-tab { background: rgba(255,240,250,0.7); }
+[data-mode="light"] .divider::after { background: linear-gradient(90deg, rgba(154,104,0,0.35), transparent); }
+[data-mode="light"] .product-card { background: rgba(255,248,252,0.98); }
+[data-mode="light"] .g-card { background: rgba(255,248,252,0.98); border-color: rgba(154,104,0,0.15); }
+[data-mode="light"] .sidebar { background: rgba(255,245,251,0.97); border-right-color: rgba(200,23,110,0.18); }
 
 [data-theme="male"][data-mode="light"] {
-  --rose-pale: #dbeafe;
-  --blush:     #eff6ff;
-  --gold-pale: #fefce8;
-  --card:      rgba(239, 246, 255, 0.97);
-  --text:      #0c1828;
-  --text-mid:  #1e4f8c;
-  --text-soft: #3070b0;
+  --rose-pale:  #dbeafe;
+  --blush:      #eff6ff;
+  --gold-pale:  #fefce8;
+  --card:       rgba(239, 246, 255, 0.97);
+  --text:       #0c1828;
+  --text-mid:   #1e4f8c;
+  --text-soft:  #2060a0;
+  --rose:       #0369a1;
+  --rose-deep:  #024f80;
+  --gold:       #8c6c00;
+  --gold-light: #6d5200;
+  --gold-shine: #8c6c00;
+  --border-g:   rgba(140,108,0,0.28);
+  --border-r:   rgba(3,105,161,0.28);
 }
+[data-theme="male"][data-mode="light"] .note-gold { background: rgba(254,252,232,0.9); }
+[data-theme="male"][data-mode="light"] .note-rose { background: rgba(219,234,254,0.9); }
+[data-theme="male"][data-mode="light"] .sk-tab    { background: rgba(239,246,255,0.7); }
+[data-theme="male"][data-mode="light"] .sk-top-tab { background: rgba(239,246,255,0.7); }
+[data-theme="male"][data-mode="light"] .sidebar { background: rgba(239,246,255,0.97); }
 [data-theme="male"][data-mode="light"] body { background: #eff6ff; }
 [data-theme="male"][data-mode="light"] .bg-layer {
   background:

@@ -223,7 +223,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">January — December 2026</div>
+        <div className="s-tag">June {CURRENT_YEAR} — May {CURRENT_YEAR + 1}</div>
         <h2 className="s-title">Monthly <em>Challenges</em></h2>
         <p className="s-desc">Expand each month to see the full calendar. Tap any day to check it off — your consistency is tracked automatically.</p>
       </div>
