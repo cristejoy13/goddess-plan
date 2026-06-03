@@ -4242,19 +4242,20 @@ body {
 .sidebar-avatar-btn:hover .sidebar-avatar-label,
 .sidebar-avatar-btn.active .sidebar-avatar-label { color: var(--gold); }
 
-/* Joy: draggable ghost on desktop — positioned near search bar, doesn't affect layout */
+/* Joy: draggable ghost beside search bar — default position tracks the search bar's left edge */
 @media (min-width: 769px) {
   .joy-fab {
     display: flex !important;
+    /* 50% = viewport center, -340px = half search width, -56px = joy(48) + gap(8) */
+    left: max(calc(50% - 396px), 130px);
     top: 7px;
-    left: 128px;
     bottom: auto;
     right: auto;
     width: 48px;
     height: 48px;
     border-radius: 50%;
   }
-  /* Desktop: hide the static search-bar Joy (ghost FAB handles it) */
+  /* Desktop: static Joy hidden — draggable FAB handles it */
   .search-joy-btn { display: none !important; }
 }
 
