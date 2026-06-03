@@ -3834,18 +3834,38 @@ body {
   border-radius: 32px;
   border: 2px solid rgba(255,92,157,0.5);
   background: linear-gradient(160deg, #3d1232, #1a0828);
-  box-shadow: inset 0 0 18px rgba(255,92,157,0.25);
+  box-shadow: none;
   cursor: pointer;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
+  overflow: hidden;
   transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-  animation: joyPulse 3s ease-in-out infinite;
+  animation: none;
+}
+.joy-fab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.22) 50%, transparent 75%);
+  transform: translateX(-150%) skewX(-8deg);
+  pointer-events: none;
+  border-radius: inherit;
 }
 .joy-fab:hover {
-  transform: scale(1.1);
-  box-shadow: inset 0 0 28px rgba(255,92,157,0.55);
+  transform: scale(1.08);
+  box-shadow: 0 0 22px rgba(255,92,157,0.65), 0 0 0 3px rgba(255,92,157,0.2);
+  border-color: rgba(255,92,157,0.95);
+}
+.joy-fab:hover::before {
+  animation: joyGlisten 0.65s ease-in-out forwards;
+}
+@keyframes joyGlisten {
+  0%   { transform: translateX(-150%) skewX(-8deg); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(200%) skewX(-8deg); opacity: 0; }
 }
 .joy-fab-emoji { font-size: 26px; line-height: 1; }
 .joy-fab-name {
@@ -3864,12 +3884,13 @@ body {
 
 /* ── Search Bar Joy Button (desktop — beside search input) ── */
 .search-joy-btn {
+  position: relative;
   width: 44px;
   height: 44px;
   border-radius: 50%;
   border: 2px solid rgba(255,92,157,0.5);
   background: linear-gradient(160deg, #3d1232, #1a0828);
-  box-shadow: inset 0 0 16px rgba(255,92,157,0.22);
+  box-shadow: none;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -3877,12 +3898,26 @@ body {
   justify-content: center;
   gap: 1px;
   flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
-  animation: joyPulse 3s ease-in-out infinite;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  animation: none;
+}
+.search-joy-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.22) 50%, transparent 75%);
+  transform: translateX(-150%) skewX(-8deg);
+  pointer-events: none;
+  border-radius: inherit;
 }
 .search-joy-btn:hover {
   transform: scale(1.1);
-  box-shadow: inset 0 0 26px rgba(255,92,157,0.55);
+  box-shadow: 0 0 18px rgba(255,92,157,0.6), 0 0 0 3px rgba(255,92,157,0.18);
+  border-color: rgba(255,92,157,0.95);
+}
+.search-joy-btn:hover::before {
+  animation: joyGlisten 0.65s ease-in-out forwards;
 }
 .search-joy-emoji { font-size: 18px; line-height: 1; }
 .search-joy-name {
@@ -3936,6 +3971,7 @@ body {
 
 /* ── Sidebar mode toggle (desktop) — floating cage ── */
 .nav-mode-toggle {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3945,15 +3981,25 @@ body {
   border-radius: 50%;
   border: 2px solid rgba(255,92,157,0.5);
   background: linear-gradient(160deg, #3d1232, #1a0828);
-  box-shadow: inset 0 0 18px rgba(255,92,157,0.22);
+  box-shadow: none;
   cursor: pointer;
   gap: 2px;
   padding: 0;
   margin: 12px auto 8px;
   font-family: 'Outfit', sans-serif;
   color: var(--rose);
+  overflow: hidden;
   transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-  animation: joyPulse 3s ease-in-out infinite;
+  animation: none;
+}
+.nav-mode-toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.2) 50%, transparent 75%);
+  transform: translateX(-150%) skewX(-8deg);
+  pointer-events: none;
+  border-radius: inherit;
 }
 .nav-mode-toggle .nav-icon { font-size: 22px; line-height: 1; display: block; }
 .nav-mode-toggle .nav-label {
@@ -3966,8 +4012,12 @@ body {
   color: var(--rose);
 }
 .nav-mode-toggle:hover {
-  transform: scale(1.12);
-  box-shadow: inset 0 0 30px rgba(255,92,157,0.55);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255,92,157,0.55), 0 0 0 3px rgba(255,92,157,0.18);
+  border-color: rgba(255,92,157,0.95);
+}
+.nav-mode-toggle:hover::before {
+  animation: joyGlisten 0.65s ease-in-out forwards;
 }
 @media (max-width: 768px) { .nav-mode-toggle { display: none; } }
 
