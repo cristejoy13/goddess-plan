@@ -3,8 +3,8 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'meat',    icon: '🔥', title: 'Strength & Sprint Days', desc: 'Monday, Wednesday, Friday, Saturday — high protein fuel for your hardest training days. Eating window: 9 AM – 7 PM.' },
-  { id: 'light',   icon: '🌿', title: 'Pilates & Rest Days',    desc: 'Tuesday, Thursday, Sunday — digestive rest and light meals. Eating window: 3 PM – 7 PM.' },
+  { id: 'meat',    icon: '🔥', title: 'Strength & Sprint Days', desc: 'Monday, Wednesday, Friday, Saturday — high protein fuel for your hardest training days. Eating window: 9 AM – 5 PM.' },
+  { id: 'light',   icon: '🌿', title: 'Pilates & Rest Days',    desc: 'Tuesday, Thursday, Sunday — digestive rest and light meals. Eating window: 2 PM – 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'How to prepare every ingredient in your plan. Tap any food to see three preparation methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',              desc: 'Glycemic load of every food in your plan and why it matters.' },
 ];
@@ -51,7 +51,7 @@ export function MeatDays() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🔥 <strong>Strength & sprint days: Monday, Wednesday, Friday, Saturday.</strong> Eating window 9 AM – 7 PM. Protein-heavy meals to fuel your hardest sessions. Always eat protein first.
+        🔥 <strong>Strength & sprint days: Monday, Wednesday, Friday, Saturday.</strong> Eating window 9 AM – 5 PM. Protein-heavy meals to fuel your hardest sessions. Always eat protein first.
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
         💡 <strong>Why protein only on hard days?</strong> Your digestive system processes meat slowly (2–5 hours). Eating it only on hard training days means your gut is never overworked, your body fully absorbs the protein it receives, and your lighter days feel genuinely lighter. Fish is the exception — it digests in under 2 hours and can be eaten any day.
@@ -79,21 +79,14 @@ export function MeatDays() {
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">12:00 PM</div>
+            <div className="hyd-time">2:00 PM</div>
             <div>
               <div className="hyd-d">Meal 2 — Main protein meal (post-workout)</div>
               <div className="hyd-n">Eat protein first. Chicken 150g or fish 150g or lean beef 120g + steamed broccoli + ½ cup sweet potato + collagen water</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">4:00 PM</div>
-            <div>
-              <div className="hyd-d">Sweet Snack (optional)</div>
-              <div className="hyd-n">See Recipes tab — one dessert snack, naturally sweet, high in fibre or protein</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">7:00 PM</div>
+            <div className="hyd-time">5:00 PM</div>
             <div>
               <div className="hyd-d">Last Meal — Light protein finish · No food after this</div>
               <div className="hyd-n">Fish 120g + salad · OR · chicken 100g + steamed vegetables · OR · 1 egg + avocado + warm broth</div>
@@ -113,19 +106,19 @@ export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🌿 <strong>Light days: Tuesday, Thursday, Sunday.</strong> Eating window 3 PM – 7 PM. Only 2 meals. No heavy protein — your digestive system gets genuine rest, your gut lining repairs, and you arrive at the next hard day feeling genuinely fresh.
+        🌿 <strong>Light days: Tuesday, Thursday, Sunday.</strong> Eating window 2 PM – 5 PM. Only 2 meals. No heavy protein — your digestive system gets genuine rest, your gut lining repairs, and you arrive at the next hard day feeling genuinely fresh.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">3:00 PM</div>
+            <div className="hyd-time">2:00 PM</div>
             <div>
               <div className="hyd-d">First Meal — Main meal of the day</div>
               <div className="hyd-n">1 egg + large salad + collagen water · OR · chia pudding + papaya + mixed nuts · OR · oats + pineapple + kiwi · OR · fish 100g + steamed vegetables</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">7:00 PM</div>
+            <div className="hyd-time">5:00 PM</div>
             <div>
               <div className="hyd-d">Last Meal — Very light finish · No food after this</div>
               <div className="hyd-n">Salad + ½ avocado + 1 egg + chamomile tea · OR · chia pudding + berries · OR · papaya + spearmint tea · OR · oats (plain) + kiwi</div>
@@ -134,7 +127,7 @@ export function LightDays() {
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 Light days are not cheat days — they are intentional digestive rest. 20 hours fasting (from 7 PM prior evening to 3 PM today) supports fat adaptation, reduces inflammation, and makes your hard training days significantly more effective.
+        🌸 Light days are not cheat days — they are intentional digestive rest. 21 hours fasting (from 5 PM prior evening to 2 PM today) supports fat adaptation, reduces inflammation, and makes your hard training days significantly more effective.
       </div>
     </>
   );

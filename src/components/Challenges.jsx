@@ -267,7 +267,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
       {/* ── Nutrition & Meals ── */}
       <div className="divider splash-item" style={{ marginTop: 36 }}>🍽️ Nutrition &amp; Meals</div>
       <p className="s-desc splash-item" style={{ marginBottom: 16 }}>
-        Hard days (Mon/Wed/Fri/Sat): eat 9 AM – 7 PM · Light days (Tue/Thu/Sun): eat 3 PM – 7 PM
+        Hard days (Mon/Wed/Fri/Sat): 9 AM · 2 PM · 5 PM · Light days (Tue/Thu/Sun): 2 PM · 5 PM
       </p>
 
       <div className="sk-top-tabs splash-item">

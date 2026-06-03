@@ -51,18 +51,16 @@ export const DEFAULT_REMINDERS = [
     body: 'Strength day fuel! Protein first — PFBS 🥚💪 Walk after eating 🚶' },
   { id: 'workout',       emoji: '💪',  label: 'Workout Time',         time: '08:30', enabled: true, days: EAT_DAYS,
     body: null },
-  { id: 'lunch',         emoji: '🥗',  label: 'Meal 2 — Lunch',      time: '12:00', enabled: true, days: EAT_DAYS,
+  { id: 'lunch',         emoji: '🥗',  label: 'Meal 2 — 2 PM',       time: '14:00', enabled: true, days: EAT_DAYS,
     body: 'Meal 2 — protein + fiber + veg! 80% full 💕 Walk after 🚶' },
-  // Rest/Light days (Sun/Tue/Fri/Sat) — fast minimum 14 hours, break at noon
+  // Light days (Tue/Thu/Sun) — 2 PM · 5 PM (9-2-5 method)
   { id: 'workout_light', emoji: '🧘',  label: 'Workout Time',         time: '07:00', enabled: true, days: FAST_DAYS,
     body: null },
-  { id: 'fast_break',    emoji: '⏱️', label: 'Break Fast',           time: '12:00', enabled: true, days: FAST_DAYS,
-    body: '14h fast done! First meal — protein + fiber, small portion 🥚🥦 Walk after 🚶' },
-  { id: 'fast_lunch',    emoji: '🍽️', label: 'Meal 2',               time: '15:00', enabled: true, days: FAST_DAYS,
-    body: 'Meal 2 — keep it bland, light, and protein-rich! 80% full 💕' },
-  // Shared — last meal for everyone
-  { id: 'last_meal',     emoji: '🌙',  label: 'Last Meal',            time: '17:30', enabled: true, days: ALL_DAYS,
-    body: 'Last meal of the day! Walk 10 min after 🚶 No food after this — Goddess rule 🌿' },
+  { id: 'fast_break',    emoji: '🍽️', label: 'First Meal — 2 PM',   time: '14:00', enabled: true, days: FAST_DAYS,
+    body: 'Eating window open! First meal — light, protein + fruit 🥗 Walk after 🚶' },
+  // Shared — last meal 5 PM every day (9-2-5 method)
+  { id: 'last_meal',     emoji: '🌙',  label: 'Last Meal — 5 PM',    time: '17:00', enabled: true, days: ALL_DAYS,
+    body: 'Last meal of the day! Walk 10 min after 🚶 No food after 5 PM — Goddess rule 🌿' },
   { id: 'pm_skin',       emoji: '✨',  label: 'PM Skincare',          time: '20:00', enabled: true, days: ALL_DAYS,
     body: 'Evening glow-up! Double cleanse, retinoid, moisturizer 🌸' },
   { id: 'wind_down',     emoji: '💆',  label: 'Wind Down',            time: '21:00', enabled: true, days: ALL_DAYS,
