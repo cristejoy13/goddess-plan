@@ -1276,37 +1276,37 @@ function MakeupRoutine() {
 
 /* ─── Tab config ─── */
 function resolveInitial(initialTab) {
-  if (initialTab === 'pm')       return { top: 'evening',  mSub: 'face', eSub: 'face' };
-  if (initialTab === 'body')     return { top: 'morning',  mSub: 'body', eSub: 'face' };
-  if (initialTab === 'retinoid') return { top: 'retinoid', mSub: 'face', eSub: 'face' };
-  if (initialTab === 'hair')     return { top: 'hair',     mSub: 'face', eSub: 'face' };
-  if (initialTab === 'makeup')   return { top: 'makeup',   mSub: 'face', eSub: 'face' };
-  if (initialTab === 'teeth')    return { top: 'teeth',    mSub: 'face', eSub: 'face' };
-  if (initialTab === 'underarm') return { top: 'underarm', mSub: 'face', eSub: 'face' };
-  return { top: 'morning', mSub: 'face', eSub: 'face' };
+  if (initialTab === 'pm')       return { top: 'face',     faceSub: 'evening', bodySub: 'morning' };
+  if (initialTab === 'body')     return { top: 'body',     faceSub: 'morning', bodySub: 'morning' };
+  if (initialTab === 'retinoid') return { top: 'retinoid', faceSub: 'morning', bodySub: 'morning' };
+  if (initialTab === 'hair')     return { top: 'hair',     faceSub: 'morning', bodySub: 'morning' };
+  if (initialTab === 'makeup')   return { top: 'makeup',   faceSub: 'morning', bodySub: 'morning' };
+  if (initialTab === 'teeth')    return { top: 'teeth',    faceSub: 'morning', bodySub: 'morning' };
+  if (initialTab === 'underarm') return { top: 'underarm', faceSub: 'morning', bodySub: 'morning' };
+  return { top: 'face', faceSub: 'morning', bodySub: 'morning' };
 }
 
 const TOP_TABS = [
-  { id: 'morning',   label: '☀️ Morning' },
-  { id: 'evening',   label: '🌙 Evening' },
+  { id: 'face',      label: '💆 Face' },
+  { id: 'body',      label: '🫧 Body' },
   { id: 'retinoid',  label: '✨ Retinoid' },
   { id: 'antiaging', label: '🌿 Anti-Aging' },
-  { id: 'hair',      label: '💆 Hair' },
+  { id: 'hair',      label: '💇 Hair' },
   { id: 'underarm',  label: '🌟 Underarm' },
   { id: 'teeth',     label: '🦷 Teeth' },
   { id: 'makeup',    label: '💄 Makeup' },
 ];
 
-const SUB_TABS = [
-  { id: 'face', label: '💆 Face' },
-  { id: 'body', label: '🫧 Body' },
+const AM_PM_SUBS = [
+  { id: 'morning', label: '☀️ Morning' },
+  { id: 'evening', label: '🌙 Evening' },
 ];
 
 export default function Skincare({ initialTab }) {
   const init = resolveInitial(initialTab);
-  const [topTab, setTopTab]     = useState(init.top);
-  const [mSub,   setMSub]       = useState(init.mSub);
-  const [eSub,   setESub]       = useState(init.eSub);
+  const [topTab,    setTopTab]    = useState(init.top);
+  const [faceSub,   setFaceSub]   = useState(init.faceSub);
+  const [bodySub,   setBodySub]   = useState(init.bodySub);
   const [agSelected, setAgSelected] = useState(null);
   const [selectedOil, setSelectedOil] = useState(null);
 
@@ -1340,31 +1340,31 @@ export default function Skincare({ initialTab }) {
         ))}
       </div>
 
-      {topTab === 'morning' && (
+      {topTab === 'face' && (
         <>
           <div className="sk-tabs splash-item">
-            {SUB_TABS.map(s => (
-              <button key={s.id} className={`sk-tab${mSub === s.id ? ' active' : ''}`} onClick={() => setMSub(s.id)}>
+            {AM_PM_SUBS.map(s => (
+              <button key={s.id} className={`sk-tab${faceSub === s.id ? ' active' : ''}`} onClick={() => setFaceSub(s.id)}>
                 {s.label}
               </button>
             ))}
           </div>
-          {mSub === 'face' && <AMFace />}
-          {mSub === 'body' && <BodyMorning />}
+          {faceSub === 'morning' && <AMFace />}
+          {faceSub === 'evening' && <PMFace />}
         </>
       )}
 
-      {topTab === 'evening' && (
+      {topTab === 'body' && (
         <>
           <div className="sk-tabs splash-item">
-            {SUB_TABS.map(s => (
-              <button key={s.id} className={`sk-tab${eSub === s.id ? ' active' : ''}`} onClick={() => setESub(s.id)}>
+            {AM_PM_SUBS.map(s => (
+              <button key={s.id} className={`sk-tab${bodySub === s.id ? ' active' : ''}`} onClick={() => setBodySub(s.id)}>
                 {s.label}
               </button>
             ))}
           </div>
-          {eSub === 'face' && <PMFace />}
-          {eSub === 'body' && <BodyEvening />}
+          {bodySub === 'morning' && <BodyMorning />}
+          {bodySub === 'evening' && <BodyEvening />}
         </>
       )}
 

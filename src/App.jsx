@@ -508,6 +508,14 @@ export default function App() {
             <span className="nav-label">{item.label}</span>
           </button>
         ))}
+        <button
+          className="nav-mode-toggle"
+          onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
+          title={colorMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          <span className="nav-icon">{colorMode === 'dark' ? '☀️' : '🌙'}</span>
+          <span className="nav-label">{colorMode === 'dark' ? 'Light' : 'Dark'}</span>
+        </button>
       </nav>
 
       <div

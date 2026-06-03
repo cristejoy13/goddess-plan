@@ -76,14 +76,106 @@
 [data-mode="light"] .cloud-layer { opacity: 0.25; }
 [data-mode="light"] .petal { opacity: 0.6; }
 /* Light mode: fix hardcoded dark card/note backgrounds */
-[data-mode="light"] .note-gold { background: rgba(255,248,220,0.9); }
-[data-mode="light"] .note-rose { background: rgba(255,235,245,0.9); }
+[data-mode="light"] .note-gold { background: rgba(255,248,220,0.9); color: #5a3800; }
+[data-mode="light"] .note-rose { background: rgba(255,235,245,0.9); color: #7a1050; }
 [data-mode="light"] .sk-tab    { background: rgba(255,240,250,0.7); }
 [data-mode="light"] .sk-top-tab { background: rgba(255,240,250,0.7); }
 [data-mode="light"] .divider::after { background: linear-gradient(90deg, rgba(154,104,0,0.35), transparent); }
-[data-mode="light"] .product-card { background: rgba(255,248,252,0.98); }
+[data-mode="light"] .product-card { background: rgba(255,248,252,0.98); border-color: rgba(200,23,110,0.18); }
+[data-mode="light"] .product-card.primary { border-color: rgba(154,104,0,0.35); }
 [data-mode="light"] .g-card { background: rgba(255,248,252,0.98); border-color: rgba(154,104,0,0.15); }
 [data-mode="light"] .sidebar { background: rgba(255,245,251,0.97); border-right-color: rgba(200,23,110,0.18); }
+
+/* ── Light mode: fix hardcoded dark backgrounds ── */
+[data-mode="light"] .step-note {
+  background: rgba(255,240,220,0.85);
+  color: var(--text);
+}
+[data-mode="light"] .rs-num {
+  background: rgba(255,235,210,0.8);
+  border-color: rgba(154,104,0,0.3);
+}
+[data-mode="light"] .rs-inner::before {
+  background: linear-gradient(90deg, rgba(154,104,0,0.3), transparent);
+}
+[data-mode="light"] .rs-trigger:hover { background: rgba(154,104,0,0.06); }
+[data-mode="light"] .rstep.is-open {
+  border-color: rgba(154,104,0,0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 0 12px rgba(154,104,0,0.06);
+}
+[data-mode="light"] .pc-badge {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.12);
+  color: var(--text-mid);
+}
+[data-mode="light"] .pc-star.alt {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.12);
+}
+[data-mode="light"] .prod-item {
+  border-bottom-color: rgba(154,104,0,0.15);
+}
+[data-mode="light"] .prod-badge {
+  background: rgba(154,104,0,0.12);
+}
+[data-mode="light"] .oil-rot-day-empty {
+  background: rgba(0,0,0,0.05) !important;
+}
+[data-mode="light"] .cal-day {
+  background: rgba(255,235,245,0.5);
+  color: var(--text);
+  border-color: rgba(200,23,110,0.15);
+}
+[data-mode="light"] .cal-day-checked {
+  background: linear-gradient(135deg, var(--rose), var(--rose-deep)) !important;
+  color: white !important;
+}
+[data-mode="light"] .cal-day-today {
+  border-color: var(--rose) !important;
+}
+[data-mode="light"] .prog-bg { background: rgba(0,0,0,0.08); }
+[data-mode="light"] .prog-fill { background: linear-gradient(90deg, var(--rose), var(--gold)); }
+[data-mode="light"] .prog-note { color: var(--text-mid); }
+[data-mode="light"] .month-card { border-color: rgba(200,23,110,0.2); }
+[data-mode="light"] .m-badge { background: rgba(255,235,245,0.9); color: var(--rose); }
+[data-mode="light"] .cal-dh { color: var(--text-mid); }
+[data-mode="light"] .oil-rot-day-btn { background: rgba(255,240,248,0.6); color: var(--text); }
+[data-mode="light"] .oil-rot-day-today { border-color: var(--rose) !important; }
+[data-mode="light"] .ag-detail-section-title { color: var(--text); }
+[data-mode="light"] .ag-detail-body { color: var(--text); }
+[data-mode="light"] .ag-detail-list li { color: var(--text); }
+[data-mode="light"] .hyd-time { color: var(--rose); }
+[data-mode="light"] .hyd-d { color: var(--text); }
+[data-mode="light"] .hyd-n { color: var(--text-mid); }
+[data-mode="light"] .calorie-banner { background: rgba(255,240,250,0.9); border-color: rgba(200,23,110,0.2); }
+[data-mode="light"] .cal-number { color: var(--rose); }
+[data-mode="light"] .cal-phase { color: var(--text-mid); }
+[data-mode="light"] .cal-note { color: var(--text-soft); }
+[data-mode="light"] .search-input {
+  background: rgba(255,245,252,0.95);
+  color: var(--text);
+  border-color: rgba(200,23,110,0.2);
+}
+[data-mode="light"] .search-input::placeholder { color: var(--text-soft); }
+[data-mode="light"] .search-dropdown { background: rgba(255,248,253,0.99); border-color: rgba(200,23,110,0.18); }
+[data-mode="light"] .sr-label { color: var(--text); }
+[data-mode="light"] .sr-hint { color: var(--text-soft); }
+[data-mode="light"] .search-result:hover { background: rgba(255,230,245,0.7); }
+[data-mode="light"] .today-banner { background: rgba(255,235,248,0.8); border-color: rgba(200,23,110,0.2); }
+[data-mode="light"] .wg-day { background: rgba(255,240,250,0.7); border-color: rgba(200,23,110,0.15); }
+[data-mode="light"] .wg-day:hover { border-color: var(--rose); }
+[data-mode="light"] .wg-lbl { color: var(--text-mid); }
+[data-mode="light"] .wg-name { color: var(--text); }
+[data-mode="light"] .wg-focus { color: var(--text-soft); }
+[data-mode="light"] .wg-tap-hint { color: var(--rose); }
+[data-mode="light"] .pc-find { color: var(--text-mid); }
+[data-mode="light"] .pc-why { color: var(--text); }
+[data-mode="light"] .pc-name { color: var(--text); }
+[data-mode="light"] .meal-box { background: rgba(255,240,250,0.6); border-color: rgba(200,23,110,0.15); }
+[data-mode="light"] .meal-t { color: var(--text); }
+[data-mode="light"] .meal-ingr-plain { color: var(--text-mid); }
+[data-mode="light"] .meal-ingr-chip { background: rgba(200,23,110,0.1); color: var(--rose); border-color: rgba(200,23,110,0.25); }
+[data-mode="light"] .oil-rot-summary-item { background: rgba(255,235,248,0.7); border-color: rgba(200,23,110,0.2); }
 
 [data-theme="male"][data-mode="light"] {
   --rose-pale:  #dbeafe;
@@ -1502,6 +1594,10 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   margin-bottom: 12px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 540px;
+  width: 100%;
   overflow: hidden;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -3772,7 +3868,30 @@ body {
   text-transform: uppercase;
   line-height: 1;
 }
-@media (max-width: 768px) { .mode-fab { display: none; } }
+/* mode-fab moved to sidebar — hide the floating version everywhere */
+.mode-fab { display: none; }
+
+/* ── Sidebar mode toggle (desktop) ── */
+.nav-mode-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255,92,157,0.12);
+  margin-top: 8px;
+  padding: 12px 8px;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-soft);
+  cursor: pointer;
+  text-align: center;
+  gap: 4px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.nav-mode-toggle:hover { color: var(--gold-light); background: rgba(235,80,160,0.07); }
+@media (max-width: 768px) { .nav-mode-toggle { display: none; } }
 
 .joy-overlay {
   position: fixed;
