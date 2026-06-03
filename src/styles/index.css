@@ -352,17 +352,17 @@ body {
 }
 .search-bar-fixed .search-wrap { margin: 0 auto; }
 
-/* Desktop: flex row, content centered in area right of sidebar */
+/* Desktop: match .main symmetric padding so search centers at vw/2, same as content */
 @media (min-width: 769px) {
   .search-bar-fixed {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding-left: 126px;  /* clear the 118px sidebar */
-    padding-right: 20px;
+    padding-left: 118px;   /* sidebar width */
+    padding-right: 118px;  /* match .main right padding — true center alignment */
   }
-  .search-bar-fixed .search-wrap { flex: 0 1 660px; min-width: 200px; margin: 0; }
+  .search-bar-fixed .search-wrap { flex: 0 1 680px; min-width: 200px; margin: 0; }
 }
 
 /* ─── SIDEBAR NAV — fixed left, below search bar ─── */
