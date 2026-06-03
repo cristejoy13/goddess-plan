@@ -557,7 +557,7 @@ export default function App() {
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>
         <h2 className="mot-h">
-          Baby Steps.
+          Baby steps, baby.
         </h2>
         <p className="mot-p">
           Choose yourself today. Envision your long-term goal. Multiply your "NOW," it compounds and becomes a year.
