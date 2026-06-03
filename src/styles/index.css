@@ -352,15 +352,14 @@ body {
 }
 .search-bar-fixed .search-wrap { margin: 0 auto; }
 
-/* Desktop: match .main symmetric padding so search centers at vw/2, same as content */
+/* Desktop: search bar centers at vw/2 matching .main symmetric padding — no Joy in flow */
 @media (min-width: 769px) {
   .search-bar-fixed {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
     padding-left: 118px;   /* sidebar width */
-    padding-right: 118px;  /* match .main right padding — true center alignment */
+    padding-right: 118px;  /* mirror sidebar — true center */
   }
   .search-bar-fixed .search-wrap { flex: 0 1 680px; min-width: 200px; margin: 0; }
 }
@@ -4243,11 +4242,20 @@ body {
 .sidebar-avatar-btn:hover .sidebar-avatar-label,
 .sidebar-avatar-btn.active .sidebar-avatar-label { color: var(--gold); }
 
-/* Joy repositioned to top-right, below search bar with breathing room */
-.joy-fab {
-  top: calc(80px + env(safe-area-inset-top));
-  bottom: auto;
-  right: 16px;
+/* Joy: draggable ghost on desktop — positioned near search bar, doesn't affect layout */
+@media (min-width: 769px) {
+  .joy-fab {
+    display: flex !important;
+    top: 7px;
+    left: 128px;
+    bottom: auto;
+    right: auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  /* Desktop: hide the static search-bar Joy (ghost FAB handles it) */
+  .search-joy-btn { display: none !important; }
 }
 
 /* ─── DIVIDER CENTER VARIANT ─── */
