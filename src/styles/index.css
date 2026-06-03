@@ -177,6 +177,25 @@
 [data-mode="light"] .meal-ingr-chip { background: rgba(200,23,110,0.1); color: var(--rose); border-color: rgba(200,23,110,0.25); }
 [data-mode="light"] .oil-rot-summary-item { background: rgba(255,235,248,0.7); border-color: rgba(200,23,110,0.2); }
 
+/* Joy modal & oil modal always have dark bg — keep text light in light mode too */
+[data-mode="light"] .joy-modal,
+[data-mode="light"] .joy-modal * { color: #f8eed4; }
+[data-mode="light"] .joy-msg-user { background: rgba(200,23,110,0.2); color: #f8eed4; }
+[data-mode="light"] .joy-msg-ai { background: rgba(40,10,30,0.4); color: #f8eed4; }
+[data-mode="light"] .joy-input { background: rgba(30,8,24,0.6); color: #f8eed4; border-color: rgba(200,23,110,0.3); }
+[data-mode="light"] .joy-input::placeholder { color: rgba(248,238,212,0.5); }
+[data-mode="light"] .oil-modal { color: #f8eed4; }
+[data-mode="light"] .oil-modal-date { color: #f8eed4; }
+[data-mode="light"] .oil-modal-rest-text { color: #d4a0b8; }
+[data-mode="light"] .oil-modal-rest-sub { color: #b090c8; }
+[data-mode="light"] .oil-modal-card-how { color: #d4a0b8; }
+[data-mode="light"] .oil-modal-card-tip { color: #b090c8; }
+[data-mode="light"] .oil-modal-chip { color: #f8eed4; }
+/* mb-result-cat badge in light mode */
+[data-mode="light"] .mb-result-cat { background: rgba(200,23,110,0.1); color: var(--text-mid); }
+[data-mode="light"] .mb-cat { border-bottom-color: rgba(0,0,0,0.06); }
+[data-mode="light"] .mb-result-item { border-bottom-color: rgba(0,0,0,0.06); }
+
 [data-theme="male"][data-mode="light"] {
   --rose-pale:  #dbeafe;
   --blush:      #eff6ff;
@@ -1280,17 +1299,18 @@ body {
   background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(240,204,96,0.05) 0%, transparent 70%);
   pointer-events: none;
 }
-.mot-stars { font-size: 15px; color: var(--gold); letter-spacing: 10px; margin-bottom: 24px; opacity: 0.6; }
+/* Motivation always has hardcoded dark bg — text must always be light regardless of mode */
+.mot-stars { font-size: 15px; color: #f0cc60; letter-spacing: 10px; margin-bottom: 24px; opacity: 0.7; }
 .mot-h {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(28px,6vw,52px); font-weight: 700;
-  color: var(--text); line-height: 1.25; margin-bottom: 20px;
+  color: #f8eed4; line-height: 1.25; margin-bottom: 20px;
 }
-.mot-h em { font-style: italic; color: var(--rose); font-weight: 300; }
-.mot-p { font-size: 14px; color: var(--text-mid); max-width: 520px; margin: 0 auto 10px; line-height: 1.85; }
+.mot-h em { font-style: italic; color: #ff5c9d; font-weight: 300; }
+.mot-p { font-size: 14px; color: #d4a0b8; max-width: 520px; margin: 0 auto 10px; line-height: 1.85; }
 .mot-q {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px; font-style: italic; color: var(--gold);
+  font-size: 22px; font-style: italic; color: #f0cc60;
   margin-top: 28px;
 }
 
@@ -3871,26 +3891,33 @@ body {
 /* mode-fab moved to sidebar — hide the floating version everywhere */
 .mode-fab { display: none; }
 
-/* ── Sidebar mode toggle (desktop) ── */
+/* ── Sidebar mode toggle (desktop) — floating cage ── */
 .nav-mode-toggle {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  background: none;
-  border: none;
-  border-top: 1px solid rgba(255,92,157,0.12);
-  margin-top: 8px;
-  padding: 12px 8px;
+  width: calc(100% - 16px);
+  margin: 10px 8px 8px;
+  background: rgba(255,92,157,0.07);
+  border: 1.5px solid rgba(255,92,157,0.35);
+  border-radius: 18px;
+  padding: 10px 6px;
   font-family: 'Outfit', sans-serif;
   color: var(--text-soft);
   cursor: pointer;
   text-align: center;
   gap: 4px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 2px 12px rgba(255,92,157,0.12), inset 0 1px 0 rgba(255,255,255,0.05);
 }
-.nav-mode-toggle:hover { color: var(--gold-light); background: rgba(235,80,160,0.07); }
+.nav-mode-toggle:hover {
+  background: rgba(255,92,157,0.14);
+  border-color: var(--rose);
+  color: var(--rose);
+  box-shadow: 0 4px 18px rgba(255,92,157,0.25);
+  transform: scale(1.03);
+}
 @media (max-width: 768px) { .nav-mode-toggle { display: none; } }
 
 .joy-overlay {

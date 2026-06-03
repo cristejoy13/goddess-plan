@@ -743,41 +743,6 @@ function RemindersScreen({ onBack, user }) {
 }
 
 /* ─── Appearance Screen ─── */
-function AppearanceScreen({ onBack, colorMode, setColorMode }) {
-  return (
-    <div className="section">
-      <button className="section-back-btn" onClick={onBack}>‹ Settings</button>
-      <div className="s-header" style={{ marginBottom: 20 }}>
-        <div className="s-tag">Appearance</div>
-        <h2 className="s-title">App <em>Appearance</em></h2>
-        <p className="s-desc">Choose how the app looks on your device. Your choice is saved automatically.</p>
-      </div>
-      <div className="g-card splash-item">
-        <div className="settings-section-title" style={{ marginBottom: 14 }}>🎨 Color Mode</div>
-        <div className="app-mode-grid">
-          <div className="app-mode-option">
-            <button
-              className={`ob-gender-btn app-mode-btn${colorMode === 'dark' ? ' selected' : ''}`}
-              onClick={() => setColorMode('dark')}
-            >
-              🌙 Dark Mode
-            </button>
-            <p className="app-mode-desc">Deep backgrounds, easy on the eyes at night.</p>
-          </div>
-          <div className="app-mode-option">
-            <button
-              className={`ob-gender-btn app-mode-btn${colorMode === 'light' ? ' selected' : ''}`}
-              onClick={() => setColorMode('light')}
-            >
-              ☀️ Light Mode
-            </button>
-            <p className="app-mode-desc">Bright backgrounds, great for daytime use.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ─── Admin Screen ─── */
 const ADMIN_EMAILS = ['joy@remoteimagingconsultants.com'];
@@ -870,9 +835,6 @@ export default function Settings({
   if (screen === 'navigate') return <NavigateScreen onBack={() => setScreen('main')} />;
   if (screen === 'about')    return <AboutScreen onBack={() => setScreen('main')} />;
   if (screen === 'reminders') return <RemindersScreen onBack={() => setScreen('main')} user={user} />;
-  if (screen === 'appearance') {
-    return <AppearanceScreen onBack={() => setScreen('main')} colorMode={colorMode} setColorMode={setColorMode} />;
-  }
   if (screen === 'admin') {
     return <AdminScreen
       onBack={() => setScreen('main')}
@@ -900,8 +862,6 @@ export default function Settings({
             desc="Edit profile, avatar, password" onClick={() => openScreen('account')} />
           <SettingsPill icon="🔔" label="Reminders"
             desc="Daily notifications with sound" onClick={() => openScreen('reminders')} />
-          <SettingsPill icon="🎨" label="Appearance"
-            desc={`${colorMode === 'light' ? '☀️ Light' : '🌙 Dark'} mode · color theme`} onClick={() => openScreen('appearance')} />
           <SettingsPill icon="🗂️" label="Navigate the App"
             desc="Gestures, shortcuts, tips" onClick={() => openScreen('navigate')} />
           <SettingsPill icon="🌸" label="About & Help"

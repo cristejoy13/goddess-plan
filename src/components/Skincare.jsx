@@ -847,11 +847,10 @@ function UnderarmRoutine() {
               <li>This replaces your regular deodorant — it controls odour AND brightens in one step</li>
               <li>Use every morning without skipping — consistency is what produces visible brightening</li>
             </ul>
+            <ProductCard brand="Organic Skin Japan" primary name="Intensive Whitening Underarm Deo Mist" badges={['Glutathione', 'Alpha Arbutin', 'Niacinamide', 'Kojic Acid', 'Vitamin C']} why="Five brightening actives in one spray — deodorant AND treatment. Top-ranked on Shopee PH and Calyxta. Search 'OSJ Whitening Deo Mist'." />
+            <ProductCard brand="Luxe Organix" name="Belo Intense White Deo Spray" badges={['Whitening', 'Antiperspirant', 'PH Brand']} why="Filipino medical brand. Watsons PH and Mercury Drug — good starting option." />
+            <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free, hypoallergenic — best for very sensitive skin or after waxing. Available everywhere in PH.</div></div></div>
           </RoutineStep>
-          <div className="divider divider-center splash-item">Products</div>
-          <ProductCard brand="Organic Skin Japan" primary name="Intensive Whitening Underarm Deo Mist" badges={['Glutathione', 'Alpha Arbutin', 'Niacinamide', 'Kojic Acid', 'Vitamin C']} why="Five brightening actives in one spray — deodorant AND treatment in one step. Top-ranked on Shopee PH and Calyxta. Search 'OSJ Whitening Deo Mist'." />
-          <ProductCard brand="Luxe Organix" name="Belo Intense White Deo Spray" badges={['Whitening', 'Antiperspirant', 'PH Brand']} why="Filipino medical brand, widely available at Mercury Drug and Watsons PH. Gentler formula — good option if OSJ isn't locally available." />
-          <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free, hypoallergenic — best for very sensitive skin or directly after waxing. Focus is barrier protection rather than whitening. Available everywhere in PH.</div></div></div>
         </>
       )}
 
@@ -862,43 +861,40 @@ function UnderarmRoutine() {
           </div>
           <RoutineStep num="1" cat="3–4× per week · dry skin only" name="Exfoliate — AHA / Glycolic Acid" open={openStep==='u-n1'} onToggle={() => tog('u-n1')}>
             <ul className="ag-detail-list">
-              <li>Underarms must be completely dry before applying — glycolic on damp skin stings</li>
+              <li>Underarms must be completely dry — glycolic on damp skin stings</li>
               <li>Saturate a cotton pad and swipe once across each underarm — do not scrub</li>
-              <li>Never apply within 24 hours of shaving — wait until skin heals</li>
-              <li>Week 1: use 1× only. Build to 3–4× per week over 4 weeks as skin adjusts</li>
+              <li>Never within 24 hours of shaving — wait until skin heals</li>
+              <li>Week 1: 1× only. Build to 3–4× per week over 4 weeks</li>
             </ul>
-            <div className="step-note">This step exfoliates the dead skin causing dark spots. Consistency beats intensity — slow build prevents irritation.</div>
+            <div className="step-note">Exfoliates the dead skin causing dark spots. Slow build prevents irritation.</div>
+            <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner — most-used Korean product for underarm brightening. Shopee PH, Lazada." />
+            <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget cult classic. Apply with cotton pad. Shopee PH, Lazada, BeautyMNL." />
+            <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads — no cotton needed. YesStyle and Olive Young Global." />
           </RoutineStep>
           <RoutineStep num="2" cat="Daily · 5 min after exfoliant" name="Brighten — Niacinamide Serum" open={openStep==='u-n2'} onToggle={() => tog('u-n2')}>
             <ul className="ag-detail-list">
-              <li>Wait 5 minutes after the acid step before applying serum</li>
-              <li>Apply 3–4 drops, pat gently into each underarm — do not rub</li>
-              <li>Niacinamide blocks melanin transfer to the skin surface — this is what fades dark spots over 4–8 weeks</li>
+              <li>Wait 5 minutes after the acid step before applying</li>
+              <li>Apply 3–4 drops, pat gently — do not rub</li>
+              <li>Niacinamide blocks melanin transfer — fades dark spots over 4–8 weeks</li>
               <li>On nights you skip acid, still apply the serum alone</li>
             </ul>
+            <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot']} why="Niacinamide + yuja Vitamin C — most recommended Korean serum for underarm brightening. Shopee PH, Lazada." />
+            <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="High-concentration niacinamide — 2 drops patted in. Use on nights you skip acid." />
+            <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing']} why="Gentler option — best for sensitive skin or first 2 weeks." />
           </RoutineStep>
           <RoutineStep num="3" cat="Every night · seals everything in" name="Repair — Barrier Cream" open={openStep==='u-n3'} onToggle={() => tog('u-n3')}>
             <ul className="ag-detail-list">
-              <li>Apply a generous layer after the serum has absorbed</li>
-              <li>Seals in the active ingredients and prevents the friction-related inflammation that causes darkening</li>
-              <li>Keeping the skin barrier intact is what allows brightening actives to work faster — never skip this</li>
+              <li>Apply a generous layer after the serum absorbs</li>
+              <li>Seals in actives and prevents friction-related inflammation overnight</li>
+              <li>Intact barrier is what lets brightening actives work faster — never skip</li>
             </ul>
+            <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Panthenol heals friction damage, madecassoside calms post-acid inflammation. Makes all other actives work faster." />
+            <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Centella calms post-shaving and post-acid inflammation overnight." />
+            <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Most accessible — ceramides repair the barrier. Watsons or Mercury Drug PH." />
           </RoutineStep>
-          <div className="note-box note-rose" style={{ marginTop: 8, marginBottom: 16 }}>
-            ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and tiny nicks that trigger the inflammation driving darkening. Waxing removes from the root with far less damage. Laser is the best long-term option. If you shave: shaving cream, with the grain, wait 24 hours before any actives.
+          <div className="note-box note-rose" style={{ marginTop: 8 }}>
+            ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and nicks that trigger inflammation-driven darkening. Waxing removes from the root with far less damage. Laser is best long-term. If you shave: shaving cream, with the grain, 24 hours before any actives.
           </div>
-          <div className="divider divider-center splash-item">Exfoliant</div>
-          <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner for underarms — most-used Korean product for underarm brightening on Shopee PH." />
-          <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget cult classic. Apply with cotton pad. Shopee PH, Lazada, BeautyMNL." />
-          <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads — no cotton needed. YesStyle and Olive Young Global." />
-          <div className="divider divider-center splash-item">Brightening Serum</div>
-          <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot']} why="Niacinamide + yuja Vitamin C — most recommended Korean serum for underarm brightening. Shopee PH, Lazada." />
-          <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="High-concentration niacinamide — 2 drops patted in. Use on nights you skip acid." />
-          <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing']} why="Gentler option — best for sensitive skin or first 2 weeks." />
-          <div className="divider divider-center splash-item">Barrier Repair</div>
-          <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Panthenol heals friction damage, madecassoside calms post-acid inflammation. Makes all other actives work faster." />
-          <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Centella calms post-shaving and post-acid inflammation overnight." />
-          <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Most accessible — ceramides repair the moisture barrier. Watsons or Mercury Drug PH." />
         </>
       )}
     </>
@@ -947,6 +943,9 @@ function TeethRoutine() {
             <li><strong>Do NOT rinse after</strong> — spit only. Leaving the film allows HA to remineralise enamel for 30+ min</li>
           </ul>
           <div className="step-note">💡 HA toothpaste deposits new enamel crystals directly into micro-lesions — rebuilding enamel rather than just coating it. It also whitens naturally by filling surface irregularities.</div>
+          <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="The original clinically studied HA toothpaste. Remineralises micro-cavities, whitens naturally, reduces sensitivity. Search 'Apagard Premio' on Shopee PH or Lazada." />
+          <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper enamel penetration. Popular in dentist communities. iHerb ships to PH." />
+          <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="Familiar brand. Use for 2 weeks before any whitening course. Watsons and Mercury Drug PH." />
         </RoutineStep>
         <RoutineStep num="3" cat="Every morning" name="Floss or Water Flosser" open={openStep==='t-m3'} onToggle={() => tog('t-m3')}>
           <ul className="ag-detail-list">
@@ -962,10 +961,6 @@ function TeethRoutine() {
             <li>Tongue bacteria = #1 source of bad breath — biggest payoff per second spent</li>
           </ul>
         </RoutineStep>
-        <div className="divider divider-center splash-item">Products</div>
-        <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="The original clinically studied HA toothpaste from Japan. Remineralises micro-cavities, whitens naturally, reduces sensitivity. Search 'Apagard Premio' on Shopee PH or Lazada." />
-        <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper enamel penetration. Popular in dentist communities. iHerb ships to PH." />
-        <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="Familiar brand. Use for 2 weeks before any whitening course to build sensitivity protection. Watsons and Mercury Drug PH." />
       </>}
 
       {sub === 'night' && <>
@@ -987,11 +982,10 @@ function TeethRoutine() {
             <li>Optional: salt water rinse before brushing if gums feel sore tonight</li>
           </ul>
           <div className="step-note">The HA film stays on enamel overnight and repairs micro-damage during sleep — this is when most remineralisation happens.</div>
+          <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Most effective overnight — HA film repairs micro-damage during sleep. Same paste as morning. Shopee PH, Lazada." />
+          <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper overnight penetration. iHerb ships to PH." />
+          <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Pressure sensor stops you from brushing too hard. Round head reaches gumline more effectively than manual. Shopee PH." />
         </RoutineStep>
-        <div className="divider divider-center splash-item">Products</div>
-        <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Most effective overnight — HA film repairs micro-damage during sleep. Use the same paste as morning. Shopee PH, Lazada." />
-        <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper overnight penetration. iHerb ships to PH." />
-        <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Pressure sensor stops you from brushing too hard. Round head reaches the gumline more effectively than manual. Highest-impact hardware upgrade for long-term tooth health. Shopee PH." />
       </>}
 
       {sub === 'saltwater' && <>
@@ -1004,6 +998,9 @@ function TeethRoutine() {
             <li>Stir until fully dissolved — use immediately while warm</li>
             <li>Make fresh every time — do not store leftover rinse</li>
           </ul>
+          <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any grocery-brand fine salt works. Under ₱50 at any Philippine supermarket. Most effective and most accessible.</div></div></div>
+          <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Pre-made rinse for consistent concentration — convenient ready-to-use alternative to DIY. iHerb ships to PH." />
+          <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="Kills bacteria without burning or dryness. Watsons and Mercury Drug PH." />
         </RoutineStep>
         <RoutineStep num="2" cat="Before brushing" name="Rinse Technique" open={openStep==='t-s2'} onToggle={() => tog('t-s2')}>
           <ul className="ag-detail-list">
@@ -1020,10 +1017,6 @@ function TeethRoutine() {
             <li>Post-whitening sensitivity — soothing rinse before you brush</li>
           </ul>
         </RoutineStep>
-        <div className="divider divider-center splash-item">Products</div>
-        <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any grocery-brand fine salt works. Under ₱50 at any Philippine supermarket — the most effective and most accessible option.</div></div></div>
-        <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Pre-made rinse with consistent concentration — convenient ready-to-use alternative. iHerb ships to PH." />
-        <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="Kills bacteria without burning or dryness. Watsons and Mercury Drug PH." />
       </>}
 
       {sub === 'whitening' && <>
@@ -1035,6 +1028,7 @@ function TeethRoutine() {
             <li>Use Sensodyne for 2 weeks before — builds potassium nitrate in dentinal tubules, significantly reduces sensitivity during whitening</li>
             <li>Do not use strips if you have untreated cavities, active gum disease, or veneers on front teeth — consult a dentist first</li>
           </ul>
+          <ProductCard brand="Sensodyne" primary name="Sensodyne Pronamel or Rapid Relief" badges={['Potassium Nitrate', 'Sensitivity Protection', 'Enamel']} why="Use for 2 weeks before any whitening course and throughout treatment. Builds potassium nitrate to significantly reduce whitening discomfort. Watsons and Mercury Drug PH." />
         </RoutineStep>
         <RoutineStep num="2" cat="Day of use · prep teeth first" name="Before Applying Strips" open={openStep==='t-w2'} onToggle={() => tog('t-w2')}>
           <ul className="ag-detail-list">
@@ -1049,6 +1043,9 @@ function TeethRoutine() {
             <li>Leave on for directed time (30 min standard, 60 min express strips)</li>
             <li>No eating, drinking, or talking while strips are on</li>
           </ul>
+          <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="The most effective OTC whitening strips globally — professional-level HP, dentist-level results. Shopee PH, Lazada, or iHerb." />
+          <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Lower HP for those prone to sensitivity. Same visible whitening — good starting option." />
+          <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen for maintenance between quarterly courses — paint on before bed, leave overnight. Shopee PH and Lazada." />
         </RoutineStep>
         <RoutineStep num="4" cat="After removing" name="Post-Strip Care" open={openStep==='t-w4'} onToggle={() => tog('t-w4')}>
           <ul className="ag-detail-list">
@@ -1063,10 +1060,6 @@ function TeethRoutine() {
           <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after a course</div><div className="prod-why">Maintains results without committing to a full treatment.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day when sensitive — resume the next. Resolves within 24 hours.</div></div></div>
         </RoutineStep>
-        <div className="divider divider-center splash-item">Products</div>
-        <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="The most effective OTC whitening strips globally — professional-level HP formula, dentist-level results. Shopee PH, Lazada, or iHerb." />
-        <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Lower HP concentration for those prone to sensitivity. Same visible whitening — good starting option." />
-        <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen for maintenance between quarterly courses — paint on before bed, leave overnight, no wait time. Shopee PH and Lazada." />
       </>}
     </>
   );
