@@ -352,16 +352,17 @@ body {
 }
 .search-bar-fixed .search-wrap { margin: 0 auto; }
 
-/* Desktop: flex row starting after the 118px sidebar */
+/* Desktop: flex row, content centered in area right of sidebar */
 @media (min-width: 769px) {
   .search-bar-fixed {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding-left: 126px;  /* 118px sidebar + 8px gap */
+    justify-content: center;
+    gap: 10px;
+    padding-left: 126px;  /* clear the 118px sidebar */
     padding-right: 20px;
   }
-  .search-bar-fixed .search-wrap { flex: 1; margin: 0; }
+  .search-bar-fixed .search-wrap { flex: 0 1 660px; min-width: 200px; margin: 0; }
 }
 
 /* ─── SIDEBAR NAV — fixed left, below search bar ─── */
@@ -3820,16 +3821,14 @@ body {
 
 /* ─── JOY ASSISTANT ─── */
 .joy-fab {
-  display: none; /* Joy is now in the search bar on all screen sizes */
+  display: none !important; /* Joy lives in the search bar — hide FAB everywhere */
   position: fixed;
   bottom: 82px;
   right: 24px;
   z-index: 400;
-  /* Prevent iOS from showing copy/callout menu on long press */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
-  /* Prevent page from scrolling when touching/dragging the FAB */
   touch-action: none;
   width: 64px;
   height: 76px;
@@ -3838,7 +3837,6 @@ body {
   background: linear-gradient(160deg, #3d1232, #1a0828);
   box-shadow: 0 6px 28px rgba(255,92,157,0.35), 0 0 0 4px rgba(255,92,157,0.08);
   cursor: pointer;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
