@@ -468,6 +468,15 @@ export default function App() {
           </button>
         </div>
         <SearchBar onNavigate={navigate} />
+        {/* Desktop: Joy beside search bar (hidden on mobile — mobile uses mob-joy-btn) */}
+        <button
+          className="search-joy-btn"
+          onClick={() => setJoyOpen(true)}
+          aria-label="Open Joy"
+        >
+          <span className="search-joy-emoji">🥰</span>
+          <span className="search-joy-name">Joy</span>
+        </button>
       </div>
 
       {/* Backdrop — closes the drawer when tapping outside on mobile */}
