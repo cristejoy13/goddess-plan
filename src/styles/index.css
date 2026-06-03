@@ -352,6 +352,18 @@ body {
 }
 .search-bar-fixed .search-wrap { margin: 0 auto; }
 
+/* Desktop: flex row starting after the 118px sidebar */
+@media (min-width: 769px) {
+  .search-bar-fixed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 126px;  /* 118px sidebar + 8px gap */
+    padding-right: 20px;
+  }
+  .search-bar-fixed .search-wrap { flex: 1; margin: 0; }
+}
+
 /* ─── SIDEBAR NAV — fixed left, below search bar ─── */
 .sidebar {
   position: fixed;
