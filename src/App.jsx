@@ -456,9 +456,6 @@ export default function App() {
             <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
             <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
           </button>
-          <button className="mob-joy-btn" onClick={() => setJoyOpen(true)} aria-label="Open Joy">
-            <div className="mob-joy-circle">🥰</div>
-          </button>
           <button
             className="mob-mode-btn"
             onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
@@ -467,8 +464,7 @@ export default function App() {
             <div className="mob-mode-circle">{colorMode === 'dark' ? '☀️' : '🌙'}</div>
           </button>
         </div>
-        <SearchBar onNavigate={navigate} />
-        {/* Desktop: Joy beside search bar (hidden on mobile — mobile uses mob-joy-btn) */}
+        {/* Joy beside search bar — left on desktop, right of controls on mobile */}
         <button
           className="search-joy-btn"
           onClick={() => setJoyOpen(true)}
@@ -477,6 +473,7 @@ export default function App() {
           <span className="search-joy-emoji">🥰</span>
           <span className="search-joy-name">Joy</span>
         </button>
+        <SearchBar onNavigate={navigate} />
       </div>
 
       {/* Backdrop — closes the drawer when tapping outside on mobile */}

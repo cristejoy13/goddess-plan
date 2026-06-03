@@ -3855,8 +3855,8 @@ body {
 
 /* ── Search Bar Joy Button (desktop — beside search input) ── */
 .search-joy-btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 2px solid rgba(255,92,157,0.5);
   background: linear-gradient(160deg, #3d1232, #1a0828);
@@ -3872,7 +3872,7 @@ body {
   animation: joyPulse 3s ease-in-out infinite;
 }
 .search-joy-btn:hover {
-  transform: scale(1.12);
+  transform: scale(1.1);
   box-shadow: 0 6px 26px rgba(255,92,157,0.52), 0 0 0 5px rgba(255,92,157,0.14);
 }
 .search-joy-emoji { font-size: 18px; line-height: 1; }
@@ -4893,8 +4893,10 @@ body {
     animation: joyPulse 3s ease-in-out infinite;
   }
 
-  /* Hide desktop search-joy-btn on mobile (mob-joy-btn handles it) */
-  .search-joy-btn { display: none; }
+  /* On mobile, search-joy-btn is visible and sized to match the compact search bar */
+  .search-joy-btn { width: 38px; height: 38px; }
+  .search-joy-emoji { font-size: 16px; }
+  .search-joy-name { display: none; }
 
   .mob-mode-btn {
     background: none;
