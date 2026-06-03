@@ -459,6 +459,13 @@ export default function App() {
           <button className="mob-joy-btn" onClick={() => setJoyOpen(true)} aria-label="Open Joy">
             <div className="mob-joy-circle">🥰</div>
           </button>
+          <button
+            className="mob-mode-btn"
+            onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
+            aria-label="Toggle light/dark mode"
+          >
+            <div className="mob-mode-circle">{colorMode === 'dark' ? '☀️' : '🌙'}</div>
+          </button>
         </div>
         <SearchBar onNavigate={navigate} />
       </div>
@@ -529,6 +536,15 @@ export default function App() {
       </div>
 
       <JoyAssistant forceOpen={joyOpen} onClose={() => setJoyOpen(false)} user={user} onNavigate={navigate} />
+      <button
+        className="mode-fab"
+        onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
+        aria-label="Toggle light/dark mode"
+        title={colorMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+      >
+        <span className="mode-fab-icon">{colorMode === 'dark' ? '☀️' : '🌙'}</span>
+        <span className="mode-fab-label">{colorMode === 'dark' ? 'Light' : 'Dark'}</span>
+      </button>
 
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>

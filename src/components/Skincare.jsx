@@ -809,6 +809,9 @@ function HairTab({ onSelectOil }) {
 /* ─── Underarm Routine ─── */
 function UnderarmRoutine() {
   const [sub, setSub] = useState('morning');
+  const [openStep, setOpenStep] = useState(null);
+  function switchSub(s) { setSub(s); setOpenStep(null); }
+  function tog(id) { setOpenStep(p => p === id ? null : id); }
   const UNDERARM_TABS = [
     { id: 'morning', label: '☀️ Morning' },
     { id: 'night',   label: '🌙 Night' },
@@ -817,7 +820,7 @@ function UnderarmRoutine() {
     <>
       <div className="sk-tabs splash-item">
         {UNDERARM_TABS.map(t => (
-          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => setSub(t.id)}>
+          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => switchSub(t.id)}>
             {t.label}
           </button>
         ))}
@@ -826,72 +829,76 @@ function UnderarmRoutine() {
       {sub === 'morning' && (
         <>
           <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-            Morning is simple — shower, dry completely, then apply your whitening deodorant spray. That's it. All actives are evening-only.
+            Morning is simple — shower, dry completely, then apply your whitening deodorant spray. All actives are evening-only.
           </div>
-          <div className="g-card splash-item">
-            <div className="ag-detail-section-title">Steps</div>
+          <RoutineStep num="1" cat="After Shower" name="Pat Dry Completely" open={openStep==='u-m1'} onToggle={() => tog('u-m1')}>
             <ul className="ag-detail-list">
-              <li>Shower as usual — pat underarms completely dry before applying anything</li>
-              <li>Apply whitening deo mist from 10–15 cm away — even coverage across both underarms</li>
-              <li>Wait 30 seconds to dry before dressing — never apply on damp skin</li>
-              <li>This replaces your regular deodorant entirely — it works as both odour control and brightening treatment</li>
+              <li>Shower as usual with gentle body wash</li>
+              <li>After showering, pat underarms completely dry with a clean towel — do not rub</li>
+              <li>Wait 2–3 minutes if needed — all moisture must be gone before applying any product</li>
+              <li>Damp skin dilutes and weakens any deodorant or brightening active</li>
             </ul>
-          </div>
+          </RoutineStep>
+          <RoutineStep num="2" cat="Daily · replaces deodorant" name="Apply Whitening Deo Mist" open={openStep==='u-m2'} onToggle={() => tog('u-m2')}>
+            <ul className="ag-detail-list">
+              <li>Hold the spray 10–15 cm away from the underarm</li>
+              <li>Mist evenly across the entire area — 2–3 short bursts per side</li>
+              <li>Wait 30 seconds for it to dry before pulling on clothing</li>
+              <li>This replaces your regular deodorant — it controls odour AND brightens in one step</li>
+              <li>Use every morning without skipping — consistency is what produces visible brightening</li>
+            </ul>
+          </RoutineStep>
           <div className="divider divider-center splash-item">Products</div>
-          <ProductCard brand="Organic Skin Japan" primary name="Intensive Whitening Underarm Deo Mist" badges={['Glutathione', 'Alpha Arbutin', 'Niacinamide', 'Kojic Acid', 'Vitamin C']} why="Five brightening actives in one deodorant spray — it works as your deodorant AND your daily brightening treatment. Top-ranked on Shopee PH and Calyxta. Search 'OSJ Whitening Deo Mist' on Shopee PH or Lazada." />
-          <ProductCard brand="Luxe Organix" name="Belo Intense White Deo Spray" badges={['Whitening', 'Antiperspirant', 'PH Brand']} why="Filipino medical brand, widely available at Mercury Drug and Watsons PH. Gentler formula — good starting option if OSJ isn't available locally." />
-          <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free, hypoallergenic — best backup option for very sensitive underarm skin or after waxing. Focuses on barrier-protecting moisturisation rather than whitening. Available everywhere in the Philippines.</div></div></div>
+          <ProductCard brand="Organic Skin Japan" primary name="Intensive Whitening Underarm Deo Mist" badges={['Glutathione', 'Alpha Arbutin', 'Niacinamide', 'Kojic Acid', 'Vitamin C']} why="Five brightening actives in one spray — deodorant AND treatment in one step. Top-ranked on Shopee PH and Calyxta. Search 'OSJ Whitening Deo Mist'." />
+          <ProductCard brand="Luxe Organix" name="Belo Intense White Deo Spray" badges={['Whitening', 'Antiperspirant', 'PH Brand']} why="Filipino medical brand, widely available at Mercury Drug and Watsons PH. Gentler formula — good option if OSJ isn't locally available." />
+          <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free, hypoallergenic — best for very sensitive skin or directly after waxing. Focus is barrier protection rather than whitening. Available everywhere in PH.</div></div></div>
         </>
       )}
 
       {sub === 'night' && (
         <>
           <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-            Evening is when the real brightening work happens. Three steps: exfoliate → brighten → repair. All actives go on dry skin only.
+            Three steps: exfoliate → brighten → repair. All actives on dry skin only. Results in 4–6 weeks.
           </div>
-          <div className="g-card splash-item">
-            <div className="ag-detail-section-title">Step 1 — Exfoliate (3–4× per week)</div>
+          <RoutineStep num="1" cat="3–4× per week · dry skin only" name="Exfoliate — AHA / Glycolic Acid" open={openStep==='u-n1'} onToggle={() => tog('u-n1')}>
             <ul className="ag-detail-list">
-              <li>Apply to completely dry underarms — glycolic on damp skin stings</li>
-              <li>Saturate a cotton pad and swipe once; do not scrub</li>
-              <li>Never apply within 24 hours of shaving — wait until skin heals first</li>
-              <li>Start 1× per week and build to 3–4× over 4 weeks</li>
+              <li>Underarms must be completely dry before applying — glycolic on damp skin stings</li>
+              <li>Saturate a cotton pad and swipe once across each underarm — do not scrub</li>
+              <li>Never apply within 24 hours of shaving — wait until skin heals</li>
+              <li>Week 1: use 1× only. Build to 3–4× per week over 4 weeks as skin adjusts</li>
             </ul>
-          </div>
-          <div className="g-card splash-item">
-            <div className="ag-detail-section-title">Step 2 — Brighten (daily, 5 min after exfoliant)</div>
+            <div className="step-note">This step exfoliates the dead skin causing dark spots. Consistency beats intensity — slow build prevents irritation.</div>
+          </RoutineStep>
+          <RoutineStep num="2" cat="Daily · 5 min after exfoliant" name="Brighten — Niacinamide Serum" open={openStep==='u-n2'} onToggle={() => tog('u-n2')}>
             <ul className="ag-detail-list">
-              <li>Apply 3–4 drops of niacinamide serum after the acid step has absorbed</li>
-              <li>Pat in gently — niacinamide blocks melanin transfer and fades dark spots over 4–8 weeks</li>
-              <li>On nights you skip acid, you can still apply the serum alone</li>
+              <li>Wait 5 minutes after the acid step before applying serum</li>
+              <li>Apply 3–4 drops, pat gently into each underarm — do not rub</li>
+              <li>Niacinamide blocks melanin transfer to the skin surface — this is what fades dark spots over 4–8 weeks</li>
+              <li>On nights you skip acid, still apply the serum alone</li>
             </ul>
-          </div>
-          <div className="g-card splash-item">
-            <div className="ag-detail-section-title">Step 3 — Repair (every night)</div>
+          </RoutineStep>
+          <RoutineStep num="3" cat="Every night · seals everything in" name="Repair — Barrier Cream" open={openStep==='u-n3'} onToggle={() => tog('u-n3')}>
             <ul className="ag-detail-list">
-              <li>Apply a generous layer of barrier repair cream after the serum absorbs</li>
-              <li>This seals in the actives and prevents friction-induced inflammation overnight</li>
-              <li>Keeping the barrier intact is what allows brightening actives to work faster</li>
+              <li>Apply a generous layer after the serum has absorbed</li>
+              <li>Seals in the active ingredients and prevents the friction-related inflammation that causes darkening</li>
+              <li>Keeping the skin barrier intact is what allows brightening actives to work faster — never skip this</li>
             </ul>
-          </div>
+          </RoutineStep>
           <div className="note-box note-rose" style={{ marginTop: 8, marginBottom: 16 }}>
-            ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and tiny nicks that trigger the inflammation driving underarm darkening. Waxing removes hair from the root with far less surface damage. If you shave, use shaving cream, shave with the grain, and wait 24 hours before any actives. Laser is the best long-term option for skin tone.
+            ⚠️ <strong>Shaving vs. waxing:</strong> Shaving creates friction and tiny nicks that trigger the inflammation driving darkening. Waxing removes from the root with far less damage. Laser is the best long-term option. If you shave: shaving cream, with the grain, wait 24 hours before any actives.
           </div>
-
-          <div className="divider divider-center splash-item">Exfoliant Products</div>
-          <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner that works on underarms. AHA exfoliates dark dead skin, BHA penetrates pores, PHA soothes. Most-used Korean product for underarm brightening on Shopee PH." />
-          <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget cult classic for underarm darkening — hugely popular on TikTok and Reddit. Apply with cotton pad. Available on Shopee PH, Lazada, BeautyMNL." />
-          <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads — no cotton needed. Textured side exfoliates, smooth side soothes. YesStyle and Olive Young Global." />
-
-          <div className="divider divider-center splash-item">Brightening Serum Products</div>
-          <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot', 'Brightening']} why="Niacinamide + yuja fruit Vitamin C — most recommended Korean serum for underarm brightening. Shopee PH, Lazada, BeautyMNL." />
-          <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="High-concentration niacinamide — 2 drops patted into underarms. Use on nights you skip acid." />
+          <div className="divider divider-center splash-item">Exfoliant</div>
+          <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner for underarms — most-used Korean product for underarm brightening on Shopee PH." />
+          <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget cult classic. Apply with cotton pad. Shopee PH, Lazada, BeautyMNL." />
+          <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads — no cotton needed. YesStyle and Olive Young Global." />
+          <div className="divider divider-center splash-item">Brightening Serum</div>
+          <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot']} why="Niacinamide + yuja Vitamin C — most recommended Korean serum for underarm brightening. Shopee PH, Lazada." />
+          <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="High-concentration niacinamide — 2 drops patted in. Use on nights you skip acid." />
           <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing']} why="Gentler option — best for sensitive skin or first 2 weeks." />
-
-          <div className="divider divider-center splash-item">Repair Cream Products</div>
-          <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Panthenol heals friction damage, madecassoside calms post-acid inflammation. The barrier layer that makes all other actives work faster." />
-          <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Tiger grass (centella) calms post-shaving and post-acid inflammation overnight." />
-          <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Most accessible option — ceramides repair the moisture barrier. Available at any Watsons or Mercury Drug PH." />
+          <div className="divider divider-center splash-item">Barrier Repair</div>
+          <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Panthenol heals friction damage, madecassoside calms post-acid inflammation. Makes all other actives work faster." />
+          <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Centella calms post-shaving and post-acid inflammation overnight." />
+          <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Most accessible — ceramides repair the moisture barrier. Watsons or Mercury Drug PH." />
         </>
       )}
     </>
@@ -901,6 +908,9 @@ function UnderarmRoutine() {
 /* ─── Teeth Routine ─── */
 function TeethRoutine() {
   const [sub, setSub] = useState('morning');
+  const [openStep, setOpenStep] = useState(null);
+  function switchSub(s) { setSub(s); setOpenStep(null); }
+  function tog(id) { setOpenStep(p => p === id ? null : id); }
   const TEETH_TABS = [
     { id: 'morning',   label: '☀️ Morning' },
     { id: 'night',     label: '🌙 Night' },
@@ -911,143 +921,152 @@ function TeethRoutine() {
     <>
       <div className="sk-tabs splash-item">
         {TEETH_TABS.map(t => (
-          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => setSub(t.id)}>
+          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => switchSub(t.id)}>
             {t.label}
           </button>
         ))}
       </div>
 
-      {sub === 'morning' && <><div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Morning routine builds the foundation — oil pulling clears bacteria, HA toothpaste remineralises enamel, and correct brushing protects gum health.
-      </div>
-
-      <div className="divider divider-center splash-item">☀️ Morning Routine</div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 1 — Oil Pulling (10–15 min, before anything else)</div>
-        <ul className="ag-detail-list">
-          <li>Take 1 tablespoon of virgin coconut oil on an empty stomach — before brushing, before drinking water</li>
-          <li>Swish gently (not vigorously — your jaw will tire) for 10–15 minutes while you shower or get dressed</li>
-          <li>Spit into the trash, never the sink — coconut oil solidifies in pipes and causes clogs</li>
-          <li>Rinse mouth with warm water, then proceed to brushing</li>
-          <li>Do 3–5× per week — it does not need to be daily</li>
-        </ul>
-        <p className="ag-detail-body" style={{ marginTop: 8 }}>Oil pulling traps fat-soluble bacteria in the mouth that are linked to bad breath, gum inflammation, and surface staining — pulling them out reduces bacteria at the source. 3–5× per week is enough to see results over 4–8 weeks.</p>
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 2 — Brush with Hydroxyapatite Toothpaste (2 min)</div>
-        <ul className="ag-detail-list">
-          <li>Soft-bristle toothbrush at a 45° angle to the gumline — gentle circular strokes, never hard scrubbing</li>
-          <li>Brush all surfaces: outer, inner, and chewing surfaces of every tooth, plus the tongue</li>
-          <li><strong>Do NOT rinse with water after brushing</strong> — spit only, and leave the toothpaste film on teeth. This lets hydroxyapatite continue remineralising enamel for 30+ minutes</li>
-        </ul>
-        <div className="note-box note-rose" style={{ margin: '12px 0 0' }}>
-          💡 <strong>Why hydroxyapatite?</strong> Your tooth enamel is made of hydroxyapatite (HA) crystals. Fluoride toothpaste creates a protective layer; HA toothpaste directly deposits new crystals into micro-lesions and early cavities — it rebuilds enamel rather than just coating it. It also whitens naturally by filling surface irregularities that scatter light.
+      {sub === 'morning' && <>
+        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+          Morning routine builds the foundation — oil pulling clears bacteria, HA toothpaste remineralises enamel, and correct brushing protects gum health.
         </div>
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 3 — Floss or Water Flosser</div>
-        <ul className="ag-detail-list">
-          <li>Floss between every tooth — reach below the gumline with a C-shape around each tooth</li>
-          <li>Or use a water flosser (Waterpik or any Shopee brand) for 60 seconds along the gumline — easier to maintain daily</li>
-          <li>Flossing removes plaque no toothbrush can reach — skipping it leaves 35% of tooth surfaces uncleaned</li>
-        </ul>
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Step 4 — Tongue Scraper</div>
-        <ul className="ag-detail-list">
-          <li>Use a metal or plastic tongue scraper — not your toothbrush (it pushes bacteria around rather than removing it)</li>
-          <li>Start at the back of the tongue, pull forward with light pressure — 5–7 strokes, rinsing scraper between each</li>
-          <li>Tongue bacteria are the #1 cause of bad breath — this single step makes the biggest difference</li>
-        </ul>
-      </div>
-
-      <div className="divider divider-center splash-item">Products</div>
-      <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="The original clinically studied HA toothpaste from Japan. Remineralises micro-cavities, whitens naturally, and reduces sensitivity. Search 'Apagard Premio' on Shopee PH or Lazada." />
-      <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free', 'Clean Formula']} why="Nano-HA for deeper enamel penetration. Popular with dentist communities on TikTok and Reddit. Available on iHerb (ships to PH)." />
-      <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="For those who prefer a familiar brand. Use for 2 weeks before any whitening course to reduce sensitivity. Watsons and Mercury Drug PH." />
+        <RoutineStep num="1" cat="Before anything else · 3–5× per week" name="Oil Pulling" open={openStep==='t-m1'} onToggle={() => tog('t-m1')}>
+          <ul className="ag-detail-list">
+            <li>1 tablespoon coconut oil on empty stomach — before brushing or drinking water</li>
+            <li>Swish gently for 10–15 minutes while showering or getting dressed</li>
+            <li>Spit into the trash — never the sink (oil solidifies in pipes)</li>
+            <li>Rinse with warm water, then proceed to brushing</li>
+          </ul>
+          <div className="step-note">Traps fat-soluble bacteria linked to bad breath, gum inflammation, and surface staining. 3–5× per week is enough — does not need to be daily.</div>
+        </RoutineStep>
+        <RoutineStep num="2" cat="Every morning · 2 min" name="Brush with HA Toothpaste" open={openStep==='t-m2'} onToggle={() => tog('t-m2')}>
+          <ul className="ag-detail-list">
+            <li>Soft-bristle brush at 45° to the gumline — gentle circular strokes, never hard scrubbing</li>
+            <li>All surfaces: outer, inner, chewing, and the tongue</li>
+            <li><strong>Do NOT rinse after</strong> — spit only. Leaving the film allows HA to remineralise enamel for 30+ min</li>
+          </ul>
+          <div className="step-note">💡 HA toothpaste deposits new enamel crystals directly into micro-lesions — rebuilding enamel rather than just coating it. It also whitens naturally by filling surface irregularities.</div>
+        </RoutineStep>
+        <RoutineStep num="3" cat="Every morning" name="Floss or Water Flosser" open={openStep==='t-m3'} onToggle={() => tog('t-m3')}>
+          <ul className="ag-detail-list">
+            <li>C-shape around each tooth, reach below the gumline</li>
+            <li>Or water flosser 60 seconds along the gumline — easier to keep as a daily habit</li>
+            <li>Skipping flossing leaves 35% of tooth surfaces uncleaned</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="4" cat="Every morning · 30 seconds" name="Tongue Scraper" open={openStep==='t-m4'} onToggle={() => tog('t-m4')}>
+          <ul className="ag-detail-list">
+            <li>Metal or plastic scraper — not your toothbrush (it moves bacteria rather than removes it)</li>
+            <li>5–7 strokes from back to front, rinse scraper between each</li>
+            <li>Tongue bacteria = #1 source of bad breath — biggest payoff per second spent</li>
+          </ul>
+        </RoutineStep>
+        <div className="divider divider-center splash-item">Products</div>
+        <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="The original clinically studied HA toothpaste from Japan. Remineralises micro-cavities, whitens naturally, reduces sensitivity. Search 'Apagard Premio' on Shopee PH or Lazada." />
+        <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper enamel penetration. Popular in dentist communities. iHerb ships to PH." />
+        <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="Familiar brand. Use for 2 weeks before any whitening course to build sensitivity protection. Watsons and Mercury Drug PH." />
       </>}
 
       {sub === 'night' && <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Night routine: floss first so HA paste can reach all surfaces, then brush and leave the paste on — your longest enamel repair window of the day.
-      </div>
-      <div className="g-card splash-item">
-        <ul className="ag-detail-list">
-          <li><strong>Floss first</strong> — remove all food before brushing so HA paste reaches everywhere</li>
-          <li><strong>Brush 2 minutes</strong> with HA toothpaste — 45° angle, gentle circular strokes</li>
-          <li><strong>Do not rinse</strong> — spit only. Overnight = your longest enamel repair window</li>
-          <li><strong>No eating or drinking</strong> (except water) after brushing</li>
-          <li>Optional: salt water rinse before brushing if gums feel sore</li>
-        </ul>
-      </div>
-      <div className="divider divider-center splash-item">Products</div>
-      <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Overnight is the most effective window for HA remineralisation — the film stays on enamel and repairs micro-damage during sleep. Use the same paste as morning." />
-      <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper overnight penetration. iHerb ships to PH." />
-      <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Pressure sensor prevents over-brushing that erodes enamel over time. Round brush head reaches gumline more effectively than manual. The highest-impact hardware upgrade for long-term tooth health. Shopee PH." />
+        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+          Night routine: floss first so HA paste can reach all surfaces, then brush and leave it on — your longest enamel repair window of the day.
+        </div>
+        <RoutineStep num="1" cat="Before brushing · every night" name="Floss First" open={openStep==='t-n1'} onToggle={() => tog('t-n1')}>
+          <ul className="ag-detail-list">
+            <li>Floss between every tooth — C-shape around each, reach below the gumline</li>
+            <li>Removes food debris so HA toothpaste can reach all surfaces during brushing</li>
+            <li>Flossing at night is more important than in the morning — food has been sitting there all day</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="2" cat="Every night · 2 min" name="Brush with HA Toothpaste" open={openStep==='t-n2'} onToggle={() => tog('t-n2')}>
+          <ul className="ag-detail-list">
+            <li>Same 45° gentle circular technique as morning</li>
+            <li><strong>Do not rinse</strong> — spit only. Overnight is your longest enamel repair window</li>
+            <li>No eating or drinking (except water) after brushing</li>
+            <li>Optional: salt water rinse before brushing if gums feel sore tonight</li>
+          </ul>
+          <div className="step-note">The HA film stays on enamel overnight and repairs micro-damage during sleep — this is when most remineralisation happens.</div>
+        </RoutineStep>
+        <div className="divider divider-center splash-item">Products</div>
+        <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Most effective overnight — HA film repairs micro-damage during sleep. Use the same paste as morning. Shopee PH, Lazada." />
+        <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper overnight penetration. iHerb ships to PH." />
+        <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Pressure sensor stops you from brushing too hard. Round head reaches the gumline more effectively than manual. Highest-impact hardware upgrade for long-term tooth health. Shopee PH." />
       </>}
 
       {sub === 'saltwater' && <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Salt water rinse is a targeted treatment for gum irritation, sores, or sensitivity — not a daily step. Always use before brushing, not after.
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">How to Make It</div>
-        <ul className="ag-detail-list">
-          <li>½ teaspoon fine salt dissolved in 240 ml warm water</li>
-          <li>Swish gently for 30 seconds — spit, do not swallow</li>
-          <li>Rinse with plain water, then brush</li>
-        </ul>
-        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>When to Use</div>
-        <ul className="ag-detail-list">
-          <li>Gum soreness or bleeding — 2–3× per week until resolved</li>
-          <li>After tooth extraction — wait 24 hours first</li>
-          <li>Canker sores or mouth ulcers</li>
-          <li>Post-whitening sensitivity — soothing rinse before you brush</li>
-        </ul>
-      </div>
-      <div className="divider divider-center splash-item">Products</div>
-      <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any grocery-brand fine salt works — no special formulation needed. Under ₱50 at any Philippine supermarket. The most effective and most accessible option.</div></div></div>
-      <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Pre-made alcohol-free rinse with consistent concentration. Good when you want a ready-to-use option. Available on iHerb (ships to PH)." />
-      <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="Kills bacteria without burning or oral dryness. Widely available at Watsons and Mercury Drug PH." />
+        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+          Salt water rinse is a targeted treatment — not a daily step. Use it for gum irritation, sores, or sensitivity. Always before brushing, never after.
+        </div>
+        <RoutineStep num="1" cat="When needed" name="Prepare the Rinse" open={openStep==='t-s1'} onToggle={() => tog('t-s1')}>
+          <ul className="ag-detail-list">
+            <li>½ teaspoon fine salt dissolved in 240 ml warm water</li>
+            <li>Stir until fully dissolved — use immediately while warm</li>
+            <li>Make fresh every time — do not store leftover rinse</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="2" cat="Before brushing" name="Rinse Technique" open={openStep==='t-s2'} onToggle={() => tog('t-s2')}>
+          <ul className="ag-detail-list">
+            <li>Swish gently for 30 seconds, covering all areas of the mouth</li>
+            <li>Spit completely — do not swallow</li>
+            <li>Rinse once with plain water, then brush as normal</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="3" cat="Reference" name="When to Use" open={openStep==='t-s3'} onToggle={() => tog('t-s3')}>
+          <ul className="ag-detail-list">
+            <li>Gum soreness or bleeding gums — 2–3× per week until resolved</li>
+            <li>After tooth extraction — wait 24 hours first</li>
+            <li>Canker sores or mouth ulcers</li>
+            <li>Post-whitening sensitivity — soothing rinse before you brush</li>
+          </ul>
+        </RoutineStep>
+        <div className="divider divider-center splash-item">Products</div>
+        <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any grocery-brand fine salt works. Under ₱50 at any Philippine supermarket — the most effective and most accessible option.</div></div></div>
+        <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Pre-made rinse with consistent concentration — convenient ready-to-use alternative. iHerb ships to PH." />
+        <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="Kills bacteria without burning or dryness. Watsons and Mercury Drug PH." />
       </>}
 
       {sub === 'whitening' && <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        One whitening course every 3 months keeps teeth noticeably white without over-whitening. Always prep with Sensodyne for 2 weeks before starting.
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Before You Start</div>
-        <ul className="ag-detail-list">
-          <li>Use Sensodyne for 2 weeks before — builds potassium nitrate in dentinal tubules, significantly reduces sensitivity</li>
-          <li>Do not use if you have untreated cavities, active gum disease, or veneers on front teeth</li>
-          <li>Brush 30 min BEFORE applying strips (fluoride right before reduces whitening effectiveness)</li>
-          <li>Dry teeth with a tissue — strips adhere far better to dry enamel</li>
-        </ul>
-        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>Applying</div>
-        <ul className="ag-detail-list">
-          <li>Gel side faces teeth — align straight edge with gumline, do not overlap onto gum tissue</li>
-          <li>Press firmly, fold any excess behind teeth</li>
-          <li>Leave on for directed time (30 min standard, 60 min express strips)</li>
-          <li>No eating, drinking, or talking while strips are on</li>
-        </ul>
-        <div className="ag-detail-section-title" style={{ marginTop: 12 }}>After</div>
-        <ul className="ag-detail-list">
-          <li>Peel off and discard — never reuse</li>
-          <li>Rinse with water, wait 30 minutes before brushing</li>
-          <li>Avoid coffee, tea, berries, tomato sauce for 1 hour after</li>
-          <li>Sensitivity tip: apply Sensodyne directly to teeth after strips, leave 5 min, rinse</li>
-        </ul>
-      </div>
-      <div className="g-card splash-item">
-        <div className="ag-detail-section-title">Schedule</div>
-        <div className="prod-item" style={{ marginTop: 8 }}><div className="prod-badge">Course</div><div><div className="prod-name">Once daily for 14–20 days (standard) or 7–10 days (express)</div><div className="prod-why">One course per quarter maintains white teeth without enamel damage.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after completing a course</div><div className="prod-why">Maintains results between courses without a full treatment commitment.</div></div></div>
-        <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day when sensitive — resume the next. Resolves within 24 hours.</div></div></div>
-      </div>
-      <div className="divider divider-center splash-item">Products</div>
-      <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="The most effective OTC whitening strips available globally — professional-level HP formula produces dentist-level results. Search on Shopee PH, Lazada, or iHerb." />
-      <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Lower HP concentration for those prone to sensitivity. Same visible whitening — good starting option before working up to Professional Effects." />
-      <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen for maintenance between quarterly strip courses — paint on before bed, leave overnight, no wait time. Available on Shopee PH and Lazada." />
+        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+          One course every 3 months keeps teeth noticeably white without over-whitening. Always prep with Sensodyne for 2 weeks before starting.
+        </div>
+        <RoutineStep num="1" cat="2 weeks before starting a course" name="Prep — Sensitivity Protection" open={openStep==='t-w1'} onToggle={() => tog('t-w1')}>
+          <ul className="ag-detail-list">
+            <li>Use Sensodyne for 2 weeks before — builds potassium nitrate in dentinal tubules, significantly reduces sensitivity during whitening</li>
+            <li>Do not use strips if you have untreated cavities, active gum disease, or veneers on front teeth — consult a dentist first</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="2" cat="Day of use · prep teeth first" name="Before Applying Strips" open={openStep==='t-w2'} onToggle={() => tog('t-w2')}>
+          <ul className="ag-detail-list">
+            <li>Brush 30 min BEFORE applying strips — fluoride right before temporarily reduces whitening effectiveness</li>
+            <li>Dry teeth with a tissue — strips adhere far better to completely dry enamel</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="3" cat="30–60 min" name="Apply Strips" open={openStep==='t-w3'} onToggle={() => tog('t-w3')}>
+          <ul className="ag-detail-list">
+            <li>Gel side faces teeth — align straight edge with gumline, do not overlap onto gum tissue</li>
+            <li>Press firmly, fold any excess behind teeth</li>
+            <li>Leave on for directed time (30 min standard, 60 min express strips)</li>
+            <li>No eating, drinking, or talking while strips are on</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="4" cat="After removing" name="Post-Strip Care" open={openStep==='t-w4'} onToggle={() => tog('t-w4')}>
+          <ul className="ag-detail-list">
+            <li>Peel off and discard — never reuse</li>
+            <li>Rinse with water, then wait 30 min before brushing — enamel is temporarily softened</li>
+            <li>Avoid coffee, tea, berries, tomato sauce for 1 hour after</li>
+            <li>Sensitivity tip: apply Sensodyne directly to teeth, leave 5 min, then rinse</li>
+          </ul>
+        </RoutineStep>
+        <RoutineStep num="5" cat="Reference" name="Your Whitening Schedule" open={openStep==='t-w5'} onToggle={() => tog('t-w5')}>
+          <div className="prod-item" style={{ marginTop: 8 }}><div className="prod-badge">Course</div><div><div className="prod-name">Once daily for 14–20 days (standard) or 7–10 days (express)</div><div className="prod-why">One course per quarter — every 3 months — maintains white teeth without enamel damage.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after a course</div><div className="prod-why">Maintains results without committing to a full treatment.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day when sensitive — resume the next. Resolves within 24 hours.</div></div></div>
+        </RoutineStep>
+        <div className="divider divider-center splash-item">Products</div>
+        <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="The most effective OTC whitening strips globally — professional-level HP formula, dentist-level results. Shopee PH, Lazada, or iHerb." />
+        <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Lower HP concentration for those prone to sensitivity. Same visible whitening — good starting option." />
+        <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen for maintenance between quarterly courses — paint on before bed, leave overnight, no wait time. Shopee PH and Lazada." />
       </>}
     </>
   );
