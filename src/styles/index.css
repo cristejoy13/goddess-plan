@@ -380,7 +380,7 @@ body {
   flex-direction: column;
   padding: 10px 0;
   padding-bottom: calc(10px + env(safe-area-inset-bottom));
-  overflow-y: auto;
+  overflow: visible; /* allow hover tooltips to extend outside the sidebar */
   scrollbar-width: none;
 }
 .sidebar::-webkit-scrollbar { display: none; }
@@ -404,17 +404,53 @@ body {
   gap: 4px;
 }
 .nav-icon {
-  font-size: 20px;
+  font-size: 28px;
   line-height: 1;
   display: block;
 }
+/* Desktop: label hidden — appears as styled tooltip on hover */
 .nav-label {
-  font-size: 8.5px;
-  font-weight: 600;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  line-height: 1;
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-10px);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.26s cubic-bezier(.34,1.56,.64,1);
+  z-index: 300;
   display: block;
+
+  /* Typography */
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  text-transform: none;
+  color: #f8eed4;
+
+  /* Pink · gold · dark violet theme */
+  padding: 9px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(42,8,30,0.97) 0%, rgba(18,4,14,0.97) 100%);
+  border: 1.5px solid rgba(255,92,157,0.5);
+  border-top-color: rgba(240,204,96,0.5);
+  box-shadow: 0 4px 22px rgba(255,92,157,0.38), 0 0 0 1px rgba(240,204,96,0.12);
+}
+/* Arrow pointing left toward sidebar */
+.nav-label::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 7px solid transparent;
+  border-right-color: rgba(255,92,157,0.5);
+}
+.nav-btn:hover .nav-label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 .nav-btn:hover {
   color: var(--gold-light);
@@ -1337,7 +1373,28 @@ body {
     border-left-width: 4px;
   }
   .nav-icon { font-size: 28px; flex-shrink: 0; }
-  .nav-label { font-size: 15px; letter-spacing: 0.3px; text-transform: none; font-weight: 600; }
+  /* Mobile drawer: reset tooltip styles — label shows as normal inline text */
+  .nav-label {
+    position: static;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.3px;
+    text-transform: none;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    white-space: normal;
+    z-index: auto;
+  }
+  .nav-label::before { display: none; }
 
   .hero { padding: 70px 20px 48px; }
   .hero h1 { letter-spacing: -1px; }
@@ -1383,7 +1440,7 @@ body {
   .hero-goals { gap: 6px; }
   .nav-btn { padding: 16px 18px; }
   .nav-icon { font-size: 26px; }
-  .nav-label { font-size: 14px; }
+  .nav-label { font-size: 14px; position: static; opacity: 1; transform: none; }
   .rs-trigger { padding: 13px 14px; }
   .rs-name { font-size: 16px; }
 }
