@@ -9,8 +9,7 @@ export const WORKOUT_DAYS = [
     noteBefore: { type: 'rose', text: '🏃 Pick run or bike based on how you feel today — the protocol is identical either way. Norwegian 4x4 triggers a bigger growth hormone surge than any other cardio format. Dynamic warm-up is non-negotiable.' },
     exercises: [
       { name: 'Dynamic Warm-Up', detail: '10 min · leg swings × 10 each, hip circles × 10 each, high knees × 20, butt kicks × 20, arm circles × 10 each · raise heart rate gradually to Zone 2 before the first interval' },
-      { name: 'Norwegian 4x4 Intervals — Round 1', detail: '4 min at ~90% max effort (sprint / high-resistance bike) → immediately drop to 3 min Zone 2 recovery (light jog / easy pedal) · the 3 min recovery is active, not rest — keep moving' },
-      { name: 'Norwegian 4x4 Intervals — Rounds 2 · 3 · 4', detail: 'Repeat: 4 min high effort → 3 min Zone 2 recovery · 4 rounds total · each round = 7 min · total interval block = 28 min · your effort in each 4-min block should feel like you cannot hold a conversation' },
+      { name: 'Norwegian 4x4 Intervals — 4 Rounds (28 min)', detail: '4 rounds · each round: 4 min at ~90% max effort (sprint or high-resistance bike) → 3 min Zone 2 active recovery (light jog or easy pedal, not rest) · every 4-min block should feel like you cannot hold a full sentence · the 3-min recovery window is not a break — stay moving at easy conversational pace' },
       { name: 'Zone 2 Cool-Down', detail: '20–30 min easy walk or light pedal at fully conversational pace · heart rate 120–140 BPM · this counts toward your 150 min/week Zone 2 target · finish with 5 min standing stretch' },
       { name: 'Stretch — Post Sprint', detail: '5 min · glute stretch 30 sec each side → hamstring stretch 30 sec each side → hip flexor stretch 30 sec each side · do not skip — cooling down without stretching increases injury risk' },
     ],
@@ -151,8 +150,7 @@ export const WORKOUT_DAYS = [
     noteBefore: { type: 'rose', text: '⚡ Second sprint session of the week. You should feel stronger than Monday — your body adapted. Choose run or bike based on how you feel. This session earns you the full weekend recovery.' },
     exercises: [
       { name: 'Dynamic Warm-Up', detail: '10 min · leg swings, hip circles, high knees, butt kicks, arm circles · your body is slightly more adapted than Monday — warm-up should feel quicker and easier' },
-      { name: 'Norwegian 4x4 Intervals — Round 1', detail: '4 min at ~90% max effort (sprint / high-resistance bike) → 3 min Zone 2 recovery · keep Zone 2 recovery active and moving, not static rest' },
-      { name: 'Norwegian 4x4 Intervals — Rounds 2 · 3 · 4', detail: '4 rounds total · 4 min high effort → 3 min Zone 2 recovery · 28 min total interval block · compare how each round feels to your Monday session' },
+      { name: 'Norwegian 4x4 Intervals — 4 Rounds (28 min)', detail: '4 rounds · 4 min at ~90% max effort (sprint or high-resistance bike) → 3 min Zone 2 active recovery · same protocol as Monday — compare how each round feels vs your first session · by Round 4 you should feel more adapted than you did on Monday' },
       { name: 'Zone 2 Cool-Down', detail: '20–30 min easy walk or light pedal · bring heart rate fully down before stopping · contributes to weekly Zone 2 total · you can walk home from the gym or park' },
       { name: 'Stretch — Post Sprint', detail: '5 min · glute, hamstring, and hip flexor stretches 30 sec each side · important after a second sprint day this week' },
     ],
