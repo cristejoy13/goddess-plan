@@ -56,36 +56,66 @@ function useDayMeals(dayId, userId) {
   return [items, save];
 }
 
+function useDayRemovedBase(dayId) {
+  const key = `gp_removed_${dayId}`;
+  const [removed, setRemoved] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+  });
+  function removeItem(name) {
+    const next = removed.includes(name) ? removed : [...removed, name];
+    setRemoved(next);
+    try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
+  }
+  return [removed, removeItem];
+}
+
 function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
-  const [custom, saveCustom] = useDayMeals(dayId, userId);
+  const [custom, saveCustom]         = useDayMeals(dayId, userId);
+  const [removedBase, removeBaseItem] = useDayRemovedBase(dayId);
   const [query, setQuery]    = useState('');
   const [browse, setBrowse]  = useState(false);
   const [deletingName, setDeletingName] = useState(null);
+  const [pendingFood, setPendingFood]   = useState(null);
   const holdRef = useRef({});
 
   const filtered = query.trim().length > 0
     ? FOODS.filter(f => f.name.toLowerCase().includes(query.toLowerCase()))
     : [];
 
-  function addFood(food) {
-    if (custom.find(c => c.name === food.name)) return;
-    saveCustom([...custom, { name: food.name, emoji: food.emoji, meal: food.meal }]);
+  function handleFoodSelect(food) {
+    setPendingFood(food);
     setQuery('');
     setBrowse(false);
   }
 
-  function startHold(rawName) {
-    holdRef.current[rawName] = setTimeout(() => setDeletingName(rawName), 1000);
+  function confirmAddFood(mealSlot) {
+    if (!pendingFood) return;
+    if (!custom.find(c => c.name === pendingFood.name)) {
+      saveCustom([...custom, { name: pendingFood.name, emoji: pendingFood.emoji, meal: mealSlot }]);
+    }
+    setPendingFood(null);
   }
-  function cancelHold(rawName) { clearTimeout(holdRef.current[rawName]); }
 
-  function confirmDelete(rawName) {
-    saveCustom(custom.filter(c => c.name !== rawName));
+  function startHold(name) {
+    holdRef.current[name] = setTimeout(() => setDeletingName(name), 800);
+  }
+  function cancelHold(name) { clearTimeout(holdRef.current[name]); }
+
+  function confirmDelete(name) {
+    const customItem = custom.find(c => c.name === name || `${c.emoji} ${c.name}` === name);
+    if (customItem) {
+      saveCustom(custom.filter(c => c.name !== customItem.name && `${c.emoji} ${c.name}` !== name));
+    } else {
+      removeBaseItem(name);
+    }
     setDeletingName(null);
   }
 
-  // Merge custom into base meal rows
-  const rows = baseMeals.rows.map(r => ({ ...r, ingredients: [...r.ingredients] }));
+  // Build rows filtering out removed base items
+  const rows = baseMeals.rows.map(r => ({
+    ...r,
+    ingredients: r.ingredients.filter(ingr => !removedBase.includes(ingr.name)),
+  }));
   const snackItems = custom.filter(c => c.meal === 'snack');
   const hasSnackRow = rows.some(r => r.time.toLowerCase().includes('snack'));
   if (snackItems.length > 0 && !hasSnackRow) {
@@ -104,7 +134,6 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
 
   return (
     <div className="meal-builder">
-      {/* Search bar */}
       <div className="mb-search-wrap">
         <input
           className="mb-search"
@@ -117,11 +146,10 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         <button className="mb-az-btn" onClick={() => { setBrowse(b => !b); setQuery(''); }}>A–Z</button>
       </div>
 
-      {/* Search results */}
       {filtered.length > 0 && (
         <div className="mb-results">
           {filtered.map(f => (
-            <button key={f.name} className="mb-result-item" onClick={() => addFood(f)}>
+            <button key={f.name} className="mb-result-item" onClick={() => handleFoodSelect(f)}>
               <span className="mb-result-em">{f.emoji}</span>
               <span className="mb-result-name">{f.name}</span>
               <span className="mb-result-cat">{f.cat}</span>
@@ -130,7 +158,6 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         </div>
       )}
 
-      {/* Browse A-Z */}
       {browse && query === '' && (
         <div className="mb-browse">
           {FOOD_CATS.map(cat => {
@@ -140,7 +167,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
                 <div className="mb-cat-label">{cat}</div>
                 <div className="mb-cat-items">
                   {catFoods.map(f => (
-                    <button key={f.name} className="mb-cat-item" onClick={() => addFood(f)}>
+                    <button key={f.name} className="mb-cat-item" onClick={() => handleFoodSelect(f)}>
                       {f.emoji} {f.name}
                     </button>
                   ))}
@@ -151,7 +178,21 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         </div>
       )}
 
-      {/* In-app delete confirmation */}
+      {/* Meal slot picker */}
+      {pendingFood && (
+        <div className="mb-meal-picker">
+          <div className="mb-meal-picker-title">
+            Add {pendingFood.emoji} <strong>{pendingFood.name}</strong> to which meal?
+          </div>
+          <div className="mb-meal-picker-btns">
+            <button className="mb-meal-pick-btn" onClick={() => confirmAddFood('morning')}>🌅 First Meal</button>
+            <button className="mb-meal-pick-btn" onClick={() => confirmAddFood('lunch')}>🥗 Lunch</button>
+            <button className="mb-meal-pick-btn" onClick={() => confirmAddFood('dinner')}>🌙 Last Meal</button>
+          </div>
+          <button className="mb-meal-pick-cancel" onClick={() => setPendingFood(null)}>Cancel</button>
+        </div>
+      )}
+
       {deletingName && (
         <div className="mb-delete-confirm">
           <span className="mb-delete-msg">Remove <strong>{deletingName}</strong>?</span>
@@ -160,44 +201,45 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         </div>
       )}
 
-      {/* Meal plan with custom ingredients merged in */}
       <div className="meal-box">
         <div className="meal-lbl">{baseMeals.label}</div>
-        {custom.length > 0 && (
-          <div className="mb-plan-note">✨ Your added ingredients are below. Hold 2 sec to remove.</div>
-        )}
+        <div className="mb-plan-note">Hold any item 1 sec to remove it.</div>
         {rows.map((r, i) => (
           <div key={i} className="meal-row">
             <span className="meal-t">{r.time}</span>
             <div className="meal-ingr-list">
               {r.ingredients.map((ingr, j) => {
+                const holdName = ingr.custom ? ingr.rawName : ingr.name;
+                const isDeleting = deletingName === holdName;
+                const holdEvents = {
+                  onMouseDown:  () => startHold(holdName),
+                  onMouseUp:    () => cancelHold(holdName),
+                  onMouseLeave: () => cancelHold(holdName),
+                  onTouchStart: () => startHold(holdName),
+                  onTouchEnd:   () => cancelHold(holdName),
+                  onTouchCancel:() => cancelHold(holdName),
+                };
                 const next = r.ingredients[j + 1];
                 const comma = !ingr.key && !ingr.custom && next && !next.key && !next.custom;
                 if (ingr.key) {
                   return (
-                    <button key={j} className="meal-ingr-chip" onClick={() => onIngredientClick(ingr)}>
+                    <button
+                      key={j}
+                      className={`meal-ingr-chip${isDeleting ? ' mb-deleting' : ''}`}
+                      onClick={() => { if (!isDeleting) onIngredientClick(ingr); }}
+                      {...holdEvents}
+                    >
                       {ingr.name}
                     </button>
                   );
                 }
-                if (ingr.custom) {
-                  return (
-                    <span
-                      key={j}
-                      className={`meal-ingr-plain custom${deletingName === ingr.rawName ? ' mb-deleting' : ''}`}
-                      onMouseDown={() => startHold(ingr.rawName)}
-                      onMouseUp={() => cancelHold(ingr.rawName)}
-                      onMouseLeave={() => cancelHold(ingr.rawName)}
-                      onTouchStart={() => startHold(ingr.rawName)}
-                      onTouchEnd={() => cancelHold(ingr.rawName)}
-                      onTouchCancel={() => cancelHold(ingr.rawName)}
-                    >
-                      {ingr.name}
-                    </span>
-                  );
-                }
                 return (
-                  <span key={j} className="meal-ingr-plain">
+                  <span
+                    key={j}
+                    className={`meal-ingr-plain${ingr.custom ? ' custom' : ''}${isDeleting ? ' mb-deleting' : ''}`}
+                    style={{ cursor: 'pointer' }}
+                    {...holdEvents}
+                  >
                     {ingr.name}{comma ? ',' : ''}
                   </span>
                 );

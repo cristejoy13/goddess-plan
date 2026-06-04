@@ -86,7 +86,7 @@ export function MeatDays() {
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">5:00 PM</div>
+            <div className="hyd-time">Sunset</div>
             <div>
               <div className="hyd-d">Last Meal — Light protein finish · No food after this</div>
               <div className="hyd-n">Fish 120g + salad · OR · chicken 100g + steamed vegetables · OR · 1 egg + avocado + warm broth</div>
@@ -118,7 +118,7 @@ export function LightDays() {
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">5:00 PM</div>
+            <div className="hyd-time">Sunset</div>
             <div>
               <div className="hyd-d">Last Meal — Very light finish · No food after this</div>
               <div className="hyd-n">Salad + ½ avocado + 1 egg + chamomile tea · OR · chia pudding + berries · OR · papaya + spearmint tea · OR · oats (plain) + kiwi</div>

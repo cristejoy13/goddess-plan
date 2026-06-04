@@ -29,7 +29,7 @@ export const WORKOUT_DAYS = [
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'chicken or fish 100g', key: 'chicken' },
           { name: 'Salad', key: 'salad' },
         ]},
@@ -62,7 +62,7 @@ export const WORKOUT_DAYS = [
           { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'fish 100g or eggs', key: 'fish' },
           { name: 'steamed vegetables', key: 'broccoli' },
           { name: 'spearmint tea', key: 'spearmint-tea' },
@@ -101,7 +101,7 @@ export const WORKOUT_DAYS = [
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'fish 120g', key: 'fish' },
           { name: 'Salad', key: 'salad' },
         ]},
@@ -133,7 +133,7 @@ export const WORKOUT_DAYS = [
           { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'watermelon or berries', key: 'watermelon' },
           { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
@@ -171,7 +171,7 @@ export const WORKOUT_DAYS = [
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'chicken 100g', key: 'chicken' },
           { name: 'Salad', key: 'salad' },
         ]},
@@ -209,7 +209,7 @@ export const WORKOUT_DAYS = [
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'fish 120g', key: 'fish' },
           { name: 'Salad', key: 'salad' },
         ]},
@@ -244,7 +244,7 @@ export const WORKOUT_DAYS = [
           { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
-        { time: '5:00 PM — Last Meal', ingredients: [
+        { time: 'Sunset — Last Meal', ingredients: [
           { name: 'apple or berries', key: 'apple' },
           { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
