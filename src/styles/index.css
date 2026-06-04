@@ -4353,13 +4353,13 @@ body {
 @media (min-width: 769px) {
   .joy-fab {
     display: flex !important;
-    /* 50% = viewport center, -340px = half search width, -56px = joy(48) + gap(8) */
-    left: max(calc(50% - 396px), 130px);
-    top: 7px;
+    /* 50% = viewport center, -340px = half search width, -50px = joy(42) + gap(8) */
+    left: max(calc(50% - 390px), 130px);
+    top: 9px;
     bottom: auto;
     right: auto;
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
   }
   /* Desktop: static Joy hidden — draggable FAB handles it */
