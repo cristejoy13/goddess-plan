@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { WORKOUT_DAYS } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import { FOODS, FOOD_CATS } from '../data/foods';
+import { RecipesPanel, FoodGuide } from './Nutrition';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -221,98 +222,99 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
         </div>
       )}
 
-      <div className="meal-box">
-        <div className="meal-lbl">{baseMeals.label}</div>
-        <div className="mb-plan-note">Hold any food 1 sec to remove it.</div>
-        {rows.map((r, i) => (
-          <div key={i} className="meal-row">
-            <span className="meal-t">{r.time}</span>
-            <div className="meal-ingr-list">
-              {r.ingredients.map((ingr, j) => {
-                const holdName = ingr.custom ? ingr.rawName : ingr.name;
-                const isDeleting = deletingName === holdName;
-                const holdEvents = {
-                  onMouseDown:  () => startHold(holdName),
-                  onMouseUp:    () => cancelHold(holdName),
-                  onMouseLeave: () => cancelHold(holdName),
-                  onTouchStart: () => startHold(holdName),
-                  onTouchEnd:   () => cancelHold(holdName),
-                  onTouchCancel:() => cancelHold(holdName),
-                };
-                const next = r.ingredients[j + 1];
-                const comma = !ingr.key && !ingr.custom && next && !next.key && !next.custom;
-                if (ingr.key) {
-                  return (
-                    <button
-                      key={j}
-                      className={`meal-ingr-chip${isDeleting ? ' mb-deleting' : ''}`}
-                      onClick={() => { if (!isDeleting) onIngredientClick(ingr); }}
-                      {...holdEvents}
-                    >
-                      {ingr.name}
-                    </button>
-                  );
-                }
-                return (
-                  <span
-                    key={j}
-                    className={`meal-ingr-plain${ingr.custom ? ' custom' : ''}${isDeleting ? ' mb-deleting' : ''}`}
-                    style={{ cursor: 'pointer' }}
-                    {...holdEvents}
-                  >
-                    {ingr.name}{comma ? ',' : ''}
-                  </span>
-                );
-              })}
+      {/* TDEE / deficit banner — above the meal table */}
+      {tdee && (
+        <div className="meal-tdee-banner">
+          <div className="meal-tdee-item">
+            <span className="meal-tdee-ico">🔥</span>
+            <div>
+              <div className="meal-tdee-label">Maintenance</div>
+              <div className="meal-tdee-val">{tdee.toLocaleString()} kcal/day</div>
             </div>
           </div>
-        ))}
-      </div>
+          <div className="meal-tdee-divider" />
+          <div className="meal-tdee-item">
+            <span className="meal-tdee-ico">🎯</span>
+            <div>
+              <div className="meal-tdee-label">Your Target</div>
+              <div className="meal-tdee-val">{deficit ? deficit.toLocaleString() : tdee.toLocaleString()} kcal/day</div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Calorie estimate box */}
+      {/* Meal table */}
       {(() => {
-        const rowCals = rows.map(r => ({
-          time: r.time.split(' —')[0],
-          cal: r.ingredients.reduce((sum, ingr) => {
+        let totalCal = 0;
+        const rowData = rows.map(r => {
+          const cal = r.ingredients.reduce((sum, ingr) => {
             if (ingr.custom) {
               const food = FOODS.find(f => f.name === ingr.rawName);
               return sum + (food?.cal || 0);
             }
             return sum + (CAL_MAP[ingr.key] || 0);
-          }, 0),
-        })).filter(r => r.cal > 0);
-        const total = rowCals.reduce((s, r) => s + r.cal, 0);
-        if (total === 0) return null;
+          }, 0);
+          totalCal += cal;
+          return { ...r, cal };
+        });
         return (
-          <div className="cal-estimate-box">
-            <div className="cal-estimate-title">📊 Estimated Calories</div>
-            <div className="cal-estimate-rows">
-              {rowCals.map((r, i) => (
-                <div key={i} className="cal-estimate-row">
-                  <span className="cal-estimate-time">{r.time}</span>
-                  <span className="cal-estimate-num">~{r.cal} kcal</span>
-                </div>
-              ))}
-              <div className="cal-estimate-total">
-                <span>Total today</span>
-                <span>~{total} kcal</span>
-              </div>
+          <div className="meal-table">
+            <div className="meal-table-top">
+              <div className="meal-table-lbl">{baseMeals.label}</div>
+              <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Hold any item 1 sec to remove.</div>
             </div>
-            {tdee && (
-              <div className="cal-estimate-targets">
-                <div className="cal-estimate-target">
-                  <span>🔥 Maintenance</span>
-                  <span>{tdee.toLocaleString()} kcal</span>
+            <div className="meal-table-head">
+              <div className="mth-time">Meal</div>
+              <div className="mth-foods">Foods</div>
+              <div className="mth-cal">~kcal</div>
+            </div>
+            {rowData.map((r, i) => (
+              <div key={i} className="meal-table-row">
+                <div className="mtr-time">{r.time}</div>
+                <div className="mtr-foods">
+                  {r.ingredients.map((ingr, j) => {
+                    const holdName = ingr.custom ? ingr.rawName : ingr.name;
+                    const isDeleting = deletingName === holdName;
+                    const holdEvents = {
+                      onMouseDown:  () => startHold(holdName),
+                      onMouseUp:    () => cancelHold(holdName),
+                      onMouseLeave: () => cancelHold(holdName),
+                      onTouchStart: () => startHold(holdName),
+                      onTouchEnd:   () => cancelHold(holdName),
+                      onTouchCancel:() => cancelHold(holdName),
+                    };
+                    const next = r.ingredients[j + 1];
+                    const comma = !ingr.key && !ingr.custom && next && !next.key && !next.custom;
+                    if (ingr.key) {
+                      return (
+                        <button key={j} className={`meal-ingr-chip${isDeleting ? ' mb-deleting' : ''}`}
+                          onClick={() => { if (!isDeleting) onIngredientClick(ingr); }} {...holdEvents}>
+                          {ingr.name}
+                        </button>
+                      );
+                    }
+                    return (
+                      <span key={j} className={`meal-ingr-plain${ingr.custom ? ' custom' : ''}${isDeleting ? ' mb-deleting' : ''}`}
+                        style={{ cursor: 'pointer' }} {...holdEvents}>
+                        {ingr.name}{comma ? ',' : ''}
+                      </span>
+                    );
+                  })}
                 </div>
-                <div className="cal-estimate-target">
-                  <span>🎯 Target (deficit)</span>
-                  <span>{deficit ? deficit.toLocaleString() : '—'} kcal</span>
+                <div className="mtr-cal">{r.cal > 0 ? `~${r.cal}` : '—'}</div>
+              </div>
+            ))}
+            {totalCal > 0 && (
+              <div className="meal-table-total">
+                <div className="mtt-label">Total</div>
+                <div className={`mtt-verdict ${tdee && totalCal > (deficit || tdee) ? 'over' : 'ok'}`}>
+                  {tdee
+                    ? totalCal > (deficit || tdee)
+                      ? `+${totalCal - (deficit || tdee)} over`
+                      : `${(deficit || tdee) - totalCal} remaining`
+                    : ''}
                 </div>
-                <div className={`cal-estimate-verdict ${total > (deficit || tdee) ? 'over' : 'under'}`}>
-                  {total > (deficit || tdee)
-                    ? `+${total - (deficit || tdee)} kcal over target`
-                    : `${(deficit || tdee) - total} kcal remaining`}
-                </div>
+                <div className="mtt-cal">~{totalCal} kcal</div>
               </div>
             )}
           </div>
@@ -365,9 +367,51 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
   );
 }
 
+function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
+  const [tab, setTab] = useState('recipes');
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
+
+  function openIngredient(item) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setSelectedIngredient(item);
+    pushBack?.(() => { setSelectedIngredient(null); clearInnerBack?.(); });
+  }
+  function closeIngredient() { clearInnerBack?.(); setSelectedIngredient(null); }
+
+  if (selectedIngredient) {
+    return (
+      <IngredientDetailPage
+        ingredientKey={selectedIngredient.key}
+        ingredientName={selectedIngredient.name}
+        backLabel="Nutrition & Recipes"
+        onBack={closeIngredient}
+        pushBack={pushBack}
+      />
+    );
+  }
+
+  return (
+    <div className="section">
+      <button className="day-detail-back" onClick={onBack}>← Back to Workouts</button>
+      <div className="s-header">
+        <div className="s-tag">Food &amp; Recipes</div>
+        <h2 className="s-title">Nutrition <em>&amp;</em> Recipes</h2>
+        <p className="s-desc">How to prepare your food and understand its glycemic impact.</p>
+      </div>
+      <div className="sk-top-tabs splash-item">
+        <button className={`sk-top-tab${tab === 'recipes' ? ' active' : ''}`} onClick={() => setTab('recipes')}>🥘 Recipes</button>
+        <button className={`sk-top-tab${tab === 'guide'   ? ' active' : ''}`} onClick={() => setTab('guide')}>📊 Food Guide</button>
+      </div>
+      {tab === 'recipes' && <RecipesPanel onSelectRecipe={openIngredient} />}
+      {tab === 'guide'   && <FoodGuide />}
+    </div>
+  );
+}
+
 export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, profile, user }) {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [selectedDayIdx, setSelectedDayIdx]         = useState(null);
+  const [showNutrPanel, setShowNutrPanel]           = useState(false);
   const tdeeByType    = profile?.tdeeKcal    || null;
   const deficitByType = profile?.deficitKcal || null;
   const userId        = user?.uid || null;
@@ -408,6 +452,16 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
   function closeIngredient() {
     clearInnerBack?.();
     setSelectedIngredient(null);
+  }
+
+  if (showNutrPanel) {
+    return (
+      <WorkoutNutritionPage
+        onBack={() => { setShowNutrPanel(false); clearInnerBack?.(); }}
+        pushBack={pushBack}
+        clearInnerBack={clearInnerBack}
+      />
+    );
   }
 
   if (selectedIngredient) {
@@ -475,13 +529,15 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         <strong>Progressive overload:</strong> Weeks 1–2 learn the movements. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If every set feels easy, increase load. If form breaks, increase reps first.
       </div>
 
-      {onNavigate && (
-        <div className="workout-nutrition-row splash-item">
-          <button className="workout-nutrition-pill" onClick={() => onNavigate('challenges')}>
-            🥗 Nutrition &amp; Recipes →
-          </button>
-        </div>
-      )}
+      <div className="workout-nutrition-row splash-item">
+        <button className="workout-nutrition-pill" onClick={() => {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          setShowNutrPanel(true);
+          pushBack?.(() => { setShowNutrPanel(false); clearInnerBack?.(); });
+        }}>
+          🥗 Nutrition &amp; Recipes →
+        </button>
+      </div>
     </div>
   );
 }

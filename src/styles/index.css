@@ -5834,6 +5834,85 @@ body {
   opacity: 0.5;
   text-decoration: line-through;
 }
+/* TDEE / deficit banner above meal table */
+.meal-tdee-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(255,92,157,0.1), rgba(240,204,96,0.08));
+  border: 1.5px solid rgba(240,204,96,0.25);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-top: 14px;
+}
+.meal-tdee-item { display: flex; align-items: center; gap: 8px; flex: 1; }
+.meal-tdee-ico { font-size: 18px; }
+.meal-tdee-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
+.meal-tdee-val { font-size: 14px; font-weight: 700; color: var(--gold-light); }
+.meal-tdee-divider { width: 1px; height: 36px; background: rgba(240,204,96,0.2); flex-shrink: 0; }
+
+/* Meal plan table */
+.meal-table {
+  margin-top: 14px;
+  border: 1.5px solid rgba(240,204,96,0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card);
+}
+.meal-table-top { padding: 12px 14px 8px; border-bottom: 1px solid rgba(240,204,96,0.1); }
+.meal-table-lbl { font-size: 11.5px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.3px; }
+.meal-table-head {
+  display: grid;
+  grid-template-columns: 100px 1fr 60px;
+  padding: 8px 14px;
+  background: rgba(240,204,96,0.07);
+  border-bottom: 1px solid rgba(240,204,96,0.15);
+}
+.meal-table-head > div {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.mth-cal { text-align: right; }
+.meal-table-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 60px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  align-items: start;
+  gap: 8px;
+}
+.meal-table-row:last-of-type { border-bottom: 1px solid rgba(240,204,96,0.12); }
+.mtr-time { font-size: 11.5px; font-weight: 600; color: var(--text-mid); line-height: 1.4; padding-top: 2px; }
+.mtr-foods { display: flex; flex-wrap: wrap; gap: 4px; }
+.mtr-cal { font-size: 12px; font-weight: 700; color: var(--gold-light); text-align: right; padding-top: 2px; }
+.meal-table-total {
+  display: grid;
+  grid-template-columns: 100px 1fr 60px;
+  padding: 10px 14px;
+  background: rgba(240,204,96,0.07);
+  align-items: center;
+  gap: 8px;
+}
+.mtt-label { font-size: 12px; font-weight: 700; color: var(--text); }
+.mtt-verdict { font-size: 11px; font-weight: 600; text-align: center; padding: 3px 8px; border-radius: 8px; }
+.mtt-verdict.ok { background: rgba(60,180,80,0.12); color: #6fda82; }
+.mtt-verdict.over { background: rgba(255,92,92,0.12); color: #ff8080; }
+.mtt-cal { font-size: 14px; font-weight: 800; color: var(--gold); text-align: right; }
+
+/* Light mode overrides */
+[data-mode="light"] .meal-tdee-banner { background: rgba(255,248,220,0.9); border-color: rgba(154,104,0,0.25); }
+[data-mode="light"] .meal-tdee-val { color: var(--gold); }
+[data-mode="light"] .meal-table { border-color: rgba(154,104,0,0.2); }
+[data-mode="light"] .meal-table-head { background: rgba(154,104,0,0.06); }
+[data-mode="light"] .meal-table-head > div { color: var(--gold); }
+[data-mode="light"] .mtr-cal { color: var(--gold); }
+[data-mode="light"] .mtt-cal { color: var(--gold); }
+[data-mode="light"] .meal-table-total { background: rgba(154,104,0,0.05); }
+[data-mode="light"] .meal-table-row { border-bottom-color: rgba(0,0,0,0.05); }
+
 /* Calorie estimate box */
 .cal-estimate-box {
   margin-top: 14px;
