@@ -66,12 +66,16 @@ function useDayRemovedBase(dayId) {
     setRemoved(next);
     try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
   }
-  return [removed, removeItem];
+  function resetRemoved() {
+    setRemoved([]);
+    try { localStorage.removeItem(key); } catch {}
+  }
+  return [removed, removeItem, resetRemoved];
 }
 
 function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
-  const [custom, saveCustom]         = useDayMeals(dayId, userId);
-  const [removedBase, removeBaseItem] = useDayRemovedBase(dayId);
+  const [custom, saveCustom]                    = useDayMeals(dayId, userId);
+  const [removedBase, removeBaseItem, resetRemovedBase] = useDayRemovedBase(dayId);
   const [query, setQuery]    = useState('');
   const [browse, setBrowse]  = useState(false);
   const [deletingName, setDeletingName] = useState(null);
@@ -100,6 +104,11 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
     holdRef.current[name] = setTimeout(() => setDeletingName(name), 800);
   }
   function cancelHold(name) { clearTimeout(holdRef.current[name]); }
+
+  function resetToOriginal() {
+    saveCustom([]);
+    resetRemovedBase();
+  }
 
   function confirmDelete(name) {
     const customItem = custom.find(c => c.name === name || `${c.emoji} ${c.name}` === name);
@@ -248,6 +257,12 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
           </div>
         ))}
       </div>
+
+      {(custom.length > 0 || removedBase.length > 0) && (
+        <button className="mb-reset-btn" onClick={resetToOriginal}>
+          ↩ Back to Original Menu
+        </button>
+      )}
     </div>
   );
 }

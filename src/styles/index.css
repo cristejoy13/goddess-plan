@@ -5834,6 +5834,28 @@ body {
   opacity: 0.5;
   text-decoration: line-through;
 }
+/* Reset to original pill */
+.mb-reset-btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,92,157,0.4);
+  background: rgba(255,92,157,0.07);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rose);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+}
+.mb-reset-btn:hover, .mb-reset-btn:active {
+  background: rgba(255,92,157,0.15);
+  border-color: var(--rose);
+}
+
 /* Meal slot picker */
 .mb-meal-picker {
   background: rgba(255,92,157,0.08);
