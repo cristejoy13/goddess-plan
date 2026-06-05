@@ -96,10 +96,10 @@ export const WORKOUT_DAYS = [
           { name: 'Fruits', key: null },
         ]},
         { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
-          { name: 'Cheesy Egg Tacos', key: null },
-          { name: 'Eggs', key: 'egg' },
-          { name: 'Cheese', key: null },
-          { name: 'Tortilla', key: null },
+          { name: 'chicken 150g', key: 'chicken' },
+          { name: 'broccoli', key: 'broccoli' },
+          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: 'Sunset — Last Meal', ingredients: [
           { name: '1 Egg', key: 'egg' },
@@ -206,10 +206,10 @@ export const WORKOUT_DAYS = [
           { name: 'Fruits', key: null },
         ]},
         { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
-          { name: 'Cheesy Egg Tacos', key: null },
-          { name: 'Eggs', key: 'egg' },
-          { name: 'Cheese', key: null },
-          { name: 'Tortilla', key: null },
+          { name: 'chicken 150g', key: 'chicken' },
+          { name: 'broccoli', key: 'broccoli' },
+          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
+          { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: 'Sunset — Last Meal', ingredients: [
           { name: '1 Egg', key: 'egg' },
