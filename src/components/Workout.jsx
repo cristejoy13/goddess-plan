@@ -62,6 +62,90 @@ function CalorieBanner({ tdee, deficit }) {
   );
 }
 
+// Basic info for food items that don't have a dedicated detail page
+const FOOD_PREP = {
+  'Protein Pancakes': {
+    ingredients: 'Protein powder (1 scoop) · 1 egg · ½ banana · ¼ cup oat flour · splash of milk',
+    howTo: '1. Blend all ingredients until smooth.\n2. Heat non-stick pan on medium.\n3. Pour small circles, cook 2–3 min until bubbles form.\n4. Flip and cook 1–2 min more.\n5. Serve topped with fresh berries.',
+  },
+  'Greek Yogurt': {
+    ingredients: '150g Greek yogurt · 1–2 tbsp peanut butter · ¼ cup granola · seasonal fruit',
+    howTo: '1. Spoon Greek yogurt into a bowl.\n2. Swirl in peanut butter.\n3. Top with granola.\n4. Add fruits on top.\nNo cooking needed — prep in under 2 minutes.',
+  },
+  'Peanut Butter': {
+    ingredients: 'Roasted peanuts · pinch of salt (optional)',
+    howTo: 'Buy natural peanut butter with no added sugar or oil. Use 1–2 tbsp as a spread or swirl into yogurt/oats. Store upside down to prevent oil separation.',
+  },
+  'Granola': {
+    ingredients: '1 cup rolled oats · 2 tbsp honey · 1 tbsp coconut oil · nuts of choice',
+    howTo: 'Mix oats, honey, oil. Spread on a baking sheet. Bake at 150°C for 20–25 min, stirring halfway. Cool completely. Or just buy store-bought — read labels, avoid high-sugar brands.',
+  },
+  'Berries': {
+    ingredients: 'Fresh or frozen berries — strawberries, blueberries, raspberries, or mixed',
+    howTo: 'Rinse fresh berries under cold water. Serve as-is on top of oats, yogurt, or pancakes. Frozen berries are equally nutritious and cheaper — thaw at room temperature or briefly microwave.',
+  },
+  'Fruits': {
+    ingredients: 'Seasonal fresh fruits — mango, papaya, banana, pineapple, berries',
+    howTo: 'Wash, peel where needed, slice, and serve. Best eaten fresh. Pair with protein sources to slow down sugar absorption.',
+  },
+  'Overnight Oats': {
+    ingredients: '½ cup rolled oats · ½ cup milk or Greek yogurt · 1 tbsp chia seeds · 1 tsp honey · fruit toppings',
+    howTo: '1. Mix oats, milk, and chia seeds in a jar.\n2. Add honey and stir well.\n3. Refrigerate at least 6 hours or overnight.\n4. In the morning, top with fruit and granola.\nCan be stored up to 3 days in the fridge.',
+  },
+  '2 Eggs': {
+    ingredients: '2 eggs · salt and pepper · optional: olive oil or butter',
+    howTo: 'Scrambled: whisk with salt, cook on low heat stirring gently.\nBoiled: cover with cold water, boil 7–8 min for hard-boiled.\nPoached: simmer water with a splash of vinegar, drop eggs in for 3 min.',
+  },
+  '1 Egg': {
+    ingredients: '1 egg · salt and pepper',
+    howTo: 'Fried: heat a drizzle of olive oil, crack egg in, cook until whites set.\nBoiled: cover with cold water, boil 6 min for soft, 8–9 for hard.\nSeason with salt and pepper.',
+  },
+  'Egg': {
+    ingredients: '1 egg · salt and pepper',
+    howTo: 'Steam, poach, or pan-fry on medium heat. Whites should be fully set. Season with salt and black pepper. Best eaten fresh.',
+  },
+  'Eggs': {
+    ingredients: '2 eggs · salt and pepper',
+    howTo: 'Scramble on low heat for soft curds. Or fry on medium. Season well. Cook through until whites are fully set.',
+  },
+  'Bread': {
+    ingredients: 'Whole grain or sourdough bread (2 slices)',
+    howTo: 'Toast until golden. Top with your eggs and avocado. Choose whole grain or sourdough over white bread — lower glycemic index, more fibre, better for sustained energy.',
+  },
+  'Mixed Veggies': {
+    ingredients: 'Broccoli · bell pepper · zucchini · spinach · or whatever veggies you have',
+    howTo: '1. Chop into even pieces.\n2. Heat 1 tbsp olive oil in a pan.\n3. Add veggies, season with salt, pepper, and garlic.\n4. Sauté 5–8 min until tender but still slightly crisp.\n5. Squeeze fresh lemon at the end.',
+  },
+  'Olive oil drizzle': {
+    ingredients: 'Extra virgin olive oil',
+    howTo: 'Drizzle 1 tbsp over cooked vegetables, eggs, or salad after cooking. Avoid cooking olive oil on very high heat — it degrades the polyphenols. Best used as a finishing oil.',
+  },
+  'Cheesy Egg Tacos': {
+    ingredients: '2 eggs · cheese of your choice · 1–2 flour or corn tortillas · optional: salsa, avocado',
+    howTo: '1. Scramble 2 eggs with salt.\n2. Warm tortilla in a dry pan 30 sec each side.\n3. Spoon eggs onto tortilla.\n4. Sprinkle cheese while eggs are still hot so it melts.\n5. Optional: add salsa, avocado slices, or hot sauce.',
+  },
+  'Cheese': {
+    ingredients: 'Cheese of your choice — feta, cheddar, mozzarella',
+    howTo: 'Crumble or slice. Add to hot eggs directly so it melts naturally. Or sprinkle on top of tacos/salads. Choose real cheese over processed cheese slices.',
+  },
+  'Tortilla': {
+    ingredients: '1 flour or corn tortilla',
+    howTo: 'Warm in a dry pan 30 sec each side (until slightly charred). Or wrap in a damp paper towel and microwave 20 sec. Fill immediately with your eggs, cheese, and toppings.',
+  },
+  'Tuna': {
+    ingredients: '1 can tuna in water (drained) · cucumber · lemon juice · salt · optional: olive oil',
+    howTo: '1. Drain and flake the tuna into a bowl.\n2. Slice cucumber thinly.\n3. Mix together with a squeeze of fresh lemon.\n4. Season with salt and pepper.\n5. Optional: drizzle with olive oil for healthy fat.',
+  },
+  'Cucumber': {
+    ingredients: '1 fresh cucumber',
+    howTo: 'Wash well. Slice into rounds or dice. Eat raw — no cooking needed. Pairs well with tuna, lemon, and olive oil. Hydrating and anti-inflammatory.',
+  },
+  'lemon water': {
+    ingredients: '1 glass of water · juice of ½ lemon or calamansi',
+    howTo: 'Squeeze half a lemon into a glass of warm or room-temperature water. Drink with or between meals. Supports digestion, Vitamin C intake, and appetite regulation.',
+  },
+};
+
 function useDayMeals(dayId, userId) {
   const key = `gp_meal_${dayId}`;
   const [items, setItems] = useState(() => {
@@ -99,11 +183,12 @@ function useDayRemovedBase(dayId) {
 function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, deficit }) {
   const [custom, saveCustom]                    = useDayMeals(dayId, userId);
   const [removedBase, removeBaseItem, resetRemovedBase] = useDayRemovedBase(dayId);
-  const [query, setQuery]    = useState('');
-  const [browse, setBrowse]  = useState(false);
-  const [deletingName, setDeletingName] = useState(null);
-  const [pendingFood, setPendingFood]   = useState(null);
-  const holdRef = useRef({});
+  const [query, setQuery]       = useState('');
+  const [browse, setBrowse]     = useState(false);
+  const [pendingFood, setPendingFood] = useState(null);
+  const [menuIngr, setMenuIngr]   = useState(null); // { ingr, holdName }
+  const [infoSheet, setInfoSheet] = useState(null); // { name, tab: 'ingredients'|'howto' }
+  const [confirmRemove, setConfirmRemove] = useState(null); // holdName
 
   const filtered = query.trim().length > 0
     ? FOODS.filter(f => f.name.toLowerCase().includes(query.toLowerCase()))
@@ -123,24 +208,49 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
     setPendingFood(null);
   }
 
-  function startHold(name) {
-    holdRef.current[name] = setTimeout(() => setDeletingName(name), 800);
-  }
-  function cancelHold(name) { clearTimeout(holdRef.current[name]); }
-
-  function resetToOriginal() {
-    saveCustom([]);
-    resetRemovedBase();
+  function openMenu(ingr, holdName) {
+    setMenuIngr({ ingr, holdName });
   }
 
-  function confirmDelete(name) {
+  function handleMenuIngredients() {
+    const { ingr } = menuIngr;
+    setMenuIngr(null);
+    if (ingr.key) {
+      onIngredientClick(ingr);
+    } else {
+      setInfoSheet({ name: ingr.name, tab: 'ingredients' });
+    }
+  }
+
+  function handleMenuHowTo() {
+    const { ingr } = menuIngr;
+    setMenuIngr(null);
+    if (ingr.key) {
+      onIngredientClick(ingr);
+    } else {
+      setInfoSheet({ name: ingr.name, tab: 'howto' });
+    }
+  }
+
+  function handleMenuRemove() {
+    const { holdName } = menuIngr;
+    setMenuIngr(null);
+    setConfirmRemove(holdName);
+  }
+
+  function doRemove(name) {
     const customItem = custom.find(c => c.name === name || `${c.emoji} ${c.name}` === name);
     if (customItem) {
       saveCustom(custom.filter(c => c.name !== customItem.name && `${c.emoji} ${c.name}` !== name));
     } else {
       removeBaseItem(name);
     }
-    setDeletingName(null);
+    setConfirmRemove(null);
+  }
+
+  function resetToOriginal() {
+    saveCustom([]);
+    resetRemovedBase();
   }
 
   // Build rows filtering out removed base items
@@ -225,15 +335,56 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
         </div>
       )}
 
-      {deletingName && (
-        <div className="mb-delete-confirm">
-          <span className="mb-delete-msg">Remove <strong>{deletingName}</strong>?</span>
-          <button className="mb-delete-yes" onClick={() => confirmDelete(deletingName)}>Remove</button>
-          <button className="mb-delete-no" onClick={() => setDeletingName(null)}>Keep</button>
+      {/* 3-option ingredient menu overlay */}
+      {menuIngr && (
+        <div className="ingr-menu-backdrop" onClick={() => setMenuIngr(null)}>
+          <div className="ingr-menu-sheet" onClick={e => e.stopPropagation()}>
+            <div className="ingr-menu-name">{menuIngr.ingr.name}</div>
+            <button className="ingr-menu-btn" onClick={handleMenuIngredients}>
+              <span>🥘</span><span>Ingredients</span>
+            </button>
+            <button className="ingr-menu-btn" onClick={handleMenuHowTo}>
+              <span>🍳</span><span>How to Make It</span>
+            </button>
+            <button className="ingr-menu-btn danger" onClick={handleMenuRemove}>
+              <span>🗑️</span><span>Remove from Meal</span>
+            </button>
+            <button className="ingr-menu-cancel" onClick={() => setMenuIngr(null)}>Cancel</button>
+          </div>
         </div>
       )}
 
-      {/* Meal table — TDEE banner is the very first thing inside the box */}
+      {/* Info sheet for null-key items */}
+      {infoSheet && (
+        <div className="ingr-menu-backdrop" onClick={() => setInfoSheet(null)}>
+          <div className="ingr-info-sheet" onClick={e => e.stopPropagation()}>
+            <div className="ingr-info-name">{infoSheet.name}</div>
+            <div className="ingr-info-tabs">
+              <button className={`ingr-info-tab${infoSheet.tab === 'ingredients' ? ' active' : ''}`}
+                onClick={() => setInfoSheet(s => ({ ...s, tab: 'ingredients' }))}>🥘 Ingredients</button>
+              <button className={`ingr-info-tab${infoSheet.tab === 'howto' ? ' active' : ''}`}
+                onClick={() => setInfoSheet(s => ({ ...s, tab: 'howto' }))}>🍳 How to Make It</button>
+            </div>
+            <div className="ingr-info-body">
+              {infoSheet.tab === 'ingredients'
+                ? (FOOD_PREP[infoSheet.name]?.ingredients || 'A fresh, whole food — no special ingredients needed.')
+                : (FOOD_PREP[infoSheet.name]?.howTo || 'Prepare fresh and simple. See our Recipes section for detailed guides.')}
+            </div>
+            <button className="ingr-menu-cancel" onClick={() => setInfoSheet(null)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* Remove confirmation */}
+      {confirmRemove && (
+        <div className="mb-delete-confirm">
+          <span className="mb-delete-msg">Remove <strong>{confirmRemove}</strong>?</span>
+          <button className="mb-delete-yes" onClick={() => doRemove(confirmRemove)}>Remove</button>
+          <button className="mb-delete-no" onClick={() => setConfirmRemove(null)}>Keep</button>
+        </div>
+      )}
+
+      {/* Meal table */}
       {(() => {
         let totalCal = 0;
         const rowData = rows.map(r => {
@@ -249,7 +400,6 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
         });
         return (
           <div className="meal-table">
-            {/* Calorie targets — top of box, before Protein Day label */}
             {tdee ? (
               <div className="meal-tdee-banner">
                 <div className="meal-tdee-item">
@@ -270,12 +420,12 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
               </div>
             ) : (
               <div className="meal-tdee-empty">
-                ⚙️ Set your height &amp; weight in <strong>Settings → Account</strong> to see your personal calorie targets.
+                ⚙️ Set your height &amp; weight in <strong>Settings → Body Stats</strong> to see your personal calorie targets.
               </div>
             )}
             <div className="meal-table-top">
               <div className="meal-table-lbl">{baseMeals.label}</div>
-              <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Hold any item 1 sec to remove.</div>
+              <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Tap any food for options.</div>
             </div>
             <div className="meal-table-head">
               <div className="mth-time">Meal</div>
@@ -288,30 +438,14 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
                 <div className="mtr-foods">
                   {r.ingredients.map((ingr, j) => {
                     const holdName = ingr.custom ? ingr.rawName : ingr.name;
-                    const isDeleting = deletingName === holdName;
-                    const holdEvents = {
-                      onMouseDown:  () => startHold(holdName),
-                      onMouseUp:    () => cancelHold(holdName),
-                      onMouseLeave: () => cancelHold(holdName),
-                      onTouchStart: () => startHold(holdName),
-                      onTouchEnd:   () => cancelHold(holdName),
-                      onTouchCancel:() => cancelHold(holdName),
-                    };
-                    const next = r.ingredients[j + 1];
-                    const comma = !ingr.key && !ingr.custom && next && !next.key && !next.custom;
-                    if (ingr.key) {
-                      return (
-                        <button key={j} className={`meal-ingr-chip${isDeleting ? ' mb-deleting' : ''}`}
-                          onClick={() => { if (!isDeleting) onIngredientClick(ingr); }} {...holdEvents}>
-                          {ingr.name}
-                        </button>
-                      );
-                    }
                     return (
-                      <span key={j} className={`meal-ingr-plain${ingr.custom ? ' custom' : ''}${isDeleting ? ' mb-deleting' : ''}`}
-                        style={{ cursor: 'pointer' }} {...holdEvents}>
-                        {ingr.name}{comma ? ',' : ''}
-                      </span>
+                      <button
+                        key={j}
+                        className={`meal-ingr-chip meal-ingr-tappable${ingr.custom ? ' custom' : ''}`}
+                        onClick={() => openMenu(ingr, holdName)}
+                      >
+                        {ingr.name}
+                      </button>
                     );
                   })}
                 </div>

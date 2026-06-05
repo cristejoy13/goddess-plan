@@ -6190,6 +6190,152 @@ body {
 [data-mode="light"] .cal-estimate-num { color: var(--gold); }
 [data-mode="light"] .cal-estimate-total span:last-child { color: var(--gold); }
 
+/* ── Ingredient 3-option menu ── */
+.ingr-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.ingr-menu-sheet {
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(160deg, rgba(42,10,32,0.99), rgba(18,4,14,0.99));
+  border: 1.5px solid rgba(255,92,157,0.3);
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: sheetUp 0.28s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.ingr-menu-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #f8eed4;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.ingr-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #f8eed4;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+}
+.ingr-menu-btn span:first-child { font-size: 20px; }
+.ingr-menu-btn:hover { background: rgba(255,92,157,0.12); border-color: rgba(255,92,157,0.4); }
+.ingr-menu-btn.danger { color: #ff8080; border-color: rgba(255,80,80,0.2); background: rgba(255,80,80,0.06); }
+.ingr-menu-btn.danger:hover { background: rgba(255,80,80,0.14); border-color: rgba(255,80,80,0.5); }
+.ingr-menu-cancel {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: rgba(248,238,212,0.6);
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+/* ── Food info sheet (for null-key items) ── */
+.ingr-info-sheet {
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(160deg, rgba(42,10,32,0.99), rgba(18,4,14,0.99));
+  border: 1.5px solid rgba(255,92,157,0.3);
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: sheetUp 0.28s cubic-bezier(.34,1.56,.64,1) both;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.ingr-info-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #f8eed4;
+  text-align: center;
+}
+.ingr-info-tabs {
+  display: flex;
+  gap: 8px;
+}
+.ingr-info-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(248,238,212,0.6);
+  cursor: pointer;
+}
+.ingr-info-tab.active {
+  border-color: var(--rose);
+  color: var(--rose);
+  background: rgba(255,92,157,0.1);
+}
+.ingr-info-body {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: #d4a0b8;
+  line-height: 1.7;
+  white-space: pre-line;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Tappable food item (replaces both chip and plain) */
+.meal-ingr-tappable {
+  background: rgba(255,92,157,0.08);
+  border: 1.5px solid rgba(255,92,157,0.25);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.meal-ingr-tappable:hover, .meal-ingr-tappable:active {
+  background: rgba(255,92,157,0.16);
+  border-color: var(--rose);
+}
+.meal-ingr-tappable.custom { border-color: rgba(240,204,96,0.35); background: rgba(240,204,96,0.08); }
+
 /* Reset to original pill */
 .mb-reset-btn {
   display: block;
