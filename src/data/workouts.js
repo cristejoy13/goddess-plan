@@ -15,14 +15,14 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '📋 Track: what you chose (run or bike), how the 4th interval felt, and your pace/resistance. Progress = each 4-min block feeling slightly more manageable over weeks. The adaptation is real.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 2 PM · 5 PM',
+      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
       rows: [
         { time: '9:00 AM — Meal 1', ingredients: [
           { name: '1–2 eggs', key: 'egg' },
           { name: '½ banana', key: 'banana' },
           { name: 'green tea or ginger tea', key: 'green-tea' },
         ]},
-        { time: '2:00 PM — Meal 2 (post-workout)', ingredients: [
+        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
           { name: 'fish 150g or chicken 150g', key: 'fish' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
@@ -53,17 +53,17 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'rose', text: '💡 Light day — keep food light. First meal at 12pm. Focus on the quality of your Pilates breathing — exhale fully on every effort, feel the belly button draw in.' },
     meals: {
-      label: '🍽️ Light Day — Eat 2 PM · 5 PM',
+      label: '🍽️ Light Day — Eat 12 PM · Sunset',
       rows: [
-        { time: '2:00 PM — First Meal', ingredients: [
+        { time: '12:00 PM — First Meal', ingredients: [
           { name: 'pineapple or papaya', key: 'pineapple' },
           { name: 'apple', key: 'apple' },
           { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: 'collagen-water' },
         ]},
         { time: 'Sunset — Last Meal', ingredients: [
-          { name: 'fish 100g or eggs', key: 'fish' },
-          { name: 'steamed vegetables', key: 'broccoli' },
+          { name: 'papaya or kiwi', key: 'papaya' },
+          { name: 'berries or apple', key: 'apple' },
           { name: 'spearmint tea', key: 'spearmint-tea' },
         ]},
       ],
@@ -87,14 +87,14 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '📋 Track your hip thrust weight every Wednesday. Add 1–2 kg when all 4 sets feel manageable. Progressive overload is the only thing that drives long-term glute development.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 2 PM · 5 PM',
+      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
       rows: [
         { time: '9:00 AM — Meal 1', ingredients: [
           { name: '2 eggs', key: 'egg' },
           { name: '½ banana', key: 'banana' },
           { name: 'green tea', key: 'green-tea' },
         ]},
-        { time: '2:00 PM — Meal 2 (post-workout)', ingredients: [
+        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
           { name: 'chicken 150g', key: 'chicken' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
@@ -125,9 +125,9 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'rose', text: '💡 Light day — eat from 12pm only. Your body uses this day to consolidate the strength work from Wednesday. Keep food clean and light — this fasting window supports fat adaptation.' },
     meals: {
-      label: '🍽️ Light Day — Eat 2 PM · 5 PM',
+      label: '🍽️ Light Day — Eat 12 PM · Sunset',
       rows: [
-        { time: '2:00 PM — First Meal', ingredients: [
+        { time: '12:00 PM — First Meal', ingredients: [
           { name: 'papaya or apple', key: 'papaya' },
           { name: 'Salad', key: 'salad' },
           { name: 'collagen water', key: 'collagen-water' },
@@ -156,14 +156,14 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '📋 After both sprint sessions done for the week — 75+ min of sprint work completed. Note your energy level vs. Monday. Progress shows up here first. Recovery: hydrate, eat your protein, sleep 7.5–9 hrs tonight.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 2 PM · 5 PM',
+      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
       rows: [
         { time: '9:00 AM — Meal 1', ingredients: [
           { name: '1–2 eggs', key: 'egg' },
           { name: '½ banana', key: 'banana' },
           { name: 'ginger-lemon juice', key: 'ginger-juice' },
         ]},
-        { time: '2:00 PM — Meal 2 (post-workout)', ingredients: [
+        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
           { name: 'fish 150g', key: 'fish' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
@@ -194,14 +194,14 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '📋 Sunday is your prep day — batch-cook protein for Mon–Wed, boil eggs, prep your rosemary oil blend. A prepared week trains better and eats better. Add dumbbells to Bulgarian split squats once bodyweight feels easy.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 2 PM · 5 PM',
+      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
       rows: [
         { time: '9:00 AM — Meal 1', ingredients: [
           { name: '2 eggs', key: 'egg' },
           { name: '½ banana', key: 'banana' },
           { name: 'green tea', key: 'green-tea' },
         ]},
-        { time: '2:00 PM — Meal 2 (post-workout)', ingredients: [
+        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
           { name: 'beef 120g or chicken 150g', key: 'beef' },
           { name: 'broccoli', key: 'broccoli' },
           { name: 'sweet potato (½ cup)', key: 'sweet potato' },
@@ -234,9 +234,9 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'rose', text: '🌿 Meal prep Sunday: batch-cook your protein (chicken, fish, eggs) for Mon–Wed. Set up your rosemary oil blend for the week. A 30-min prep session eliminates every bad food decision before it happens. Week starts tomorrow — you are ready.' },
     meals: {
-      label: '🍽️ Light Day — Eat 2 PM · 5 PM',
+      label: '🍽️ Light Day — Eat 12 PM · Sunset',
       rows: [
-        { time: '2:00 PM — First Meal', ingredients: [
+        { time: '12:00 PM — First Meal', ingredients: [
           { name: 'papaya', key: 'papaya' },
           { name: 'pineapple', key: 'pineapple' },
           { name: 'Salad', key: 'salad' },

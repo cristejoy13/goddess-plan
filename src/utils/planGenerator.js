@@ -48,17 +48,17 @@ export function generateReminders(profile) {
   rem.push({ id: 'workout', emoji: '💪', label: 'Workout Time',
     time: addMinutes(wakeTime, 90), enabled: true, days: EAT_DAYS, body: null });
 
-  rem.push({ id: 'lunch', emoji: '🥗', label: 'Meal 2 — 2 PM',
-    time: '14:00', enabled: true, days: EAT_DAYS,
+  rem.push({ id: 'lunch', emoji: '🥗', label: 'Meal 2 — 12 PM',
+    time: '12:00', enabled: true, days: EAT_DAYS,
     body: 'Meal 2 — protein + fiber + vegetables! 80% full 💕 Walk after 🚶' });
 
   // ── LIGHT DAYS (Tue/Thu/Sun) — 2 PM · 5 PM ──
   rem.push({ id: 'workout_light', emoji: '🧘', label: 'Workout Time',
     time: addMinutes(wakeTime, 30), enabled: true, days: FAST_DAYS, body: null });
 
-  rem.push({ id: 'fast_break', emoji: '🍽️', label: 'First Meal — 2 PM',
-    time: '14:00', enabled: true, days: FAST_DAYS,
-    body: 'Eating window open! First meal — keep it light, protein + fruit 🥗 Walk after 🚶' });
+  rem.push({ id: 'fast_break', emoji: '🍽️', label: 'First Meal — 12 PM',
+    time: '12:00', enabled: true, days: FAST_DAYS,
+    body: 'Eating window open! First meal — light, fruit + collagen water 🍉 Walk after 🚶' });
 
   // ── SHARED — last meal 5pm every day — 9-2-5 method ──
   rem.push({ id: 'last_meal', emoji: '🌙', label: 'Last Meal — 5 PM',

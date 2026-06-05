@@ -4,7 +4,7 @@ import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
   { id: 'meat',    icon: '🔥', title: 'Strength & Sprint Days', desc: 'Monday, Wednesday, Friday, Saturday — high protein fuel for your hardest training days. Eating window: 9 AM – 5 PM.' },
-  { id: 'light',   icon: '🌿', title: 'Pilates & Rest Days',    desc: 'Tuesday, Thursday, Sunday — digestive rest and light meals. Eating window: 2 PM – 5 PM.' },
+  { id: 'light',   icon: '🌿', title: 'Pilates & Rest Days',    desc: 'Tuesday, Thursday, Sunday — digestive rest and light meals. Eating window: 12 PM – Sunset.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'How to prepare every ingredient in your plan. Tap any food to see three preparation methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',              desc: 'Glycemic load of every food in your plan and why it matters.' },
 ];
@@ -79,7 +79,7 @@ export function MeatDays() {
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">2:00 PM</div>
+            <div className="hyd-time">12:00 PM</div>
             <div>
               <div className="hyd-d">Meal 2 — Main protein meal (post-workout)</div>
               <div className="hyd-n">Eat protein first. Chicken 150g or fish 150g or lean beef 120g + steamed broccoli + ½ cup sweet potato + collagen water</div>
@@ -106,12 +106,12 @@ export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🌿 <strong>Light days: Tuesday, Thursday, Sunday.</strong> Eating window 2 PM – 5 PM. Only 2 meals. No heavy protein — your digestive system gets genuine rest, your gut lining repairs, and you arrive at the next hard day feeling genuinely fresh.
+        🌿 <strong>Light days: Tuesday, Thursday, Sunday.</strong> Eating window 12 PM – Sunset. Only 2 meals. Light and fruit-based — your digestive system gets genuine rest, your gut lining repairs, and you arrive at the next hard day feeling genuinely fresh.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">2:00 PM</div>
+            <div className="hyd-time">12:00 PM</div>
             <div>
               <div className="hyd-d">First Meal — Main meal of the day</div>
               <div className="hyd-n">1 egg + large salad + collagen water · OR · chia pudding + papaya + mixed nuts · OR · oats + pineapple + kiwi · OR · fish 100g + steamed vegetables</div>
@@ -127,7 +127,7 @@ export function LightDays() {
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 Light days are not cheat days — they are intentional digestive rest. 21 hours fasting (from 5 PM prior evening to 2 PM today) supports fat adaptation, reduces inflammation, and makes your hard training days significantly more effective.
+        🌸 Light days are not cheat days — they are intentional digestive rest. ~19 hours fasting (from Sunset prior evening to 12 PM today) supports fat adaptation, reduces inflammation, and makes your hard training days significantly more effective.
       </div>
     </>
   );
