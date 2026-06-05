@@ -5651,20 +5651,133 @@ body {
 .cal-banner-sep { color: var(--border-g); font-size: 14px; }
 
 /* ── Exercise links ── */
-.exercise-hint {
-  font-size: 11px;
-  color: var(--text-mid);
-  margin-bottom: 8px;
-  opacity: 0.8;
-}
-.ex-link {
-  color: var(--rose);
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
+/* legacy — kept for any remaining references */
+.exercise-hint { font-size: 11px; color: var(--text-mid); margin-bottom: 8px; opacity: 0.8; }
+.ex-link { color: var(--rose); font-weight: 700; text-decoration: underline; cursor: pointer; }
 .ex-link:active { opacity: 0.7; }
+
+/* ── Day stats chips ── */
+.dd-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+.dd-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-mid);
+}
+.dd-stat span { font-size: 14px; }
+.dd-stat-sprint   { border-color: rgba(255,92,157,0.35); background: rgba(255,92,157,0.1);  color: var(--rose); }
+.dd-stat-strength { border-color: rgba(240,204,96,0.35); background: rgba(240,204,96,0.1);  color: var(--gold); }
+.dd-stat-zone     { border-color: rgba(100,200,130,0.35); background: rgba(100,200,130,0.1); color: #80e0a0; }
+.dd-stat-mobility { border-color: rgba(100,180,220,0.35); background: rgba(100,180,220,0.1); color: #80c8e8; }
+.dd-stat-time     { border-color: rgba(200,150,255,0.35); background: rgba(200,150,255,0.1); color: #c8a0ff; }
+.dd-stat-count    { border-color: rgba(255,255,255,0.12); }
+
+/* ── Exercise cards ── */
+.ex-hint {
+  font-size: 10.5px;
+  color: var(--text-soft);
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+  opacity: 0.75;
+}
+.ex-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.ex-card {
+  border-radius: 14px;
+  border: 1.5px solid var(--border-g);
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.ex-card.open { border-color: var(--rose); }
+.ex-card-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.ex-card-num {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(240,204,96,0.12);
+  border: 1.5px solid var(--border-g);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--gold);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.ex-card.open .ex-card-num {
+  background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+  border-color: var(--rose-deep);
+  color: white;
+}
+.ex-card-name-wrap { flex: 1; min-width: 0; }
+.ex-card-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+.ex-card-link:hover { color: var(--rose); }
+.ex-card-arr { font-size: 11px; color: var(--text-soft); flex-shrink: 0; }
+.ex-card.open .ex-card-arr { color: var(--rose); }
+.ex-card-detail {
+  padding: 0 16px 16px 58px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.65;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 12px;
+}
+
+/* ── Calorie progress bar (in meal table) ── */
+.meal-cal-progress {
+  padding: 10px 14px 12px;
+  border-top: 1px solid rgba(240,204,96,0.1);
+}
+.meal-cal-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.meal-cal-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rose), var(--gold));
+  transition: width 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.meal-cal-fill.over { background: linear-gradient(90deg, #ff6060, #ff9060); }
+.meal-cal-pct { font-size: 11px; color: var(--text-soft); text-align: right; }
+
+/* Light mode overrides */
+[data-mode="light"] .dd-stat { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); }
+[data-mode="light"] .ex-card { border-color: rgba(154,104,0,0.2); }
+[data-mode="light"] .ex-card.open { border-color: var(--rose); }
+[data-mode="light"] .ex-card-detail { color: var(--text); border-top-color: rgba(0,0,0,0.06); }
+[data-mode="light"] .meal-cal-bar { background: rgba(0,0,0,0.08); }
 
 /* ── Weekly Blueprint Grid ── */
 .week-grid {
