@@ -6,6 +6,17 @@ import { RecipesPanel, FoodGuide } from './Nutrition';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
+// Calorie lookup by ingredient name (for ingredients with key: null)
+const NAME_CAL_MAP = {
+  'Protein Pancakes': 300, 'Berries': 40, 'Greek Yogurt': 130,
+  'Peanut Butter': 190, 'Granola': 200, 'Fruits': 80,
+  'Overnight Oats': 300, '2 Eggs': 140, 'Bread': 160,
+  'Mixed Veggies': 50, 'Olive oil drizzle': 60,
+  'Cheesy Egg Tacos': 420, 'Cheese': 110, 'Tortilla': 150,
+  'Tuna': 120, 'Cucumber': 16, 'Egg': 70, '1 Egg': 70,
+  'lemon water': 5, 'Fruits (optional)': 80,
+};
+
 // Estimated calories for base meal ingredients (keyed by ingredient key from workouts.js)
 const CAL_MAP = {
   'egg': 105, 'banana': 50, 'green-tea': 2, 'ginger-juice': 10,
@@ -231,7 +242,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
               const food = FOODS.find(f => f.name === ingr.rawName);
               return sum + (food?.cal || 0);
             }
-            return sum + (CAL_MAP[ingr.key] || 0);
+            return sum + (ingr.key ? (CAL_MAP[ingr.key] || 0) : (NAME_CAL_MAP[ingr.name] || 0));
           }, 0);
           totalCal += cal;
           return { ...r, cal };
