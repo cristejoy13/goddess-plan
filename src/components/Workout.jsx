@@ -5,6 +5,17 @@ import { FOODS, FOOD_CATS } from '../data/foods';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
+// Estimated calories for base meal ingredients (keyed by ingredient key from workouts.js)
+const CAL_MAP = {
+  'egg': 105, 'banana': 50, 'green-tea': 2, 'ginger-juice': 10,
+  'fish': 165, 'chicken': 165, 'broccoli': 55, 'sweet potato': 90,
+  'collagen-water': 30, 'salad': 35, 'pineapple': 50, 'apple': 80,
+  'papaya': 55, 'watermelon': 46, 'spearmint-tea': 2, 'kiwi': 42,
+  'avocado': 120, 'oats': 150, 'beef': 220, 'banana-nice-cream': 120,
+  'chia-mango-pudding': 140, 'cacao-banana-bites': 110, 'sweet-potato-brownie': 130,
+  'coconut-chia-balls': 120, 'avocado-choc-mousse': 140, 'banana-oat-cookies': 115,
+};
+
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
@@ -73,7 +84,7 @@ function useDayRemovedBase(dayId) {
   return [removed, removeItem, resetRemoved];
 }
 
-function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
+function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, deficit }) {
   const [custom, saveCustom]                    = useDayMeals(dayId, userId);
   const [removedBase, removeBaseItem, resetRemovedBase] = useDayRemovedBase(dayId);
   const [query, setQuery]    = useState('');
@@ -147,7 +158,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         <input
           className="mb-search"
           type="text"
-          placeholder="🔍 Add ingredient to your meal..."
+          placeholder="🔍 Search foods to add..."
           value={query}
           onChange={e => { setQuery(e.target.value); setBrowse(false); }}
           onFocus={() => { if (!query) setBrowse(true); }}
@@ -212,7 +223,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
 
       <div className="meal-box">
         <div className="meal-lbl">{baseMeals.label}</div>
-        <div className="mb-plan-note">Hold any item 1 sec to remove it.</div>
+        <div className="mb-plan-note">Hold any food 1 sec to remove it.</div>
         {rows.map((r, i) => (
           <div key={i} className="meal-row">
             <span className="meal-t">{r.time}</span>
@@ -258,6 +269,56 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         ))}
       </div>
 
+      {/* Calorie estimate box */}
+      {(() => {
+        const rowCals = rows.map(r => ({
+          time: r.time.split(' —')[0],
+          cal: r.ingredients.reduce((sum, ingr) => {
+            if (ingr.custom) {
+              const food = FOODS.find(f => f.name === ingr.rawName);
+              return sum + (food?.cal || 0);
+            }
+            return sum + (CAL_MAP[ingr.key] || 0);
+          }, 0),
+        })).filter(r => r.cal > 0);
+        const total = rowCals.reduce((s, r) => s + r.cal, 0);
+        if (total === 0) return null;
+        return (
+          <div className="cal-estimate-box">
+            <div className="cal-estimate-title">📊 Estimated Calories</div>
+            <div className="cal-estimate-rows">
+              {rowCals.map((r, i) => (
+                <div key={i} className="cal-estimate-row">
+                  <span className="cal-estimate-time">{r.time}</span>
+                  <span className="cal-estimate-num">~{r.cal} kcal</span>
+                </div>
+              ))}
+              <div className="cal-estimate-total">
+                <span>Total today</span>
+                <span>~{total} kcal</span>
+              </div>
+            </div>
+            {tdee && (
+              <div className="cal-estimate-targets">
+                <div className="cal-estimate-target">
+                  <span>🔥 Maintenance</span>
+                  <span>{tdee.toLocaleString()} kcal</span>
+                </div>
+                <div className="cal-estimate-target">
+                  <span>🎯 Target (deficit)</span>
+                  <span>{deficit ? deficit.toLocaleString() : '—'} kcal</span>
+                </div>
+                <div className={`cal-estimate-verdict ${total > (deficit || tdee) ? 'over' : 'under'}`}>
+                  {total > (deficit || tdee)
+                    ? `+${total - (deficit || tdee)} kcal over target`
+                    : `${(deficit || tdee) - total} kcal remaining`}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {(custom.length > 0 || removedBase.length > 0) && (
         <button className="mb-reset-btn" onClick={resetToOriginal}>
           ↩ Back to Original Menu
@@ -299,7 +360,7 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} userId={userId} />
+      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} userId={userId} tdee={tdee} deficit={deficit} />
     </div>
   );
 }
@@ -371,8 +432,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           id={DAY_IDS[selectedDayIdx]}
           isToday={selectedDayIdx === todayIndex}
           onIngredientClick={selectIngredient}
-          tdee={tdeeByType?.[dtype]}
-          deficit={deficitByType?.[dtype]}
+          tdee={tdeeByType}
+          deficit={deficitByType}
           onBack={closeDay}
           userId={userId}
         />
