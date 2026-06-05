@@ -5834,22 +5834,42 @@ body {
   opacity: 0.5;
   text-decoration: line-through;
 }
-/* TDEE / deficit banner above meal table */
+/* TDEE / deficit banner — top of meal table box */
 .meal-tdee-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: linear-gradient(135deg, rgba(255,92,157,0.1), rgba(240,204,96,0.08));
-  border: 1.5px solid rgba(240,204,96,0.25);
-  border-radius: 14px;
-  padding: 12px 16px;
-  margin-top: 14px;
+  gap: 0;
+  background: linear-gradient(135deg, rgba(255,92,157,0.13), rgba(240,204,96,0.1));
+  border-bottom: 1.5px solid rgba(240,204,96,0.2);
+  padding: 18px 20px;
 }
-.meal-tdee-item { display: flex; align-items: center; gap: 8px; flex: 1; }
-.meal-tdee-ico { font-size: 18px; }
-.meal-tdee-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
-.meal-tdee-val { font-size: 14px; font-weight: 700; color: var(--gold-light); }
-.meal-tdee-divider { width: 1px; height: 36px; background: rgba(240,204,96,0.2); flex-shrink: 0; }
+.meal-tdee-item { display: flex; align-items: center; gap: 12px; flex: 1; }
+.meal-tdee-ico { font-size: 26px; }
+.meal-tdee-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+.meal-tdee-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1;
+}
+.meal-tdee-unit { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 500; color: var(--text-soft); }
+.meal-tdee-divider { width: 1px; height: 52px; background: rgba(240,204,96,0.2); flex-shrink: 0; margin: 0 4px; }
+.meal-tdee-empty {
+  padding: 14px 16px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(240,204,96,0.1);
+  line-height: 1.6;
+}
 
 /* Meal plan table */
 .meal-table {
@@ -5903,8 +5923,9 @@ body {
 .mtt-cal { font-size: 14px; font-weight: 800; color: var(--gold); text-align: right; }
 
 /* Light mode overrides */
-[data-mode="light"] .meal-tdee-banner { background: rgba(255,248,220,0.9); border-color: rgba(154,104,0,0.25); }
+[data-mode="light"] .meal-tdee-banner { background: rgba(255,248,220,0.9); border-bottom-color: rgba(154,104,0,0.2); }
 [data-mode="light"] .meal-tdee-val { color: var(--gold); }
+[data-mode="light"] .meal-tdee-empty { color: var(--text-mid); background: rgba(154,104,0,0.04); }
 [data-mode="light"] .meal-table { border-color: rgba(154,104,0,0.2); }
 [data-mode="light"] .meal-table-head { background: rgba(154,104,0,0.06); }
 [data-mode="light"] .meal-table-head > div { color: var(--gold); }

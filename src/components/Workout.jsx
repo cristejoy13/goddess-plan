@@ -222,28 +222,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
         </div>
       )}
 
-      {/* TDEE / deficit banner — above the meal table */}
-      {tdee && (
-        <div className="meal-tdee-banner">
-          <div className="meal-tdee-item">
-            <span className="meal-tdee-ico">🔥</span>
-            <div>
-              <div className="meal-tdee-label">Maintenance</div>
-              <div className="meal-tdee-val">{tdee.toLocaleString()} kcal/day</div>
-            </div>
-          </div>
-          <div className="meal-tdee-divider" />
-          <div className="meal-tdee-item">
-            <span className="meal-tdee-ico">🎯</span>
-            <div>
-              <div className="meal-tdee-label">Your Target</div>
-              <div className="meal-tdee-val">{deficit ? deficit.toLocaleString() : tdee.toLocaleString()} kcal/day</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Meal table */}
+      {/* Meal table — TDEE banner is the very first thing inside the box */}
       {(() => {
         let totalCal = 0;
         const rowData = rows.map(r => {
@@ -259,6 +238,30 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
         });
         return (
           <div className="meal-table">
+            {/* Calorie targets — top of box, before Protein Day label */}
+            {tdee ? (
+              <div className="meal-tdee-banner">
+                <div className="meal-tdee-item">
+                  <span className="meal-tdee-ico">🔥</span>
+                  <div>
+                    <div className="meal-tdee-label">Maintenance</div>
+                    <div className="meal-tdee-val">{tdee.toLocaleString()}<span className="meal-tdee-unit"> kcal/day</span></div>
+                  </div>
+                </div>
+                <div className="meal-tdee-divider" />
+                <div className="meal-tdee-item">
+                  <span className="meal-tdee-ico">🎯</span>
+                  <div>
+                    <div className="meal-tdee-label">Your Target</div>
+                    <div className="meal-tdee-val">{(deficit || tdee).toLocaleString()}<span className="meal-tdee-unit"> kcal/day</span></div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="meal-tdee-empty">
+                ⚙️ Set your height &amp; weight in <strong>Settings → Account</strong> to see your personal calorie targets.
+              </div>
+            )}
             <div className="meal-table-top">
               <div className="meal-table-lbl">{baseMeals.label}</div>
               <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Hold any item 1 sec to remove.</div>
