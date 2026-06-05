@@ -349,13 +349,11 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
 }
 
 function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onBack, userId }) {
-  const [openEx, setOpenEx] = useState(null);
-
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
-  const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('pilates');
-  const hasSprint  = day.sub?.toLowerCase().includes('sprint') || day.title?.toLowerCase().includes('norwegian') || day.title?.toLowerCase().includes('sprint');
+  const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('pilates');
+  const hasSprint  = day.title?.toLowerCase().includes('norwegian') || day.title?.toLowerCase().includes('sprint');
   const hasZone2   = day.sub?.toLowerCase().includes('zone 2');
   const isMobility = day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility');
 
@@ -363,7 +361,6 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
     <div className="day-detail-page">
       <button className="day-detail-back" onClick={onBack}>← Back to Week</button>
 
-      {/* Header */}
       <div className="day-detail-header">
         <span className="day-detail-emoji" style={{ background: day.emojiBg }}>{day.emoji}</span>
         <div className="day-detail-meta">
@@ -372,56 +369,37 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
             {isToday && <span className="today-badge" style={{ marginLeft: 8 }}>Today</span>}
           </div>
           <div className="day-detail-title">{day.title}</div>
+          {day.sub && <div className="day-detail-sub">{day.sub}</div>}
         </div>
       </div>
 
       {/* Visual stat chips */}
       <div className="dd-stats">
-        {duration    && <div className="dd-stat dd-stat-time"><span>⏱</span>{duration}</div>}
-        {hasSprint   && <div className="dd-stat dd-stat-sprint"><span>⚡</span>Sprint</div>}
-        {isStrength  && <div className="dd-stat dd-stat-strength"><span>💪</span>Strength</div>}
-        {hasZone2    && <div className="dd-stat dd-stat-zone"><span>🫀</span>Zone 2</div>}
-        {isMobility  && <div className="dd-stat dd-stat-mobility"><span>🌿</span>Mobility</div>}
+        {duration   && <div className="dd-stat dd-stat-time"><span>⏱</span>{duration}</div>}
+        {hasSprint  && <div className="dd-stat dd-stat-sprint"><span>⚡</span>Sprint</div>}
+        {isStrength && <div className="dd-stat dd-stat-strength"><span>💪</span>Strength</div>}
+        {hasZone2   && <div className="dd-stat dd-stat-zone"><span>🫀</span>Zone 2</div>}
+        {isMobility && <div className="dd-stat dd-stat-mobility"><span>🌿</span>Mobility</div>}
         <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.length} exercises</div>
       </div>
 
-      {/* Intro note */}
+      <CalorieBanner tdee={tdee} deficit={deficit} />
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
-
-      {/* Exercise cards — collapsible, tap name to watch on YouTube */}
-      <div className="ex-hint">▼ Tap a card to see how · Tap the name to watch on YouTube</div>
-      <div className="ex-cards">
-        {day.exercises.map((ex, i) => {
-          const isOpen = openEx === i;
-          return (
-            <div key={i} className={`ex-card${isOpen ? ' open' : ''}`}>
-              <button className="ex-card-trigger" onClick={() => setOpenEx(isOpen ? null : i)}>
-                <div className="ex-card-num">{i + 1}</div>
-                <div className="ex-card-name-wrap">
-                  <a
-                    className="ex-card-link"
-                    href={`https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    {ex.name} ▶
-                  </a>
-                </div>
-                <div className="ex-card-arr">{isOpen ? '▲' : '▼'}</div>
-              </button>
-              {isOpen && (
-                <div className="ex-card-detail">{ex.detail}</div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Closing note */}
+      <div className="exercise-hint">👆 Tap any exercise to watch how to do it.</div>
+      <ul className="workout-list">
+        {day.exercises.map((ex, i) => (
+          <li key={i}>
+            <a
+              className="ex-link"
+              href={`https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >{ex.name}</a>
+            {' '}— {ex.detail}
+          </li>
+        ))}
+      </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-
-      {/* Meal plan with calorie table */}
       <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} userId={userId} tdee={tdee} deficit={deficit} />
     </div>
   );
