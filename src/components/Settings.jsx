@@ -8,6 +8,7 @@ import {
 import { doc, setDoc, deleteDoc, serverTimestamp, getDocs, query, collection, where } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AVATARS, getAvatarByProfile } from '../avatars';
+import { calcTDEE, generatePlan } from '../utils/planGenerator';
 import {
   loadReminders, saveReminders, requestNotificationPermission,
   scheduleReminders, playChime, registerFCMToken, syncRemindersToFirestore,
@@ -411,6 +412,147 @@ function AccountScreen({ user, profile, onProfileUpdate, onBack, pushBack, clear
           onClick={() => openSubScreen('password')} />
         <SettingsPill icon="🗑️" label="Delete Account"
           desc="Permanently remove your account and all data" onClick={() => openSubScreen('delete')} danger />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Body Stats Screen ─── */
+function BodyStatsScreen({ user, profile, onSave, onBack }) {
+  const [heightCm, setHeightCm] = useState(String(profile?.heightCm || ''));
+  const [weightKg, setWeightKg] = useState(String(profile?.weightKg || ''));
+  const [age,      setAge]      = useState(String(profile?.age      || ''));
+  const [activity, setActivity] = useState(profile?.activityLevel || 'moderate');
+  const [goal,     setGoal]     = useState(profile?.primaryGoal    || 'lose_fat');
+  const [saving,   setSaving]   = useState(false);
+  const [saved,    setSaved]    = useState(false);
+  const [error,    setError]    = useState('');
+
+  const ACTIVITIES = [
+    { id: 'sedentary', label: 'Sedentary',  desc: 'Desk job, little movement' },
+    { id: 'light',     label: 'Light',      desc: '1–3 days/week light exercise' },
+    { id: 'moderate',  label: 'Moderate',   desc: '3–5 days/week — our plan' },
+    { id: 'active',    label: 'Active',     desc: '6–7 days/week hard training' },
+  ];
+  const GOALS = [
+    { id: 'lose_fat',     label: 'Lose Fat',      desc: '~400 kcal deficit/day' },
+    { id: 'maintain',     label: 'Maintain',       desc: 'Eat at maintenance' },
+    { id: 'build_muscle', label: 'Build Muscle',   desc: '+300 kcal surplus/day' },
+  ];
+
+  const previewTdee = (heightCm && weightKg && age)
+    ? calcTDEE(profile?.gender || 'female', Number(age), Number(heightCm), Number(weightKg), activity)
+    : null;
+  const previewTarget = previewTdee
+    ? goal === 'lose_fat'     ? Math.max(1200, previewTdee - 400)
+    : goal === 'build_muscle' ? previewTdee + 300
+    : previewTdee
+    : null;
+
+  async function handleSave() {
+    if (!heightCm || !weightKg || !age) { setError('Please fill in height, weight, and age.'); return; }
+    setSaving(true); setError('');
+    try {
+      const { tdeeKcal, deficitKcal } = generatePlan({
+        gender: profile?.gender || 'female',
+        age: Number(age), heightCm: Number(heightCm), weightKg: Number(weightKg),
+        activityLevel: activity, primaryGoal: goal,
+      });
+      const updated = {
+        ...profile,
+        heightCm: Number(heightCm), weightKg: Number(weightKg), age: Number(age),
+        activityLevel: activity, primaryGoal: goal, tdeeKcal, deficitKcal,
+        updatedAt: serverTimestamp(),
+      };
+      await setDoc(doc(db, 'users', user.uid), updated, { merge: true });
+      onSave(updated);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (e) { setError(`Could not save. (${e.message})`); }
+    setSaving(false);
+  }
+
+  return (
+    <div className="section">
+      <button className="section-back-btn" onClick={onBack}>‹ Settings</button>
+      <div className="s-header" style={{ marginBottom: 16 }}>
+        <div className="s-tag">Calorie Targets</div>
+        <h2 className="s-title">Body <em>Stats</em></h2>
+        <p className="s-desc">Your personal maintenance and deficit calories are calculated from these values and shown in every meal plan.</p>
+      </div>
+
+      {previewTdee && (
+        <div className="bs-preview splash-item">
+          <div className="bs-preview-item">
+            <div className="bs-preview-ico">🔥</div>
+            <div className="bs-preview-label">Maintenance</div>
+            <div className="bs-preview-val">{previewTdee.toLocaleString()}<span className="bs-preview-unit"> kcal</span></div>
+          </div>
+          <div className="bs-preview-divider" />
+          <div className="bs-preview-item">
+            <div className="bs-preview-ico">🎯</div>
+            <div className="bs-preview-label">Your Target</div>
+            <div className="bs-preview-val">{previewTarget.toLocaleString()}<span className="bs-preview-unit"> kcal</span></div>
+          </div>
+        </div>
+      )}
+
+      <div className="g-card splash-item" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="bs-field">
+          <label className="bs-label">Height</label>
+          <div className="bs-hint">5'1″ = 155 cm · 5'4″ = 163 cm · 5'7″ = 170 cm</div>
+          <div className="bs-input-row">
+            <input className="bs-input" type="number" placeholder="e.g. 155" value={heightCm} onChange={e => setHeightCm(e.target.value)} />
+            <span className="bs-unit">cm</span>
+          </div>
+        </div>
+
+        <div className="bs-field">
+          <label className="bs-label">Weight</label>
+          <div className="bs-input-row">
+            <input className="bs-input" type="number" placeholder="e.g. 46" value={weightKg} onChange={e => setWeightKg(e.target.value)} />
+            <span className="bs-unit">kg</span>
+          </div>
+        </div>
+
+        <div className="bs-field">
+          <label className="bs-label">Age</label>
+          <div className="bs-input-row">
+            <input className="bs-input" type="number" placeholder="e.g. 22" value={age} onChange={e => setAge(e.target.value)} />
+            <span className="bs-unit">years</span>
+          </div>
+        </div>
+
+        <div className="bs-field">
+          <label className="bs-label">Activity Level</label>
+          <div className="bs-options">
+            {ACTIVITIES.map(a => (
+              <button key={a.id} className={`bs-option${activity === a.id ? ' selected' : ''}`} onClick={() => setActivity(a.id)}>
+                <div className="bs-option-label">{a.label}</div>
+                <div className="bs-option-desc">{a.desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="bs-field">
+          <label className="bs-label">Primary Goal</label>
+          <div className="bs-options">
+            {GOALS.map(g => (
+              <button key={g.id} className={`bs-option${goal === g.id ? ' selected' : ''}`} onClick={() => setGoal(g.id)}>
+                <div className="bs-option-label">{g.label}</div>
+                <div className="bs-option-desc">{g.desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {error && <p style={{ color: 'var(--rose)', fontSize: 13 }}>{error}</p>}
+        {saved && <p style={{ color: '#6fda82', fontSize: 13 }}>✓ Saved — your meal plans will now show your targets!</p>}
+
+        <button className="ob-btn-primary" style={{ width: '100%' }} onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving…' : '💾 Save My Stats'}
+        </button>
       </div>
     </div>
   );
@@ -832,6 +974,9 @@ export default function Settings({
       onProfileUpdate={onProfileUpdate} onBack={() => setScreen('main')}
       pushBack={pushBack} clearInnerBack={clearInnerBack} />;
   }
+  if (screen === 'body-stats') {
+    return <BodyStatsScreen user={user} profile={profile} onSave={onProfileUpdate} onBack={() => setScreen('main')} />;
+  }
   if (screen === 'navigate') return <NavigateScreen onBack={() => setScreen('main')} />;
   if (screen === 'about')    return <AboutScreen onBack={() => setScreen('main')} />;
   if (screen === 'reminders') return <RemindersScreen onBack={() => setScreen('main')} user={user} />;
@@ -860,6 +1005,8 @@ export default function Settings({
         <div className="settings-pills-list splash-item">
           <SettingsPill icon="👤" label="Account"
             desc="Edit profile, avatar, password" onClick={() => openScreen('account')} />
+          <SettingsPill icon="📊" label="Body Stats & Calories"
+            desc={profile?.tdeeKcal ? `Maintenance ${profile.tdeeKcal.toLocaleString()} kcal · Target ${profile.deficitKcal?.toLocaleString() || '—'} kcal` : 'Set height, weight & calorie targets'} onClick={() => openScreen('body-stats')} />
           <SettingsPill icon="🔔" label="Reminders"
             desc="Daily notifications with sound" onClick={() => openScreen('reminders')} />
           <SettingsPill icon="🗂️" label="Navigate the App"
