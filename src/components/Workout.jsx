@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORKOUT_DAYS } from '../data/workouts';
+import { WORKOUT_DAYS, getCurrentSprintProtocol } from '../data/workouts';
+
+const _sp = getCurrentSprintProtocol();
 import IngredientDetailPage from './IngredientDetailPage';
 import { FOODS, FOOD_CATS } from '../data/foods';
 import { RecipesPanel, FoodGuide } from './Nutrition';
@@ -32,19 +34,19 @@ const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
 ];
-const DAY_TYPES = ['strength', 'light', 'strength', 'light', 'strength', 'strength', 'light'];
+const DAY_TYPES = ['strength', 'strength', 'strength', 'strength', 'light', 'strength', 'light'];
 
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🏃', name: 'Sprint',      focus: 'Norwegian 4x4 · Run or Bike', color: 'pr' },
-  { lbl: 'Tue', emoji: '🧘', name: 'Pilates 1',   focus: 'Core · TVA',                  color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Strength A',  focus: 'Glutes · Hip Thrust · RDL',  color: 'pr' },
-  { lbl: 'Thu', emoji: '🌿', name: 'Pilates 2',   focus: 'Spine · Side Body',           color: 'py' },
-  { lbl: 'Fri', emoji: '⚡', name: 'Sprint',      focus: 'Norwegian 4x4 · Run or Bike', color: 'pr' },
-  { lbl: 'Sat', emoji: '🍑', name: 'Strength B',  focus: 'Glute Med · Split Squat',    color: 'pr' },
-  { lbl: 'Sun', emoji: '🌸', name: 'Mobility',    focus: 'Hips · Spine · Shoulders',   color: 'pg' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',      focus: 'Hip Thrust · RDL · Split Squat', color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Back & Core A', focus: 'Pull-Ups · Row · Dead Bug',      color: 'pr' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute B',      focus: 'Sumo · Kickback · Step-Up',       color: 'pr' },
+  { lbl: 'Thu', emoji: '🧘', name: 'Back & Core B', focus: 'Cable Row · DB Row · Plank',     color: 'pr' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glute Iso',    focus: 'Donkey Kicks · Abduction',         color: 'pr' },
+  { lbl: 'Sat', emoji: '⚡', name: 'Sprint',       focus: `${_sp.sprint}s on · ${_sp.rest}s off · ${_sp.reps} reps`, color: 'pr' },
+  { lbl: 'Sun', emoji: '🌸', name: 'Recovery',     focus: 'Walk · Stretch',                   color: 'pg' },
 ];
 
 function NoteBox({ type, text }) {
@@ -497,10 +499,10 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
-  const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('pilates');
-  const hasSprint  = day.title?.toLowerCase().includes('norwegian') || day.title?.toLowerCase().includes('sprint');
+  const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('back') || day.title?.toLowerCase().includes('core');
+  const hasSprint  = day.title?.toLowerCase().includes('sprint') || day.sprintDay;
   const hasZone2   = day.sub?.toLowerCase().includes('zone 2');
-  const isMobility = day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility');
+  const isMobility = day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility') || day.title?.toLowerCase().includes('recovery');
 
   return (
     <div className="day-detail-page">
