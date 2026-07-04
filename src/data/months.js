@@ -1,146 +1,149 @@
+// Goddess habit journey — 12 progressive months starting in June.
+// Array is in calendar order (index 0 = January) so the calendar maps correctly,
+// but the journey builds June → May. Each month layers one habit on top of the last.
 export const MONTHS = [
-  // Jan — challenge 8 in the June-start cycle
+  // January — Journey month 8
   {
     name: 'January',
-    ch: 'Hydration Mastery',
-    why: "Consistent deep hydration is one of the most underrated tools for skin clarity, hormone transport, and training performance. Most chronic puffiness is paradoxically caused by under-hydration — the body retains water when it doesn't receive enough. This month fixes that at the root.",
+    ch: 'Eat SLOW & 80% Full',
+    why: "Half of a flat stomach is HOW you eat, not just what. Eating fast and to 100% full stretches the stomach and traps gas. This month you slow down: small bites, chew fully, and stop at 80% — comfortably light, never stuffed. This single habit does more for a flat belly than any crunch.",
     tasks: [
-      'Week 1 — 500ml warm water with calamansi every morning on waking, non-negotiable',
-      'Week 2 — Track water intake: 2–2.5L per day minimum',
-      'Week 3 — Add collagen peptides dissolved in water at one meal daily',
-      'Week 4 — Eliminate all remaining sugary or carbonated drinks. Skin assessment.',
+      'Week 1 — Put your fork/spoon down between every bite. No screens while eating.',
+      'Week 2 — Chew each bite 20–30 times until almost liquid before swallowing.',
+      'Week 3 — Stop at 80% full. Pause mid-meal and ask: could I comfortably walk right now?',
+      'Week 4 — Every meal slow, small, and to 80%. Notice how much flatter you feel.',
     ],
   },
-  // Feb — challenge 9
+  // February — Journey month 9
   {
     name: 'February',
-    ch: 'Hormone-Supporting Nutrition',
-    why: "By this point, your gut and metabolism are optimised. Now you actively support your hormonal cycle with specific foods. Healthy fats from avocado, eggs, and olive oil are the raw material for estrogen and progesterone. Seeds and zinc-rich foods support cycle regularity and skin clarity.",
+    ch: 'Hydration & Skin',
+    why: "Water is the most underrated tool for skin clarity and beating puffiness — the body retains water when it doesn't get enough. Paired with collagen and the right teas, this month makes your skin glow and your face de-puff.",
     tasks: [
-      'Week 1 — Eggs at every meal: choline and cholesterol for hormone production',
-      'Week 2 — Daily avocado or olive oil for progesterone-supporting fats',
-      'Week 3 — Add pumpkin seeds (zinc) and flaxseeds (lignans) — 1 tbsp each daily',
-      'Week 4 — Observe cycle regularity, mood stability, and skin glow.',
+      'Week 1 — 500ml warm lemon water on waking, every day, before anything else.',
+      'Week 2 — Hit 2–2.5L plain water daily, sipped slowly (not chugged).',
+      'Week 3 — Add dairy-free collagen at your 3 PM meal on glute days.',
+      'Week 4 — Spearmint or green tea daily. Assess skin clarity and morning puffiness.',
     ],
   },
-  // Mar — challenge 10
+  // March — Journey month 10
   {
     name: 'March',
-    ch: 'Maintenance Begins',
-    why: "You have completed several months of elimination and strategic nutrition. March marks your transition to maintenance: keeping all the foundational changes but allowing sustainable flexibility for social life and long-term adherence. This is your new normal.",
+    ch: 'Sleep & Stress',
+    why: "Your glutes don't grow in the gym — they grow while you sleep. Deep sleep releases growth hormone and lowers cortisol (the stress hormone that stores belly fat and drives bloating). This month protects your recovery. The final S of GODSSSS: good Sleep, no Stress.",
     tasks: [
-      'Week 1 — Maintain all eliminations with flexibility for planned social events',
-      'Week 2 — Take progress photos and measurements. Compare to June.',
-      'Week 3 — Identify your personal trigger foods from the past months',
-      'Week 4 — Write your maintenance protocol: what stays, what comes back, at what frequency.',
+      'Week 1 — Set a fixed bedtime for 7.5–9 hrs of sleep. Non-negotiable.',
+      'Week 2 — Screens off + dim lights 60 min before bed; gentle stretch instead.',
+      'Week 3 — Add a daily 5-min calm practice (breathing, journaling, or a slow walk).',
+      'Week 4 — Consistent sleep + lower stress. Notice recovery, mood, and glute soreness.',
     ],
   },
-  // Apr — challenge 11
+  // April — Journey month 11
   {
     name: 'April',
-    ch: 'Skin & Collagen Protocol',
-    why: "Collagen is the structural protein that gives skin its plumpness, elasticity, and youthfulness. At this stage, your clean baseline amplifies these inputs dramatically. This month intensifies all collagen-supporting habits for visible skin transformation.",
+    ch: 'Progressive Overload — Glute Peak',
+    why: "Round glutes come from ONE thing over time: lifting heavier. This is your push month. You've built the habits — now you add weight to the hip thrust, RDL, and sumo squat, and you track it. What gets measured gets grown.",
     tasks: [
-      'Week 1 — Double collagen peptide intake: 10–15g daily with Vitamin C',
-      'Week 2 — Papaya and tomatoes daily for lycopene and papain enzyme support',
-      'Week 3 — Add warm chicken broth 2× daily as a collagen food source',
-      'Week 4 — Assess skin elasticity, plumpness, and tone. Compare to Month 1.',
+      'Week 1 — Log your current weights on hip thrust, RDL, and sumo squat.',
+      'Week 2 — Add 1–2 kg to each main lift when all sets feel controlled.',
+      'Week 3 — Add a second finisher set to each glute day; keep protein at 3 PM.',
+      'Week 4 — Compare your lifts + glute measurements to March. Celebrate the gains.',
     ],
   },
-  // May — challenge 12 (final month)
+  // May — Journey month 12 (final)
   {
     name: 'May',
-    ch: 'Maintenance & Reflection',
-    why: "May is your reward month. You have built a stable, sustainable baseline through eleven months of consistent work. Maintain all changes with flexibility for celebrations. You now know your body's language: what bloats you, what fuels you, what clears your skin. This is your new normal — not a diet.",
+    ch: 'Goddess Maintenance & Reflection',
+    why: "Your reward month. Eleven months of layered habits are now simply who you are — flat stomach, round glutes, calm gut, glowing skin. Maintain everything with flexibility for life, and reflect on how far you've come. This is your new normal, not a diet.",
     tasks: [
-      'Week 1 — Maintain protocol with full flexibility for celebrations',
-      'Week 2 — Take final progress photos, measurements, and journal reflections',
-      'Week 3 — Plan your goals for next year from this powerful new baseline',
-      'Week 4 — Celebrate. You built a goddess from the inside out. ✨',
+      'Week 1 — Keep the full plan with relaxed flexibility for celebrations.',
+      'Week 2 — Take final progress photos + measurements. Compare to last June.',
+      'Week 3 — Write down what worked best for YOUR body — your personal blueprint.',
+      'Week 4 — Set next year\'s goals from this strong new baseline. You built a goddess. ✨',
     ],
   },
-  // Jun — challenge 1 (START HERE)
+  // June — Journey month 1 (START HERE)
   {
     name: 'June',
-    ch: 'Foundation — Remove Ultra-Processed Foods',
-    why: "Ultra-processed foods are the #1 driver of gut inflammation, water retention, and hormonal disruption. Starting here gives your liver, gut, and skin immediate relief — expect less puffiness and more energy within 7–10 days. This is the foundation every other month builds on.",
+    ch: 'Glute Foundation',
+    why: "Everything starts here. This month you learn your two glute days (Monday & Thursday) and build the mind-muscle connection so your glutes — not your back or quads — do the work. Perfect form now means real growth for the next eleven months.",
     tasks: [
-      'Week 1 — No chips, instant noodles, or packaged snacks',
-      'Week 2 — No fast food or fried takeout',
-      'Week 3 — No processed sauces or condiments with additives',
-      'Week 4 — Full month complete. Journal your bloating and energy changes.',
+      'Week 1 — Do both glute days. Focus on feeling the squeeze at the top of every rep.',
+      'Week 2 — Add glute activation (bridges + clamshells) before every glute session.',
+      'Week 3 — Nail your form on hip thrust, RDL, and Bulgarian split squat — go lighter if needed.',
+      'Week 4 — Both glute days done every week. Journal which exercises you feel most in your glutes.',
     ],
   },
-  // Jul — challenge 2
+  // July — Journey month 2
   {
     name: 'July',
-    ch: 'Remove Dairy',
-    why: "Dairy is a common trigger for hormonal acne, gut bloating, and mucus-driven puffiness. A1 casein in cow's milk raises IGF-1, which worsens inflammation and stimulates oil glands. Removing dairy lets your skin, gut, and hormones recalibrate significantly.",
+    ch: 'Daily Stomach Vacuum',
+    why: "The flat-stomach-at-rest secret. The stomach vacuum trains the deep TVA muscle — your natural internal corset that holds everything flat when you're just standing around. It's the one exercise that changes how your belly looks at rest, and it takes 2 minutes a day.",
     tasks: [
-      'Week 1 — Remove all milk, cheese, and yogurt',
-      'Week 2 — Check all labels for hidden dairy (whey, casein, milk powder)',
-      'Week 3 — Notice changes in skin clarity, bloating, and digestion',
-      'Week 4 — Full month dairy-free. Assess whether skin improved.',
+      'Week 1 — Learn the vacuum: exhale all air, pull navel in and up, hold 15 sec × 3.',
+      'Week 2 — Do vacuums every morning before your first drink of water.',
+      'Week 3 — Build to 4 × 20-sec holds daily; add them into your core days too.',
+      'Week 4 — Daily vacuums locked in. Compare your relaxed stomach to a June photo.',
     ],
   },
-  // Aug — challenge 3
+  // August — Journey month 3
   {
     name: 'August',
-    ch: 'Remove Bread & Gluten',
-    why: "Even without celiac disease, gluten can cause non-celiac sensitivity: bloating, brain fog, and intestinal inflammation. Wheat spikes insulin quickly. Removing gluten flattens the stomach visually and reduces intestinal permeability — a major driver of facial puffiness.",
+    ch: 'Fruit-Till-Noon & Food Combining',
+    why: "This is the heart of the 80% fruitarian plan. Eating only fruit until noon gives your gut a long daily rest, and eating fruit ON ITS OWN (never with protein) stops it fermenting in your gut — which is what causes gas and bloating. Master the 12 PM window and the combining rule.",
     tasks: [
-      'Week 1 — No bread, pasta, pandesal, or flour-based snacks',
-      'Week 2 — No soy sauce (use coconut aminos instead)',
-      'Week 3 — Switch to sweet potato as your only starch on training days',
-      'Week 4 — Document stomach flatness at rest. Compare to June.',
+      'Week 1 — First food at 12 PM, and make it fruit only. Water + tea before then.',
+      'Week 2 — Always eat fruit alone — never mix fruit and protein in the same meal.',
+      'Week 3 — Choose low-bloat fruits (papaya, pineapple, kiwi, berries, watermelon).',
+      'Week 4 — 12 PM fruit breakfast is automatic. Notice the drop in afternoon bloating.',
     ],
   },
-  // Sep — challenge 4
+  // September — Journey month 4
   {
     name: 'September',
-    ch: 'Remove Added Sugar',
-    why: "Added sugar drives glycation — a process that ages skin, breaks down collagen, and causes chronic low-grade inflammation. It also feeds harmful gut bacteria, perpetuating bloat. Eliminating added sugar is the single most powerful anti-aging food decision you can make.",
+    ch: 'Walk After Every Meal',
+    why: "A 10–15 minute walk after eating is the simplest anti-bloat tool there is — it moves food through the gut, blunts the blood-sugar spike, and burns fat with zero extra effort. Pair it with jump-rope warm-ups and your daily movement quietly doubles.",
     tasks: [
-      'Week 1 — No sweetened drinks, juices, or sodas',
-      'Week 2 — No sweets, candy, or desserts',
-      'Week 3 — Read all labels: no added sugar in condiments or cooking sauces',
-      'Week 4 — Natural fruit only. Notice your skin glow and energy shift.',
+      'Week 1 — Walk 10 min after your 12 PM meal, every day.',
+      'Week 2 — Walk after all meals (12, 3, and 5). Even a slow loop counts.',
+      'Week 3 — Add the 10–15 min jump-rope warm-up before every training session.',
+      'Week 4 — Post-meal walks are a reflex now. Notice digestion and energy.',
     ],
   },
-  // Oct — challenge 5
+  // October — Journey month 5
   {
     name: 'October',
-    ch: 'Reduce Refined Carbs',
-    why: "Refined carbs cause rapid insulin spikes, driving water retention and fat storage around the belly. Reducing them sharpens insulin sensitivity, supports hormone balance, and deepens the metabolic shift already built. Sweet potato, squash, and banana stay on active training days.",
+    ch: 'Deep Core & Posture',
+    why: "Your three deep-core & back days (Tue/Wed/Fri) build the flat, strong midsection and the upright posture that instantly makes you look leaner and more confident. This month you commit to them fully — light weights, high reps, perfect posture. No bulk, just definition.",
     tasks: [
-      'Week 1 — No white rice on non-workout days',
-      'Week 2 — Carbs only on strength and sprint days',
-      'Week 3 — Only nature carbs: sweet potato, banana, squash',
-      'Week 4 — Notice waistline, energy stability, and mental clarity.',
+      'Week 1 — Complete all three core & back days. Keep every upper-body move light + high-rep.',
+      'Week 2 — Focus on the posture move each day (band pull-aparts, face pulls, wall angels).',
+      'Week 3 — Add 5 sec to your planks and holds; keep the deep core braced, not bulging.',
+      'Week 4 — Three core days locked in. Notice your posture and waistline in the mirror.',
     ],
   },
-  // Nov — challenge 6
+  // November — Journey month 6
   {
     name: 'November',
-    ch: 'Anti-Inflammatory Upgrades',
-    why: "After 5 months of elimination, your gut is clean and receptive. Ginger suppresses inflammatory pathways. Turmeric with black pepper reduces cytokines that cause facial puffiness. Omega-3s build brain health, regulate hormones, and reduce skin inflammation at the cellular level.",
+    ch: 'Sprint & Conditioning',
+    why: "Saturday sprints torch fat and sculpt the glutes and legs without adding bulk — and the protocol automatically gets harder every month. This month you commit to the sprint habit and push the progression the app sets for you.",
     tasks: [
-      'Week 1 — Add fresh ginger daily (tea, juice, or grated into cooking)',
-      'Week 2 — Add turmeric to eggs with black pepper at every meal',
-      'Week 3 — Add fatty fish 3× per week (bangus, tuna, tanigue) or omega-3 supplement',
-      'Week 4 — Assess skin brightness, puffiness reduction, and energy.',
+      'Week 1 — Do the full Saturday sprint protocol. Warm up with jump rope first.',
+      'Week 2 — Hit every interval at true effort — the app\'s numbers are your target.',
+      'Week 3 — Add the 30-min brisk walk cool-down after every sprint (non-negotiable).',
+      'Week 4 — Sprints are a weekly ritual. Log your times and how each round felt.',
     ],
   },
-  // Dec — challenge 7
+  // December — Journey month 7
   {
     name: 'December',
-    ch: 'Gut Reset Month',
-    why: "The gut microbiome governs estrogen balance, serotonin production, skin clarity, and inflammation. After months of clean eating, this month actively rebuilds beneficial gut flora — reducing bloating, clearing skin, improving mood, and supporting hormonal cycling.",
+    ch: 'Gut Healing — 80/20 Fruitarian Mastery',
+    why: "Now you tie it all together into a calm, healthy gut. The gut governs bloating, skin, mood, and hormones. This month you perfect the 80% fruitarian / 20% protein ratio, keep protein to your glute days, and let your digestion run clean and flat.",
     tasks: [
-      'Week 1 — Add warm chicken broth daily at mealtimes (sip before eating)',
-      'Week 2 — Add fermented food (kimchi, small portion) if tolerated',
-      'Week 3 — Take a probiotic supplement or continue fermented foods daily',
-      'Week 4 — Journal: bloating frequency, skin clarity, mood, and energy.',
+      'Week 1 — Keep protein ONLY on glute + sprint days; everything else fruit + light veg.',
+      'Week 2 — Steam or boil all veg — no oils, no dairy, no gluten (GODSSSS out).',
+      'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
+      'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',
     ],
   },
 ];
