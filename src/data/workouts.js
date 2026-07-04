@@ -22,8 +22,12 @@ export function getCurrentSprintProtocol() {
 
 // Build the dynamic sprint exercise detail at load time
 const sp = getCurrentSprintProtocol();
-const sprintDetail = `${sp.reps} reps · ${sp.sprint}s all-out sprint → ${sp.rest}s complete rest · push every interval like it's your last — this protocol rebuilds every month, so if it feels easy, it was supposed to feel hard last month · track which rep your form breaks first`;
-const sprintSub = `${sp.reps} reps · ${sp.sprint}s on / ${sp.rest}s off · ${sp.month} Protocol · ~${Math.round((sp.sprint + sp.rest) * sp.reps / 60 + 10 + 30)} min total`;
+const sprintDetail = `${sp.reps} reps · ${sp.sprint}s all-out sprint → ${sp.rest}s complete rest · push every interval like it's your last — this protocol rebuilds every month, so if it feels easy, it was meant to feel hard last month · track which rep your form breaks first`;
+const sprintSub = `${sp.reps} reps · ${sp.sprint}s on / ${sp.rest}s off · ${sp.month} Protocol · ~${Math.round((sp.sprint + sp.rest) * sp.reps / 60 + 15 + 30)} min total`;
+
+// Shared warm-up & cool-down (used on every training day)
+const JUMP_ROPE = { name: 'Jump Rope Warm-Up', detail: '10–15 min · start slow, build to a steady rhythm · jump rope is a lean, toning warm-up — it raises your heart rate, wakes up the legs and core, and never bulks you up · light and springy on the balls of your feet' };
+const WALK_COOLDOWN = { name: '30-Min Brisk Walk Cool-Down', detail: '30 min at a fast walking pace — quicker than a stroll, not a jog · this is where fat burns and cortisol drops · make it a habit to also walk 10–15 min after every meal to beat bloating and flatten the stomach' };
 
 export const WORKOUT_DAYS = [
   // ─── MONDAY: Glute A — Compound Power ──────────────────────────────────────
@@ -32,190 +36,190 @@ export const WORKOUT_DAYS = [
     emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Monday · Glute A',
     title: 'Glutes — Compound Power',
-    sub: '3 exercises + warm-up & cool-down · ~70 min total',
-    noteBefore: { type: 'rose', text: '🍑 Your heaviest glute session. These three compound movements hit every part of the glute — maximum load, slow tempo, full range every rep. Growth hormone peaks after heavy hip thrusts and RDLs — this is where your glutes actually grow. Warm up with jump rope to prime your heart rate and activate your posterior chain before loading.' },
+    sub: '3 main lifts + warm-up & walk · ~70 min total',
+    noteBefore: { type: 'rose', text: '🍑 Your heaviest glute day. These three compound lifts hit every angle of the glute — go heavy, slow, and full range on every rep. This is where big, round glutes are actually built. Eat your protein soon after (3 PM) so your muscles have what they need to grow.' },
     exercises: [
-      { name: 'Jump Rope Warm-Up', detail: '10–20 min · start slow for the first 2 min, build pace to moderate intensity · elevates heart rate, warms up calves, hamstrings, glutes, and improves coordination · do not skip — cold muscles under load is how injuries happen' },
-      { name: 'Barbell Hip Thrust', detail: '4 × 10–12 reps · shoulders on bench, bar across hips, drive upward until body is fully parallel to the floor · pause 2 sec at the top with a hard glute squeeze · lower 3 sec slow · the highest glute activation exercise that exists — this is your money move' },
-      { name: 'Romanian Deadlift (RDL)', detail: '4 × 10–12 reps · hinge at the hips, lower the bar 3 sec with soft knees until deep hamstring stretch, drive hips forward to stand · keep the bar close to your legs the whole way · loads the glute through full stretch — the most powerful stimulus for glute depth and size' },
-      { name: 'Bulgarian Split Squat', detail: '3 × 10 reps each leg · rear foot elevated on bench, lean torso 10–15° forward, lower until front thigh is parallel · each glute works fully on its own with no compensation from the other side · best single-leg exercise for glute mass and balance' },
-      { name: '30-Min Brisk Walk Cool-Down', detail: '30 min at a fast walking pace — faster than your normal walk but not jogging · this is active recovery, not a stroll · drops cortisol from the lifting session, improves blood flow to worked muscles, and counts toward your weekly cardio total' },
+      JUMP_ROPE,
+      { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → hip circles × 10 each · wake the glutes up so they — not your lower back — do the work under load' },
+      { name: 'Barbell Hip Thrust', detail: '4 × 10–12 reps · shoulders on a bench, drive hips fully up until your body is parallel to the floor, pause 2 sec at the top with a hard squeeze, lower for 3 sec · the single highest glute-activation exercise there is — this is your money move' },
+      { name: 'Romanian Deadlift (RDL)', detail: '4 × 10–12 reps · soft knees, hinge at the hips, lower the bar 3 sec until you feel a deep hamstring stretch, then drive your hips forward to stand · loads the glute through its full stretch — the strongest stimulus for glute size and shape' },
+      { name: 'Bulgarian Split Squat', detail: '3 × 10 reps each leg · rear foot on a bench, torso leaning 10–15° forward, lower until the front thigh is parallel · forces each glute to work alone with no help from the other side — builds even, round glutes and fixes imbalance' },
+      { name: 'Glute Bridge Burnout', detail: '2 × 25 reps (finisher) · feet flat, drive hips up and squeeze hard at the top of every rep · pump extra blood into the glutes to finish the session · bodyweight only, fast controlled reps' },
+      WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: '📋 Track your hip thrust weight every Monday. Add 1–2 kg when all 4 sets feel fully controlled. Progressive overload is the only mechanism that drives long-term glute growth — the weight must go up over time.' },
+    noteAfter: { type: 'gold', text: '📋 Track your hip thrust weight every Monday — add 1–2 kg when all 4 sets feel controlled. Progressive overload is the ONLY thing that grows glutes long-term. Protein at 3 PM today is non-negotiable for growth.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
+      label: '🍑 Glute Fuel — Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
-        { time: '9:00 AM — Meal 1', ingredients: [
-          { name: 'Protein Pancakes', key: null },
-          { name: 'Berries', key: null },
-          { name: 'green tea', key: 'green-tea' },
-        ]},
-        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
-          { name: 'chicken 150g', key: 'chicken' },
-          { name: 'broccoli', key: 'broccoli' },
-          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
-          { name: 'collagen water', key: 'collagen-water' },
-        ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: '2 Eggs', key: 'egg' },
-          { name: 'Avocado', key: 'avocado' },
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Papaya', key: 'papaya' },
+          { name: 'Pineapple', key: 'pineapple' },
           { name: 'lemon water', key: null },
         ]},
+        { time: '3:00 PM — Dinner (Protein · post-workout)', ingredients: [
+          { name: 'Chicken 150g', key: 'chicken' },
+          { name: 'Steamed Zucchini', key: null },
+          { name: 'Steamed Carrots', key: null },
+        ]},
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+          { name: 'Berries', key: null },
+          { name: 'spearmint tea', key: null },
+        ]},
       ],
     },
   },
 
-  // ─── TUESDAY: Back & Core A ─────────────────────────────────────────────────
+  // ─── TUESDAY: Core & Back A — Posture Foundation ───────────────────────────
   {
-    emoji: '💪',
+    emoji: '🪷',
     emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Tuesday · Back & Core A',
-    title: 'Back & Core — Strength A',
-    sub: '6 exercises + warm-up & cool-down · ~75 min total',
-    noteBefore: { type: 'gold', text: '💪 Back training the day after heavy glutes gives the glutes a full 48-hour recovery window while still training hard. A strong back improves posture, makes your waist look smaller by comparison, and protects the spine that supports every other lift. Core A focuses on upper abs and hip flexors.' },
+    day: 'Tuesday · Core & Back A',
+    title: 'Deep Core & Back — Posture',
+    sub: '6 exercises + warm-up & walk · ~55 min total',
+    noteBefore: { type: 'gold', text: '🪷 Deep-core + back day. We train the TVA (the deep corset muscle) for a flat stomach at REST — draw-in and hold work, never belly-bulging crunches. All back moves stay light-to-moderate with high reps: this sculpts a slim, toned "Korean" arm and a strong upright posture — it will NOT make you bulky.' },
     exercises: [
-      { name: 'Jump Rope Warm-Up', detail: '10–20 min · moderate pace, focus on rhythm · warms up the lats, traps, and shoulders before pulling work · your back muscles need blood flow before they can fire properly' },
-      { name: 'Pull-Ups (or Lat Pulldown)', detail: '3 × 8–10 reps · if no pull-up bar, use lat pulldown cable with full range · pull elbows down and back toward your hips, pause 1 sec at top · the widest-back exercise — directly builds the V-taper silhouette · go slow on the way up if assisted, make gravity work for you on the way down' },
-      { name: 'Bent-Over Barbell Row', detail: '3 × 10–12 reps · hinge forward 45–60°, pull bar to lower chest, squeeze shoulder blades at the top for 1 sec · builds mid-back thickness — the muscle behind your shoulder blades that creates definition' },
-      { name: 'Face Pulls', detail: '3 × 15 reps · cable at face height, pull rope toward your face with elbows flared, external-rotate at the top · directly targets rear delts and rotator cuff — fixes forward shoulder posture and prevents the rounded-shoulder look' },
-      { name: 'Dead Bug', detail: '3 × 10 reps each side · lie on back, arms and legs up, slowly lower opposite arm and leg toward the floor while pressing lower back flat · the single best deep core exercise — teaches the TVA to brace without holding your breath · move slowly and controlled the entire set' },
-      { name: 'Bicycle Crunch', detail: '3 × 20 reps · bring elbow to opposite knee, fully extend the other leg, rotate through the core not the neck · best oblique exercise for waist definition — do not rush, slow rotation maximizes the oblique contraction' },
-      { name: 'Hanging Leg Raise (or Lying Leg Raise)', detail: '3 × 15 reps · hang from bar and raise legs to 90° with controlled motion, or lie flat and lift legs · lower abs and hip flexors — the hardest part of the abs to train and most visible when lean · keep the movement slow on the way down' },
-      { name: '30-Min Brisk Walk Cool-Down', detail: '30 min at fast walking pace · active recovery after pulling work · your lats and upper back will thank you for the gentle movement instead of sitting down immediately' },
+      JUMP_ROPE,
+      { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale ALL your air out, then pull your belly button in and up toward your spine as hard as you can, hold, breathe shallow · THE exercise for a flat stomach at rest — it trains the deep TVA that acts like a natural corset · do this daily if you can' },
+      { name: 'Dead Bug', detail: '3 × 10 reps each side · on your back, arms and knees up, slowly lower the opposite arm and leg while pressing your lower back flat to the floor · deep-core control with zero waist thickening — move slow, keep the spine glued down' },
+      { name: 'Pilates Hundred', detail: '3 sets · legs at 45°, head and shoulders lifted, pump the arms as you breathe · draws the belly in and lights up the whole deep core · keep your lower back pressed down the entire time' },
+      { name: 'Band Pull-Aparts (Posture)', detail: '3 × 20 reps · hold a light band at shoulder height, pull it apart until it touches your chest, squeeze the shoulder blades together · POSTURE FIX — opens the chest, pulls the shoulders back, undoes phone/laptop slump · light band, high reps, no bulk' },
+      { name: 'Lat Pulldown (light–moderate)', detail: '3 × 12–15 reps · pull the bar to your upper chest, elbows down and back, control the way up · a wider back makes the waist look smaller by contrast · keep the weight light enough that reps 12–15 are clean — we tone, not bulk' },
+      { name: 'Superman Hold', detail: '3 × 20 sec · lie face down, lift chest, arms and legs off the floor, squeeze the lower back and glutes · strengthens the whole back line that holds you upright · gentle, no weight' },
+      WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Protein day — fuel your back recovery. Muscles repair between sessions, not during them. Sleep and protein tonight directly determine how much strength you add before Thursday.' },
+    noteAfter: { type: 'rose', text: '💡 Fruit day — stay 80% fruitarian today. Fruits at 12 & 3, light veg at 5. Remember: eat slow, stop at 80% full, and walk after every meal. That combination is what keeps the stomach flat and bloat-free.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
+      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
       rows: [
-        { time: '9:00 AM — Meal 1', ingredients: [
-          { name: 'Greek Yogurt', key: null },
-          { name: 'Peanut Butter', key: null },
-          { name: 'Granola', key: null },
-          { name: 'Fruits', key: null },
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Watermelon', key: 'watermelon' },
+          { name: 'Berries', key: null },
         ]},
-        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
-          { name: 'Tuna', key: null },
-          { name: 'Cucumber', key: null },
-          { name: 'collagen water', key: 'collagen-water' },
+        { time: '3:00 PM — Snack (Fruits)', ingredients: [
+          { name: 'Apple', key: 'apple' },
+          { name: 'Banana', key: 'banana' },
         ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: 'Mixed Veggies', key: 'broccoli' },
-          { name: 'Egg', key: 'egg' },
-          { name: 'Olive oil drizzle', key: null },
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+          { name: 'Steamed Broccoli', key: 'broccoli' },
+          { name: 'Steamed Spinach', key: null },
+          { name: 'spearmint tea', key: null },
         ]},
       ],
     },
   },
 
-  // ─── WEDNESDAY: Glute B — Shape & Drive ────────────────────────────────────
+  // ─── WEDNESDAY: Core & Back B — Deep Core & Lats ───────────────────────────
+  {
+    emoji: '🌿',
+    emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Wednesday · Core & Back B',
+    title: 'Deep Core & Back — Lats',
+    sub: '6 exercises + warm-up & walk · ~55 min total',
+    noteBefore: { type: 'gold', text: '🌿 Second deep-core + back day, new angles. Side planks build the obliques ISOMETRICALLY (holds, not weighted twists) — this cinches the waist WITHOUT thickening it. Face pulls are your posture medicine. Everything upper-body stays light and high-rep for lean, defined arms.' },
+    exercises: [
+      JUMP_ROPE,
+      { name: 'Hollow Body Hold', detail: '3 × 20–30 sec · on your back, press your lower back into the floor, lift shoulders and legs into a shallow banana shape · the gymnastics staple for a tight, flat deep core · lower the legs to make it easier, keep the back glued down' },
+      { name: 'Bird Dog', detail: '3 × 10 reps each side · on all fours, extend the opposite arm and leg long, hold 2 sec, keep the hips level · trains deep-core stability AND spinal posture in one move · slow and controlled, no wobbling' },
+      { name: 'Side Plank', detail: '3 × 20–30 sec each side · forearm down, body in a straight line, lift the hips high · isometric oblique work that defines and cinches the waist without the bulk that weighted twists create · drop the bottom knee if you need to' },
+      { name: 'Face Pulls (Posture)', detail: '3 × 15–20 reps · cable/band at face height, pull toward your forehead with elbows high and wide, rotate the shoulders back · POSTURE FIX — the single best move for rounded shoulders and rear-shoulder definition · light weight, feel it in the upper back' },
+      { name: 'Seated Cable Row (light–moderate)', detail: '3 × 12–15 reps · sit tall, pull to your lower ribs, squeeze the shoulder blades 1 sec, control the return · builds mid-back detail that improves posture and frames a smaller waist · keep it light-to-moderate, high reps' },
+      { name: 'Reverse Fly (Posture)', detail: '3 × 15 reps · light dumbbells, hinge forward slightly, raise the arms out to the sides like wings, squeeze at the top · targets the rear delts and upper back — pulls the shoulders back for elegant posture · very light weight, slow tempo' },
+      WALK_COOLDOWN,
+    ],
+    noteAfter: { type: 'rose', text: '💡 Fruit day. Keep it clean and light — no gluten, no oils, no dairy. Papaya and kiwi both carry natural digestive enzymes, so today\'s fruits actively fight bloating. Walk after each meal.' },
+    meals: {
+      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
+      rows: [
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Papaya', key: 'papaya' },
+          { name: 'Kiwi', key: null },
+        ]},
+        { time: '3:00 PM — Snack (Fruits)', ingredients: [
+          { name: 'Mango', key: null },
+          { name: 'Berries', key: null },
+        ]},
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+          { name: 'Steamed Zucchini', key: null },
+          { name: 'Steamed Spinach', key: null },
+          { name: 'green tea', key: null },
+        ]},
+      ],
+    },
+  },
+
+  // ─── THURSDAY: Glute B — Shape & Round ─────────────────────────────────────
   {
     emoji: '🔥',
     emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Wednesday · Glute B',
-    title: 'Glutes — Shape & Drive',
-    sub: '3 exercises + warm-up & cool-down · ~70 min total',
-    noteBefore: { type: 'rose', text: '🔥 Your second glute session — completely different angles from Monday. Sumo squats target the lower glute and inner thigh, cable kickbacks isolate the upper glute with a peak contraction no barbell can match, and step-ups force each glute to drive your full body weight through one leg. The round shape comes from training every angle.' },
+    day: 'Thursday · Glute B',
+    title: 'Glutes — Shape & Round',
+    sub: '3 main lifts + warm-up & walk · ~65 min total',
+    noteBefore: { type: 'rose', text: '🔥 Your second glute day — completely different angles from Monday. Sumo squats build the lower glute and inner thigh, cable kickbacks isolate the upper glute at peak squeeze, and hip abductions target the gluteus medius for that round outer shape. Protein again at 3 PM to feed the growth.' },
     exercises: [
-      { name: 'Jump Rope Warm-Up', detail: '10–20 min · moderate to brisk pace · activate glutes and legs before the session · by the end of the jump rope your glutes should feel slightly engaged and your heart rate elevated to Zone 2' },
-      { name: 'Sumo Squat', detail: '4 × 12–15 reps · wide stance, toes pointed out 45°, sit below parallel and pause 1 sec at the bottom · the wide stance moves load from the quad to the glute and inner thigh — builds the lower glute curve and inner leg thickness that creates the hourglass from behind' },
-      { name: 'Cable Kickback', detail: '3 × 15 reps each leg · ankle cuff on cable, hinge slightly forward, drive your heel back and up until full hip extension, hold 2 sec at top, lower with control · the only exercise that fully isolates the upper glute at peak contraction — the burn at the top is where the growth happens · go heavy enough that the last 3 reps are genuinely hard' },
-      { name: 'Step-Up with Knee Drive', detail: '3 × 12 reps each leg · step onto a box or bench, drive the trailing knee up to hip height at the top, lower with control · a unilateral glute and quad driver — forces your glute to control both the ascent and descent through full range · do all reps on one side before switching' },
-      { name: '30-Min Brisk Walk Cool-Down', detail: '30 min at fast walking pace · active recovery — the brisk walk elongates the muscles you just loaded and sends blood flow to speed repair · do not sit down directly after lifting' },
+      JUMP_ROPE,
+      { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each · fire up the gluteus medius before you load it' },
+      { name: 'Sumo Squat', detail: '4 × 12–15 reps · wide stance, toes pointed out 45°, sit deep below parallel, pause 1 sec at the bottom · the wide stance shifts the load to the glutes and inner thighs — builds the lower curve and the hourglass shape from behind' },
+      { name: 'Cable Kickback', detail: '3 × 15 reps each leg · ankle cuff on a cable, hinge slightly forward, drive the heel back and up to full hip extension, hold 2 sec at the top, lower slow · the only move that isolates the upper glute at peak contraction — that burn at the top is the growth' },
+      { name: 'Hip Abduction (band or machine)', detail: '3 × 20 reps · band above the knees (or the machine), push the knees apart against resistance, hold 2 sec at the widest point · directly targets the gluteus medius — the muscle that creates the round, wide outer glute shape' },
+      { name: 'Single-Leg Glute Bridge', detail: '2 × 15 reps each leg (finisher) · one foot flat, other leg extended, drive the hips up through the working heel and squeeze · isolates each glute to finish the week strong and even · bodyweight, controlled' },
+      WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: '📋 Track your cable kickback weight each Wednesday. This exercise responds well to progressive overload — add resistance when the 15 reps feel controlled and the squeeze at the top is consistent.' },
+    noteAfter: { type: 'gold', text: '📋 Track your cable kickback and sumo squat weights each Thursday. Add resistance when reps feel easy and the squeeze stays sharp. Protein at 3 PM — your glutes grow on rest days, fed by today\'s protein.' },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
+      label: '🍑 Glute Fuel — Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
-        { time: '9:00 AM — Meal 1', ingredients: [
-          { name: 'Overnight Oats', key: null },
-          { name: 'Berries', key: null },
-          { name: 'green tea', key: 'green-tea' },
-        ]},
-        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
-          { name: 'chicken 150g', key: 'chicken' },
-          { name: 'broccoli', key: 'broccoli' },
-          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
-          { name: 'collagen water', key: 'collagen-water' },
-        ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: '1 Egg', key: 'egg' },
-          { name: 'Avocado', key: 'avocado' },
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Pineapple', key: 'pineapple' },
+          { name: 'Papaya', key: 'papaya' },
           { name: 'lemon water', key: null },
         ]},
-      ],
-    },
-  },
-
-  // ─── THURSDAY: Back & Core B ─────────────────────────────────────────────────
-  {
-    emoji: '🧘',
-    emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Thursday · Back & Core B',
-    title: 'Back & Core — Strength B',
-    sub: '6 exercises + warm-up & cool-down · ~75 min total',
-    noteBefore: { type: 'gold', text: '🧘 Wednesday glutes → Thursday back is a perfect split — completely different muscle groups, full recovery for the glutes. Core B shifts to planks, rotation, and anti-extension work. These are the exercises that build the deep corset around your spine and create definition in the obliques and lower abs.' },
-    exercises: [
-      { name: 'Jump Rope Warm-Up', detail: '10–20 min · build from easy to moderate · gets blood into the lats and mid-back before pulling work · your back muscles are cold from yesterday\'s lower body focus — give them a full warm-up' },
-      { name: 'Seated Cable Row', detail: '3 × 10–12 reps · sit tall, pull handle to your lower chest, squeeze shoulder blades for 2 sec, return slowly · builds mid-back and lower trap thickness — the muscles that pull your shoulders back and give the strong, defined upper back look' },
-      { name: 'Single-Arm Dumbbell Row', detail: '3 × 12 reps each side · brace one hand and same-side knee on a bench, pull the dumbbell from a dead hang to your hip with your elbow close to your body · greater range of motion than a barbell — trains each side independently and fixes any strength imbalance' },
-      { name: 'Reverse Fly (Dumbbell or Cable)', detail: '3 × 15 reps · slight forward hinge, arms raise out to the sides until parallel, squeeze at the top 1 sec · targets rear deltoid and rhomboids — directly improves posture and builds the back-shoulder definition that shows in photos' },
-      { name: 'Plank Hold', detail: '3 × 45–60 sec · forearms on floor, body in a straight line from head to heel, breathe steadily · trains the entire anterior core under sustained tension — the baseline exercise for midline stability · if 60 sec feels easy, elevate your feet or add a plate on your back' },
-      { name: 'Russian Twist', detail: '3 × 20 reps · sit at 45°, feet lifted, rotate a weight from hip to hip with full trunk rotation · obliques and transverse abs — the exercises that build the diagonal muscle lines at the side of the core · go heavier over time, not faster' },
-      { name: 'Ab Wheel Rollout (or Cable Crunch)', detail: '3 × 10 reps · from knees, roll the wheel forward until your body is nearly parallel, pull back using your abs not your back · the most challenging ab exercise — loads the full anterior core through a long range of motion · if this is too hard, do cable crunches at the same rep count' },
-      { name: '30-Min Brisk Walk Cool-Down', detail: '30 min brisk walk · decompresses the spine after seated cable work and planks · by the end of this walk your soreness should be less than when you started' },
-    ],
-    noteAfter: { type: 'rose', text: '💡 Protein day — Thursday night sleep and protein are critical. Tomorrow is lighter training (glute isolation), so tonight is when your body consolidates this week\'s back and core gains.' },
-    meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
-      rows: [
-        { time: '9:00 AM — Meal 1', ingredients: [
-          { name: 'Protein Pancakes', key: null },
+        { time: '3:00 PM — Dinner (Protein · post-workout)', ingredients: [
+          { name: 'Fish 150g', key: 'fish' },
+          { name: 'Steamed Broccoli', key: 'broccoli' },
+          { name: 'Steamed Carrots', key: null },
+        ]},
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
           { name: 'Berries', key: null },
-          { name: 'green tea', key: 'green-tea' },
-        ]},
-        { time: '12:00 PM — Meal 2 (post-workout)', ingredients: [
-          { name: 'Tuna', key: null },
-          { name: 'Cucumber', key: null },
-          { name: 'collagen water', key: 'collagen-water' },
-        ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: 'Mixed Veggies', key: 'broccoli' },
-          { name: 'Egg', key: 'egg' },
-          { name: 'Olive oil drizzle', key: null },
+          { name: 'spearmint tea', key: null },
         ]},
       ],
     },
   },
 
-  // ─── FRIDAY: Glute Isolation & Conditioning ─────────────────────────────────
+  // ─── FRIDAY: Core & Back C — Stability & Alignment ─────────────────────────
   {
     emoji: '✨',
-    emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Friday · Glute Isolation',
-    title: 'Glutes — Isolation & Conditioning',
-    sub: '3 exercises + warm-up & cool-down · ~55 min total',
-    noteBefore: { type: 'rose', text: '✨ This is your lighter glute day — no heavy barbells. Isolation exercises create the specific, targeted burn that compounds alone cannot produce. These movements finish the glutes after a full week of compound work and improve the mind-muscle connection for better activation on Monday and Wednesday. Feel every rep.' },
+    emojiBg: 'rgba(253,245,208,0.4)',
+    day: 'Friday · Core & Back C',
+    title: 'Deep Core & Back — Alignment',
+    sub: '6 exercises + warm-up & walk · ~55 min total',
+    noteBefore: { type: 'gold', text: '✨ Third deep-core + back day — stability and alignment. Another stomach vacuum (do them often — they flatten the belly at rest faster than anything). Wall angels reset your posture, and the single-arm row evens out both sides. Light weights, high reps, slim toned arms.' },
     exercises: [
-      { name: 'Jump Rope Warm-Up', detail: '10–20 min · easy to moderate pace · lighter than your heavy days — just enough to elevate heart rate and get blood to the glutes before isolation work' },
-      { name: 'Donkey Kicks', detail: '3 × 20 reps each leg · on all fours, drive one heel up toward the ceiling with knee bent 90°, pause 2 sec at the top with a hard squeeze, lower with control · pure upper glute isolation — the peak contraction at the top is the point, not the range of motion · do not let your hips rotate as you kick' },
-      { name: 'Hip Abduction — Cable or Band', detail: '3 × 20 reps each leg · cable at ankle height (or resistance band), stand and sweep leg directly out to the side with toes forward · targets the gluteus medius — the muscle responsible for the round outer shape of the glute · the burn should be in the side, not the hip joint' },
-      { name: 'Single-Leg Glute Bridge', detail: '3 × 15 reps each leg · lie on back, one foot flat on floor, other leg extended · drive hips up through the working heel until fully extended, pause 2 sec, lower slowly · isolates one glute at a time with no barbell needed — excellent for fixing left-right imbalance and finishing the week with a deep burn' },
-      { name: '30-Min Brisk Walk Cool-Down', detail: '30 min brisk walk · Friday walk sets you up perfectly — you enter the weekend with elevated metabolism and glute muscles primed for the sprint session tomorrow' },
+      JUMP_ROPE,
+      { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale everything out, pull the navel in and up under the ribcage, hold and breathe shallow · the fastest route to a flat stomach at rest — the more often you train the TVA, the flatter your belly sits naturally' },
+      { name: 'Pilates Roll-Up', detail: '3 × 8 reps · lie flat, peel up one vertebra at a time reaching for your toes, then lower with the same control · lengthens and strengthens the whole deep abdominal wall through a long range · move slow, no yanking with the neck' },
+      { name: 'Forearm Plank', detail: '3 × 30–45 sec · forearms down, body in one straight line head-to-heel, brace the belly in · full anterior-core stability under tension · if it gets easy, add a shoulder tap each side · keep the hips from sagging' },
+      { name: 'Wall Angels (Posture)', detail: '3 × 12 reps · stand with your back flat against a wall, arms bent in a goalpost, slide them up and down keeping wrists and elbows touching the wall · POSTURE FIX — restores overhead range and pulls you out of the forward-shoulder slump' },
+      { name: 'Single-Arm Dumbbell Row (light–moderate)', detail: '3 × 12 reps each side · one hand and knee braced on a bench, pull the dumbbell from a dead hang to your hip, elbow close · evens out both sides of the back and defines it · light-to-moderate, controlled — never max out' },
+      { name: 'Prone Y-T-W Raises (Posture)', detail: '3 × 8 reps each letter · face down, no or tiny weights, lift the arms to form a Y, then a T, then a W, squeezing the upper back each time · POSTURE FIX — hits every small back muscle that holds the shoulders back · bodyweight or 0.5–1 kg only' },
+      WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: '📋 Light day tonight — first meal at 12pm only. Let your digestive system rest heading into Saturday sprint. Hydrate well this evening for tomorrow\'s performance.' },
+    noteAfter: { type: 'rose', text: '💡 Fruit day. Tomorrow is sprints — hydrate well tonight. Stay light: fruits, then light steamed veg at 5. Walk after each meal, stop at 80% full, and get good sleep — recovery is where the results show up.' },
     meals: {
-      label: '🍽️ Light Day — Eat 12 PM · Sunset',
+      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
       rows: [
-        { time: '12:00 PM — First Meal', ingredients: [
-          { name: 'Mixed Veggies', key: 'broccoli' },
-          { name: 'Egg', key: 'egg' },
-          { name: 'Olive oil drizzle', key: null },
-          { name: 'collagen water', key: 'collagen-water' },
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Watermelon', key: 'watermelon' },
+          { name: 'Grapes', key: null },
         ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: 'papaya', key: 'papaya' },
-          { name: 'kiwi', key: 'kiwi' },
-          { name: 'spearmint tea', key: 'spearmint-tea' },
+        { time: '3:00 PM — Snack (Fruits)', ingredients: [
+          { name: 'Apple', key: 'apple' },
+          { name: 'Banana', key: 'banana' },
+        ]},
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+          { name: 'Cucumber', key: null },
+          { name: 'Steamed Carrots', key: null },
+          { name: 'green tea', key: null },
         ]},
       ],
     },
@@ -229,69 +233,67 @@ export const WORKOUT_DAYS = [
     title: 'Sprint — Progressive Intervals',
     sub: sprintSub,
     sprintDay: true,
-    noteBefore: { type: 'rose', text: `⚡ ${sp.month} Sprint Protocol: ${sp.sprint}s on / ${sp.rest}s off × ${sp.reps} reps. This protocol automatically increases every month — harder sprints, shorter rest, more reps. The progression is designed so what feels hard now becomes your new baseline. Every month you level up. Sprint on a track, flat road, or treadmill.` },
+    noteBefore: { type: 'rose', text: `⚡ ${sp.month} Sprint Protocol: ${sp.sprint}s on / ${sp.rest}s off × ${sp.reps} reps. This protocol automatically levels up every month — harder sprints, shorter rest, more reps — so what feels hard now becomes your baseline. Sprints torch fat and sculpt the glutes and legs without adding bulk. Track, road, or treadmill.` },
     exercises: [
-      { name: 'Jump Rope Warm-Up', detail: '10–20 min · start easy, finish at moderate pace · for sprint days, make the last 2 min slightly faster to pre-activate your fast-twitch fibers · do not skip — cold sprints are where hamstring tears happen' },
-      { name: 'Dynamic Warm-Up', detail: '5 min · leg swings × 10 each direction · hip circles × 10 each · high knees × 20 · butt kicks × 20 · 2 build-up strides at 70% effort · prepares the nervous system for maximum-effort sprinting after the jump rope' },
+      JUMP_ROPE,
+      { name: 'Dynamic Warm-Up', detail: '5 min · leg swings × 10 each · hip circles × 10 each · high knees × 20 · butt kicks × 20 · 2 build-up strides at 70% · prime the nervous system for max-effort sprinting so you don\'t pull anything cold' },
       { name: `Sprint Intervals — ${sp.reps} Reps (${sp.month} Protocol)`, detail: sprintDetail },
-      { name: '30-Min Brisk Walk Cool-Down', detail: '30 min at fast walking pace · do not sit down immediately after sprinting — walking keeps the blood moving and clears the lactate from your legs much faster · this walk is non-negotiable for sprint days' },
+      { name: 'Fuel Note', detail: 'Sprint days get protein at 3 PM for recovery — your legs and glutes rebuild from today\'s effort · fruits at 12 to fuel the sprint, protein after, light at 5' },
+      WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: `📋 ${sp.month} Protocol: ${sp.sprint}s sprint / ${sp.rest}s rest × ${sp.reps} reps. Track your split times and how each interval feels. Next month the numbers get harder — that's the point. Recovery tonight: protein, hydration, 8+ hours sleep.` },
+    noteAfter: { type: 'gold', text: `📋 ${sp.month} Protocol: ${sp.sprint}s sprint / ${sp.rest}s rest × ${sp.reps} reps. Log your times and how each rep felt — next month the numbers get harder on purpose. Recovery tonight: protein, water, and 8+ hours of sleep.` },
     meals: {
-      label: '🍽️ Protein Day — Eat 9 AM · 12 PM · Sunset',
+      label: '⚡ Sprint Fuel — Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
-        { time: '9:00 AM — Meal 1', ingredients: [
-          { name: 'Greek Yogurt', key: null },
-          { name: 'Peanut Butter', key: null },
-          { name: 'Granola', key: null },
-          { name: 'Fruits', key: null },
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Banana', key: 'banana' },
+          { name: 'Berries', key: null },
         ]},
-        { time: '12:00 PM — Meal 2 (post-sprint)', ingredients: [
-          { name: 'chicken 150g', key: 'chicken' },
-          { name: 'broccoli', key: 'broccoli' },
-          { name: 'sweet potato (½ cup)', key: 'sweet potato' },
-          { name: 'collagen water', key: 'collagen-water' },
+        { time: '3:00 PM — Dinner (Protein · post-sprint)', ingredients: [
+          { name: 'Chicken 150g', key: 'chicken' },
+          { name: 'Steamed Zucchini', key: null },
         ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: '1 Egg', key: 'egg' },
-          { name: 'Avocado', key: 'avocado' },
-          { name: 'collagen water', key: 'collagen-water' },
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+          { name: 'Papaya', key: 'papaya' },
+          { name: 'spearmint tea', key: null },
         ]},
       ],
     },
   },
 
-  // ─── SUNDAY: Active Recovery ─────────────────────────────────────────────────
+  // ─── SUNDAY: Rest — Walk & Stretch ─────────────────────────────────────────
   {
     emoji: '🌸',
     emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Sunday · Recovery',
-    title: 'Active Recovery — Walk & Stretch',
-    sub: 'Light walking + full-body stretch · ~60 min total',
-    noteBefore: { type: 'gold', text: '🌸 Sunday is where the week\'s gains are locked in. Your muscles don\'t grow during workouts — they grow during recovery. Light walking keeps blood circulating to repair tissue without adding stress. The stretches target exactly what you trained this week: glutes, hip flexors, hamstrings, back, and shoulders.' },
+    day: 'Sunday · Rest',
+    title: 'Rest — Light Walk & Stretch',
+    sub: 'Light walking + full-body stretch · ~50 min total',
+    noteBefore: { type: 'gold', text: '🌸 Your one full rest day. Muscles grow on rest days, not in the gym — so this is where the week\'s work pays off. Keep it gentle: an easy walk and a full-body stretch that targets exactly what you trained — glutes, hamstrings, hip flexors, back, and shoulders.' },
     exercises: [
-      { name: 'Light Walk — 30–45 min', detail: 'Easy conversational pace — slower than your cool-down walks · you should be able to hold a full conversation without any effort · morning or evening, outside is best · this counts as active recovery, not exercise · enjoy it' },
-      { name: 'Hip Flexor Stretch', detail: '2 × 45 sec each side · low lunge position, back knee on ground, shift hips forward · tight hip flexors pull the pelvis forward and limit glute activation — this stretch undoes the damage from sitting and heavy lifting · hold steady, breathe into the stretch' },
-      { name: 'Glute Stretch — Figure Four', detail: '2 × 45 sec each side · lie on back, cross one ankle over the opposite knee, pull the bottom leg toward your chest · directly stretches the piriformis and deep glute — reduces soreness from hip thrusts and split squats · your glutes will be sore today; this stretch is the antidote' },
-      { name: 'Hamstring Stretch', detail: '2 × 45 sec each side · lie on back, pull one leg toward you with straight knee · RDLs and step-ups load the hamstrings heavily — stretching them today prevents tightness from limiting your Monday hip thrust depth' },
-      { name: 'Cat-Cow + Thoracic Rotation', detail: '2 × 10 full cycles · on hands and knees, arch full spinal extension then full flexion slowly · then drop one hand and rotate elbow toward the ceiling · decompresses the spine after a full week of loaded back work · your spine needs this' },
-      { name: 'Shoulder & Lat Stretch', detail: '2 × 30 sec each arm · arm across chest for rear delt, arm overhead reaching to the opposite side for lat · the lat pulldowns and rows shorten the lats — stretching them prevents the rounded-shoulder posture from compounding over weeks' },
-      { name: "World's Greatest Stretch", detail: '2 × 5 each side · lunge forward, plant same-side hand, rotate upper body toward the sky · hits hips, thoracic spine, hamstrings, and adductors in one flow · the single highest-value full-body stretch to end your recovery session' },
+      { name: 'Light Walk — 30–45 min', detail: 'Easy conversational pace, slower than your cool-down walks · morning or evening, outside if you can · this is active recovery, not exercise — it keeps blood flowing to repair tissue with zero stress on the body' },
+      { name: 'Figure-Four Glute Stretch', detail: '2 × 45 sec each side · on your back, cross one ankle over the opposite knee, pull the bottom leg toward your chest · releases the deep glute after two heavy glute days · your glutes will be sore — this is the antidote' },
+      { name: 'Hip Flexor Stretch', detail: '2 × 45 sec each side · low lunge, back knee down, shift the hips forward · tight hip flexors tilt the pelvis and limit glute activation — this undoes the damage from sitting and lifting' },
+      { name: 'Hamstring Stretch', detail: '2 × 45 sec each side · on your back, pull one straight leg toward you · RDLs and sumo squats load the hamstrings hard — stretching keeps them long so your Monday hip thrust hits full depth' },
+      { name: 'Cat-Cow + Thoracic Rotation', detail: '2 × 10 cycles · on all fours, flow slowly between full spinal arch and round, then reach one arm to the ceiling to rotate · decompresses the spine after three back days · breathe with the movement' },
+      { name: 'Chest & Shoulder Opener', detail: '2 × 30 sec each side · doorway chest stretch + arm across the chest · counters the forward-shoulder posture and opens what the back work tightened · gentle, hold and breathe' },
+      { name: "World's Greatest Stretch", detail: '2 × 5 each side · lunge forward, plant the same-side hand, rotate the top arm to the sky · hits hips, spine, hamstrings, and adductors in one flow — the perfect full-body finisher to your week' },
     ],
-    noteAfter: { type: 'rose', text: '🌿 Sunday prep: batch-cook protein for Mon–Thu (chicken, eggs, tuna). Set out your jump rope where you\'ll see it Monday morning. A prepared week trains better, eats better, and recovers better. Week starts tomorrow — you\'re ready.' },
+    noteAfter: { type: 'rose', text: '🌿 Sunday prep: batch-cook your protein for the two glute days (chicken, fish), wash and portion your fruits, set your jump rope by the door. A prepared week eats clean and trains hard. Rest well — you earned it.' },
     meals: {
-      label: '🍽️ Light Day — Eat 12 PM · Sunset',
+      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
       rows: [
-        { time: '12:00 PM — First Meal', ingredients: [
-          { name: 'Mixed Veggies', key: 'broccoli' },
-          { name: 'Egg', key: 'egg' },
-          { name: 'Olive oil drizzle', key: null },
-          { name: 'collagen water', key: 'collagen-water' },
-        ]},
-        { time: 'Sunset — Last Meal', ingredients: [
-          { name: 'apple', key: 'apple' },
+        { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
+          { name: 'Papaya', key: 'papaya' },
           { name: 'Berries', key: null },
-          { name: 'spearmint tea', key: 'spearmint-tea' },
+        ]},
+        { time: '3:00 PM — Snack (Fruits)', ingredients: [
+          { name: 'Apple', key: 'apple' },
+          { name: 'Kiwi', key: null },
+        ]},
+        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+          { name: 'Steamed Spinach', key: null },
+          { name: 'Steamed Carrots', key: null },
+          { name: 'spearmint tea', key: null },
         ]},
       ],
     },

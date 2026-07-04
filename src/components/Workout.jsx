@@ -5,18 +5,15 @@ const _sp = getCurrentSprintProtocol();
 import IngredientDetailPage from './IngredientDetailPage';
 import { FOODS, FOOD_CATS } from '../data/foods';
 import { RecipesPanel, FoodGuide } from './Nutrition';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
 
 // Calorie lookup by ingredient name (for ingredients with key: null)
 const NAME_CAL_MAP = {
-  'Protein Pancakes': 300, 'Berries': 40, 'Greek Yogurt': 130,
-  'Peanut Butter': 190, 'Granola': 200, 'Fruits': 80,
-  'Overnight Oats': 300, '2 Eggs': 140, 'Bread': 160,
-  'Mixed Veggies': 50, 'Olive oil drizzle': 60,
-  'Cheesy Egg Tacos': 420, 'Cheese': 110, 'Tortilla': 150,
-  'Tuna': 120, 'Cucumber': 16, 'Egg': 70, '1 Egg': 70,
-  'lemon water': 5, 'Fruits (optional)': 80,
+  'Berries': 40, 'Fruits': 80, 'Kiwi': 42, 'Mango': 100,
+  'Grapes': 70, 'Dragon Fruit': 60, 'Strawberries': 45, 'Orange': 65,
+  'Steamed Zucchini': 22, 'Steamed Carrots': 30, 'Steamed Spinach': 25,
+  'Cucumber': 16, 'Steamed Green Beans': 35, 'Steamed Cauliflower': 28,
+  'Egg': 70, '1 Egg': 70, '2 Eggs': 140, 'Shrimp': 90, 'Tilapia': 155,
+  'lemon water': 5, 'green tea': 2, 'spearmint tea': 2, 'collagen water': 30,
 };
 
 // Estimated calories for base meal ingredients (keyed by ingredient key from workouts.js)
@@ -34,19 +31,19 @@ const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
 ];
-const DAY_TYPES = ['strength', 'strength', 'strength', 'strength', 'light', 'strength', 'light'];
+const DAY_TYPES = ['strength', 'light', 'light', 'strength', 'light', 'strength', 'light'];
 
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',      focus: 'Hip Thrust · RDL · Split Squat', color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Back & Core A', focus: 'Pull-Ups · Row · Dead Bug',      color: 'pr' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute B',      focus: 'Sumo · Kickback · Step-Up',       color: 'pr' },
-  { lbl: 'Thu', emoji: '🧘', name: 'Back & Core B', focus: 'Cable Row · DB Row · Plank',     color: 'pr' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glute Iso',    focus: 'Donkey Kicks · Abduction',         color: 'pr' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',      focus: 'Hip Thrust · RDL · Split Squat',  color: 'pr' },
+  { lbl: 'Tue', emoji: '🪷', name: 'Core & Back A', focus: 'Vacuum · Dead Bug · Posture',    color: 'py' },
+  { lbl: 'Wed', emoji: '🌿', name: 'Core & Back B', focus: 'Hollow · Side Plank · Face Pull', color: 'py' },
+  { lbl: 'Thu', emoji: '🔥', name: 'Glute B',      focus: 'Sumo · Kickback · Abduction',     color: 'pr' },
+  { lbl: 'Fri', emoji: '✨', name: 'Core & Back C', focus: 'Vacuum · Plank · Wall Angels',   color: 'py' },
   { lbl: 'Sat', emoji: '⚡', name: 'Sprint',       focus: `${_sp.sprint}s on · ${_sp.rest}s off · ${_sp.reps} reps`, color: 'pr' },
-  { lbl: 'Sun', emoji: '🌸', name: 'Recovery',     focus: 'Walk · Stretch',                   color: 'pg' },
+  { lbl: 'Sun', emoji: '🌸', name: 'Rest',         focus: 'Walk · Stretch',                   color: 'pg' },
 ];
 
 function NoteBox({ type, text }) {
@@ -64,87 +61,92 @@ function CalorieBanner({ tdee, deficit }) {
   );
 }
 
-// Basic info for food items that don't have a dedicated detail page
+// Basic info for food items that don't have a dedicated detail page.
+// Everything here follows the plan: NO gluten, NO oils, NO dairy — steamed/boiled only.
 const FOOD_PREP = {
-  'Protein Pancakes': {
-    ingredients: 'Protein powder (1 scoop) · 1 egg · ½ banana · ¼ cup oat flour · splash of milk',
-    howTo: '1. Blend all ingredients until smooth.\n2. Heat non-stick pan on medium.\n3. Pour small circles, cook 2–3 min until bubbles form.\n4. Flip and cook 1–2 min more.\n5. Serve topped with fresh berries.',
-  },
-  'Greek Yogurt': {
-    ingredients: '150g Greek yogurt · 1–2 tbsp peanut butter · ¼ cup granola · seasonal fruit',
-    howTo: '1. Spoon Greek yogurt into a bowl.\n2. Swirl in peanut butter.\n3. Top with granola.\n4. Add fruits on top.\nNo cooking needed — prep in under 2 minutes.',
-  },
-  'Peanut Butter': {
-    ingredients: 'Roasted peanuts · pinch of salt (optional)',
-    howTo: 'Buy natural peanut butter with no added sugar or oil. Use 1–2 tbsp as a spread or swirl into yogurt/oats. Store upside down to prevent oil separation.',
-  },
-  'Granola': {
-    ingredients: '1 cup rolled oats · 2 tbsp honey · 1 tbsp coconut oil · nuts of choice',
-    howTo: 'Mix oats, honey, oil. Spread on a baking sheet. Bake at 150°C for 20–25 min, stirring halfway. Cool completely. Or just buy store-bought — read labels, avoid high-sugar brands.',
-  },
   'Berries': {
     ingredients: 'Fresh or frozen berries — strawberries, blueberries, raspberries, or mixed',
-    howTo: 'Rinse fresh berries under cold water. Serve as-is on top of oats, yogurt, or pancakes. Frozen berries are equally nutritious and cheaper — thaw at room temperature or briefly microwave.',
+    howTo: 'Rinse under cold water and eat as-is. Frozen work too — thaw at room temperature. Low-sugar, high-fibre, and gentle on the gut. Eat on their own, not mixed with protein, to avoid fermentation and bloating.',
   },
   'Fruits': {
-    ingredients: 'Seasonal fresh fruits — mango, papaya, banana, pineapple, berries',
-    howTo: 'Wash, peel where needed, slice, and serve. Best eaten fresh. Pair with protein sources to slow down sugar absorption.',
+    ingredients: 'Seasonal fresh fruits — papaya, pineapple, watermelon, apple, banana, berries',
+    howTo: 'Wash, peel where needed, slice, and eat fresh. Best on an empty stomach or on their own — fruit digests fast, so eating it away from protein keeps your gut calm and flat.',
   },
-  'Overnight Oats': {
-    ingredients: '½ cup rolled oats · ½ cup milk or Greek yogurt · 1 tbsp chia seeds · 1 tsp honey · fruit toppings',
-    howTo: '1. Mix oats, milk, and chia seeds in a jar.\n2. Add honey and stir well.\n3. Refrigerate at least 6 hours or overnight.\n4. In the morning, top with fruit and granola.\nCan be stored up to 3 days in the fridge.',
+  'Kiwi': {
+    ingredients: '1–2 ripe kiwis',
+    howTo: 'Slice in half and scoop with a spoon, or peel and slice. Kiwi carries actinidin, a natural enzyme that aids digestion and reduces bloating. Great low-bloat breakfast fruit.',
   },
-  '2 Eggs': {
-    ingredients: '2 eggs · salt and pepper · optional: olive oil or butter',
-    howTo: 'Scrambled: whisk with salt, cook on low heat stirring gently.\nBoiled: cover with cold water, boil 7–8 min for hard-boiled.\nPoached: simmer water with a splash of vinegar, drop eggs in for 3 min.',
+  'Mango': {
+    ingredients: '½–1 ripe mango',
+    howTo: 'Slice along the pit into cheeks, score, and scoop. Naturally sweet — enjoy it as your fruit fix so you never crave processed sugar. Eat on its own.',
   },
-  '1 Egg': {
-    ingredients: '1 egg · salt and pepper',
-    howTo: 'Fried: heat a drizzle of olive oil, crack egg in, cook until whites set.\nBoiled: cover with cold water, boil 6 min for soft, 8–9 for hard.\nSeason with salt and pepper.',
+  'Grapes': {
+    ingredients: '1 small handful of grapes',
+    howTo: 'Rinse well and eat fresh. Freeze them for a cooling summer snack. Keep the portion to one handful — a small, mindful amount, eaten slowly.',
   },
-  'Egg': {
-    ingredients: '1 egg · salt and pepper',
-    howTo: 'Steam, poach, or pan-fry on medium heat. Whites should be fully set. Season with salt and black pepper. Best eaten fresh.',
+  'Dragon Fruit': {
+    ingredients: '½–1 dragon fruit',
+    howTo: 'Halve and scoop the flesh, or peel and cube. Very low in sugar and rich in prebiotic fibre that feeds good gut bacteria — excellent for a healthy, flat belly.',
   },
-  'Eggs': {
-    ingredients: '2 eggs · salt and pepper',
-    howTo: 'Scramble on low heat for soft curds. Or fry on medium. Season well. Cook through until whites are fully set.',
-  },
-  'Bread': {
-    ingredients: 'Whole grain or sourdough bread (2 slices)',
-    howTo: 'Toast until golden. Top with your eggs and avocado. Choose whole grain or sourdough over white bread — lower glycemic index, more fibre, better for sustained energy.',
-  },
-  'Mixed Veggies': {
-    ingredients: 'Broccoli · bell pepper · zucchini · spinach · or whatever veggies you have',
-    howTo: '1. Chop into even pieces.\n2. Heat 1 tbsp olive oil in a pan.\n3. Add veggies, season with salt, pepper, and garlic.\n4. Sauté 5–8 min until tender but still slightly crisp.\n5. Squeeze fresh lemon at the end.',
-  },
-  'Olive oil drizzle': {
-    ingredients: 'Extra virgin olive oil',
-    howTo: 'Drizzle 1 tbsp over cooked vegetables, eggs, or salad after cooking. Avoid cooking olive oil on very high heat — it degrades the polyphenols. Best used as a finishing oil.',
-  },
-  'Cheesy Egg Tacos': {
-    ingredients: '2 eggs · cheese of your choice · 1–2 flour or corn tortillas · optional: salsa, avocado',
-    howTo: '1. Scramble 2 eggs with salt.\n2. Warm tortilla in a dry pan 30 sec each side.\n3. Spoon eggs onto tortilla.\n4. Sprinkle cheese while eggs are still hot so it melts.\n5. Optional: add salsa, avocado slices, or hot sauce.',
-  },
-  'Cheese': {
-    ingredients: 'Cheese of your choice — feta, cheddar, mozzarella',
-    howTo: 'Crumble or slice. Add to hot eggs directly so it melts naturally. Or sprinkle on top of tacos/salads. Choose real cheese over processed cheese slices.',
-  },
-  'Tortilla': {
-    ingredients: '1 flour or corn tortilla',
-    howTo: 'Warm in a dry pan 30 sec each side (until slightly charred). Or wrap in a damp paper towel and microwave 20 sec. Fill immediately with your eggs, cheese, and toppings.',
-  },
-  'Tuna': {
-    ingredients: '1 can tuna in water (drained) · cucumber · lemon juice · salt · optional: olive oil',
-    howTo: '1. Drain and flake the tuna into a bowl.\n2. Slice cucumber thinly.\n3. Mix together with a squeeze of fresh lemon.\n4. Season with salt and pepper.\n5. Optional: drizzle with olive oil for healthy fat.',
+  'Orange': {
+    ingredients: '1 orange',
+    howTo: 'Peel and eat in segments. High in vitamin C and water. Eat on its own between meals rather than juicing — the whole fruit keeps the fibre that steadies your blood sugar.',
   },
   'Cucumber': {
     ingredients: '1 fresh cucumber',
-    howTo: 'Wash well. Slice into rounds or dice. Eat raw — no cooking needed. Pairs well with tuna, lemon, and olive oil. Hydrating and anti-inflammatory.',
+    howTo: 'Wash, slice into rounds or spears, and eat raw. Squeeze a little lemon if you like — no oil, no salt. Very hydrating and naturally anti-bloating.',
+  },
+  'Steamed Zucchini': {
+    ingredients: '1 zucchini · pinch of salt (light) · lemon',
+    howTo: '1. Slice into rounds or half-moons.\n2. Steam over boiling water 4–6 min until just tender.\n3. Finish with a squeeze of lemon — no oil.\nZucchini is one of the lowest-bloat vegetables and won\'t ferment in the gut.',
+  },
+  'Steamed Carrots': {
+    ingredients: '2 carrots · lemon (optional)',
+    howTo: '1. Peel and slice into coins or sticks.\n2. Steam 6–8 min until fork-tender.\n3. Season lightly — no oil, minimal salt.\nSweet, gut-friendly, and satisfying without any bloat.',
+  },
+  'Steamed Spinach': {
+    ingredients: '2 big handfuls of fresh spinach · lemon',
+    howTo: '1. Rinse the spinach well.\n2. Steam or wilt in a dry pan with a splash of water for 1–2 min.\n3. Squeeze lemon over the top — no oil.\nIron-rich, light, and quick to digest.',
+  },
+  'Steamed Green Beans': {
+    ingredients: '1 cup green beans · lemon',
+    howTo: '1. Trim the ends.\n2. Steam 4–5 min until bright green and crisp-tender.\n3. Finish with lemon — no oil, light salt.\nEasy on the gut and low-bloat.',
+  },
+  'Egg': {
+    ingredients: '1 egg · pinch of salt',
+    howTo: 'Boil: cover with cold water, bring to a boil, cook 7–8 min for jammy or 10 min for firm. Or poach in simmering water for 3 min. No oil, no butter. Season lightly.',
+  },
+  '1 Egg': {
+    ingredients: '1 egg · pinch of salt',
+    howTo: 'Boil 7–10 min or poach in simmering water 3 min. No frying, no oil, no butter. A clean lean protein for glute days.',
+  },
+  '2 Eggs': {
+    ingredients: '2 eggs · pinch of salt',
+    howTo: 'Hard-boil 10 min, or poach in simmering water 3 min each. Skip the oil and butter entirely — steamed or boiled keeps them clean for the no-oil rule.',
+  },
+  'Shrimp': {
+    ingredients: 'Shrimp (peeled) · lemon · pinch of salt',
+    howTo: 'Boil or steam 2–3 min until pink and curled — do not overcook. Squeeze lemon over the top. No oil. A very lean protein option for glute days.',
+  },
+  'Tilapia': {
+    ingredients: '1 tilapia fillet · lemon · ginger',
+    howTo: 'Steam with a few slices of ginger for 8–10 min, or bake at 190°C for 12–15 min. Finish with lemon. No oil needed — steaming keeps it moist and clean.',
   },
   'lemon water': {
     ingredients: '1 glass of water · juice of ½ lemon or calamansi',
-    howTo: 'Squeeze half a lemon into a glass of warm or room-temperature water. Drink with or between meals. Supports digestion, Vitamin C intake, and appetite regulation.',
+    howTo: 'Squeeze half a lemon into warm or room-temp water. Sip before or between meals — it supports digestion, curbs appetite, and helps beat bloating.',
+  },
+  'green tea': {
+    ingredients: '1 green tea bag · hot water',
+    howTo: 'Steep 2–3 min in just-off-the-boil water (too hot makes it bitter). No sugar, no milk. Gentle metabolism support and a calm caffeine lift.',
+  },
+  'spearmint tea': {
+    ingredients: '1 spearmint tea bag or fresh spearmint · hot water',
+    howTo: 'Steep 3–5 min. Drink after meals — spearmint soothes the stomach, eases digestion, and helps balance hormones. No sugar.',
+  },
+  'collagen water': {
+    ingredients: '1 scoop collagen peptides (dairy-free) · water',
+    howTo: 'Stir a scoop of unflavoured marine or bovine collagen into water. Not a dairy product. Supports skin, hair, and joints — drink with your protein meal.',
   },
 };
 
@@ -156,12 +158,7 @@ function useDayMeals(dayId, userId) {
   const save = useCallback((next) => {
     setItems(next);
     try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
-    if (userId) {
-      setDoc(doc(db, 'users', userId), {
-        customMeals: { [dayId]: next },
-      }, { merge: true }).catch(() => {});
-    }
-  }, [key, dayId, userId]);
+  }, [key]);
   return [items, save];
 }
 

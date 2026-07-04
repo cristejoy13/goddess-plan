@@ -12,12 +12,12 @@ function todayLabel() {
 }
 
 const WEEK_PILLS = [
-  { label: 'Mon', emoji: '🏃', dayId: 'day-monday'    },
-  { label: 'Tue', emoji: '🧘', dayId: 'day-tuesday'   },
-  { label: 'Wed', emoji: '🔥', dayId: 'day-wednesday' },
-  { label: 'Thu', emoji: '🌿', dayId: 'day-thursday'  },
-  { label: 'Fri', emoji: '⚡', dayId: 'day-friday'    },
-  { label: 'Sat', emoji: '🍑', dayId: 'day-saturday'  },
+  { label: 'Mon', emoji: '🍑', dayId: 'day-monday'    },
+  { label: 'Tue', emoji: '🪷', dayId: 'day-tuesday'   },
+  { label: 'Wed', emoji: '🌿', dayId: 'day-wednesday' },
+  { label: 'Thu', emoji: '🔥', dayId: 'day-thursday'  },
+  { label: 'Fri', emoji: '✨', dayId: 'day-friday'    },
+  { label: 'Sat', emoji: '⚡', dayId: 'day-saturday'  },
   { label: 'Sun', emoji: '🌸', dayId: 'day-sunday'    },
 ];
 
@@ -42,9 +42,9 @@ export default function Hero({ onNavigate }) {
   return (
     <div className="hero hero-dashboard">
       <div className="hero-brand">
-        <div className="hero-brand-tag">🌸 January — December 2026 🌸</div>
+        <div className="hero-brand-tag">🌸 80% Fruitarian · 20% for the Glutes 🌸</div>
         <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
-        <div className="hero-brand-sub">Anti-Bloat · Lean · Glow · Strength · Skin · Hair</div>
+        <div className="hero-brand-sub">Flat Tummy · Small Waist · Round Glutes · Glow</div>
       </div>
 
       <div className="hero-date splash-item">{todayLabel()}</div>
@@ -96,36 +96,58 @@ export default function Hero({ onNavigate }) {
         />
       </div>
 
-      {/* PFBS Motto + Rules */}
-      <div className="hero-pfbs splash-item">
-        <div className="hero-pfbs-quote">"Pffff, bullsh*t"</div>
-        <div className="hero-pfbs-heading">— in short, PFBS 👑</div>
-        <div className="hero-pfbs-grid">
-          <div className="hero-pfbs-item">
-            <span className="hero-pfbs-letter">P</span>
-            <div><strong>Protein</strong> every meal<br /><span>No insulin spikes</span></div>
-          </div>
-          <div className="hero-pfbs-item">
-            <span className="hero-pfbs-letter">F</span>
-            <div><strong>Fiber</strong> at least once a day<br /><span>Happy gut = happy body</span></div>
-          </div>
-          <div className="hero-pfbs-item">
-            <span className="hero-pfbs-letter">B</span>
-            <div><strong>Bland</strong> foods<br /><span>Less puffiness & less bloat</span></div>
-          </div>
-          <div className="hero-pfbs-item">
-            <span className="hero-pfbs-letter">S</span>
-            <div><strong>Small</strong> portions<br /><span>80% full — still breathing 💕</span></div>
-          </div>
-        </div>
+      {/* The Goal */}
+      <div className="hero-goal splash-item">
+        <div className="hero-goal-label">The Goal 🎯</div>
+        <div className="hero-goal-line">Flat stomach at rest · Small waist · Big round glutes · Healthy gut · Zero bloat</div>
+      </div>
 
+      {/* Say NO to GODSSSS */}
+      <div className="hero-code splash-item hero-code-no">
+        <div className="hero-code-head">Say <span className="cc-no">NO</span> to <span className="cc-word">GODSSSS</span></div>
+        <div className="hero-code-grid">
+          <div className="cc-row"><span className="cc-letter">G</span><span className="cc-text"><strong>Gluten</strong> — none</span></div>
+          <div className="cc-row"><span className="cc-letter">O</span><span className="cc-text"><strong>Oils</strong> — steam &amp; boil, don't fry</span></div>
+          <div className="cc-row"><span className="cc-letter">D</span><span className="cc-text"><strong>Dairy</strong> — none</span></div>
+          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text">not too <strong>Sweet</strong></span></div>
+          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text">not too <strong>Salty</strong></span></div>
+          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text">no <strong>Stress</strong></span></div>
+          <div className="cc-row cc-yes"><span className="cc-letter">S</span><span className="cc-text">good <strong>Sleep</strong> ✓ <em>the one S you want more of</em></span></div>
+        </div>
+      </div>
+
+      {/* Eat PFBS */}
+      <div className="hero-code splash-item hero-code-yes">
+        <div className="hero-code-quote">"Pffff, bullsh*t"</div>
+        <div className="hero-code-head">Eat <span className="cc-word">PFBS</span> 👑</div>
+        <div className="hero-code-grid">
+          <div className="cc-row"><span className="cc-letter">P</span><span className="cc-text"><strong>Protein</strong> — for the glutes (the 20%)</span></div>
+          <div className="cc-row"><span className="cc-letter">F</span><span className="cc-text"><strong>Fruits</strong> — 80% of what you eat</span></div>
+          <div className="cc-row"><span className="cc-letter">B</span><span className="cc-text"><strong>Bland</strong> — plain food = no bloat</span></div>
+          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text"><strong>Small</strong> — moderate portions</span></div>
+        </div>
+      </div>
+
+      {/* Eat SLOW */}
+      <div className="hero-code splash-item hero-code-yes">
+        <div className="hero-code-head">Eat <span className="cc-word">SLOW</span> 🐢</div>
+        <div className="hero-code-grid">
+          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text"><strong>Small</strong> bites, chew fully</span></div>
+          <div className="cc-row"><span className="cc-letter">L</span><span className="cc-text"><strong>Last</strong> meal by 5 PM</span></div>
+          <div className="cc-row"><span className="cc-letter">O</span><span className="cc-text"><strong>Only</strong> to 80% full</span></div>
+          <div className="cc-row"><span className="cc-letter">W</span><span className="cc-text"><strong>Walk</strong> after every meal</span></div>
+        </div>
+      </div>
+
+      {/* Daily rhythm */}
+      <div className="hero-pfbs splash-item">
         <div className="hero-rules">
-          <div className="hero-rule"><span>🌙</span><span>No eating 3–5 hrs before sleep</span></div>
-          <div className="hero-rule"><span>⏳</span><span>3 hrs minimum gap between meals</span></div>
-          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — non-negotiable</span></div>
-          <div className="hero-rule"><span>🚶</span><span>Walk 10 min after every big meal</span></div>
-          <div className="hero-rule"><span>🍽️</span><span>Fast on rest days · Eat on strength days</span></div>
-          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Drink water first. Wait 10 min. Still hungry? Eat. Not hungry? Go do something — workout, walk, play, read, write, whatever btch, I'm not your mother.</span></div>
+          <div className="hero-rule"><span>🍓</span><span>Breakfast 12 PM (fruits) · Snack 3 PM · Last meal 5 PM</span></div>
+          <div className="hero-rule"><span>🍑</span><span>Protein at 3 PM on glute days — feed the growth</span></div>
+          <div className="hero-rule"><span>🚶</span><span>Walk 10–15 min after every meal — beats bloating</span></div>
+          <div className="hero-rule"><span>🥭</span><span>Eat fruit on its own — never with protein (stops fermenting &amp; gas)</span></div>
+          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hrs — this is where the glutes grow</span></div>
+          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Drink water first. Wait 10 min. Still hungry? Eat slow. Not hungry? Go do something — walk, stretch, read, whatever btch, I'm not your mother.</span></div>
         </div>
       </div>
     </div>
