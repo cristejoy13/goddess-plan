@@ -1,38 +1,5 @@
-import { getToken } from 'firebase/messaging';
-import { doc, setDoc } from 'firebase/firestore';
-import { db, getAppMessaging } from '../firebase';
-
 const STORAGE_KEY = 'gp_reminders';
 const FIRED_KEY   = 'gp_fired_reminders';
-const VAPID_KEY   = import.meta.env.VITE_VAPID_KEY;
-
-/* Register this device for FCM push — saves token to Firestore */
-export async function registerFCMToken(userId) {
-  try {
-    const messaging = await getAppMessaging();
-    if (!messaging || !VAPID_KEY) return null;
-    const swReg = await navigator.serviceWorker.ready;
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-    if (token) {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      await setDoc(doc(db, 'fcm_tokens', userId), { token, timezone, updatedAt: new Date().toISOString() }, { merge: true });
-      return token;
-    }
-  } catch (e) {
-    console.error('FCM registration failed:', e);
-  }
-  return null;
-}
-
-/* Sync full reminder data to Firestore (cross-device + Cloud Functions) */
-export async function syncRemindersToFirestore(userId, reminders) {
-  try {
-    await setDoc(doc(db, 'users', userId), {
-      remindersV2: reminders.map(({ id, emoji, label, enabled, time, body, days }) =>
-        ({ id, emoji, label, enabled, time, body: body ?? null, days: days ?? ALL_DAYS })),
-    }, { merge: true });
-  } catch {}
-}
 
 // days: JS getDay() values  0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
 // Strength/Sprint days: Mon(1) Wed(3) Thu(4) — 3 meals: 8am, 12pm, 3pm

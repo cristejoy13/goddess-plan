@@ -1,7 +1,4 @@
 import { useState, useRef, useEffect, Component } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from './firebase';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
@@ -9,12 +6,33 @@ import Challenges from './components/Challenges';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import Settings from './components/Settings';
-import Login from './components/Login';
-import Onboarding from './components/Onboarding';
-import JoyAssistant from './components/JoyAssistant';
 import { getAvatarByProfile } from './avatars';
 import { loadReminders, scheduleReminders, stopReminders } from './utils/notifications';
 import './styles/index.css';
+
+const DEFAULT_PROFILE = {
+  username: 'Goddess',
+  gender: 'female',
+  heightCm: 155,
+  weightKg: 46,
+  age: 27,
+  activity: 'light',
+  goal: 'Round glutes + flat tummy',
+  tdeeKcal: 1550,
+  deficitKcal: 1250,
+};
+
+function loadProfile() {
+  try {
+    const s = localStorage.getItem('gp_profile');
+    if (s) return JSON.parse(s);
+  } catch {}
+  return DEFAULT_PROFILE;
+}
+
+function saveProfile(p) {
+  try { localStorage.setItem('gp_profile', JSON.stringify(p)); } catch {}
+}
 
 const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🌸' },
@@ -24,20 +42,19 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  { label: 'Monday — Strength A',         hint: 'Workouts · Hip Thrust · RDL · Kickback',    section: 'workout', scrollTo: 'day-monday'    },
-  { label: 'Tuesday — Pilates 1',         hint: 'Workouts · Deep Core & TVA',                section: 'workout', scrollTo: 'day-tuesday'   },
-  { label: 'Wednesday — Sprint Day',      hint: 'Workouts · Intervals · Meat Meals',          section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Thursday — Strength B',       hint: 'Workouts · Split Squat · Sumo · Clamshell', section: 'workout', scrollTo: 'day-thursday'  },
-  { label: 'Friday — Pilates 2',          hint: 'Workouts · Flow · Spine & Side Body',        section: 'workout', scrollTo: 'day-friday'   },
-  { label: 'Saturday — Rest Day',         hint: 'Workouts · Active Recovery · Light Meals',   section: 'workout', scrollTo: 'day-saturday' },
-  { label: 'Sunday — Rest & Prepare',     hint: 'Workouts · Reset · Meal Prep Day',           section: 'workout', scrollTo: 'day-sunday'   },
-  { label: 'Barbell Hip Thrust',          hint: 'Workouts → Monday Strength A',  section: 'workout', scrollTo: 'day-monday'    },
-  { label: 'Romanian Deadlift',           hint: 'Workouts → Monday Strength A',  section: 'workout', scrollTo: 'day-monday'    },
-  { label: 'Bulgarian Split Squat',       hint: 'Workouts → Thursday Strength B',section: 'workout', scrollTo: 'day-thursday'  },
-  { label: 'Clamshell with Band',         hint: 'Workouts → Thursday Strength B',section: 'workout', scrollTo: 'day-thursday'  },
-  { label: 'Sprint Training',             hint: 'Workouts → Wednesday',          section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Pilates Exercises',           hint: 'Workouts → Tuesday & Friday',   section: 'workout', scrollTo: 'day-tuesday'   },
-  { label: 'Rest Day Options',            hint: 'Workouts → Saturday & Sunday',  section: 'workout', scrollTo: 'day-saturday'  },
+  { label: 'Monday — Glute A',            hint: 'Workouts · Hip Thrust · RDL · Split Squat', section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Tuesday — Core & Back A',     hint: 'Workouts · Deep Core & Posture',            section: 'workout', scrollTo: 'day-tuesday'   },
+  { label: 'Wednesday — Core & Back B',   hint: 'Workouts · Deep Core & Lats',               section: 'workout', scrollTo: 'day-wednesday' },
+  { label: 'Thursday — Glute B',          hint: 'Workouts · Sumo · Kickback · Abduction',    section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Friday — Core & Back C',      hint: 'Workouts · Deep Core & Alignment',          section: 'workout', scrollTo: 'day-friday'   },
+  { label: 'Saturday — Sprint',           hint: 'Workouts · Progressive Intervals',           section: 'workout', scrollTo: 'day-saturday' },
+  { label: 'Sunday — Rest',               hint: 'Workouts · Walk & Stretch',                 section: 'workout', scrollTo: 'day-sunday'   },
+  { label: 'Barbell Hip Thrust',          hint: 'Workouts → Monday Glute A',     section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Romanian Deadlift',           hint: 'Workouts → Monday Glute A',     section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Bulgarian Split Squat',       hint: 'Workouts → Monday Glute A',     section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Sumo Squat',                  hint: 'Workouts → Thursday Glute B',   section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Cable Kickback',              hint: 'Workouts → Thursday Glute B',   section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Sprint Training',             hint: 'Workouts → Saturday Sprint',    section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Meals on Strength & Sprint Days', hint: 'Nutrition → Meat Days',    section: 'nutrition', tab: 'meat'      },
   { label: 'Meals on Pilates & Rest Days',    hint: 'Nutrition → Light Days',   section: 'nutrition', tab: 'light'     },
   { label: 'Chicken — Cooking Methods',       hint: 'Nutrition → Strength Days', section: 'nutrition', tab: 'meat'      },
@@ -190,68 +207,31 @@ function SearchBar({ onNavigate }) {
 }
 
 export default function App() {
-  const [user, setUser] = useState(undefined);
-  const [profile, setProfile] = useState(undefined);
+  const [profile, setProfile] = useState(loadProfile);
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [joyOpen, setJoyOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
-  const [themeOverride, setThemeOverride] = useState(null); // null | 'male' | 'female'
-  const [previewOnboarding, setPreviewOnboarding] = useState(false);
-  const previewRef = useRef(false);
-  useEffect(() => { previewRef.current = previewOnboarding; }, [previewOnboarding]);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => { setUser(u ?? null); });
-    return unsub;
-  }, []);
-
-  // When user changes, fetch their Firestore profile and restore cross-device data
-  useEffect(() => {
-    if (user === undefined) return;
-    if (!user) { setProfile(undefined); stopReminders(); return; }
-    setProfile(undefined);
-    getDoc(doc(db, 'users', user.uid))
-      .then(snap => {
-        const data = snap.exists() ? snap.data() : null;
-        setProfile(data);
-        if (data) {
-          // Restore reminders from Firestore (cross-device sync)
-          if (Array.isArray(data.remindersV2) && data.remindersV2.length > 0) {
-            localStorage.setItem('gp_reminders', JSON.stringify(data.remindersV2));
-            scheduleReminders(data.remindersV2);
-          }
-          // Restore custom meal additions from Firestore
-          if (data.customMeals && typeof data.customMeals === 'object') {
-            Object.entries(data.customMeals).forEach(([dayId, items]) => {
-              if (Array.isArray(items)) {
-                localStorage.setItem(`gp_meal_${dayId}`, JSON.stringify(items));
-              }
-            });
-          }
-        }
-      })
-      .catch(() => setProfile(null));
-  }, [user?.uid]); // eslint-disable-line
-
-  // Start reminder scheduler once user is logged in
-  useEffect(() => {
-    if (!user) return;
-    scheduleReminders(loadReminders());
+    if (Array.isArray(profile?.remindersV2) && profile.remindersV2.length > 0) {
+      try { localStorage.setItem('gp_reminders', JSON.stringify(profile.remindersV2)); } catch {}
+      scheduleReminders(profile.remindersV2);
+    } else {
+      scheduleReminders(loadReminders());
+    }
     return stopReminders;
-  }, [user?.uid]); // eslint-disable-line
+  }, []); // eslint-disable-line
 
-  // Apply gender-based color theme (admin themeOverride takes precedence)
+  // Apply gender-based color theme
   useEffect(() => {
-    const gender = themeOverride !== null ? themeOverride : profile?.gender;
-    if (gender === 'male') {
+    if (profile?.gender === 'male') {
       document.documentElement.setAttribute('data-theme', 'male');
     } else {
       document.documentElement.removeAttribute('data-theme');
     }
-  }, [profile?.gender, themeOverride]); // eslint-disable-line
+  }, [profile?.gender]);
 
   // Apply dark/light mode
   useEffect(() => {
@@ -303,8 +283,6 @@ export default function App() {
   };
 
   const goBack = () => {
-    /* Exit onboarding preview before doing anything else */
-    if (previewRef.current) { setPreviewOnboarding(false); return; }
     /* First drain inner back stack (sub-page navigation within a section) */
     if (innerBackStackRef.current.length > 0) {
       const stack = innerBackStackRef.current;
@@ -397,42 +375,6 @@ export default function App() {
     </>
   );
 
-  // Checking auth or profile
-  if (user === undefined || (user !== null && profile === undefined)) {
-    return <>{background}<div className="auth-loading">✨</div></>;
-  }
-
-  // Not logged in
-  if (user === null) {
-    return <>{background}<Login /></>;
-  }
-
-  // Logged in but no profile yet — run onboarding
-  if (profile === null) {
-    return <>{background}<Onboarding user={user} onComplete={(p) => setProfile(p)} /></>;
-  }
-
-  // Admin onboarding preview
-  if (previewOnboarding) {
-    return (
-      <>
-        {background}
-        <Onboarding
-          user={user}
-          isPreview
-          onComplete={() => {
-            setPreviewOnboarding(false);
-            // Restore actual theme after preview ends
-            const gender = themeOverride !== null ? themeOverride : profile?.gender;
-            if (gender === 'male') document.documentElement.setAttribute('data-theme', 'male');
-            else document.documentElement.removeAttribute('data-theme');
-          }}
-        />
-      </>
-    );
-  }
-
-  // Logged in and has profile — show the full app
   const avatar = getAvatarByProfile(profile);
 
   return (
@@ -464,15 +406,6 @@ export default function App() {
             <div className="mob-mode-circle">{colorMode === 'dark' ? '☀️' : '🌙'}</div>
           </button>
         </div>
-        {/* Joy beside search bar — left on desktop, right of controls on mobile */}
-        <button
-          className="search-joy-btn"
-          onClick={() => setJoyOpen(true)}
-          aria-label="Open Joy"
-        >
-          <span className="search-joy-emoji">🥰</span>
-          <span className="search-joy-name">Joy</span>
-        </button>
         <SearchBar onNavigate={navigate} />
       </div>
 
@@ -493,7 +426,7 @@ export default function App() {
               <span className="sidebar-avatar-emoji">{avatar.emoji}</span>
             </div>
             <span className="sidebar-avatar-label">
-              {profile?.username || user?.displayName || 'Profile'}
+              {profile?.username || 'Profile'}
             </span>
           </button>
         )}
@@ -530,26 +463,21 @@ export default function App() {
         onTouchEnd={handleTouchEnd}
       >
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} user={user} />}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
         {active === 'challenges' && <Challenges onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings
             onNavigate={navigate}
-            user={user}
             profile={profile}
-            onProfileUpdate={p => setProfile(p)}
+            onProfileUpdate={p => { setProfile(p); saveProfile(p); }}
             colorMode={colorMode}
             setColorMode={setColorMode}
-            themeOverride={themeOverride}
-            setThemeOverride={setThemeOverride}
-            onPreviewOnboarding={() => setPreviewOnboarding(true)}
             pushBack={pushBack}
             clearInnerBack={clearInnerBack}
           />}
       </div>
 
-      <JoyAssistant forceOpen={joyOpen} onClose={() => setJoyOpen(false)} user={user} onNavigate={navigate} />
       <button
         className="mode-fab"
         onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
