@@ -7,7 +7,6 @@ import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import Settings from './components/Settings';
 import { getAvatarByProfile } from './avatars';
-import { loadReminders, scheduleReminders, stopReminders } from './utils/notifications';
 import './styles/index.css';
 
 const DEFAULT_PROFILE = {
@@ -213,16 +212,6 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
-
-  useEffect(() => {
-    if (Array.isArray(profile?.remindersV2) && profile.remindersV2.length > 0) {
-      try { localStorage.setItem('gp_reminders', JSON.stringify(profile.remindersV2)); } catch {}
-      scheduleReminders(profile.remindersV2);
-    } else {
-      scheduleReminders(loadReminders());
-    }
-    return stopReminders;
-  }, []); // eslint-disable-line
 
   // Apply gender-based color theme
   useEffect(() => {
