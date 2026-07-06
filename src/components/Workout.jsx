@@ -13,6 +13,7 @@ const NAME_CAL_MAP = {
   'Steamed Zucchini': 22, 'Steamed Carrots': 30, 'Steamed Spinach': 25,
   'Cucumber': 16, 'Steamed Green Beans': 35, 'Steamed Cauliflower': 28,
   'Egg': 70, '1 Egg': 70, '2 Eggs': 140, 'Shrimp': 90, 'Tilapia': 155,
+  'Greek Yogurt': 130,
   'lemon water': 5, 'green tea': 2, 'spearmint tea': 2, 'collagen water': 30,
 };
 
@@ -91,6 +92,10 @@ const FOOD_PREP = {
   'Orange': {
     ingredients: '1 orange',
     howTo: 'Peel and eat in segments. High in vitamin C and water. Eat on its own between meals rather than juicing — the whole fruit keeps the fibre that steadies your blood sugar.',
+  },
+  'Greek Yogurt': {
+    ingredients: 'Plain Greek yogurt (or dairy-free coconut/almond yogurt) · optional berries',
+    howTo: 'Eat plain or with a few berries. If you are keeping strictly to the no-dairy rule, use unsweetened coconut or almond yogurt — same creamy protein hit without the dairy. No added sugar.',
   },
   'Cucumber': {
     ingredients: '1 fresh cucumber',
@@ -529,17 +534,17 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
 
       <CalorieBanner tdee={tdee} deficit={deficit} />
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
-      <div className="exercise-hint">👆 Tap any exercise to watch how to do it.</div>
+      <div className="exercise-hint">👆 Tap a video (▶) to open it on YouTube, or tap any exercise for a form demo.</div>
       <ul className="workout-list">
         {day.exercises.map((ex, i) => (
           <li key={i}>
             <a
-              className="ex-link"
-              href={`https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
+              className={ex.url ? 'ex-link ex-video' : 'ex-link'}
+              href={ex.url || `https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
               target="_blank"
               rel="noopener noreferrer"
-            >{ex.name}</a>
-            {' '}— {ex.detail}
+            >{ex.url ? '▶ ' : ''}{ex.name}</a>
+            {ex.detail ? <>{' '}— {ex.detail}</> : null}
           </li>
         ))}
       </ul>
