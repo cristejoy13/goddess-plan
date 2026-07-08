@@ -42,7 +42,7 @@ export default function Hero({ onNavigate }) {
   return (
     <div className="hero hero-dashboard">
       <div className="hero-brand">
-        <div className="hero-brand-tag">🌸 80% Fruitarian · 20% for the Glutes 🌸</div>
+        <div className="hero-brand-tag">🌸 1,200 Light Days · 1,500 Hard Days 🌸</div>
         <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
         <div className="hero-brand-sub">Flat Tummy · Small Waist · Round Glutes · Glow</div>
       </div>
@@ -121,8 +121,8 @@ export default function Hero({ onNavigate }) {
         <div className="hero-code-quote">"Pffff, bullsh*t"</div>
         <div className="hero-code-head">Eat <span className="cc-word">PFBS</span> 👑</div>
         <div className="hero-code-grid">
-          <div className="cc-row"><span className="cc-letter">P</span><span className="cc-text"><strong>Protein</strong> — for the glutes (the 20%)</span></div>
-          <div className="cc-row"><span className="cc-letter">F</span><span className="cc-text"><strong>Fruits</strong> — 80% of what you eat</span></div>
+          <div className="cc-row"><span className="cc-letter">P</span><span className="cc-text"><strong>Protein</strong> — at 3 PM on glute and sprint days</span></div>
+          <div className="cc-row"><span className="cc-letter">F</span><span className="cc-text"><strong>Fruits</strong> — at 12 PM every day</span></div>
           <div className="cc-row"><span className="cc-letter">B</span><span className="cc-text"><strong>Bland</strong> — plain food = no bloat</span></div>
           <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text"><strong>Small</strong> — moderate portions</span></div>
         </div>
@@ -143,9 +143,9 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs splash-item">
         <div className="hero-rules">
           <div className="hero-rule"><span>🍓</span><span>Breakfast 12 PM (fruits) · Snack 3 PM · Last meal 5 PM</span></div>
-          <div className="hero-rule"><span>🍑</span><span>Protein at 3 PM on glute days — feed the growth</span></div>
+          <div className="hero-rule"><span>🍑</span><span>Protein at 3 PM on glute and sprint days — feed the growth</span></div>
           <div className="hero-rule"><span>🚶</span><span>Walk 10–15 min after every meal — beats bloating</span></div>
-          <div className="hero-rule"><span>🥭</span><span>Eat fruit on its own — never with protein (stops fermenting &amp; gas)</span></div>
+          <div className="hero-rule"><span>🥭</span><span>Keep fruits earlier, then use 5 PM vegetables to stay full without heavy late meals</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hrs — this is where the glutes grow</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Drink water first. Wait 10 min. Still hungry? Eat slow. Not hungry? Go do something — walk, stretch, read, whatever btch, I'm not your mother.</span></div>
         </div>

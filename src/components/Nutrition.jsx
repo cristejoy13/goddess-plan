@@ -3,8 +3,8 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'meat',    icon: '🍑', title: 'Protein Days (Glute & Sprint)', desc: 'Monday, Thursday, Saturday — protein at 3 PM to grow the glutes. Fruits 12 PM · Protein 3 PM · Light 5 PM.' },
-  { id: 'light',   icon: '🍓', title: 'Fruit Days',                    desc: 'Tuesday, Wednesday, Friday, Sunday — 80% fruitarian, gut rest. Fruits 12 PM · Fruits 3 PM · Light 5 PM.' },
+  { id: 'meat',    icon: '🍑', title: 'Protein Days (Glute & Sprint)', desc: 'Monday, Thursday, Saturday — ~1,500 kcal. Fruits 12 PM · protein/meat 3 PM · light fruit or veg 5 PM.' },
+  { id: 'light',   icon: '🍓', title: 'Core & Light Days',             desc: 'Tuesday, Wednesday, Friday, Sunday — ~1,200 kcal. Fruits 12 PM · fruit snack 3 PM · filling vegetables 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',          desc: 'How to prepare every food in your plan — steamed, boiled, oil-free. Tap any food for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',                    desc: 'What to eat, what to avoid (GODSSSS), and why — for a flat stomach and healthy gut.' },
 ];
@@ -20,7 +20,7 @@ const RECIPE_CATEGORIES = [
     ],
   },
   {
-    title: 'Fruits (80% of the plate)',
+    title: 'Fruits (12 PM daily)',
     items: [
       { key: 'papaya',    label: 'Papaya' },
       { key: 'pineapple', label: 'Pineapple' },
@@ -46,22 +46,22 @@ export function MeatDays() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍑 <strong>Protein days: Monday, Thursday, Saturday.</strong> These are your glute + sprint days. Fruits at 12, protein at 3 PM (right after training — this is when your glutes rebuild), light finish at 5 PM.
+        🍑 <strong>Protein days: Monday, Thursday, Saturday.</strong> These are your glute + sprint days at about 1,500 calories. Fruits at 12, protein at 3 PM, then a light fruit or vegetable finish at 5 PM.
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        💡 <strong>Why protein only on these 3 days?</strong> The plan is ~80% fruitarian. Protein (the 20%) is timed to your two glute days and your sprint day, when your muscles are primed to absorb it and grow. Every other day your gut rests on fruit. Protein digests slowly, so concentrating it here keeps your stomach flat and your digestion calm.
+        💡 <strong>Why more food on hard days?</strong> Glute and sprint days need enough fuel to train hard and recover. The 3 PM meal carries the protein, carbs, and vegetables so your body has building blocks without pushing heavy food late at night.
       </div>
       <div className="calorie-banner splash-item" style={{ marginBottom: 18 }}>
         <div className="cal-block">
           <div className="cal-phase">Fat-Loss Phase · Deficit</div>
-          <div className="cal-number">~1,250 cal/day</div>
-          <div className="cal-note">For 5'1" / 46 kg · light activity · gentle deficit for lean recomposition</div>
+          <div className="cal-number">~1,200 cal/day</div>
+          <div className="cal-note">Core and light days · filling fruit, oats, nuts, and vegetables without meat</div>
         </div>
         <div className="cal-divider" />
         <div className="cal-block">
           <div className="cal-phase">Maintenance</div>
-          <div className="cal-number">~1,550 cal/day</div>
-          <div className="cal-note">Full TDEE · sustain composition · fuel glute growth</div>
+          <div className="cal-number">~1,500 cal/day</div>
+          <div className="cal-note">Glute and sprint days · more carbs and protein for training recovery</div>
         </div>
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
@@ -69,28 +69,28 @@ export function MeatDays() {
           <div className="hyd-row">
             <div className="hyd-time">12:00 PM</div>
             <div>
-              <div className="hyd-d">Breakfast — Fruits only</div>
-              <div className="hyd-n">Papaya + pineapple (both are digestive enzymes) · OR · watermelon + berries · OR · banana + berries on sprint day · eat fruit on its own, always</div>
+              <div className="hyd-d">Breakfast — Fruits first</div>
+              <div className="hyd-n">Papaya, pineapple, kiwi, banana, grapes, or watermelon. Add oats or chia when the day needs more fuel.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">3:00 PM</div>
             <div>
               <div className="hyd-d">Dinner — Protein (post-workout, for the glutes)</div>
-              <div className="hyd-n">Chicken 150g or fish 150g + steamed low-bloat veg (zucchini, carrots, broccoli, or spinach). Steamed or boiled only — no oil. Season with lemon + a little salt.</div>
+              <div className="hyd-n">Glute days: fish, eggs, or tofu. Sprint day: meat. Add rice, quinoa, sweet potato, broccoli, carrots, or spinach to reach the hard-day target.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
               <div className="hyd-d">Last Meal — Light · No food after this</div>
-              <div className="hyd-n">Berries + spearmint tea · OR · a little steamed veg · OR · papaya · keep it small — you already had your protein at 3</div>
+              <div className="hyd-n">Berries, papaya, avocado, or steamed vegetables. Keep it lighter than 3 PM, but not so tiny that you end the day under-fueled.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🥩 <strong>Protein target on these days:</strong> ~70 g. Chicken 150g ≈ 46g · Fish 150g ≈ 33g · 1 egg ≈ 6g · Shrimp 100g ≈ 20g. Eat protein first at your 3 PM meal.
+        🥩 <strong>Protein focus on these days:</strong> fish, eggs, tofu, or sprint-day meat at 3 PM. Eat protein first, then the carb and vegetable sides.
       </div>
     </>
   );
@@ -101,7 +101,7 @@ export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🍓 <strong>Fruit days: Tuesday, Wednesday, Friday, Sunday.</strong> Eating window 12 PM – 5 PM. These are the fruitarian 80% — your gut gets a genuine rest, bloating drops, and you arrive at your glute days feeling light and flat.
+        🍓 <strong>Core & light days: Tuesday, Wednesday, Friday, Sunday.</strong> Eating window 12 PM – 5 PM, about 1,200 calories. Fruits stay at 12 PM, fruit stays at 3 PM, and 5 PM becomes a filling vegetable meal with no meat.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
@@ -109,27 +109,27 @@ export function LightDays() {
             <div className="hyd-time">12:00 PM</div>
             <div>
               <div className="hyd-d">Breakfast — Fruits</div>
-              <div className="hyd-n">Papaya + kiwi · OR · watermelon + berries · OR · pineapple + apple · low-bloat fruits, eaten on their own</div>
+              <div className="hyd-n">Papaya + kiwi · pineapple + apple · watermelon + oats · low-bloat fruits first, with oats or chia when needed for the 1,200-calorie target</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">3:00 PM</div>
             <div>
               <div className="hyd-d">Snack — Fruits</div>
-              <div className="hyd-n">Apple + banana · OR · mango + berries · OR · grapes (one handful) · keep it small and slow</div>
+              <div className="hyd-n">Banana + apple · mango + berries · grapes + nuts · still fruit-centered, but substantial enough to support training and mood</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
               <div className="hyd-d">Last Meal — Light veg · No food after this</div>
-              <div className="hyd-n">Steamed zucchini + spinach · OR · cucumber + steamed carrots · OR · a light salad (no oil) · spearmint or green tea</div>
+              <div className="hyd-n">Sweet potato, squash, broccoli, spinach, eggplant, carrots, cucumber, or avocado. No meat on core days.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 Fruit days are intentional gut rest, not cheat days. Eating fruit <strong>on its own</strong> (never mixed with protein) is the key to no fermentation and no gas — that is what keeps the stomach flat at rest. Walk 10–15 min after each meal.
+        🌸 Light days are not starvation days. The goal is full, calm, and nourished: fruit earlier, vegetables at 5 PM, and enough calories to avoid rebound hunger. Walk 10–15 min after each meal.
       </div>
     </>
   );
@@ -157,7 +157,7 @@ function HydrationSection() {
     { time: 'On waking',   d: '500ml warm water + fresh lemon or calamansi',   n: 'Flushes overnight waste, delivers Vitamin C before your first meal, and gently wakes up digestion.' },
     { time: 'Before 12 PM', d: 'Plain water + green tea (unsweetened)',          n: 'You are fasting until noon. Water and green tea keep you full — EGCG in green tea supports metabolism and clearer skin without a cortisol spike.' },
     { time: '12 PM breakfast', d: 'Water — sip, don\'t gulp',                    n: 'Drink around your fruit, not drowning it. Fruit is already hydrating.' },
-    { time: '3 PM meal',   d: 'Collagen peptides in water (glute days)',        n: 'Dairy-free collagen with your protein supports skin, hair, joints, and gut lining. Fruit days: a light herbal tea instead.' },
+    { time: '3 PM meal',   d: 'Collagen peptides in water (glute days)',        n: 'Dairy-free collagen with your protein supports skin, hair, joints, and gut lining. Core/light days: a light herbal tea instead.' },
     { time: '5 PM + evening', d: 'Spearmint or ginger tea',                     n: 'After your last meal. Spearmint soothes digestion and helps balance hormones; ginger calms the gut. No food after 5 PM.' },
     { time: 'All day',     d: 'Plain water — 2–2.5L total, sipped slowly',      n: 'Steady hydration is one of the biggest anti-bloat, anti-puffiness levers there is. Sip continuously rather than chugging.' },
   ];
@@ -353,9 +353,9 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Fuel Protocol · 80% Fruitarian · 20% for the Glutes</div>
+        <div className="s-tag">Fuel Protocol · 1,200 Light Days · 1,500 Hard Days</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">Eat 12 PM &amp; 5 PM (snack at 3) · last meal by 5 PM · fruits are 80%, protein is for the glutes · no gluten, oils, or dairy. Tap a topic for the full guide.</p>
+        <p className="s-desc">Eat 12 PM, 3 PM, and 5 PM · fruits at 12 every day · vegetables at 5 on core/light days · protein or meat at 3 on glute/sprint days. Tap a topic for the full guide.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (

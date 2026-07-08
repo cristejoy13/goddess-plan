@@ -89,11 +89,11 @@ export const MONTHS = [
   // August — Journey month 3
   {
     name: 'August',
-    ch: 'Fruit-Till-Noon & Food Combining',
-    why: "This is the heart of the 80% fruitarian plan. Eating only fruit until noon gives your gut a long daily rest, and eating fruit ON ITS OWN (never with protein) stops it fermenting in your gut — which is what causes gas and bloating. Master the 12 PM window and the combining rule.",
+    ch: 'Fruit at Noon & Veg at 5',
+    why: "This is the heart of the meal rhythm. Your first food at 12 PM includes fruit every day, then core/light days finish with filling vegetables at 5 PM so you stay full without heavy late meals. Master the 12 PM fruit habit and the 5 PM veggie finish.",
     tasks: [
-      'Week 1 — First food at 12 PM, and make it fruit only. Water + tea before then.',
-      'Week 2 — Always eat fruit alone — never mix fruit and protein in the same meal.',
+      'Week 1 — First food at 12 PM, and make fruit the anchor. Water + tea before then.',
+      'Week 2 — Build the 5 PM veggie plate: squash, sweet potato, broccoli, spinach, eggplant, carrots, or cucumber.',
       'Week 3 — Choose low-bloat fruits (papaya, pineapple, kiwi, berries, watermelon).',
       'Week 4 — 12 PM fruit breakfast is automatic. Notice the drop in afternoon bloating.',
     ],
@@ -137,10 +137,10 @@ export const MONTHS = [
   // December — Journey month 7
   {
     name: 'December',
-    ch: 'Gut Healing — 80/20 Fruitarian Mastery',
-    why: "Now you tie it all together into a calm, healthy gut. The gut governs bloating, skin, mood, and hormones. This month you perfect the 80% fruitarian / 20% protein ratio, keep protein to your glute days, and let your digestion run clean and flat.",
+    ch: 'Gut Healing — Fuel Rhythm Mastery',
+    why: "Now you tie it all together into a calm, healthy gut. Core/light days stay around 1,200 calories with fruit earlier and vegetables at 5 PM. Glute and sprint days rise toward 1,500 calories with protein or meat at 3 PM so training recovery is actually fed.",
     tasks: [
-      'Week 1 — Keep protein ONLY on glute + sprint days; everything else fruit + light veg.',
+      'Week 1 — Hit the rhythm: fruits at 12, fruit snack at 3 on light days, protein/meat at 3 on hard days, vegetables at 5.',
       'Week 2 — Steam or boil all veg — no oils, no dairy, no gluten (GODSSSS out).',
       'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
       'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',

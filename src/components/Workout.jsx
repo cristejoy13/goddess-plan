@@ -14,6 +14,17 @@ const NAME_CAL_MAP = {
   'Cucumber': 16, 'Steamed Green Beans': 35, 'Steamed Cauliflower': 28,
   'Egg': 70, '1 Egg': 70, '2 Eggs': 140, 'Shrimp': 90, 'Tilapia': 155,
   'Greek Yogurt': 130,
+  'Papaya Bowl': 140, 'Pineapple Bowl': 120, 'Watermelon Bowl': 90,
+  'Banana (2)': 210, 'Grapes (1 cup)': 100, 'Kiwi (2)': 84,
+  'Mango Bowl': 150, 'Berries (1 cup)': 85,
+  'Oats (1/2 cup)': 150, 'Chia Seeds (2 tbsp)': 140,
+  'Almonds (30g)': 170, 'Walnuts (30g)': 185, 'Avocado (1/2)': 120,
+  'Sweet Potato 250g': 225, 'Squash 2 cups': 160,
+  'Steamed Broccoli 2 cups': 110, 'Steamed Spinach 2 cups': 50,
+  'Eggplant 2 cups': 70, 'Carrots 2 cups': 100,
+  'Tofu 200g': 190, 'Fish 200g': 245, 'Chicken 180g': 300,
+  'Eggs (3, boiled)': 210, 'Brown Rice 1 cup': 215, 'Quinoa 1 cup': 220,
+  'Coconut Water': 46,
   'lemon water': 5, 'green tea': 2, 'spearmint tea': 2, 'collagen water': 30,
 };
 

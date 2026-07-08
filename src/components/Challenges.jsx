@@ -143,7 +143,7 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, is
 
 const NUTR_TABS = [
   { id: 'meat',    icon: '🍑', label: 'Protein Days' },
-  { id: 'light',   icon: '🍓', label: 'Fruit Days' },
+  { id: 'light',   icon: '🍓', label: 'Core/Light Days' },
   { id: 'recipes', icon: '🥘', label: 'Recipes' },
   { id: 'guide',   icon: '📊', label: 'Food Guide' },
 ];
@@ -267,7 +267,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
       {/* ── Nutrition & Meals ── */}
       <div className="divider splash-item" style={{ marginTop: 36 }}>🍽️ Nutrition &amp; Meals</div>
       <p className="s-desc splash-item" style={{ marginBottom: 16 }}>
-        80% fruitarian · 20% protein for the glutes · Eat 12 PM &amp; 5 PM (snack at 3) · Protein days (Mon/Thu/Sat): fruits 12 · protein 3 · light 5 · Fruit days (Tue/Wed/Fri/Sun): fruits 12 · fruits 3 · light 5
+        1,200 kcal core/light days · 1,500 kcal glute/sprint days · Eat 12 PM, 3 PM, and 5 PM · Hard days (Mon/Thu/Sat): fruits 12 · protein/meat 3 · light 5 · Core/light days: fruits 12 · fruits 3 · vegetables 5
       </p>
 
       <div className="sk-top-tabs splash-item">

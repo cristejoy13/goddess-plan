@@ -55,7 +55,7 @@ const SEARCH_INDEX = [
   { label: 'Cable Kickback',              hint: 'Workouts → Thursday Glute B',   section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Sprint Training',             hint: 'Workouts → Saturday Sprint',    section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Protein Days — Glute & Sprint',   hint: 'Nutrition → Protein Days', section: 'nutrition', tab: 'meat'    },
-  { label: 'Fruit Days',                       hint: 'Nutrition → Fruit Days',   section: 'nutrition', tab: 'light'   },
+  { label: 'Core & Light Days',                hint: 'Nutrition → Core & Light Days', section: 'nutrition', tab: 'light' },
   { label: 'Chicken — Cooking Methods',        hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes' },
   { label: 'Fish — Steamed & Baked',           hint: 'Nutrition → Recipes',      section: 'nutrition', tab: 'recipes' },
   { label: 'Low-Bloat Fruits',                 hint: 'Nutrition → Food Guide',   section: 'nutrition', tab: 'guide'   },

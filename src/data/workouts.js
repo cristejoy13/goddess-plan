@@ -46,6 +46,14 @@ const NICOLE_FULLBODY = [
   { name: 'Full Body (Nicole) — 30 Min Morning',      detail: 'Move With Nicole · energising morning full body', url: 'https://www.youtube.com/watch?v=LbG1ovCGp-E' },
 ];
 
+const THUY_MAI_WORKOUTS = [
+  { name: 'Abs (Thuý Mai) — Facebook Reel',         detail: 'Thuý Mai Thuý Mai · abs/core reel from Facebook · choose this for a short core burn on core days', url: 'https://www.facebook.com/share/r/1Cx9ZyJQVC/' },
+  { name: 'Abs (Thuý Mai) — Core Video Pick',       detail: 'Thuý Mai Thuý Mai · open her Facebook profile and choose an abs-focused workout clip', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987' },
+  { name: 'Abs (Thuý Mai) — Waist Video Pick',      detail: 'Thuý Mai Thuý Mai · open her Facebook profile and choose a waist/deep-core workout clip', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987/videos' },
+  { name: 'Full Body (Thuý Mai) — Sculpt Pick',     detail: 'Thuý Mai Thuý Mai · open her Facebook videos and choose a full-body sculpt workout', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987/videos' },
+  { name: 'Full Body (Thuý Mai) — No-Equipment Pick', detail: 'Thuý Mai Thuý Mai · open her Facebook reels/videos and choose a no-equipment full-body session', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987/reels' },
+];
+
 const YOGA_BEGINNER = [
   { name: 'Yoga — Complete Beginners (20 min)', detail: 'Yoga With Adriene · gentle intro, build the basics', url: 'https://www.youtube.com/watch?v=v7AYKMP6rOE' },
   { name: 'Yoga — Beginners: The Basics',       detail: 'Yoga With Adriene · foundational poses & alignment', url: 'https://www.youtube.com/watch?v=pWobp3phsEU' },
@@ -74,20 +82,23 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '📋 Track your hip thrust weight every Monday — add 1–2 kg when all 4 sets feel controlled. Progressive overload is the ONLY thing that grows glutes long-term. Protein at 3 PM today is non-negotiable for growth.' },
     meals: {
-      label: '🍑 Glute Fuel — Fruits 12PM · Protein 3PM · Light 5PM',
+      label: '🍑 Glute Fuel — ~1,500 kcal · Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
-          { name: 'Papaya', key: 'papaya' },
-          { name: 'Pineapple', key: 'pineapple' },
+          { name: 'Papaya Bowl', key: null },
+          { name: 'Pineapple Bowl', key: null },
+          { name: 'Banana (2)', key: null },
+          { name: 'Chia Seeds (2 tbsp)', key: null },
           { name: 'lemon water', key: null },
         ]},
         { time: '3:00 PM — Dinner (Protein · post-workout)', ingredients: [
-          { name: 'Fish 150g', key: 'fish' },
-          { name: 'Steamed Zucchini', key: null },
-          { name: 'Steamed Carrots', key: null },
+          { name: 'Fish 200g', key: null },
+          { name: 'Brown Rice 1 cup', key: null },
+          { name: 'Sweet Potato 250g', key: null },
+          { name: 'Steamed Broccoli 2 cups', key: null },
         ]},
         { time: '5:00 PM — Last Meal (Light)', ingredients: [
-          { name: 'Berries', key: null },
+          { name: 'Berries (1 cup)', key: null },
           { name: 'spearmint tea', key: null },
         ]},
       ],
@@ -101,29 +112,33 @@ export const WORKOUT_DAYS = [
     day: 'Tuesday · Core & Back A',
     title: 'Deep Core & Back — Posture',
     sub: 'Warm-up + vacuum + your choice of video + walk · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — a Pilates by Izzy abs class or a Move With Nicole full-body class. Finish with your fast-paced walk. Light and toned, never bulky.' },
+    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — Pilates by Izzy, Move With Nicole, or Thuý Mai Thuý Mai from Facebook. Finish with your fast-paced walk. Light and toned, never bulky.' },
     exercises: [
       JUMP_ROPE,
       VACUUM,
       ...IZZY_ABS,
       ...NICOLE_FULLBODY,
+      ...THUY_MAI_WORKOUTS,
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Fruit day — stay 80% fruitarian today. Fruits at 12 & 3, light veg at 5. Remember: eat slow, stop at 80% full, and walk after every meal. That combination is what keeps the stomach flat and bloat-free.' },
+    noteAfter: { type: 'rose', text: '💡 Core fuel day — stay around 1,200 calories. Fruits at 12 and 3, then a filling no-meat vegetable meal at 5. Eat slow, stop at 80% full, and walk after every meal.' },
     meals: {
-      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
+      label: '🍓 Core Fuel — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
-          { name: 'Pineapple', key: 'pineapple' },
-          { name: 'Apple', key: 'apple' },
+          { name: 'Papaya Bowl', key: null },
+          { name: 'Kiwi (2)', key: null },
+          { name: 'Oats (1/2 cup)', key: null },
         ]},
         { time: '3:00 PM — Snack (Fruits)', ingredients: [
-          { name: 'Banana', key: 'banana' },
-          { name: 'Grapes', key: null },
+          { name: 'Banana (2)', key: null },
+          { name: 'Apple', key: 'apple' },
+          { name: 'Almonds (30g)', key: null },
         ]},
-        { time: '5:00 PM — Last Meal (Light)', ingredients: [
-          { name: 'Steamed Zucchini', key: null },
-          { name: 'Steamed Spinach', key: null },
+        { time: '5:00 PM — Last Meal (Veg · no meat)', ingredients: [
+          { name: 'Sweet Potato 250g', key: null },
+          { name: 'Steamed Broccoli 2 cups', key: null },
+          { name: 'Steamed Spinach 2 cups', key: null },
           { name: 'spearmint tea', key: null },
         ]},
       ],
@@ -137,29 +152,35 @@ export const WORKOUT_DAYS = [
     day: 'Wednesday · Core & Back B',
     title: 'Deep Core & Back — Lats',
     sub: 'Warm-up + vacuum + your choice of video + walk · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — a Pilates by Izzy abs class or a Move With Nicole full-body class. Finish with your fast-paced walk. Light and toned, never bulky.' },
+    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — Pilates by Izzy, Move With Nicole, or Thuý Mai Thuý Mai from Facebook. Finish with your fast-paced walk. Light and toned, never bulky.' },
     exercises: [
       JUMP_ROPE,
       VACUUM,
       ...IZZY_ABS,
       ...NICOLE_FULLBODY,
+      ...THUY_MAI_WORKOUTS,
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Fruit day. Keep it clean and light — no gluten, no oils, no dairy. Papaya and kiwi both carry natural digestive enzymes, so today\'s fruits actively fight bloating. Walk after each meal.' },
+    noteAfter: { type: 'rose', text: '💡 Core fuel day — stay around 1,200 calories. Fruits earlier, no-meat vegetables at 5 PM, and enough oats, nuts, avocado, or sweet potato to stay full. Walk after each meal.' },
     meals: {
-      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
+      label: '🍓 Core Fuel — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
-          { name: 'Papaya', key: 'papaya' },
-          { name: 'Kiwi', key: null },
+          { name: 'Pineapple Bowl', key: null },
+          { name: 'Apple', key: 'apple' },
+          { name: 'Oats (1/2 cup)', key: null },
         ]},
         { time: '3:00 PM — Snack (Fruits)', ingredients: [
-          { name: 'Dragon Fruit', key: null },
-          { name: 'Banana', key: 'banana' },
+          { name: 'Mango Bowl', key: null },
+          { name: 'Berries (1 cup)', key: null },
+          { name: 'Walnuts (30g)', key: null },
         ]},
-        { time: '5:00 PM — Last Meal (Light)', ingredients: [
-          { name: 'Steamed Zucchini', key: null },
-          { name: 'Steamed Spinach', key: null },
+        { time: '5:00 PM — Last Meal (Veg · no meat)', ingredients: [
+          { name: 'Squash 2 cups', key: null },
+          { name: 'Eggplant 2 cups', key: null },
+          { name: 'Steamed Spinach 2 cups', key: null },
+          { name: 'Avocado (1/2)', key: null },
+          { name: 'Cucumber', key: null },
           { name: 'green tea', key: null },
         ]},
       ],
@@ -185,19 +206,24 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: '📋 Track your cable kickback and sumo squat weights each Thursday. Add resistance when reps feel easy and the squeeze stays sharp. Protein at 3 PM — your glutes grow on rest days, fed by today\'s protein.' },
     meals: {
-      label: '🍑 Glute Fuel — Fruits 12PM · Protein 3PM · Light 5PM',
+      label: '🍑 Glute Fuel — ~1,500 kcal · Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
-          { name: 'Kiwi', key: null },
+          { name: 'Kiwi (2)', key: null },
           { name: 'Dragon Fruit', key: null },
+          { name: 'Banana (2)', key: null },
+          { name: 'Chia Seeds (2 tbsp)', key: null },
         ]},
         { time: '3:00 PM — Dinner (Protein · post-workout)', ingredients: [
-          { name: 'Eggs (2–3, boiled)', key: 'egg' },
-          { name: 'Steamed Broccoli', key: 'broccoli' },
-          { name: 'Steamed Carrots', key: null },
+          { name: 'Eggs (3, boiled)', key: null },
+          { name: 'Tofu 200g', key: null },
+          { name: 'Quinoa 1 cup', key: null },
+          { name: 'Steamed Broccoli 2 cups', key: null },
+          { name: 'Carrots 2 cups', key: null },
         ]},
         { time: '5:00 PM — Last Meal (Light)', ingredients: [
-          { name: 'Berries', key: null },
+          { name: 'Berries (1 cup)', key: null },
+          { name: 'Avocado (1/2)', key: null },
           { name: 'spearmint tea', key: null },
         ]},
       ],
@@ -211,29 +237,35 @@ export const WORKOUT_DAYS = [
     day: 'Friday · Core & Back C',
     title: 'Deep Core & Back — Alignment',
     sub: 'Warm-up + vacuum + your choice of video + walk · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — a Pilates by Izzy abs class or a Move With Nicole full-body class. Finish with your fast-paced walk. Light and toned, never bulky.' },
+    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — Pilates by Izzy, Move With Nicole, or Thuý Mai Thuý Mai from Facebook. Finish with your fast-paced walk. Light and toned, never bulky.' },
     exercises: [
       JUMP_ROPE,
       VACUUM,
       ...IZZY_ABS,
       ...NICOLE_FULLBODY,
+      ...THUY_MAI_WORKOUTS,
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Fruit day. Tomorrow is sprints — hydrate well tonight. Stay light: fruits, then light steamed veg at 5. Walk after each meal, stop at 80% full, and get good sleep — recovery is where the results show up.' },
+    noteAfter: { type: 'rose', text: '💡 Core fuel day. Tomorrow is sprints — hydrate well tonight. Stay around 1,200 calories with fruits earlier and a filling no-meat vegetable meal at 5. Walk after each meal and sleep well.' },
     meals: {
-      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
+      label: '🍓 Core Fuel — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
           { name: 'Dragon Fruit', key: null },
-          { name: 'Grapes', key: null },
+          { name: 'Grapes (1 cup)', key: null },
+          { name: 'Oats (1/2 cup)', key: null },
+          { name: 'Chia Seeds (2 tbsp)', key: null },
         ]},
         { time: '3:00 PM — Snack (Fruits)', ingredients: [
           { name: 'Apple', key: 'apple' },
-          { name: 'Papaya', key: 'papaya' },
+          { name: 'Papaya Bowl', key: null },
+          { name: 'Almonds (30g)', key: null },
         ]},
-        { time: '5:00 PM — Last Meal (Light)', ingredients: [
+        { time: '5:00 PM — Last Meal (Veg · no meat)', ingredients: [
           { name: 'Cucumber', key: null },
-          { name: 'Steamed Carrots', key: null },
+          { name: 'Carrots 2 cups', key: null },
+          { name: 'Sweet Potato 250g', key: null },
+          { name: 'Steamed Spinach 2 cups', key: null },
           { name: 'green tea', key: null },
         ]},
       ],
@@ -258,18 +290,22 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'gold', text: `📋 ${sp.month} Protocol: ${sp.sprint}s sprint / ${sp.rest}s rest × ${sp.reps} reps. Log your times and how each rep felt — next month the numbers get harder on purpose. Recovery tonight: protein, water, and 8+ hours of sleep.` },
     meals: {
-      label: '⚡ Sprint Fuel — Fruits 12PM · Protein 3PM · Light 5PM',
+      label: '⚡ Sprint Fuel — ~1,500 kcal · Fruits 12PM · Meat 3PM · Light 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
-          { name: 'Banana', key: 'banana' },
-          { name: 'Grapes', key: null },
+          { name: 'Banana (2)', key: null },
+          { name: 'Grapes (1 cup)', key: null },
+          { name: 'Oats (1/2 cup)', key: null },
+          { name: 'Coconut Water', key: null },
         ]},
         { time: '3:00 PM — Dinner (Protein · post-sprint)', ingredients: [
-          { name: 'Greek Yogurt', key: null },
-          { name: 'Berries', key: null },
+          { name: 'Chicken 180g', key: null },
+          { name: 'Brown Rice 1 cup', key: null },
+          { name: 'Sweet Potato 250g', key: null },
+          { name: 'Steamed Broccoli 2 cups', key: null },
         ]},
         { time: '5:00 PM — Last Meal (Light)', ingredients: [
-          { name: 'Papaya', key: 'papaya' },
+          { name: 'Papaya Bowl', key: null },
           { name: 'spearmint tea', key: null },
         ]},
       ],
@@ -293,19 +329,24 @@ export const WORKOUT_DAYS = [
     ],
     noteAfter: { type: 'rose', text: '🌿 Sunday prep: batch-cook your protein for the two glute days (chicken, fish), wash and portion your fruits, set your jump rope by the door. A prepared week eats clean and trains hard. Rest well — you earned it.' },
     meals: {
-      label: '🍓 Fruit Day — Fruits 12PM · Fruits 3PM · Light 5PM',
+      label: '🍓 Light Day — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
         { time: '12:00 PM — Breakfast (Fruits)', ingredients: [
-          { name: 'Pineapple', key: 'pineapple' },
-          { name: 'Kiwi', key: null },
+          { name: 'Pineapple Bowl', key: null },
+          { name: 'Kiwi (2)', key: null },
+          { name: 'Watermelon Bowl', key: null },
+          { name: 'Oats (1/2 cup)', key: null },
         ]},
         { time: '3:00 PM — Snack (Fruits)', ingredients: [
-          { name: 'Banana', key: 'banana' },
+          { name: 'Banana (2)', key: null },
           { name: 'Apple', key: 'apple' },
+          { name: 'Walnuts (30g)', key: null },
         ]},
-        { time: '5:00 PM — Last Meal (Light)', ingredients: [
-          { name: 'Steamed Spinach', key: null },
-          { name: 'Steamed Carrots', key: null },
+        { time: '5:00 PM — Last Meal (Veg · no meat)', ingredients: [
+          { name: 'Steamed Spinach 2 cups', key: null },
+          { name: 'Carrots 2 cups', key: null },
+          { name: 'Squash 2 cups', key: null },
+          { name: 'Cucumber', key: null },
           { name: 'spearmint tea', key: null },
         ]},
       ],
