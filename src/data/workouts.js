@@ -48,10 +48,10 @@ const NICOLE_FULLBODY = [
 
 const THUY_MAI_WORKOUTS = [
   { name: 'Abs (Thuý Mai) — Facebook Reel',         detail: 'Thuý Mai Thuý Mai · abs/core reel from Facebook · choose this for a short core burn on core days', url: 'https://www.facebook.com/share/r/1Cx9ZyJQVC/' },
-  { name: 'Abs (Thuý Mai) — Core Video Pick',       detail: 'Thuý Mai Thuý Mai · open her Facebook profile and choose an abs-focused workout clip', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987' },
-  { name: 'Abs (Thuý Mai) — Waist Video Pick',      detail: 'Thuý Mai Thuý Mai · open her Facebook profile and choose a waist/deep-core workout clip', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987/videos' },
-  { name: 'Full Body (Thuý Mai) — Sculpt Pick',     detail: 'Thuý Mai Thuý Mai · open her Facebook videos and choose a full-body sculpt workout', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987/videos' },
-  { name: 'Full Body (Thuý Mai) — No-Equipment Pick', detail: 'Thuý Mai Thuý Mai · open her Facebook reels/videos and choose a no-equipment full-body session', url: 'https://www.facebook.com/thuy.mai.thuy.mai.433987/reels' },
+  { name: 'Abs (Thuý Mai) — Core Video',            detail: 'Thuý Mai Thuý Mai · Facebook core workout video · choose this for abs, waist, and deep-core control', url: 'https://www.facebook.com/share/v/19H7EwvHp9/' },
+  { name: 'Abs (Thuý Mai) — Waist Video',           detail: 'Thuý Mai Thuý Mai · Facebook abs/waist workout video · choose this when you want a focused core session', url: 'https://www.facebook.com/share/v/1Du4t1SSUE/' },
+  { name: 'Full Body (Thuý Mai) — Sculpt Reel',     detail: 'Thuý Mai Thuý Mai · Facebook full-body reel · choose this for a fast sculpt session on core days', url: 'https://www.facebook.com/share/r/18wkkxgKBy/' },
+  { name: 'Full Body (Thuý Mai) — No-Equipment Video', detail: 'Thuý Mai Thuý Mai · Facebook full-body workout video · choose this for a no-equipment sweat without heavy lifting', url: 'https://www.facebook.com/share/v/1DDLPaGusb/' },
 ];
 
 const YOGA_BEGINNER = [
