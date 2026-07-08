@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import { WORKOUT_DAYS } from '../data/workouts';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -21,23 +22,176 @@ const WEEK_PILLS = [
   { label: 'Sun', emoji: '🌸', dayId: 'day-sunday'    },
 ];
 
+const RULE_BOARDS = [
+  {
+    title: 'No GODSSS',
+    emoji: '🚫',
+    tone: 'no',
+    items: [
+      ['G', 'Gluten', 'skip bread, pasta, flour'],
+      ['O', 'Oils', 'steam, boil, bake'],
+      ['D', 'Dairy', 'avoid milk, cheese, yogurt'],
+      ['S', 'Sweet', 'fruit first, no added sugar'],
+      ['S', 'Salty', 'keep seasoning light'],
+      ['S', 'Stress', 'walk, breathe, sleep'],
+    ],
+  },
+  {
+    title: 'PFBS',
+    emoji: '✨',
+    tone: 'yes',
+    items: [
+      ['P', 'Protein', '3 PM on hard days'],
+      ['F', 'Fruit', '12 PM every day'],
+      ['B', 'Bland', 'simple food, calm gut'],
+      ['S', 'Small', 'steady portions'],
+    ],
+  },
+  {
+    title: 'SLOW',
+    emoji: '🐢',
+    tone: 'yes',
+    items: [
+      ['S', 'Small bites', 'put the fork down'],
+      ['L', 'Last meal', 'finish by 5 PM'],
+      ['O', 'Only 80%', 'light, not stuffed'],
+      ['W', 'Walk', '10–15 min after meals'],
+    ],
+  },
+];
 
-function DayCard({ icon, label, title, sub, onClick }) {
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+function loadChecks() {
+  try {
+    const s = JSON.parse(localStorage.getItem('gp_today_checks'));
+    if (s && s.date === todayKey()) return s.checked || {};
+  } catch {}
+  return {};
+}
+
+function TodayDashboard({ today, todayDayId, onNavigate }) {
+  const [checked, setChecked] = useState(loadChecks);
+
+  function toggle(id) {
+    setChecked(prev => {
+      const next = { ...prev, [id]: !prev[id] };
+      try { localStorage.setItem('gp_today_checks', JSON.stringify({ date: todayKey(), checked: next })); } catch {}
+      return next;
+    });
+  }
+
+  const mealRows = today.meals.rows.slice(0, 3).map((row, i) => {
+    const [time, name] = row.time.split(' — ');
+    return {
+      id: `meal-${i}`,
+      icon: ['🍓', '🍽️', '🥗'][i],
+      time,
+      title: name || 'Meal',
+      note: row.ingredients.slice(0, 3).map(item => item.name).join(' · '),
+    };
+  });
+
+  const rows = [
+    { id: 'am-skin', icon: '☀️', title: 'AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
+    { id: 'workout', icon: today.emoji, title: today.title, note: today.sub, nav: ['workout', null, todayDayId] },
+    ...mealRows,
+    { id: 'walk', icon: '🚶', title: 'Walk 10–15 min after meals', note: 'beats bloating' },
+    { id: 'body', icon: '🫧', title: 'Body care', note: 'Shower · Moisturise · SPF', nav: ['skincare', 'body'] },
+    { id: 'hair', icon: '💎', title: 'Hair care', note: 'Oil ritual · Scalp massage', nav: ['skincare', 'hair'] },
+    { id: 'pm-skin', icon: '🌙', title: 'PM skincare', note: 'Double cleanse · Treatment · Repair', nav: ['skincare', 'pm'] },
+  ];
+
+  const done = rows.filter(r => checked[r.id]).length;
+
   return (
-    <button className="dc-card" onClick={onClick}>
-      <span className="dc-icon">{icon}</span>
-      <div className="dc-body">
-        <div className="dc-label">{label}</div>
-        <div className="dc-title">{title}</div>
-        {sub && <div className="dc-sub">{sub}</div>}
+    <div className="today-dashboard splash-item">
+      <div className="today-dashboard-top">
+        <div>
+          <div className="daily-plan-label">Today's Plan</div>
+          <div className="today-dashboard-date">
+            {today.day} <span className="today-progress">{done}/{rows.length} ✨</span>
+          </div>
+        </div>
+        <button className="today-open-btn" onClick={() => onNavigate('workout', null, todayDayId)}>Open day</button>
       </div>
-      <span className="dc-arrow">›</span>
-    </button>
+
+      <div className="today-timeline">
+        {rows.map(r => (
+          <div key={r.id} className={`tl-row${checked[r.id] ? ' is-done' : ''}`}>
+            <button className="tl-check" aria-label={`Mark ${r.title} done`} onClick={() => toggle(r.id)}>
+              <span className="tl-ring" />
+            </button>
+            <button className="tl-body" onClick={r.nav ? () => onNavigate(...r.nav) : () => toggle(r.id)}>
+              <span className="tl-icon">{r.icon}</span>
+              <span className="tl-copy">
+                <span className="tl-title">
+                  {r.time && <em className="tl-time">{r.time}</em>}
+                  {r.title}
+                </span>
+                {r.note && <small className="tl-note">{r.note}</small>}
+              </span>
+              {r.nav && <span className="tl-arrow">›</span>}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RuleBoard() {
+  const [activeCol, setActiveCol] = useState(0);
+  const scrollRef = useRef(null);
+
+  function handleScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 0) { setActiveCol(0); return; }
+    setActiveCol(Math.round((el.scrollLeft / max) * (RULE_BOARDS.length - 1)));
+  }
+
+  return (
+    <div className="rule-board-wrap splash-item">
+      <div
+        className="rule-board"
+        ref={scrollRef}
+        onScroll={handleScroll}
+        /* Swiping the board must not trigger the app's edge-swipe-back gesture on .main */
+        onTouchStart={e => e.stopPropagation()}
+        onTouchEnd={e => e.stopPropagation()}
+      >
+        {RULE_BOARDS.map(board => (
+          <div key={board.title} className={`rule-column rule-column-${board.tone}`}>
+            <div className="rule-column-title">{board.emoji} {board.title}</div>
+            <div className="rule-cards">
+              {board.items.map(([letter, title, note]) => (
+                <div key={`${board.title}-${letter}-${title}`} className="rule-mini-card">
+                  <span className="rule-mini-letter">{letter}</span>
+                  <span className="rule-mini-copy">
+                    <strong>{title}</strong>
+                    <small>{note}</small>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="rule-dots" aria-hidden="true">
+        {RULE_BOARDS.map((b, i) => <span key={b.title} className={`rule-dot${i === activeCol ? ' active' : ''}`} />)}
+      </div>
+    </div>
   );
 }
 
 export default function Hero({ onNavigate }) {
   const today = WORKOUT_DAYS[dayIndex];
+  const todayDayId = `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`;
 
   return (
     <div className="hero hero-dashboard">
@@ -63,91 +217,19 @@ export default function Hero({ onNavigate }) {
         ))}
       </div>
 
-      <div className="daily-plan splash-item">
-        <div className="daily-plan-label">Today's Plan</div>
+      <div className="hero-goal-ribbon splash-item">🎯 Flat tummy · Small waist · Round glutes · Healthy gut · Glow</div>
 
-        <DayCard
-          icon={today.emoji}
-          label="Workout"
-          title={today.title}
-          sub={today.sub}
-          onClick={() => onNavigate('workout', null, `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`)}
-        />
-        <DayCard
-          icon="🌿"
-          label="AM Skincare"
-          title="Morning Routine"
-          sub="Cleanse · Vitamin C · SPF 50+"
-          onClick={() => onNavigate('skincare', 'am')}
-        />
-        <DayCard
-          icon="🌙"
-          label="PM Skincare"
-          title="Night Routine"
-          sub="Double cleanse · Retinoid · Peptides"
-          onClick={() => onNavigate('skincare', 'pm')}
-        />
-        <DayCard
-          icon="💎"
-          label="Hair Care"
-          title="Hair Ritual"
-          sub="Oil treatment · Scalp massage"
-          onClick={() => onNavigate('skincare', 'hair')}
-        />
-      </div>
+      <TodayDashboard today={today} todayDayId={todayDayId} onNavigate={onNavigate} />
 
-      {/* The Goal */}
-      <div className="hero-goal splash-item">
-        <div className="hero-goal-label">The Goal 🎯</div>
-        <div className="hero-goal-line">Flat stomach at rest · Small waist · Big round glutes · Healthy gut · Zero bloat</div>
-      </div>
+      <RuleBoard />
 
-      {/* Say NO to GODSSSS */}
-      <div className="hero-code splash-item hero-code-no">
-        <div className="hero-code-head">Say <span className="cc-no">NO</span> to <span className="cc-word">GODSSSS</span></div>
-        <div className="hero-code-grid">
-          <div className="cc-row"><span className="cc-letter">G</span><span className="cc-text"><strong>Gluten</strong> — none</span></div>
-          <div className="cc-row"><span className="cc-letter">O</span><span className="cc-text"><strong>Oils</strong> — steam &amp; boil, don't fry</span></div>
-          <div className="cc-row"><span className="cc-letter">D</span><span className="cc-text"><strong>Dairy</strong> — none</span></div>
-          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text">not too <strong>Sweet</strong></span></div>
-          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text">not too <strong>Salty</strong></span></div>
-          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text">no <strong>Stress</strong></span></div>
-          <div className="cc-row cc-yes"><span className="cc-letter">S</span><span className="cc-text">good <strong>Sleep</strong> ✓ <em>the one S you want more of</em></span></div>
-        </div>
-      </div>
-
-      {/* Eat PFBS */}
-      <div className="hero-code splash-item hero-code-yes">
-        <div className="hero-code-quote">"Pffff, bullsh*t"</div>
-        <div className="hero-code-head">Eat <span className="cc-word">PFBS</span> 👑</div>
-        <div className="hero-code-grid">
-          <div className="cc-row"><span className="cc-letter">P</span><span className="cc-text"><strong>Protein</strong> — at 3 PM on glute and sprint days</span></div>
-          <div className="cc-row"><span className="cc-letter">F</span><span className="cc-text"><strong>Fruits</strong> — at 12 PM every day</span></div>
-          <div className="cc-row"><span className="cc-letter">B</span><span className="cc-text"><strong>Bland</strong> — plain food = no bloat</span></div>
-          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text"><strong>Small</strong> — moderate portions</span></div>
-        </div>
-      </div>
-
-      {/* Eat SLOW */}
-      <div className="hero-code splash-item hero-code-yes">
-        <div className="hero-code-head">Eat <span className="cc-word">SLOW</span> 🐢</div>
-        <div className="hero-code-grid">
-          <div className="cc-row"><span className="cc-letter">S</span><span className="cc-text"><strong>Small</strong> bites, chew fully</span></div>
-          <div className="cc-row"><span className="cc-letter">L</span><span className="cc-text"><strong>Last</strong> meal by 5 PM</span></div>
-          <div className="cc-row"><span className="cc-letter">O</span><span className="cc-text"><strong>Only</strong> to 80% full</span></div>
-          <div className="cc-row"><span className="cc-letter">W</span><span className="cc-text"><strong>Walk</strong> after every meal</span></div>
-        </div>
-      </div>
-
-      {/* Daily rhythm */}
-      <div className="hero-pfbs splash-item">
+      {/* Gentle reminders — only what the boards & timeline don't already say */}
+      <div className="hero-pfbs hero-baby-steps splash-item">
+        <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🍓</span><span>Breakfast 12 PM (fruits) · Snack 3 PM · Last meal 5 PM</span></div>
-          <div className="hero-rule"><span>🍑</span><span>Protein at 3 PM on glute and sprint days — feed the growth</span></div>
-          <div className="hero-rule"><span>🚶</span><span>Walk 10–15 min after every meal — beats bloating</span></div>
-          <div className="hero-rule"><span>🥭</span><span>Keep fruits earlier, then use 5 PM vegetables to stay full without heavy late meals</span></div>
-          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hrs — this is where the glutes grow</span></div>
-          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Drink water first. Wait 10 min. Still hungry? Eat slow. Not hungry? Go do something — walk, stretch, read, whatever btch, I'm not your mother.</span></div>
+          <div className="hero-rule"><span>🥭</span><span>Keep fruits earlier in the day, then lean on 5 PM vegetables to stay full without a heavy late meal</span></div>
+          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — this is where the glutes grow</span></div>
+          <div className="hero-rule hero-rule-bored"><span>🍼</span><span>Baby step: sip water first, wait 10 minutes, then check in with yourself. Still hungry? Eat slowly. Just bored? Pick one tiny reset — a walk, a stretch, a quick tidy-up, or one page of a book.</span></div>
         </div>
       </div>
     </div>
