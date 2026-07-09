@@ -55,7 +55,7 @@ export default function InstallBanner() {
         ) : (
           <>
             <span className="install-icon">🌸</span>
-            <span>Install Goddess Plan on your phone for offline access & reminders</span>
+            <span>Install Goddess Plan for offline access & reminders</span>
           </>
         )}
       </div>

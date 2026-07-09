@@ -36,17 +36,17 @@ const OIL_COLORS = {
 const OIL_GUIDE = {
   Camellia: {
     emoji: '🌸',
-    how: 'Warm 3–5 drops in your palms and apply to scalp and mid-lengths. Massage firmly for 5 minutes. Leave on 45–60 min, then shampoo out — apply shampoo to dry hair first for best removal.',
+    how: 'Warm 3–5 drops, apply to scalp and mid-lengths, massage 5 minutes. Leave 45–60 min, then shampoo out — shampoo dry hair first.',
     tip: 'Your hero oil. Penetrates the shaft without weighing fine strands down.',
   },
   Rosemary: {
     emoji: '🌿',
-    how: 'Use your pre-diluted blend only — never apply rosemary neat to skin. Apply to scalp parting lines, massage 5 min. Leave 45–60 min, shampoo twice to fully remove.',
+    how: 'Use pre-diluted blend only — never apply rosemary neat. Apply to scalp parting lines, massage 5 min, leave 45–60 min, shampoo twice.',
     tip: 'Always diluted. Clinical studies show it matches minoxidil for density over 6 months.',
   },
   Argan: {
     emoji: '✨',
-    how: '1–2 drops only on damp hair after washing. Apply mid-length to ends — never the scalp. Leave in, do not rinse. Scrunch upward to enhance your wave pattern.',
+    how: 'Use 1–2 drops on damp hair after washing. Apply mid-length to ends — never scalp. Leave in and scrunch upward.',
     tip: 'Finishing oil only. Controls frizz and adds shine after every wash.',
   },
   Jojoba: {
@@ -67,13 +67,13 @@ const OIL_BENEFITS = {
     tagline: 'Your hero oil for fine, wavy strands',
     color: 'rgba(255,92,157,0.12)',
     borderColor: 'rgba(255,92,157,0.3)',
-    science: 'Camellia oil (Tsubaki) is composed of 80–85% oleic acid — a long-chain fatty acid that can penetrate the hair cortex rather than sitting on top of it like heavier oils. This means it adds moisture and strength from the inside without the greasy feel that weighs down fine hair.',
+    science: 'Camellia oil (Tsubaki) is 80–85% oleic acid, which can penetrate the cortex. It adds moisture and strength without weighing fine hair down.',
     benefits: [
-      { icon: '💧', title: 'Deep shaft hydration', body: 'Oleic acid is small enough to pass through the cuticle layer into the cortex, replenishing moisture where it matters most.' },
-      { icon: '🛡️', title: 'Reduces breakage', body: 'Strengthens the internal structure of each strand, reducing the brittleness that leads to mid-shaft splits and breakage.' },
-      { icon: '✨', title: 'Frizz control without weight', body: 'Smooths the cuticle and seals moisture in — eliminating frizz without flattening your natural wave pattern.' },
-      { icon: '🌿', title: 'Scalp health', body: 'Anti-inflammatory properties soothe dry, itchy scalp and support a healthy follicle environment for growth.' },
-      { icon: '🌸', title: 'Wavy hair-safe', body: 'Unlike coconut oil, camellia does not cause protein overload on fine or wavy hair — safe to use multiple times a week.' },
+      { icon: '💧', title: 'Deep shaft hydration', body: 'Oleic acid reaches the cortex and replenishes moisture.' },
+      { icon: '🛡️', title: 'Reduces breakage', body: 'Strengthens strands and reduces mid-shaft splits.' },
+      { icon: '✨', title: 'Frizz control without weight', body: 'Smooths cuticle and seals moisture without flattening waves.' },
+      { icon: '🌿', title: 'Scalp health', body: 'Soothes dry, itchy scalp and supports follicles.' },
+      { icon: '🌸', title: 'Wavy hair-safe', body: 'Does not cause protein overload on fine or wavy hair.' },
     ],
     bestFor: 'Fine, wavy, or colour-treated hair',
     frequency: '2–3× per week (pre-wash treatment)',
@@ -83,15 +83,15 @@ const OIL_BENEFITS = {
     tagline: 'Clinically proven to match minoxidil for hair density',
     color: 'rgba(240,204,96,0.10)',
     borderColor: 'rgba(240,204,96,0.28)',
-    science: 'A 2023 randomised controlled trial published in Skinmed Journal found that rosemary oil applied to the scalp for 6 months produced equivalent hair count increases to 2% minoxidil — without the side effects. The active compound, carnosic acid, stimulates blood flow to hair follicles and inhibits DHT (the hormone responsible for hair miniaturisation).',
+    science: 'A 2023 Skinmed trial found rosemary oil for 6 months matched 2% minoxidil hair count gains. Carnosic acid supports blood flow and helps inhibit DHT.',
     benefits: [
-      { icon: '🩸', title: 'Increases scalp blood flow', body: 'Stimulates microcirculation at the follicle level, delivering more oxygen and nutrients to actively growing hairs.' },
-      { icon: '🔬', title: 'DHT inhibition', body: 'Carnosic acid partially blocks the enzyme 5-alpha reductase, reducing DHT — the key driver of hair thinning and miniaturisation.' },
-      { icon: '💪', title: 'Supports hair density', body: 'Clinical trials show statistically significant increases in hair count after 6 months of consistent scalp application.' },
-      { icon: '🛡️', title: 'Antioxidant protection', body: 'Rich in rosmarinic acid — a potent antioxidant that protects follicles from oxidative stress that accelerates shedding.' },
+      { icon: '🩸', title: 'Increases scalp blood flow', body: 'Boosts microcirculation around active follicles.' },
+      { icon: '🔬', title: 'DHT inhibition', body: 'Carnosic acid helps reduce DHT linked to thinning.' },
+      { icon: '💪', title: 'Supports hair density', body: 'Hair-count gains appear after 6 months of consistent use.' },
+      { icon: '🛡️', title: 'Antioxidant protection', body: 'Rosmarinic acid protects follicles from oxidative stress.' },
       { icon: '⚠️', title: 'Must always be diluted', body: 'Rosemary essential oil is potent. Never apply neat to skin. Always dilute in a carrier oil (jojoba or camellia) before applying.' },
     ],
-    bestFor: 'Anyone wanting to support hair density and reduce seasonal shedding',
+    bestFor: 'Hair density support and seasonal shedding',
     frequency: '1–2× per week (always diluted, pre-wash)',
   },
   Argan: {
@@ -99,13 +99,13 @@ const OIL_BENEFITS = {
     tagline: 'Liquid gold for frizz, shine, and wave definition',
     color: 'rgba(255,232,122,0.10)',
     borderColor: 'rgba(255,232,122,0.3)',
-    science: 'Argan oil is cold-pressed from the kernels of the Moroccan argan tree. It is uniquely high in Vitamin E (tocopherols) and unsaturated fatty acids (oleic and linoleic acid), making it an exceptional finishing oil. Unlike penetrating oils, argan is a surface-active oil — it coats the cuticle to seal moisture in and smooth the hair\'s external texture.',
+    science: 'Argan oil is rich in Vitamin E and unsaturated fatty acids. As a finishing oil, it coats the cuticle to seal moisture and smooth texture.',
     benefits: [
-      { icon: '✨', title: 'Frizz elimination', body: 'Coats and seals the cuticle layer, preventing humidity from lifting cuticle scales and causing frizz — especially effective on wavy hair.' },
-      { icon: '💎', title: 'Mirror-like shine', body: 'High Vitamin E content reflects light off a smooth cuticle surface, creating the glass-hair effect without silicone.' },
-      { icon: '🌊', title: 'Wave definition', body: 'Applied to damp hair and scrunched upward, it clumps your natural wave pattern without crunch or stiffness.' },
-      { icon: '🛡️', title: 'Heat protection', body: 'Creates a light protective barrier against heat tools — but is not a substitute for a dedicated heat protectant above 180°C.' },
-      { icon: '🌿', title: 'Scalp-free application', body: 'Applied only to mid-lengths and ends. Using on the scalp will cause greasiness — it is a finishing oil, not a treatment oil.' },
+      { icon: '✨', title: 'Frizz elimination', body: 'Seals cuticle scales and blocks humidity frizz.' },
+      { icon: '💎', title: 'Mirror-like shine', body: 'Vitamin E helps hair reflect light without silicone.' },
+      { icon: '🌊', title: 'Wave definition', body: 'Scrunch into damp hair for soft wave clumps.' },
+      { icon: '🛡️', title: 'Heat protection', body: 'Adds light protection, but use heat protectant above 180°C.' },
+      { icon: '🌿', title: 'Scalp-free application', body: 'Use only mid-lengths and ends to avoid greasiness.' },
     ],
     bestFor: 'Post-wash finishing on all hair types, especially wavy and frizz-prone',
     frequency: 'After every wash (1–2 drops on damp hair, leave-in)',
@@ -115,13 +115,13 @@ const OIL_BENEFITS = {
     tagline: "The oil that mimics your scalp's own sebum",
     color: 'rgba(240,204,96,0.08)',
     borderColor: 'rgba(240,204,96,0.22)',
-    science: 'Jojoba is technically a liquid wax, not an oil — and this makes it uniquely compatible with human sebum. Its molecular structure is so similar to the natural wax esters produced by scalp sebaceous glands that the scalp recognises it as its own. This means it regulates oil production, soothes inflammation, and is virtually non-comedogenic.',
+    science: 'Jojoba is a liquid wax close to scalp sebum. It helps balance oil, soothe inflammation, and avoid clogging.',
     benefits: [
-      { icon: '🔬', title: 'Sebum mimic', body: 'Structurally identical to scalp sebum — absorbs completely without residue and signals sebaceous glands to balance oil production.' },
-      { icon: '⚖️', title: 'Scalp balance', body: 'Works for both oily and dry scalps — regulates oil glands that overproduce (oily) and replenishes moisture where glands underperform (dry).' },
-      { icon: '🌿', title: 'Anti-inflammatory', body: 'Contains myristic acid and zinc — both with documented anti-inflammatory effects that soothe irritated, flaky, or sensitive scalp skin.' },
-      { icon: '🧪', title: 'Best carrier for rosemary', body: 'Its neutral, non-comedogenic base makes it the ideal carrier to dilute rosemary essential oil for scalp application without clogging follicles.' },
-      { icon: '💧', title: 'Lightweight hydration', body: 'Deeply moisturises without heaviness — safe for fine hair as a scalp treatment, unlike thicker oils that coat strands.' },
+      { icon: '🔬', title: 'Sebum mimic', body: 'Absorbs cleanly and helps balance oil production.' },
+      { icon: '⚖️', title: 'Scalp balance', body: 'Works for oily and dry scalps.' },
+      { icon: '🌿', title: 'Anti-inflammatory', body: 'Myristic acid and zinc soothe irritated scalp skin.' },
+      { icon: '🧪', title: 'Best carrier for rosemary', body: 'Dilutes rosemary without clogging follicles.' },
+      { icon: '💧', title: 'Lightweight hydration', body: 'Moisturises scalp without heaviness.' },
     ],
     bestFor: 'Scalp treatments, rosemary dilution, all hair types',
     frequency: '1× per week (pre-wash scalp treatment, or as needed)',
@@ -131,13 +131,13 @@ const OIL_BENEFITS = {
     tagline: 'Powerful ends treatment — use with care',
     color: 'rgba(255,255,255,0.05)',
     borderColor: 'rgba(255,255,255,0.15)',
-    science: 'Coconut oil is high in lauric acid — a medium-chain fatty acid with a small molecular size that can penetrate the hair shaft. Clinical studies show it reduces protein loss from hair better than mineral oil or sunflower oil. However, for fine or wavy hair, overuse causes protein overload — the hair becomes stiff, brittle, and prone to breakage as the shaft becomes over-saturated.',
+    science: 'Coconut oil is high in lauric acid and reduces protein loss. On fine or wavy hair, overuse can cause protein overload: stiff, brittle, breakage-prone hair.',
     benefits: [
-      { icon: '🛡️', title: 'Protein loss prevention', body: 'Lauric acid binds to hair protein (keratin) and partially penetrates the cortex, significantly reducing the amount of protein lost during washing.' },
-      { icon: '💧', title: 'Deep end conditioning', body: 'A small amount on dry, split ends can dramatically improve their feel and appearance, sealing damaged cuticle edges temporarily.' },
+      { icon: '🛡️', title: 'Protein loss prevention', body: 'Lauric acid binds to keratin and reduces protein loss during washing.' },
+      { icon: '💧', title: 'Deep end conditioning', body: 'A small amount softens dry, split ends temporarily.' },
       { icon: '⚠️', title: 'Fine hair caution', body: 'Fine and wavy hair is prone to protein overload. Signs: hair feels straw-like, loses elasticity, snaps instead of stretches. Use 1–2 drops, ends only.' },
-      { icon: '⏱️', title: '20-minute maximum', body: 'Unlike penetrating oils, coconut oil can cause protein buildup over long exposures on fine hair. Set a timer and always shampoo out fully.' },
-      { icon: '📅', title: 'Once every 2 weeks maximum', body: 'Appears only in Week B of your rotation to enforce the right frequency. Do not use outside your scheduled rotation day.' },
+      { icon: '⏱️', title: '20-minute maximum', body: 'Long exposure can cause buildup on fine hair. Set a timer and shampoo fully.' },
+      { icon: '📅', title: 'Once every 2 weeks maximum', body: 'Use only on the scheduled Week B rotation day.' },
     ],
     bestFor: 'Dry, porous, or thick hair. Use with strict frequency limits on fine/wavy hair.',
     frequency: 'Once every 2 weeks maximum (Week B only, ends only)',
@@ -286,7 +286,7 @@ function OilRotationCalendar({ onSelectOil }) {
 
       <div className="oil-rot-month-label">
         {MONTH_NAMES[monthIdx]} {year}
-        <span className="oil-rot-cal-hint"> · Tap any date to see your oil guide</span>
+        <span className="oil-rot-cal-hint"> · Tap a date for oil guide</span>
       </div>
 
       <div className="oil-rot-cal">
@@ -338,7 +338,7 @@ function OilRotationCalendar({ onSelectOil }) {
             </button>
           ))}
         </div>
-        <p className="oil-rot-summary-tap-hint">Tap an oil above to learn its benefits →</p>
+        <p className="oil-rot-summary-tap-hint">Tap an oil for benefits →</p>
       </div>
 
     </div>
@@ -355,14 +355,14 @@ export default function HairCare() {
       <div className="s-header">
         <div className="s-tag">Wavy · Thin Strands</div>
         <h2 className="s-title">Hair Care <em>&amp; Oils</em></h2>
-        <p className="s-desc">Your monthly oil rotation calendar — tap any date to see which oils to use and how to apply them.</p>
+        <p className="s-desc">Tap any date for oils and application steps.</p>
       </div>
 
       <div className="divider divider-center splash-item">2-Week Oil Rotation</div>
       <OilRotationCalendar onSelectOil={setSelectedOil} />
 
       <div className="note-box note-rose splash-item">
-        🚫 <strong>Avoid for thin strands:</strong> castor oil, sweet almond oil (too heavy), sleeping without a silk cap on oiling nights, brushing dry wavy hair, and coconut oil more than once every 2 weeks. A silk pillowcase alone reduces breakage and frizz noticeably every single night.
+        🚫 <strong>Avoid for thin strands:</strong> castor oil, sweet almond oil, oiling without a silk cap, dry brushing wavy hair, and coconut oil more than once every 2 weeks. Use a silk pillowcase nightly.
       </div>
     </div>
   );

@@ -225,12 +225,12 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">June {CURRENT_YEAR} — May {CURRENT_YEAR + 1}</div>
         <h2 className="s-title">Monthly <em>Challenges</em></h2>
-        <p className="s-desc">Expand each month to see the full calendar. Tap any day to check it off — your consistency is tracked automatically.</p>
+        <p className="s-desc">Expand a month, then tap days to track consistency.</p>
       </div>
 
       {state.autoReset && (
         <div className="challenges-year-banner splash-item">
-          🎉 Welcome to {CURRENT_YEAR}! Your {CURRENT_YEAR - 1} progress has been cleared — a fresh start awaits.
+          🎉 Welcome to {CURRENT_YEAR}! {CURRENT_YEAR - 1} progress cleared for a fresh start.
         </div>
       )}
 
@@ -260,7 +260,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
           <span>Reset All Progress</span>
         </button>
         <p className="challenges-reset-note">
-          Progress also resets automatically each new year so you always start fresh.
+          Progress resets automatically each new year.
         </p>
       </div>
 

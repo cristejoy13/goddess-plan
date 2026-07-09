@@ -227,9 +227,9 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🥭</span><span>Keep fruits earlier in the day, then lean on 5 PM vegetables to stay full without a heavy late meal</span></div>
-          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — this is where the glutes grow</span></div>
-          <div className="hero-rule hero-rule-bored"><span>🍼</span><span>Baby step: sip water first, wait 10 minutes, then check in with yourself. Still hungry? Eat slowly. Just bored? Pick one tiny reset — a walk, a stretch, a quick tidy-up, or one page of a book.</span></div>
+          <div className="hero-rule"><span>🥭</span><span>Fruits earlier in the day, vegetables at 5 PM</span></div>
+          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
+          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>
         </div>
       </div>
     </div>

@@ -148,9 +148,9 @@ function ProfileScreen({ profile, onProfileUpdate, onBack, pushBack, clearInnerB
 
       <div className="settings-pills-list">
         <SettingsPill icon="✏️" label="Edit Name & Avatar"
-          desc="Change your display name and avatar" onClick={() => openSubScreen('edit')} />
+          desc="Change name and avatar" onClick={() => openSubScreen('edit')} />
         <SettingsPill icon="📊" label="Body Stats"
-          desc="Update height, weight, age, activity, and goal" onClick={() => openSubScreen('body-stats')} />
+          desc="Update stats and goal" onClick={() => openSubScreen('body-stats')} />
       </div>
     </div>
   );
@@ -216,7 +216,7 @@ function BodyStatsScreen({ profile, onSave, onBack }) {
       <div className="s-header" style={{ marginBottom: 16 }}>
         <div className="s-tag">Calorie Targets</div>
         <h2 className="s-title">Body <em>Stats</em></h2>
-        <p className="s-desc">Your personal maintenance and deficit calories are calculated from these values and shown in every meal plan.</p>
+        <p className="s-desc">These values set your meal-plan calorie targets.</p>
       </div>
 
       {previewTdee && (
@@ -286,7 +286,7 @@ function BodyStatsScreen({ profile, onSave, onBack }) {
         </div>
 
         {error && <p style={{ color: 'var(--rose)', fontSize: 13 }}>{error}</p>}
-        {saved && <p style={{ color: '#6fda82', fontSize: 13 }}>✓ Saved — your meal plans will now show your targets!</p>}
+        {saved && <p style={{ color: '#6fda82', fontSize: 13 }}>✓ Saved — meal plans now show your targets.</p>}
 
         <button className="ob-btn-primary" style={{ width: '100%' }} onClick={handleSave} disabled={saving}>
           {saving ? 'Saving…' : '💾 Save My Stats'}
@@ -312,14 +312,14 @@ function NavigateScreen({ onBack }) {
       </div>
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">📱 Touch & Phone Gestures</div>
-        <GuideStep num="3" title="Swipe Right to Go Back" desc="Swipe your finger from left to right across the screen — works on any page." />
-        <GuideStep num="4" title="Double-Tap to Go Home" desc="Double-tap on any empty area of the screen (not on a button or card)." />
+        <GuideStep num="3" title="Swipe Right to Go Back" desc="Swipe left to right across the screen." />
+        <GuideStep num="4" title="Double-Tap to Go Home" desc="Double-tap any empty area." />
       </div>
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">🗂️ Finding Content</div>
-        <GuideStep num="5" title="Search Bar" desc="Tap the search bar at the top to find any workout, recipe, oil, or skincare step." />
-        <GuideStep num="6" title="Hamburger Menu (☰)" desc="Tap the three lines in the left strip to open the full section navigation." />
-        <GuideStep num="7" title="Tapping Into Detail Pages" desc="In Hair Care, Anti-Aging, Workouts — tap any card or ingredient chip to open its detail page." />
+        <GuideStep num="5" title="Search Bar" desc="Find workouts, recipes, oils, and skincare." />
+        <GuideStep num="6" title="Hamburger Menu (☰)" desc="Open full section navigation." />
+        <GuideStep num="7" title="Detail Pages" desc="Tap cards or ingredient chips for details." />
       </div>
     </div>
   );
@@ -338,7 +338,7 @@ function AboutScreen({ onBack }) {
         <div className="settings-section-title">🌸 About This App</div>
         <p className="settings-about-text">
           Your personal wellness companion for 2026.<br />
-          Built around movement, nutrition, skincare, hair care, and anti-aging habits designed specifically for your goals.
+          Built around movement, nutrition, skincare, hair care, and anti-aging habits for your goals.
         </p>
         <div className="settings-badge-row">
           <span className="pill pg">PWA</span>
@@ -398,7 +398,7 @@ export default function Settings({
         <SettingsPill icon="👤" label="Profile"
           desc="Edit name, gender, and avatar" onClick={() => openScreen('profile')} />
         <SettingsPill icon="📊" label="Body Stats & Calories"
-          desc={profile?.tdeeKcal ? `Maintenance ${profile.tdeeKcal.toLocaleString()} kcal · Target ${profile.deficitKcal?.toLocaleString() || '—'} kcal` : 'Set height, weight & calorie targets'} onClick={() => openScreen('body-stats')} />
+          desc={profile?.tdeeKcal ? `Maintenance ${profile.tdeeKcal.toLocaleString()} kcal · Target ${profile.deficitKcal?.toLocaleString() || '—'} kcal` : 'Set stats and calorie targets'} onClick={() => openScreen('body-stats')} />
         <SettingsPill icon="🌓" label="Appearance"
           desc={colorMode === 'dark' ? 'Currently dark mode' : 'Currently light mode'}
           onClick={() => setColorMode(colorMode === 'dark' ? 'light' : 'dark')} />

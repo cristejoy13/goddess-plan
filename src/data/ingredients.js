@@ -6,7 +6,7 @@ export const INGREDIENT_RECIPES = {
   egg: {
     emoji: '🥚',
     color: 'rgba(255,232,122,0.08)',
-    tagline: 'The perfect protein — any way you like it',
+    tagline: 'Easy protein, three ways',
     options: [
       {
         name: 'Boiled',
@@ -19,7 +19,7 @@ export const INGREDIENT_RECIPES = {
           'Transfer immediately to ice water for 2 min.',
           'Peel and eat with a pinch of salt.',
         ],
-        tip: 'Soft-boiled gives a creamy yolk with the same protein as hard-boiled. Ice bath makes peeling effortless.',
+        tip: 'Soft-boiled keeps the yolk creamy. Ice bath makes peeling easy.',
       },
       {
         name: 'Sunny-side up',
@@ -27,12 +27,12 @@ export const INGREDIENT_RECIPES = {
         time: '5 min',
         steps: [
           'Heat a non-stick pan on low heat for 1 min.',
-          'Add a tiny amount of olive oil or coconut oil — just enough to coat.',
+          'Add a tiny amount of olive oil or coconut oil to coat.',
           'Crack the egg directly into the pan.',
           'Cook on low heat for 3–4 min. Do not flip.',
           'Remove when the white is set but the yolk is still runny. Season lightly.',
         ],
-        tip: 'Low and slow is the secret — high heat toughens the white and overcooks the yolk instantly.',
+        tip: 'Cook low and slow. High heat toughens the white.',
       },
       {
         name: 'Scrambled',
@@ -45,7 +45,7 @@ export const INGREDIENT_RECIPES = {
           'Gently push the egg around with a spatula — do not stir aggressively.',
           'Remove from heat when still slightly wet. Residual heat will finish it.',
         ],
-        tip: 'Removing from heat while still slightly underdone is the key to soft, creamy scrambled eggs.',
+        tip: 'Remove while slightly wet for soft scrambled eggs.',
       },
     ],
   },
@@ -53,7 +53,7 @@ export const INGREDIENT_RECIPES = {
   chicken: {
     emoji: '🍗',
     color: 'rgba(255,92,157,0.07)',
-    tagline: 'Your lean protein foundation — three ways',
+    tagline: 'Lean protein, three ways',
     options: [
       {
         name: 'Grilled',
@@ -66,7 +66,7 @@ export const INGREDIENT_RECIPES = {
           'Grill 4–5 min each side without moving the chicken.',
           'Rest 3 min before cutting — keeps juices inside.',
         ],
-        tip: 'Do not press down on the chicken while grilling. The sear marks mean flavour.',
+        tip: 'Do not press while grilling. Let it sear.',
       },
       {
         name: 'Baked',
@@ -92,7 +92,7 @@ export const INGREDIENT_RECIPES = {
           'Sear 4–5 min per side without moving. A golden crust = full flavour.',
           'Squeeze calamansi over the top, rest 3 min off heat.',
         ],
-        tip: 'Dry chicken + hot pan = restaurant-quality sear at home. Never add wet chicken to the pan.',
+        tip: 'Use dry chicken and a hot pan for a clean sear.',
       },
     ],
   },
@@ -100,7 +100,7 @@ export const INGREDIENT_RECIPES = {
   fish: {
     emoji: '🐟',
     color: 'rgba(92,157,255,0.07)',
-    tagline: 'Bangus or tanigue — your fastest-digesting protein',
+    tagline: 'Bangus or tanigue, fast-digesting protein',
     options: [
       {
         name: 'Pan-fried',
@@ -125,7 +125,7 @@ export const INGREDIENT_RECIPES = {
           'Cover and steam 10–12 min until flesh flakes easily with a fork.',
           'Transfer carefully. Drizzle a tiny amount of sesame-free oil and extra calamansi.',
         ],
-        tip: 'Steaming preserves the most omega-3 of any cooking method — no oxidation from heat or oil.',
+        tip: 'Steaming preserves omega-3 with less oxidation.',
       },
       {
         name: 'Baked',
@@ -138,7 +138,7 @@ export const INGREDIENT_RECIPES = {
           'Bake 15–18 min until fish is opaque and flakes at the thickest part.',
           'Finish with fresh calamansi juice before serving.',
         ],
-        tip: 'Baking is the most hands-off method — set it and prepare your salad while it cooks.',
+        tip: 'Bake when you want hands-off cooking.',
       },
     ],
   },
@@ -146,7 +146,7 @@ export const INGREDIENT_RECIPES = {
   beef: {
     emoji: '🥩',
     color: 'rgba(200,80,80,0.07)',
-    tagline: 'Lean beef — once a week, maximum iron and zinc',
+    tagline: 'Lean beef for iron and zinc',
     options: [
       {
         name: 'Stir-fried',
@@ -172,7 +172,7 @@ export const INGREDIENT_RECIPES = {
           'Grill 3–4 min per side for medium. Do not press down.',
           'Rest 5 min — this is not optional. Resting keeps all the juices inside.',
         ],
-        tip: 'Rest time = juice time. Cutting immediately loses 30% of the moisture.',
+        tip: 'Rest 5 min to keep juices in.',
       },
       {
         name: 'Braised',
@@ -185,7 +185,7 @@ export const INGREDIENT_RECIPES = {
           'Reduce to low heat, cover, and simmer 25–30 min until tender.',
           'Add broccoli and pechay in the last 5 min. Finish with calamansi.',
         ],
-        tip: 'Braising makes tough cuts tender and infuses everything with flavour. Best for batch cooking.',
+        tip: 'Braise for tender beef and batch cooking.',
       },
     ],
   },
@@ -195,7 +195,7 @@ export const INGREDIENT_RECIPES = {
   'green-tea': {
     emoji: '🍵',
     color: 'rgba(100,180,100,0.07)',
-    tagline: 'The metabolism booster — three brewing methods',
+    tagline: 'Metabolism support, three brews',
     options: [
       {
         name: 'Classic Hot Brew',
@@ -208,7 +208,7 @@ export const INGREDIENT_RECIPES = {
           'Steep exactly 2–3 min. Remove the bag immediately.',
           'Drink plain or add a squeeze of calamansi.',
         ],
-        tip: 'Never use boiling water — it destroys the antioxidants (EGCG) and makes it bitter. 80°C is the sweet spot.',
+        tip: 'Avoid boiling water. 80°C protects EGCG and prevents bitterness.',
       },
       {
         name: 'Ginger Green Tea',
@@ -221,7 +221,7 @@ export const INGREDIENT_RECIPES = {
           'Add green tea bag. Steep 2–3 min, then remove.',
           'Add a squeeze of calamansi. Drink warm.',
         ],
-        tip: 'Ginger + green tea together boost metabolism more than either alone — the combination amplifies thermogenesis.',
+        tip: 'Ginger + green tea support thermogenesis together.',
       },
       {
         name: 'Iced Green Tea',
@@ -234,7 +234,7 @@ export const INGREDIENT_RECIPES = {
           'Pour over a full glass of ice immediately.',
           'Stir and drink — the ice dilutes it perfectly.',
         ],
-        tip: 'Iced green tea is a great afternoon fat-burner that satisfies a sweet craving without sugar.',
+        tip: 'Use iced green tea for a sweet, low-sugar afternoon drink.',
       },
     ],
   },
@@ -242,7 +242,7 @@ export const INGREDIENT_RECIPES = {
   'collagen-water': {
     emoji: '💧',
     color: 'rgba(180,140,255,0.07)',
-    tagline: 'Skin, joint, and gut support in one drink',
+    tagline: 'Skin, joint, and gut support',
     options: [
       {
         name: 'Warm Collagen Water',
@@ -255,7 +255,7 @@ export const INGREDIENT_RECIPES = {
           'Add a squeeze of calamansi — Vitamin C doubles collagen absorption.',
           'Drink slowly over 10–15 min.',
         ],
-        tip: 'Vitamin C is required for collagen synthesis in your skin. Always pair your collagen with a citrus source.',
+        tip: 'Pair collagen with citrus for Vitamin C.',
       },
       {
         name: 'Collagen Calamansi Cooler',
@@ -268,7 +268,7 @@ export const INGREDIENT_RECIPES = {
           'Add 1 tsp raw honey and stir.',
           'Add a few ice cubes if desired.',
         ],
-        tip: 'The acidity from calamansi helps dissolve collagen peptides and enhances gut absorption — most bioavailable version.',
+        tip: 'Calamansi helps dissolve collagen peptides.',
       },
       {
         name: 'Collagen Ginger Shot',
@@ -280,7 +280,7 @@ export const INGREDIENT_RECIPES = {
           'Add a squeeze of calamansi and stir.',
           'Drink as a concentrated shot on an empty stomach.',
         ],
-        tip: 'Taking collagen first thing in the morning on an empty stomach maximises absorption — nothing competing in the gut.',
+        tip: 'Take on an empty stomach for best absorption.',
       },
     ],
   },
@@ -288,7 +288,7 @@ export const INGREDIENT_RECIPES = {
   'spearmint-tea': {
     emoji: '🍵',
     color: 'rgba(60,200,140,0.07)',
-    tagline: 'Natural anti-androgen — supports hormonal clarity',
+    tagline: 'Anti-androgen support for clarity',
     options: [
       {
         name: 'Classic Hot Brew',
@@ -300,7 +300,7 @@ export const INGREDIENT_RECIPES = {
           'Steep 5–7 min — spearmint needs full extraction, longer than green tea.',
           'Remove bag or strain. Drink plain or with a small drizzle of raw honey.',
         ],
-        tip: 'Two cups of spearmint tea per day has been clinically shown to reduce androgens (male hormones) in women — supporting clearer skin and balanced hormones.',
+        tip: 'Two cups daily may reduce androgens and support clearer skin.',
       },
       {
         name: 'Iced Spearmint Tea',
@@ -313,7 +313,7 @@ export const INGREDIENT_RECIPES = {
           'Cool 15 min at room temperature, then pour over ice.',
           'Keep in fridge — stays fresh for 24 hours.',
         ],
-        tip: 'Batch-brewing means you always have a hormone-balancing drink ready instead of reaching for something sugary.',
+        tip: 'Batch-brew to avoid sugary drinks.',
       },
       {
         name: 'Spearmint Ginger Blend',
@@ -326,7 +326,7 @@ export const INGREDIENT_RECIPES = {
           'Steep 5 min. Remove bag. Add calamansi and optional honey.',
           'Drink warm in the evening.',
         ],
-        tip: 'Ginger + spearmint in the evening — ginger settles digestion, spearmint lowers androgens, both reduce overnight inflammation.',
+        tip: 'Ginger settles digestion; spearmint supports androgen balance.',
       },
     ],
   },
@@ -334,7 +334,7 @@ export const INGREDIENT_RECIPES = {
   'ginger-juice': {
     emoji: '🫚',
     color: 'rgba(255,160,30,0.08)',
-    tagline: 'Metabolism fire starter — three anti-bloat shots',
+    tagline: 'Anti-bloat ginger shots',
     options: [
       {
         name: 'Ginger Lemon Beet Shot',
@@ -347,7 +347,7 @@ export const INGREDIENT_RECIPES = {
           'Add calamansi for extra citrus brightness.',
           'Drink as a shot or sip slowly on an empty stomach.',
         ],
-        tip: 'Beet boosts nitric oxide (improves blood flow). Combined with ginger thermogenesis, this is one of the most powerful pre-workout drinks.',
+        tip: 'Beet supports blood flow; ginger supports thermogenesis.',
       },
       {
         name: 'Classic Ginger Shot',
@@ -360,7 +360,7 @@ export const INGREDIENT_RECIPES = {
           'Stir and drink in one or two sips.',
           'Chase with a full glass of plain water.',
         ],
-        tip: 'A ginger shot first thing in the morning triggers thermogenesis within 20 minutes — body temperature rises and fat burning begins.',
+        tip: 'A morning ginger shot supports thermogenesis within 20 minutes.',
       },
       {
         name: 'Ginger Lemon Water',
@@ -373,7 +373,7 @@ export const INGREDIENT_RECIPES = {
           'Squeeze half a lemon or 3 calamansi.',
           'Stir and drink immediately before eating.',
         ],
-        tip: 'Warm lemon-ginger water before your first meal stimulates stomach acid production — improving digestion of everything you eat that day.',
+        tip: 'Drink before your first meal to support stomach acid.',
       },
     ],
   },
@@ -383,7 +383,7 @@ export const INGREDIENT_RECIPES = {
   papaya: {
     emoji: '🍈',
     color: 'rgba(255,160,60,0.08)',
-    tagline: 'The digestive enzyme fruit — three Filipino ways',
+    tagline: 'Digestive enzyme fruit, three ways',
     options: [
       {
         name: 'Plain Sliced',
@@ -396,7 +396,7 @@ export const INGREDIENT_RECIPES = {
           'Squeeze calamansi over the top for brightness.',
           'Eat immediately — papaya oxidises quickly once cut.',
         ],
-        tip: 'The black seeds are edible and peppery — they contain papain enzyme too. Try eating a few as a natural digestive aid.',
+        tip: 'Black seeds are edible, peppery, and contain papain.',
       },
       {
         name: 'Atchara-Style Salad',
@@ -409,7 +409,7 @@ export const INGREDIENT_RECIPES = {
           'Toss papaya with dressing, sliced tomato, and thin onion rings.',
           'Rest 5 min before eating for flavors to meld.',
         ],
-        tip: 'Unripe (green) papaya has the highest papain concentration — the enzyme that breaks down protein and actively reduces bloating after meals.',
+        tip: 'Green papaya has the most papain for protein digestion.',
       },
       {
         name: 'Papaya Smoothie',
@@ -422,7 +422,7 @@ export const INGREDIENT_RECIPES = {
           'Add a squeeze of calamansi and a pinch of cinnamon.',
           'Blend until completely smooth. Drink immediately.',
         ],
-        tip: 'Papaya + coconut water is a natural electrolyte + enzyme combo — ideal after a workout or on a hot day.',
+        tip: 'Papaya + coconut water works well after workouts or heat.',
       },
     ],
   },
@@ -430,7 +430,7 @@ export const INGREDIENT_RECIPES = {
   watermelon: {
     emoji: '🍉',
     color: 'rgba(255,80,80,0.07)',
-    tagline: '92% water, natural citrulline — three refreshing options',
+    tagline: '92% water, three refreshing options',
     options: [
       {
         name: 'Plain Chilled',
@@ -442,7 +442,7 @@ export const INGREDIENT_RECIPES = {
           'Refrigerate 30 min before eating — cold watermelon is significantly sweeter.',
           'Sprinkle a tiny pinch of salt on top before eating.',
         ],
-        tip: 'A pinch of salt on watermelon is a Filipino classic — it contrasts the sweetness and makes it taste even riper.',
+        tip: 'A pinch of salt makes watermelon taste sweeter.',
       },
       {
         name: 'Watermelon Juice',
@@ -455,7 +455,7 @@ export const INGREDIENT_RECIPES = {
           'Add a squeeze of calamansi and pour over ice.',
           'Drink immediately — do not store, it separates quickly.',
         ],
-        tip: 'Watermelon is naturally high in citrulline — an amino acid that improves blood flow and reduces muscle soreness after workouts.',
+        tip: 'Citrulline supports blood flow and post-workout recovery.',
       },
       {
         name: 'Watermelon Mint Bowl',
@@ -468,7 +468,7 @@ export const INGREDIENT_RECIPES = {
           'Top with a small handful of blueberries or strawberries.',
           'Serve cold.',
         ],
-        tip: 'Mint + watermelon activates the cool receptors in the mouth — makes you feel even more refreshed, especially useful on hot days.',
+        tip: 'Mint makes watermelon feel extra cooling on hot days.',
       },
     ],
   },
@@ -476,7 +476,7 @@ export const INGREDIENT_RECIPES = {
   berries: {
     emoji: '🫐',
     color: 'rgba(100,80,200,0.07)',
-    tagline: 'Antioxidant powerhouses — three delicious options',
+    tagline: 'Antioxidants, three ways',
     options: [
       {
         name: 'Plain Fresh',
@@ -488,7 +488,7 @@ export const INGREDIENT_RECIPES = {
           'Eat immediately at room temperature — cold blunts the flavour.',
           'Mix blueberries, strawberries, and raspberries for maximum antioxidant variety.',
         ],
-        tip: 'Different coloured berries contain different antioxidants — eating a mix gives broader skin and inflammation protection.',
+        tip: 'Mix berry colours for broader antioxidant support.',
       },
       {
         name: 'Berry Compote',
@@ -501,7 +501,7 @@ export const INGREDIENT_RECIPES = {
           'Remove from heat and cool slightly.',
           'Spoon over banana nice cream, chia pudding, or eat plain.',
         ],
-        tip: 'Warm compote releases more anthocyanins (the anti-inflammatory pigment) than raw berries — a rare case where cooking increases nutrients.',
+        tip: 'Warm compote releases more anthocyanins than raw berries.',
       },
       {
         name: 'Berry Smoothie',
@@ -514,7 +514,7 @@ export const INGREDIENT_RECIPES = {
           'Blend until thick and smooth.',
           'Drink immediately — do not store.',
         ],
-        tip: 'Frozen berries retain 90% of their antioxidants — freezing after peak ripeness locks in all the nutrients.',
+        tip: 'Frozen berries retain 90% of antioxidants.',
       },
     ],
   },
@@ -522,7 +522,7 @@ export const INGREDIENT_RECIPES = {
   pineapple: {
     emoji: '🍍',
     color: 'rgba(255,200,50,0.08)',
-    tagline: 'Bromelain enzyme for digestion and anti-inflammation',
+    tagline: 'Bromelain for digestion',
     options: [
       {
         name: 'Fresh Sliced',
@@ -535,7 +535,7 @@ export const INGREDIENT_RECIPES = {
           'Slice into triangles or bite-sized chunks.',
           'Serve immediately or refrigerate for up to 2 days.',
         ],
-        tip: 'The core has the highest concentration of bromelain — chew it even if it feels tough, it is worth it.',
+        tip: 'The core has the most bromelain.',
       },
       {
         name: 'Pineapple Ginger Juice',
@@ -548,7 +548,7 @@ export const INGREDIENT_RECIPES = {
           'Add a squeeze of calamansi.',
           'Drink on an empty stomach for maximum bromelain effect.',
         ],
-        tip: 'Pineapple-ginger juice on an empty stomach is one of the most powerful natural digestive tonics — reduces bloating for hours.',
+        tip: 'Drink pineapple-ginger juice on an empty stomach for digestion.',
       },
       {
         name: 'Grilled Pineapple',
@@ -561,7 +561,7 @@ export const INGREDIENT_RECIPES = {
           'Grill 2–3 min per side until caramelized lines form.',
           'Serve warm — the heat intensifies the sweetness dramatically.',
         ],
-        tip: 'Grilling pineapple caramelises the natural sugars and reduces acidity — it tastes sweeter than raw with zero added sugar.',
+        tip: 'Grilling caramelises pineapple and reduces acidity.',
       },
     ],
   },
@@ -569,7 +569,7 @@ export const INGREDIENT_RECIPES = {
   apple: {
     emoji: '🍎',
     color: 'rgba(255,80,60,0.07)',
-    tagline: 'Pectin fibre for gut health and sustained energy',
+    tagline: 'Pectin fibre for gut health',
     options: [
       {
         name: 'Plain with Cinnamon',
@@ -582,7 +582,7 @@ export const INGREDIENT_RECIPES = {
           'Optional: dip in a small amount of almond butter.',
           'Eat at room temperature — cold dulls the flavour.',
         ],
-        tip: 'The skin contains the majority of quercetin — an antioxidant that reduces histamine response and supports clear skin.',
+        tip: 'Apple skin contains most of the quercetin.',
       },
       {
         name: 'Warm Baked Apple',
@@ -595,7 +595,7 @@ export const INGREDIENT_RECIPES = {
           'Bake at 180°C for 15–18 min until tender and slightly caramelised.',
           'Eat warm — the cinnamon and honey melt through the apple.',
         ],
-        tip: 'A baked apple tastes like dessert — sweet, warm, and satisfying with zero guilt and full digestive benefit.',
+        tip: 'Bake apple for a warm, naturally sweet dessert.',
       },
       {
         name: 'Apple Ginger Juice',
@@ -608,7 +608,7 @@ export const INGREDIENT_RECIPES = {
           'Do not strain — blend smooth to keep all the fibre.',
           'Drink immediately.',
         ],
-        tip: 'Apple pectin directly feeds good gut bacteria — this is prebiotic fibre that actively builds a healthier microbiome with every cup.',
+        tip: 'Apple pectin feeds good gut bacteria.',
       },
     ],
   },
@@ -618,7 +618,7 @@ export const INGREDIENT_RECIPES = {
   broccoli: {
     emoji: '🥦',
     color: 'rgba(80,180,80,0.07)',
-    tagline: 'The anti-bloat, anti-estrogen vegetable',
+    tagline: 'Anti-bloat green vegetable',
     options: [
       {
         name: 'Steamed',
@@ -631,7 +631,7 @@ export const INGREDIENT_RECIPES = {
           'Remove immediately. Do not let it sit in steam or it turns mushy.',
           'Season with a squeeze of calamansi and a tiny pinch of salt.',
         ],
-        tip: 'Steamed broccoli retains the most sulforaphane — the compound that actively lowers estrogen.',
+        tip: 'Steamed broccoli retains more sulforaphane.',
       },
       {
         name: 'Roasted',
@@ -644,7 +644,7 @@ export const INGREDIENT_RECIPES = {
           'Roast 18–20 min until edges are slightly crispy and caramelized.',
           'Finish with calamansi and optional garlic powder.',
         ],
-        tip: 'Roasting creates crispy, nutty-flavoured edges. If you do not love steamed broccoli, you will love this.',
+        tip: 'Roast for crisp, nutty edges.',
       },
       {
         name: 'Stir-fried',
@@ -657,7 +657,7 @@ export const INGREDIENT_RECIPES = {
           'Add broccoli and toss constantly for 4–5 min.',
           'Finish with a splash of water and calamansi — let it steam off for 1 min.',
         ],
-        tip: 'High heat for stir-fry means the vegetable chars slightly rather than steaming. The slight char adds flavour.',
+        tip: 'High heat adds light char and flavour.',
       },
     ],
   },
@@ -665,7 +665,7 @@ export const INGREDIENT_RECIPES = {
   'sweet potato': {
     emoji: '🍠',
     color: 'rgba(255,160,60,0.08)',
-    tagline: 'Slow energy, high fibre, anti-bloat carbs',
+    tagline: 'Slow energy, high-fibre carbs',
     options: [
       {
         name: 'Roasted',
@@ -678,7 +678,7 @@ export const INGREDIENT_RECIPES = {
           'Roast at 200°C for 25–28 min, flipping once halfway.',
           'They are ready when golden and slightly caramelized at the edges.',
         ],
-        tip: 'Roasting converts more starch to sugar than steaming, giving a naturally sweeter flavour without adding anything.',
+        tip: 'Roasting makes sweet potato naturally sweeter.',
       },
       {
         name: 'Steamed',
@@ -690,7 +690,7 @@ export const INGREDIENT_RECIPES = {
           'Cover and steam 12–15 min until completely fork-tender.',
           'Season lightly with salt or eat plain.',
         ],
-        tip: 'Steamed sweet potato has a lower glycaemic response than roasted — digests more slowly and keeps you fuller longer.',
+        tip: 'Steamed sweet potato digests more slowly.',
       },
       {
         name: 'Mashed',
@@ -702,7 +702,7 @@ export const INGREDIENT_RECIPES = {
           'Add a pinch of cinnamon, a tiny pinch of salt, and a small splash of unsweetened almond milk.',
           'Mash until smooth. No butter or sugar needed.',
         ],
-        tip: 'Mashed sweet potato with cinnamon tastes sweet and dessert-like naturally — great comfort food without the guilt.',
+        tip: 'Mash with cinnamon for a dessert-like bowl.',
       },
     ],
   },
@@ -710,7 +710,7 @@ export const INGREDIENT_RECIPES = {
   salad: {
     emoji: '🥗',
     color: 'rgba(80,200,120,0.07)',
-    tagline: 'Three tasty salad builds — tap to see ingredients & how to make them',
+    tagline: 'Three salad builds',
     options: [
       {
         name: 'Classic Calamansi Salad',
@@ -723,7 +723,7 @@ export const INGREDIENT_RECIPES = {
           'Dressing: squeeze 2 calamansi + ½ tsp olive oil + pinch of salt + pinch of pepper. Whisk.',
           'Toss everything together and serve immediately.',
         ],
-        tip: 'Calamansi dressing acts as a natural digestive enzyme — reduces bloating when eaten with protein.',
+        tip: 'Calamansi dressing supports digestion with protein.',
       },
       {
         name: 'Mango Honey Salad',
@@ -739,7 +739,7 @@ export const INGREDIENT_RECIPES = {
           'Dressing: 1 tsp honey + squeeze of calamansi or lemon + pinch of salt. Mix well.',
           'Add a small handful of walnuts on top. Toss and serve.',
         ],
-        tip: 'Mango and honey give a natural sweetness that makes this salad feel like a treat — great for light fruit-and-salad days.',
+        tip: 'Mango and honey add natural sweetness.',
       },
       {
         name: 'Sweet Bell Pepper Salad',
@@ -753,7 +753,7 @@ export const INGREDIENT_RECIPES = {
           'Dressing: squeeze of calamansi + 1 tsp honey + pinch of salt. Whisk.',
           'Toss all ingredients together and serve fresh.',
         ],
-        tip: 'The orange and bell pepper together give a natural Vitamin C boost — great for collagen support on training days.',
+        tip: 'Orange and bell pepper add Vitamin C.',
       },
     ],
   },

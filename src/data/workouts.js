@@ -22,12 +22,12 @@ export function getCurrentSprintProtocol() {
 
 // Build the dynamic sprint exercise detail at load time
 const sp = getCurrentSprintProtocol();
-const sprintDetail = `${sp.reps} reps · ${sp.sprint}s all-out sprint → ${sp.rest}s complete rest · push every interval like it's your last — this protocol rebuilds every month, so if it feels easy, it was meant to feel hard last month · track which rep your form breaks first`;
+const sprintDetail = `${sp.reps} reps · ${sp.sprint}s all-out sprint → ${sp.rest}s complete rest · push every interval · protocol updates monthly · track where form breaks`;
 const sprintSub = `${sp.reps} reps · ${sp.sprint}s on / ${sp.rest}s off · ${sp.month} Protocol · ~${Math.round((sp.sprint + sp.rest) * sp.reps / 60 + 15 + 30)} min total`;
 
 // Shared warm-up & cool-down (used on every training day)
-const JUMP_ROPE = { name: 'Jump Rope Warm-Up', detail: '10–15 min · start slow, build to a steady rhythm · jump rope is a lean, toning warm-up — it raises your heart rate, wakes up the legs and core, and never bulks you up · light and springy on the balls of your feet' };
-const WALK_COOLDOWN = { name: '30-Min Brisk Walk Cool-Down', detail: '30 min at a fast walking pace — quicker than a stroll, not a jog · this is where fat burns and cortisol drops · make it a habit to also walk 10–15 min after every meal to beat bloating and flatten the stomach' };
+const JUMP_ROPE = { name: 'Jump Rope Warm-Up', detail: '10–15 min · start slow, then steady · raise heart rate, wake legs and core · stay light on the balls of your feet' };
+const WALK_COOLDOWN = { name: '30-Min Brisk Walk Cool-Down', detail: '30 min fast walking pace — quicker than a stroll, not a jog · burn fat, lower cortisol · walk 10–15 min after meals' };
 
 // Deep-core & back days: choose ONE video based on how you feel.
 const IZZY_ABS = [
@@ -60,7 +60,7 @@ const YOGA_BEGINNER = [
   { name: 'Yoga — Flexible Mind & Body',        detail: 'Yoga With Adriene · flexibility flow toward inversions', url: 'https://www.youtube.com/watch?v=xFEAOzWLx8Y' },
 ];
 
-const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale ALL your air out, then pull your belly button in and up under your ribs, hold and breathe shallow · do this FIRST, before your video — it wakes up the deep TVA that flattens your stomach at rest' };
+const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · do this FIRST before your video' };
 
 export const WORKOUT_DAYS = [
   // ─── MONDAY: Glute A — Compound Power ──────────────────────────────────────
@@ -70,17 +70,17 @@ export const WORKOUT_DAYS = [
     day: 'Monday · Glute A',
     title: 'Glutes — Compound Power',
     sub: '3 main lifts + warm-up & walk · ~70 min total',
-    noteBefore: { type: 'rose', text: '🍑 Your heaviest glute day. These three compound lifts hit every angle of the glute — go heavy, slow, and full range on every rep. This is where big, round glutes are actually built. Eat your protein soon after (3 PM) so your muscles have what they need to grow.' },
+    noteBefore: { type: 'rose', text: '🍑 Heaviest glute day. Go heavy, slow, and full range on all three lifts. Eat protein at 3 PM for growth.' },
     exercises: [
       JUMP_ROPE,
-      { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → hip circles × 10 each · wake the glutes up so they — not your lower back — do the work under load' },
-      { name: 'Barbell Hip Thrust', detail: '4 × 10–12 reps · shoulders on a bench, drive hips fully up until your body is parallel to the floor, pause 2 sec at the top with a hard squeeze, lower for 3 sec · the single highest glute-activation exercise there is — this is your money move' },
-      { name: 'Romanian Deadlift (RDL)', detail: '4 × 10–12 reps · soft knees, hinge at the hips, lower the bar 3 sec until you feel a deep hamstring stretch, then drive your hips forward to stand · loads the glute through its full stretch — the strongest stimulus for glute size and shape' },
-      { name: 'Bulgarian Split Squat', detail: '3 × 10 reps each leg · rear foot on a bench, torso leaning 10–15° forward, lower until the front thigh is parallel · forces each glute to work alone with no help from the other side — builds even, round glutes and fixes imbalance' },
-      { name: 'Glute Bridge Burnout', detail: '2 × 25 reps (finisher) · feet flat, drive hips up and squeeze hard at the top of every rep · pump extra blood into the glutes to finish the session · bodyweight only, fast controlled reps' },
+      { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → hip circles × 10 each · wake glutes before loading' },
+      { name: 'Barbell Hip Thrust', detail: '4 × 10–12 reps · shoulders on bench, drive hips to parallel, pause 2 sec, lower for 3 sec · main glute builder' },
+      { name: 'Romanian Deadlift (RDL)', detail: '4 × 10–12 reps · soft knees, hinge, lower 3 sec to hamstring stretch, drive hips forward · load the full glute stretch' },
+      { name: 'Bulgarian Split Squat', detail: '3 × 10 reps each leg · rear foot on bench, torso 10–15° forward, lower front thigh to parallel · build even glutes' },
+      { name: 'Glute Bridge Burnout', detail: '2 × 25 reps (finisher) · feet flat, drive hips up, squeeze hard · bodyweight only, fast controlled reps' },
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: '📋 Track your hip thrust weight every Monday — add 1–2 kg when all 4 sets feel controlled. Progressive overload is the ONLY thing that grows glutes long-term. Protein at 3 PM today is non-negotiable for growth.' },
+    noteAfter: { type: 'gold', text: '📋 Track hip thrust weight every Monday. Add 1–2 kg when all 4 sets feel controlled. Protein at 3 PM.' },
     meals: {
       label: '🍑 Glute Fuel — ~1,500 kcal · Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
@@ -112,7 +112,7 @@ export const WORKOUT_DAYS = [
     day: 'Tuesday · Core & Back A',
     title: 'Deep Core & Back — Posture',
     sub: 'Warm-up + vacuum + your choice of video + walk · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — Pilates by Izzy, Move With Nicole, or Thuý Mai Thuý Mai from Facebook. Finish with your fast-paced walk. Light and toned, never bulky.' },
+    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Jump rope, do the vacuum FIRST, pick ONE video, then finish with a fast walk.' },
     exercises: [
       JUMP_ROPE,
       VACUUM,
@@ -121,7 +121,7 @@ export const WORKOUT_DAYS = [
       ...THUY_MAI_WORKOUTS,
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Core fuel day — stay around 1,200 calories. Fruits at 12 and 3, then a filling no-meat vegetable meal at 5. Eat slow, stop at 80% full, and walk after every meal.' },
+    noteAfter: { type: 'rose', text: '💡 Core fuel day: ~1,200 calories. Fruits at 12 and 3, vegetables at 5, slow eating, 80% full.' },
     meals: {
       label: '🍓 Core Fuel — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
@@ -152,7 +152,7 @@ export const WORKOUT_DAYS = [
     day: 'Wednesday · Core & Back B',
     title: 'Deep Core & Back — Lats',
     sub: 'Warm-up + vacuum + your choice of video + walk · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — Pilates by Izzy, Move With Nicole, or Thuý Mai Thuý Mai from Facebook. Finish with your fast-paced walk. Light and toned, never bulky.' },
+    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Jump rope, do the vacuum FIRST, pick ONE video, then finish with a fast walk.' },
     exercises: [
       JUMP_ROPE,
       VACUUM,
@@ -161,7 +161,7 @@ export const WORKOUT_DAYS = [
       ...THUY_MAI_WORKOUTS,
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Core fuel day — stay around 1,200 calories. Fruits earlier, no-meat vegetables at 5 PM, and enough oats, nuts, avocado, or sweet potato to stay full. Walk after each meal.' },
+    noteAfter: { type: 'rose', text: '💡 Core fuel day: ~1,200 calories. Fruits earlier, no-meat vegetables at 5 PM, and enough carbs/fats to stay full.' },
     meals: {
       label: '🍓 Core Fuel — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
@@ -194,17 +194,17 @@ export const WORKOUT_DAYS = [
     day: 'Thursday · Glute B',
     title: 'Glutes — Shape & Round',
     sub: '3 main lifts + warm-up & walk · ~65 min total',
-    noteBefore: { type: 'rose', text: '🔥 Your second glute day — completely different angles from Monday. Sumo squats build the lower glute and inner thigh, cable kickbacks isolate the upper glute at peak squeeze, and hip abductions target the gluteus medius for that round outer shape. Protein again at 3 PM to feed the growth.' },
+    noteBefore: { type: 'rose', text: '🔥 Second glute day. Hit lower glutes, upper glutes, and outer shape. Eat protein at 3 PM.' },
     exercises: [
       JUMP_ROPE,
-      { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each · fire up the gluteus medius before you load it' },
-      { name: 'Sumo Squat', detail: '4 × 12–15 reps · wide stance, toes pointed out 45°, sit deep below parallel, pause 1 sec at the bottom · the wide stance shifts the load to the glutes and inner thighs — builds the lower curve and the hourglass shape from behind' },
-      { name: 'Cable Kickback', detail: '3 × 15 reps each leg · ankle cuff on a cable, hinge slightly forward, drive the heel back and up to full hip extension, hold 2 sec at the top, lower slow · the only move that isolates the upper glute at peak contraction — that burn at the top is the growth' },
-      { name: 'Hip Abduction (band or machine)', detail: '3 × 20 reps · band above the knees (or the machine), push the knees apart against resistance, hold 2 sec at the widest point · directly targets the gluteus medius — the muscle that creates the round, wide outer glute shape' },
-      { name: 'Single-Leg Glute Bridge', detail: '2 × 15 reps each leg (finisher) · one foot flat, other leg extended, drive the hips up through the working heel and squeeze · isolates each glute to finish the week strong and even · bodyweight, controlled' },
+      { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each · wake gluteus medius' },
+      { name: 'Sumo Squat', detail: '4 × 12–15 reps · wide stance, toes 45°, sit deep below parallel, pause 1 sec · build lower glute and inner thigh' },
+      { name: 'Cable Kickback', detail: '3 × 15 reps each leg · hinge forward, drive heel back and up, hold 2 sec, lower slow · isolate upper glute' },
+      { name: 'Hip Abduction (band or machine)', detail: '3 × 20 reps · push knees apart, hold 2 sec at widest point · build round outer glutes' },
+      { name: 'Single-Leg Glute Bridge', detail: '2 × 15 reps each leg (finisher) · drive hips through working heel and squeeze · bodyweight, controlled' },
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: '📋 Track your cable kickback and sumo squat weights each Thursday. Add resistance when reps feel easy and the squeeze stays sharp. Protein at 3 PM — your glutes grow on rest days, fed by today\'s protein.' },
+    noteAfter: { type: 'gold', text: '📋 Track cable kickback and sumo squat weights each Thursday. Add resistance when reps feel easy. Protein at 3 PM.' },
     meals: {
       label: '🍑 Glute Fuel — ~1,500 kcal · Fruits 12PM · Protein 3PM · Light 5PM',
       rows: [
@@ -237,7 +237,7 @@ export const WORKOUT_DAYS = [
     day: 'Friday · Core & Back C',
     title: 'Deep Core & Back — Alignment',
     sub: 'Warm-up + vacuum + your choice of video + walk · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Warm up with the jump rope, do your stomach vacuum FIRST, then pick ONE video below based on how you feel — Pilates by Izzy, Move With Nicole, or Thuý Mai Thuý Mai from Facebook. Finish with your fast-paced walk. Light and toned, never bulky.' },
+    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Jump rope, do the vacuum FIRST, pick ONE video, then finish with a fast walk.' },
     exercises: [
       JUMP_ROPE,
       VACUUM,
@@ -246,7 +246,7 @@ export const WORKOUT_DAYS = [
       ...THUY_MAI_WORKOUTS,
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'rose', text: '💡 Core fuel day. Tomorrow is sprints — hydrate well tonight. Stay around 1,200 calories with fruits earlier and a filling no-meat vegetable meal at 5. Walk after each meal and sleep well.' },
+    noteAfter: { type: 'rose', text: '💡 Core fuel day. Hydrate for sprints tomorrow. Stay near 1,200 calories, walk after meals, and sleep well.' },
     meals: {
       label: '🍓 Core Fuel — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [
@@ -280,15 +280,15 @@ export const WORKOUT_DAYS = [
     title: 'Sprint — Progressive Intervals',
     sub: sprintSub,
     sprintDay: true,
-    noteBefore: { type: 'rose', text: `⚡ ${sp.month} Sprint Protocol: ${sp.sprint}s on / ${sp.rest}s off × ${sp.reps} reps. This protocol automatically levels up every month — harder sprints, shorter rest, more reps — so what feels hard now becomes your baseline. Sprints torch fat and sculpt the glutes and legs without adding bulk. Track, road, or treadmill.` },
+    noteBefore: { type: 'rose', text: `⚡ ${sp.month} Sprint Protocol: ${sp.sprint}s on / ${sp.rest}s off × ${sp.reps} reps. It levels up monthly. Sprint on track, road, or treadmill.` },
     exercises: [
       JUMP_ROPE,
-      { name: 'Dynamic Warm-Up', detail: '5 min · leg swings × 10 each · hip circles × 10 each · high knees × 20 · butt kicks × 20 · 2 build-up strides at 70% · prime the nervous system for max-effort sprinting so you don\'t pull anything cold' },
+      { name: 'Dynamic Warm-Up', detail: '5 min · leg swings × 10 each · hip circles × 10 each · high knees × 20 · butt kicks × 20 · 2 build-up strides at 70%' },
       { name: `Sprint Intervals — ${sp.reps} Reps (${sp.month} Protocol)`, detail: sprintDetail },
       { name: 'Fuel Note', detail: 'Sprint days get protein at 3 PM for recovery — your legs and glutes rebuild from today\'s effort · fruits at 12 to fuel the sprint, protein after, light at 5' },
       WALK_COOLDOWN,
     ],
-    noteAfter: { type: 'gold', text: `📋 ${sp.month} Protocol: ${sp.sprint}s sprint / ${sp.rest}s rest × ${sp.reps} reps. Log your times and how each rep felt — next month the numbers get harder on purpose. Recovery tonight: protein, water, and 8+ hours of sleep.` },
+    noteAfter: { type: 'gold', text: `📋 ${sp.month} Protocol: ${sp.sprint}s sprint / ${sp.rest}s rest × ${sp.reps} reps. Log times and effort. Recover with protein, water, and 8+ hours sleep.` },
     meals: {
       label: '⚡ Sprint Fuel — ~1,500 kcal · Fruits 12PM · Meat 3PM · Light 5PM',
       rows: [
@@ -319,15 +319,15 @@ export const WORKOUT_DAYS = [
     day: 'Sunday · Rest',
     title: 'Rest — Light Walk & Stretch',
     sub: 'Walk · Swim · Yoga · Stretch — your choice · ~45 min',
-    noteBefore: { type: 'gold', text: '🌸 Rest & restore — walk, swim, do a beginner yoga video, or stretch. Building toward your handstand goal: yoga now grows the wrist, shoulder, and core strength — plus the light, controllable bodyweight — that inversions need later. Stay light, stay consistent.' },
+    noteBefore: { type: 'gold', text: '🌸 Rest and restore: walk, swim, beginner yoga, or stretch. Build wrist, shoulder, and core strength for handstands.' },
     exercises: [
-      { name: 'Choose your movement', detail: 'Sunday is flexible — pick whatever your body wants: a walk, a swim, a yoga video, or a full stretch. The only rule is keep it light and restorative.' },
-      { name: 'Light Walk — 30–45 min', detail: 'easy conversational pace, outside if you can · active recovery that keeps blood flowing to repair muscle' },
-      { name: 'Swim — optional, 20–30 min', detail: 'if you have pool access · easy laps are the perfect low-impact full-body recovery — gentle on the joints and great for circulation' },
+      { name: 'Choose your movement', detail: 'Pick a walk, swim, yoga video, or full stretch. Keep it light and restorative.' },
+      { name: 'Light Walk — 30–45 min', detail: 'easy conversational pace, outside if possible · support muscle repair' },
+      { name: 'Swim — optional, 20–30 min', detail: 'easy laps if you have pool access · low-impact full-body recovery' },
       ...YOGA_BEGINNER,
       { name: 'Full-Body Stretch — 15 min', detail: 'figure-four glute stretch, hip flexor, hamstring, cat-cow, chest opener, world\'s greatest stretch · hold 45 sec each' },
     ],
-    noteAfter: { type: 'rose', text: '🌿 Sunday prep: batch-cook your protein for the two glute days (chicken, fish), wash and portion your fruits, set your jump rope by the door. A prepared week eats clean and trains hard. Rest well — you earned it.' },
+    noteAfter: { type: 'rose', text: '🌿 Sunday prep: batch-cook chicken and fish, portion fruit, and set your jump rope by the door.' },
     meals: {
       label: '🍓 Light Day — ~1,200 kcal · Fruits 12PM · Fruits 3PM · Veg 5PM',
       rows: [

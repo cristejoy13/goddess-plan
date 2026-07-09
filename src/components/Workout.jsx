@@ -78,51 +78,51 @@ function CalorieBanner({ tdee, deficit }) {
 const FOOD_PREP = {
   'Berries': {
     ingredients: 'Fresh or frozen berries — strawberries, blueberries, raspberries, or mixed',
-    howTo: 'Rinse under cold water and eat as-is. Frozen work too — thaw at room temperature. Low-sugar, high-fibre, and gentle on the gut. Eat on their own, not mixed with protein, to avoid fermentation and bloating.',
+    howTo: 'Rinse and eat as-is. Thaw frozen berries at room temperature. Eat alone to reduce bloating.',
   },
   'Fruits': {
     ingredients: 'Seasonal fresh fruits — papaya, pineapple, watermelon, apple, banana, berries',
-    howTo: 'Wash, peel where needed, slice, and eat fresh. Best on an empty stomach or on their own — fruit digests fast, so eating it away from protein keeps your gut calm and flat.',
+    howTo: 'Wash, peel if needed, slice, and eat fresh. Eat alone for a calmer gut.',
   },
   'Kiwi': {
     ingredients: '1–2 ripe kiwis',
-    howTo: 'Slice in half and scoop with a spoon, or peel and slice. Kiwi carries actinidin, a natural enzyme that aids digestion and reduces bloating. Great low-bloat breakfast fruit.',
+    howTo: 'Slice and scoop, or peel and slice. Actinidin supports digestion and reduces bloating.',
   },
   'Mango': {
     ingredients: '½–1 ripe mango',
-    howTo: 'Slice along the pit into cheeks, score, and scoop. Naturally sweet — enjoy it as your fruit fix so you never crave processed sugar. Eat on its own.',
+    howTo: 'Slice along the pit, score, and scoop. Eat on its own as your sweet fruit fix.',
   },
   'Grapes': {
     ingredients: '1 small handful of grapes',
-    howTo: 'Rinse well and eat fresh. Freeze them for a cooling summer snack. Keep the portion to one handful — a small, mindful amount, eaten slowly.',
+    howTo: 'Rinse and eat fresh, or freeze for a cold snack. Keep to one handful.',
   },
   'Dragon Fruit': {
     ingredients: '½–1 dragon fruit',
-    howTo: 'Halve and scoop the flesh, or peel and cube. Very low in sugar and rich in prebiotic fibre that feeds good gut bacteria — excellent for a healthy, flat belly.',
+    howTo: 'Halve and scoop, or peel and cube. Low sugar, high prebiotic fibre.',
   },
   'Orange': {
     ingredients: '1 orange',
-    howTo: 'Peel and eat in segments. High in vitamin C and water. Eat on its own between meals rather than juicing — the whole fruit keeps the fibre that steadies your blood sugar.',
+    howTo: 'Peel and eat in segments. Eat whole between meals to keep the fibre.',
   },
   'Greek Yogurt': {
     ingredients: 'Plain Greek yogurt (or dairy-free coconut/almond yogurt) · optional berries',
-    howTo: 'Eat plain or with a few berries. If you are keeping strictly to the no-dairy rule, use unsweetened coconut or almond yogurt — same creamy protein hit without the dairy. No added sugar.',
+    howTo: 'Eat plain or with berries. For no-dairy days, use unsweetened coconut or almond yogurt. No added sugar.',
   },
   'Cucumber': {
     ingredients: '1 fresh cucumber',
-    howTo: 'Wash, slice into rounds or spears, and eat raw. Squeeze a little lemon if you like — no oil, no salt. Very hydrating and naturally anti-bloating.',
+    howTo: 'Wash, slice, and eat raw. Add lemon if desired — no oil, no salt.',
   },
   'Steamed Zucchini': {
     ingredients: '1 zucchini · pinch of salt (light) · lemon',
-    howTo: '1. Slice into rounds or half-moons.\n2. Steam over boiling water 4–6 min until just tender.\n3. Finish with a squeeze of lemon — no oil.\nZucchini is one of the lowest-bloat vegetables and won\'t ferment in the gut.',
+    howTo: '1. Slice into rounds or half-moons.\n2. Steam over boiling water 4–6 min until tender.\n3. Finish with lemon — no oil.\nLow-bloat and gut-calm.',
   },
   'Steamed Carrots': {
     ingredients: '2 carrots · lemon (optional)',
-    howTo: '1. Peel and slice into coins or sticks.\n2. Steam 6–8 min until fork-tender.\n3. Season lightly — no oil, minimal salt.\nSweet, gut-friendly, and satisfying without any bloat.',
+    howTo: '1. Peel and slice into coins or sticks.\n2. Steam 6–8 min until fork-tender.\n3. Season lightly — no oil, minimal salt.',
   },
   'Steamed Spinach': {
     ingredients: '2 big handfuls of fresh spinach · lemon',
-    howTo: '1. Rinse the spinach well.\n2. Steam or wilt in a dry pan with a splash of water for 1–2 min.\n3. Squeeze lemon over the top — no oil.\nIron-rich, light, and quick to digest.',
+    howTo: '1. Rinse well.\n2. Steam or wilt with water for 1–2 min.\n3. Squeeze lemon over top — no oil.',
   },
   'Steamed Green Beans': {
     ingredients: '1 cup green beans · lemon',
@@ -130,39 +130,39 @@ const FOOD_PREP = {
   },
   'Egg': {
     ingredients: '1 egg · pinch of salt',
-    howTo: 'Boil: cover with cold water, bring to a boil, cook 7–8 min for jammy or 10 min for firm. Or poach in simmering water for 3 min. No oil, no butter. Season lightly.',
+    howTo: 'Boil 7–8 min for jammy or 10 min for firm. Or poach 3 min. No oil or butter.',
   },
   '1 Egg': {
     ingredients: '1 egg · pinch of salt',
-    howTo: 'Boil 7–10 min or poach in simmering water 3 min. No frying, no oil, no butter. A clean lean protein for glute days.',
+    howTo: 'Boil 7–10 min or poach 3 min. No frying, oil, or butter.',
   },
   '2 Eggs': {
     ingredients: '2 eggs · pinch of salt',
-    howTo: 'Hard-boil 10 min, or poach in simmering water 3 min each. Skip the oil and butter entirely — steamed or boiled keeps them clean for the no-oil rule.',
+    howTo: 'Hard-boil 10 min, or poach 3 min each. Skip oil and butter.',
   },
   'Shrimp': {
     ingredients: 'Shrimp (peeled) · lemon · pinch of salt',
-    howTo: 'Boil or steam 2–3 min until pink and curled — do not overcook. Squeeze lemon over the top. No oil. A very lean protein option for glute days.',
+    howTo: 'Boil or steam 2–3 min until pink and curled. Add lemon. No oil.',
   },
   'Tilapia': {
     ingredients: '1 tilapia fillet · lemon · ginger',
-    howTo: 'Steam with a few slices of ginger for 8–10 min, or bake at 190°C for 12–15 min. Finish with lemon. No oil needed — steaming keeps it moist and clean.',
+    howTo: 'Steam with ginger for 8–10 min, or bake at 190°C for 12–15 min. Finish with lemon.',
   },
   'lemon water': {
     ingredients: '1 glass of water · juice of ½ lemon or calamansi',
-    howTo: 'Squeeze half a lemon into warm or room-temp water. Sip before or between meals — it supports digestion, curbs appetite, and helps beat bloating.',
+    howTo: 'Squeeze half a lemon into warm or room-temp water. Sip before or between meals.',
   },
   'green tea': {
     ingredients: '1 green tea bag · hot water',
-    howTo: 'Steep 2–3 min in just-off-the-boil water (too hot makes it bitter). No sugar, no milk. Gentle metabolism support and a calm caffeine lift.',
+    howTo: 'Steep 2–3 min in just-off-boil water. No sugar, no milk.',
   },
   'spearmint tea': {
     ingredients: '1 spearmint tea bag or fresh spearmint · hot water',
-    howTo: 'Steep 3–5 min. Drink after meals — spearmint soothes the stomach, eases digestion, and helps balance hormones. No sugar.',
+    howTo: 'Steep 3–5 min. Drink after meals. No sugar.',
   },
   'collagen water': {
     ingredients: '1 scoop collagen peptides (dairy-free) · water',
-    howTo: 'Stir a scoop of unflavoured marine or bovine collagen into water. Not a dairy product. Supports skin, hair, and joints — drink with your protein meal.',
+    howTo: 'Stir unflavoured marine or bovine collagen into water. Drink with your protein meal.',
   },
 };
 
@@ -382,8 +382,8 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
             </div>
             <div className="ingr-info-body">
               {infoSheet.tab === 'ingredients'
-                ? (FOOD_PREP[infoSheet.name]?.ingredients || 'A fresh, whole food — no special ingredients needed.')
-                : (FOOD_PREP[infoSheet.name]?.howTo || 'Prepare fresh and simple. See our Recipes section for detailed guides.')}
+                ? (FOOD_PREP[infoSheet.name]?.ingredients || 'Fresh whole food — no extras needed.')
+                : (FOOD_PREP[infoSheet.name]?.howTo || 'Prepare fresh and simple. See Recipes for guides.')}
             </div>
             <button className="ingr-menu-cancel" onClick={() => setInfoSheet(null)}>Close</button>
           </div>
@@ -435,7 +435,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
               </div>
             ) : (
               <div className="meal-tdee-empty">
-                ⚙️ Set your height &amp; weight in <strong>Settings → Body Stats</strong> to see your personal calorie targets.
+                ⚙️ Set height &amp; weight in <strong>Settings → Body Stats</strong> for calorie targets.
               </div>
             )}
             <div className="meal-table-top">
@@ -594,7 +594,7 @@ function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">Food &amp; Recipes</div>
         <h2 className="s-title">Nutrition <em>&amp;</em> Recipes</h2>
-        <p className="s-desc">How to prepare your food and understand its glycemic impact.</p>
+        <p className="s-desc">Prep your food and check its impact.</p>
       </div>
       <div className="sk-top-tabs splash-item">
         <button className={`sk-top-tab${tab === 'recipes' ? ' active' : ''}`} onClick={() => setTab('recipes')}>🥘 Recipes</button>
@@ -724,7 +724,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       </div>
 
       <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8 }}>
-        <strong>Progressive overload:</strong> Weeks 1–2 learn the movements. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If every set feels easy, increase load. If form breaks, increase reps first.
+        <strong>Progressive overload:</strong> Weeks 1–2 learn form. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If form breaks, add reps first.
       </div>
 
       <div className="workout-nutrition-row splash-item">
