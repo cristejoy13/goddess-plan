@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Device sync: one doc per secret sync code (capability model — the
+    // unguessable 15-char code is the credential; everything else is denied).
+    match /sync/{code} {
+      allow read, write: if code.size() >= 12 && code.matches('GP-[A-Z2-9]+');
+    }
+  }
+}

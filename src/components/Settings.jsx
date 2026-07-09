@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import { calcTDEE, generatePlan } from '../utils/planGenerator';
+import { adoptSyncCode, getSyncCode, isSyncActive, onSyncStatus } from '../utils/sync';
 
 /* ─── Helpers ─── */
 function GuideStep({ num, title, desc }) {
@@ -362,6 +363,84 @@ function AboutScreen({ onBack }) {
   );
 }
 
+function DeviceSyncSection() {
+  const [active, setActive] = useState(isSyncActive());
+  const [code] = useState(getSyncCode);
+  const [qrUrl, setQrUrl] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [input, setInput] = useState('');
+  const [error, setError] = useState('');
+  const codeRef = useRef(null);
+
+  useEffect(() => onSyncStatus(setActive), []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function generateQr() {
+      try {
+        const QRCode = await import('qrcode');
+        const url = await QRCode.toDataURL(`https://goddess-plan.vercel.app/?sync=${code}`, { margin: 1, width: 220 });
+        if (!cancelled) setQrUrl(url);
+      } catch {
+        // QR generation is optional; the sync code remains usable.
+      }
+    }
+    generateQr();
+    return () => { cancelled = true; };
+  }, [code]);
+
+  async function copyCode() {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      const range = document.createRange();
+      const selection = window.getSelection();
+      if (codeRef.current && selection) {
+        range.selectNodeContents(codeRef.current);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function connectCode() {
+    setError('');
+    if (adoptSyncCode(input)) {
+      window.location.reload();
+      return;
+    }
+    setError('Enter a valid sync code.');
+  }
+
+  return (
+    <div className="g-card splash-item settings-card sync-card">
+      <div className="settings-section-title">Device Sync</div>
+      <div className="sync-status">{active ? '🟢 Sync on — live' : '⚪ Connecting…'}</div>
+      <button className="sync-code-row" type="button" onClick={copyCode}>
+        <code ref={codeRef}>{code}</code>
+        <span>{copied ? 'Copied ✓' : 'Tap to copy'}</span>
+      </button>
+      {qrUrl && <img className="sync-qr" src={qrUrl} alt="Sync QR code" />}
+      <div className="sync-note">Scan on your other device.</div>
+      <div className="settings-section-title">Have a code from another device?</div>
+      <div className="sync-join-row">
+        <input
+          className="ob-input"
+          type="text"
+          value={input}
+          onChange={e => { setInput(e.target.value); setError(''); }}
+          placeholder="GP-XXXXXXXXXXXX"
+        />
+        <button className="ob-btn-primary" type="button" onClick={connectCode}>Connect</button>
+      </div>
+      {error && <div className="sync-note">{error}</div>}
+      <div className="sync-note">Connecting replaces this device&apos;s data with the synced data.</div>
+    </div>
+  );
+}
+
 /* ─── Main Settings ─── */
 export default function Settings({
   profile, onProfileUpdate,
@@ -393,6 +472,8 @@ export default function Settings({
         <h2 className="s-title">Settings</h2>
         <p className="s-desc">Manage your local profile and appearance.</p>
       </div>
+
+      <DeviceSyncSection />
 
       <div className="settings-pills-list splash-item">
         <SettingsPill icon="👤" label="Profile"

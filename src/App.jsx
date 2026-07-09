@@ -209,6 +209,17 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
+  const [syncEpoch, setSyncEpoch] = useState(0);
+
+  useEffect(() => {
+    const handleRemoteSync = () => {
+      setProfile(loadProfile());
+      setColorMode(localStorage.getItem('gp_color_mode') || 'dark');
+      setSyncEpoch(e => e + 1);
+    };
+    window.addEventListener('gp-remote-sync', handleRemoteSync);
+    return () => window.removeEventListener('gp-remote-sync', handleRemoteSync);
+  }, []);
 
   // Apply gender-based color theme
   useEffect(() => {
@@ -361,7 +372,8 @@ export default function App() {
     </>
   );
 
-  const avatar = getAvatarByProfile(profile);
+  // Fall back to a default so the Settings entry point always exists (fresh devices have no avatarId)
+  const avatar = getAvatarByProfile(profile) || { emoji: '🌸', bg: 'rgba(255,92,157,0.25)' };
 
   return (
     <>
@@ -448,12 +460,13 @@ export default function App() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
-        {active === 'challenges' && <Challenges onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
-        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
-        {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
+        {active === 'home'       && <Hero key={syncEpoch} onNavigate={navigate} />}
+        {active === 'workout'    && <Workout key={`${navMeta.key}-${syncEpoch}`} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
+        {active === 'challenges' && <Challenges key={syncEpoch} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
+        {active === 'nutrition'  && <Nutrition key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
+        {active === 'skincare'   && <Skincare  key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings
+            key={`s${syncEpoch}`}
             onNavigate={navigate}
             profile={profile}
             onProfileUpdate={p => { setProfile(p); saveProfile(p); }}
@@ -477,7 +490,7 @@ export default function App() {
       <div className="motivation">
         <div className="mot-stars">🌸  💕  🌸  💕  🌸</div>
         <h2 className="mot-h">
-          Small steps, every day.
+          Baby steps, baby.
         </h2>
         <p className="mot-p">
           Choose yourself today. Tiny daily steps become a whole new year.

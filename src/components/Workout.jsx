@@ -205,14 +205,23 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
   const [infoSheet, setInfoSheet] = useState(null); // { name, tab: 'ingredients'|'howto' }
   const [confirmRemove, setConfirmRemove] = useState(null); // holdName
 
-  const filtered = query.trim().length > 0
-    ? FOODS.filter(f => f.name.toLowerCase().includes(query.toLowerCase()))
+  const categoryRefs = useRef({});
+  const normalizedQuery = query.trim().toLowerCase();
+  const filtered = normalizedQuery.length > 0
+    ? FOODS.filter(f =>
+        f.name.toLowerCase().includes(normalizedQuery) ||
+        f.cat.toLowerCase().includes(normalizedQuery))
     : [];
 
   function handleFoodSelect(food) {
     setPendingFood(food);
     setQuery('');
     setBrowse(false);
+  }
+
+  function handleCategoryJump(cat) {
+    const categoryNode = categoryRefs.current[cat] || document.getElementById(`mbcat-${cat}`);
+    categoryNode?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function confirmAddFood(mealSlot) {
@@ -310,6 +319,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
               <span className="mb-result-em">{f.emoji}</span>
               <span className="mb-result-name">{f.name}</span>
               <span className="mb-result-cat">{f.cat}</span>
+              {f.avoid && <span className="mb-avoid-tag">⚠️ {f.avoid}</span>}
             </button>
           ))}
         </div>
@@ -317,15 +327,31 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
 
       {browse && query === '' && (
         <div className="mb-browse">
+          <div className="mb-cat-chips">
+            {FOOD_CATS.map(cat => (
+              <button key={cat} className="mb-cat-chip" onClick={() => handleCategoryJump(cat)}>
+                {cat}
+              </button>
+            ))}
+          </div>
           {FOOD_CATS.map(cat => {
             const catFoods = FOODS.filter(f => f.cat === cat);
             return (
-              <div key={cat} className="mb-cat">
-                <div className="mb-cat-label">{cat}</div>
+              <div
+                key={cat}
+                id={`mbcat-${cat}`}
+                ref={node => {
+                  if (node) categoryRefs.current[cat] = node;
+                  else delete categoryRefs.current[cat];
+                }}
+                className="mb-cat"
+              >
+                <div className="mb-cat-label">{cat} · {catFoods.length}</div>
                 <div className="mb-cat-items">
                   {catFoods.map(f => (
                     <button key={f.name} className="mb-cat-item" onClick={() => handleFoodSelect(f)}>
                       {f.emoji} {f.name}
+                      {f.avoid && <span className="mb-avoid-tag">⚠️ {f.avoid}</span>}
                     </button>
                   ))}
                 </div>
