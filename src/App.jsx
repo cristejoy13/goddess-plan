@@ -38,6 +38,7 @@ const NAV_ITEMS = [
   { id: 'workout',    label: 'Workouts',   icon: '💪' },
   { id: 'challenges', label: 'Challenges', icon: '🏆' },
   { id: 'skincare',   label: 'Body',       icon: '✨' },
+  { id: 'settings',   label: 'Settings',   icon: '⚙️' },
 ];
 
 const SEARCH_INDEX = [

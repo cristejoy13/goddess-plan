@@ -207,11 +207,30 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
 
   const categoryRefs = useRef({});
   const normalizedQuery = query.trim().toLowerCase();
-  const filtered = normalizedQuery.length > 0
-    ? FOODS.filter(f =>
-        f.name.toLowerCase().includes(normalizedQuery) ||
-        f.cat.toLowerCase().includes(normalizedQuery))
-    : [];
+  // Category search ("fruits", "protein", "seafood") shows that whole category;
+  // anything else matches names, starts-with first ("p" → all P foods on top).
+  const singularQuery = normalizedQuery.endsWith('s') ? normalizedQuery.slice(0, -1) : normalizedQuery;
+  const categoryHit = normalizedQuery.length > 1
+    ? FOOD_CATS.find(cat => cat.toLowerCase().split(/[^a-z]+/).some(w => {
+        const ws = w.endsWith('s') ? w.slice(0, -1) : w;
+        return w === normalizedQuery || ws === singularQuery || (normalizedQuery.length > 2 && w.startsWith(normalizedQuery));
+      }))
+    : null;
+  let filtered = [];
+  if (normalizedQuery.length > 0) {
+    const starts = [], contains = [];
+    FOODS.forEach(f => {
+      if (categoryHit && f.cat === categoryHit) return;
+      const n = f.name.toLowerCase();
+      if (n.startsWith(normalizedQuery)) starts.push(f);
+      else if (n.includes(normalizedQuery)) contains.push(f);
+    });
+    filtered = [
+      ...(categoryHit ? FOODS.filter(f => f.cat === categoryHit) : []),
+      ...starts,
+      ...contains,
+    ];
+  }
 
   function handleFoodSelect(food) {
     setPendingFood(food);

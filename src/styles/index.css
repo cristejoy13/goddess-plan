@@ -5980,12 +5980,13 @@ body {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 8px;
-  max-height: 200px;
+  max-height: min(360px, 45vh);
   overflow-y: auto;
 }
 .mb-result-item {
   display: flex; align-items: center; gap: 8px;
   width: 100%; padding: 9px 12px; text-align: left;
+  background: none; border: none; cursor: pointer;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 .mb-result-item:last-child { border-bottom: none; }
