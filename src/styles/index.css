@@ -200,6 +200,7 @@
 [data-mode="light"] .daily-note-input,
 [data-mode="light"] .daily-check-add input,
 [data-mode="light"] .daily-check-item,
+[data-mode="light"] .daily-page-empty,
 [data-mode="light"] .daily-check-empty {
   background: rgba(255,240,248,0.72);
   border-color: rgba(200,23,110,0.12);
@@ -236,6 +237,11 @@
 [data-mode="light"] .daily-mood-chip {
   background: rgba(255,240,248,0.72);
   border-color: rgba(200,23,110,0.12);
+}
+[data-mode="light"] .daily-note-date,
+[data-mode="light"] .daily-note-current-mood {
+  background: rgba(154,104,0,0.06);
+  border-color: rgba(154,104,0,0.16);
 }
 [data-mode="light"] .daily-notebook-overlay {
   background: rgba(40,10,30,0.28);
@@ -2441,10 +2447,20 @@ body {
 }
 .daily-note-workspace {
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   min-height: 0;
   overflow: hidden;
+}
+.daily-note-workspace.pages-only .daily-pages-board {
+  min-height: min(420px, 48dvh);
+}
+.daily-note-workspace.pages-only .daily-page-list {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+/* When a page is open, focus on the editor only — the entry list is hidden. */
+.daily-note-workspace.editor-open .daily-pages-board {
+  display: none;
 }
 .daily-pages-board {
   min-width: 0;
@@ -2475,6 +2491,16 @@ body {
   overflow: auto;
   padding-right: 2px;
   align-content: start;
+}
+.daily-page-empty {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(240,204,96,0.24);
+  border-radius: 14px;
+  color: var(--text-soft);
+  font-size: 13px;
+  text-align: center;
 }
 .daily-page-card {
   min-width: 0;
@@ -2530,13 +2556,39 @@ body {
   flex-direction: column;
   gap: 10px;
 }
-.daily-note-editor-head {
+.daily-note-back {
+  align-self: flex-start;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  background: rgba(0,0,0,0.16);
+  color: var(--text-soft);
+  padding: 7px 13px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.daily-note-back:hover {
+  color: var(--text);
+  border-color: rgba(255,92,157,0.32);
+}
+.daily-note-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.daily-note-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
 }
 .daily-page-title-input {
-  flex: 1 1 auto;
+  flex: 1 1 220px;
   min-width: 0;
   min-height: 44px;
   border: 1px solid rgba(255,255,255,0.08);
@@ -2551,6 +2603,40 @@ body {
 }
 .daily-page-title-input::placeholder {
   color: var(--text-soft);
+}
+.daily-note-date,
+.daily-note-current-mood {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(240,204,96,0.2);
+  border-radius: 11px;
+  background: rgba(240,204,96,0.06);
+  color: var(--text-soft);
+  padding: 0 11px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.daily-note-current-mood {
+  color: var(--gold);
+  border-color: rgba(255,92,157,0.18);
+  background: rgba(255,92,157,0.07);
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+.daily-note-current-mood:hover {
+  transform: translateY(-1px);
+}
+.daily-note-current-mood.has-mood {
+  color: var(--rose);
+}
+.daily-note-current-mood.is-open {
+  border-color: rgba(255,92,157,0.5);
+  background: rgba(255,92,157,0.16);
 }
 .daily-note-editor-actions {
   display: flex;
@@ -2616,12 +2702,16 @@ body {
 }
 .daily-mood-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 6px;
+  padding: 10px;
+  border: 1px solid rgba(255,92,157,0.18);
+  border-radius: 13px;
+  background: rgba(255,92,157,0.05);
 }
 .daily-mood-chip {
   min-width: 0;
-  min-height: 50px;
+  min-height: 42px;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 12px;
   background: rgba(0,0,0,0.14);
@@ -2635,7 +2725,7 @@ body {
   cursor: pointer;
 }
 .daily-mood-chip span {
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
 }
 .daily-mood-chip small {
@@ -2653,8 +2743,8 @@ body {
 }
 .daily-note-input {
   width: 100%;
-  min-height: 220px;
-  max-height: min(34dvh, 340px);
+  min-height: 260px;
+  max-height: min(40dvh, 420px);
   resize: vertical;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 13px;
@@ -2694,6 +2784,9 @@ body {
   color: var(--rose);
   border-color: rgba(255,92,157,0.24);
   background: rgba(255,92,157,0.07);
+}
+.daily-delete-page-btn {
+  align-self: flex-start;
 }
 .daily-note-btn.save {
   color: #fff;
@@ -3371,6 +3464,9 @@ body {
     grid-template-columns: minmax(0, 1fr);
     min-height: 0;
   }
+  .daily-note-workspace.pages-only .daily-pages-board {
+    min-height: min(360px, 46dvh);
+  }
   .daily-pages-board {
     padding: 8px;
   }
@@ -3382,12 +3478,20 @@ body {
   .daily-page-card {
     min-height: 66px;
   }
-  .daily-note-editor-head {
+  .daily-note-title-row {
     align-items: stretch;
-    flex-direction: column;
+  }
+  .daily-note-meta {
+    flex-wrap: wrap;
+  }
+  .daily-note-date,
+  .daily-note-current-mood {
+    justify-content: flex-start;
+    white-space: normal;
+    min-height: 36px;
   }
   .daily-page-title-input {
-    width: 100%;
+    flex: 1 1 100%;
     font-size: 22px;
   }
   .daily-note-editor-actions,
@@ -3399,8 +3503,8 @@ body {
     width: 100%;
     padding: 0 10px;
   }
-  .daily-mood-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .daily-note-input { min-height: 220px; }
+  .daily-mood-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .daily-note-input { min-height: 240px; }
   .daily-check-add { flex-direction: column; }
   .daily-check-add button { width: 100%; }
   .today-dashboard-date { font-size: 20px; }

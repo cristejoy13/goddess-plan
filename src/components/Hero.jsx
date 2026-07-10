@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { WORKOUT_DAYS } from '../data/workouts';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -120,23 +121,35 @@ function createNotebookPage(seed = {}) {
     note: seed.note || '',
     images: Array.isArray(seed.images) ? seed.images : [],
     mood: seed.mood || '',
+    userCreated: Boolean(seed.userCreated),
     createdAt: seed.createdAt || now,
     updatedAt: seed.updatedAt || seed.createdAt || now,
   };
 }
 
 function createEmptyNotebook() {
-  const page = createNotebookPage();
   return {
-    pages: [page],
-    activePageId: page.id,
+    pages: [],
+    activePageId: '',
     checklist: [],
     updatedAt: '',
   };
 }
 
+function pageHasDiaryContent(page) {
+  return Boolean(
+    (page.note || '').trim() ||
+    page.mood ||
+    (Array.isArray(page.images) && page.images.length > 0)
+  );
+}
+
+function isLegacyAutoPage(page) {
+  return !page.userCreated && !pageHasDiaryContent(page);
+}
+
 function normalizeNotebookData(raw = {}) {
-  const legacyPage = raw.note || Array.isArray(raw.images)
+  const legacyPage = raw.note || raw.mood || (Array.isArray(raw.images) && raw.images.length > 0)
     ? createNotebookPage({
         title: 'Today',
         note: raw.note || '',
@@ -148,11 +161,11 @@ function normalizeNotebookData(raw = {}) {
     : null;
 
   const pages = Array.isArray(raw.pages) && raw.pages.length > 0
-    ? raw.pages.map(page => createNotebookPage(page))
-    : [legacyPage || createNotebookPage()];
+    ? raw.pages.map(page => createNotebookPage(page)).filter(page => !isLegacyAutoPage(page))
+    : (legacyPage ? [legacyPage] : []);
   const activePageId = pages.some(page => page.id === raw.activePageId)
     ? raw.activePageId
-    : pages[0].id;
+    : (pages[0]?.id || '');
 
   return {
     pages,
@@ -184,58 +197,44 @@ function formatNotebookSavedAt(value) {
   })}`;
 }
 
-function readImageFile(file) {
-  return new Promise((resolve, reject) => {
-    if (!file?.type?.startsWith('image/')) {
-      reject(new Error('Please choose an image file.'));
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error('Could not read image.'));
-    reader.onload = () => {
-      const img = new Image();
-      img.onerror = () => reject(new Error('Could not load image.'));
-      img.onload = () => {
-        const maxSide = 1200;
-        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(img.width * scale));
-        canvas.height = Math.max(1, Math.round(img.height * scale));
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve({
-          id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-          name: file.name || 'Daily photo',
-          src: canvas.toDataURL('image/jpeg', 0.82),
-        });
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
+function formatDiaryDate(value) {
+  const d = value ? new Date(value) : new Date();
+  if (Number.isNaN(d.getTime())) return 'Today';
+  return d.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 }
 
 function DailyNotebook() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('notes');
+  const [diaryEditorOpen, setDiaryEditorOpen] = useState(false);
+  const [moodPickerOpen, setMoodPickerOpen] = useState(false);
   const [data, setData] = useState(loadNotebook);
   const [draftItem, setDraftItem] = useState('');
-  const [imageError, setImageError] = useState('');
-  const [saveFlash, setSaveFlash] = useState(false);
   const [storageState, setStorageState] = useState('saved');
-  const uploadRef = useRef(null);
-  const cameraRef = useRef(null);
   const removeTimersRef = useRef({});
-  const saveFlashRef = useRef(null);
 
   useEffect(() => {
     setStorageState(saveNotebook(data) ? 'saved' : 'error');
   }, [data]);
 
+  useEffect(() => {
+    setData(prev => {
+      const pages = prev.pages.filter(page => !isLegacyAutoPage(page));
+      if (pages.length === prev.pages.length) return prev;
+      return stampNotebookUpdate({
+        ...prev,
+        pages,
+        activePageId: pages.some(page => page.id === prev.activePageId) ? prev.activePageId : (pages[0]?.id || ''),
+      });
+    });
+  }, []);
+
   useEffect(() => () => {
     Object.values(removeTimersRef.current).forEach(clearTimeout);
-    if (saveFlashRef.current) clearTimeout(saveFlashRef.current);
   }, []);
 
   useEffect(() => {
@@ -254,6 +253,7 @@ function DailyNotebook() {
       const activePageId = prev.pages.some(page => page.id === prev.activePageId)
         ? prev.activePageId
         : prev.pages[0]?.id;
+      if (!activePageId) return prev;
       const now = new Date().toISOString();
       return stampNotebookUpdate({
         ...prev,
@@ -268,27 +268,29 @@ function DailyNotebook() {
   }
 
   function addNotebookPage() {
-    const page = createNotebookPage();
+    const page = createNotebookPage({ userCreated: true });
     setData(prev => stampNotebookUpdate({
       ...prev,
       pages: [...prev.pages, page],
       activePageId: page.id,
     }));
+    setMoodPickerOpen(false);
+    setDiaryEditorOpen(true);
   }
 
   function selectNotebookPage(id) {
     setData(prev => ({ ...prev, activePageId: id }));
+    setMoodPickerOpen(false);
+    setDiaryEditorOpen(true);
   }
 
-  function saveCurrentPage() {
-    updateCurrentPage({});
-    setSaveFlash(true);
-    if (saveFlashRef.current) clearTimeout(saveFlashRef.current);
-    saveFlashRef.current = setTimeout(() => setSaveFlash(false), 1600);
+  function closeEditor() {
+    setMoodPickerOpen(false);
+    setDiaryEditorOpen(false);
   }
 
   function deleteCurrentPage() {
-    if (data.pages.length <= 1 || !currentPage) return;
+    if (!currentPage) return;
     setData(prev => {
       const pages = prev.pages.filter(page => page.id !== prev.activePageId);
       return stampNotebookUpdate({
@@ -297,39 +299,13 @@ function DailyNotebook() {
         activePageId: pages[0]?.id || '',
       });
     });
+    setMoodPickerOpen(false);
+    setDiaryEditorOpen(false);
   }
 
   function updateMood(mood) {
     updateCurrentPage({ mood });
-  }
-
-  async function handleImageChange(e) {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
-    setImageError('');
-    try {
-      const images = await Promise.all(files.map(readImageFile));
-      setData(prev => {
-        const activePageId = prev.pages.some(page => page.id === prev.activePageId)
-          ? prev.activePageId
-          : prev.pages[0]?.id;
-        const now = new Date().toISOString();
-        return stampNotebookUpdate({
-          ...prev,
-          pages: prev.pages.map(page => page.id === activePageId
-            ? { ...page, images: [...(page.images || []), ...images].slice(-6), updatedAt: now }
-            : page),
-        });
-      });
-    } catch (err) {
-      setImageError(err.message || 'Could not add image.');
-    } finally {
-      e.target.value = '';
-    }
-  }
-
-  function removeImage(id) {
-    updateCurrentPage({ images: (currentPage?.images || []).filter(img => img.id !== id) });
+    setMoodPickerOpen(false);
   }
 
   function addChecklistItem(e) {
@@ -393,7 +369,7 @@ function DailyNotebook() {
 
   const checkedCount = data.checklist.filter(item => item.done).length;
   const sortedChecklist = [...data.checklist].sort((a, b) => Number(b.pinned) - Number(a.pinned));
-  const savedAtText = formatNotebookSavedAt(currentPage?.updatedAt || data.updatedAt);
+  const currentMood = MOOD_CHOICES.find(choice => choice.id === currentPage?.mood);
   const offlineSaveText = storageState === 'saved'
     ? 'Saved offline on this device'
     : 'Could not save. Storage may be full.';
@@ -403,7 +379,10 @@ function DailyNotebook() {
       <button
         type="button"
         className="daily-notebook-launcher splash-item"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          closeEditor();
+        }}
         aria-label="Open daily notebook"
       >
         <span className="daily-notebook-launcher-icon" aria-hidden="true">
@@ -417,7 +396,7 @@ function DailyNotebook() {
         </span>
       </button>
 
-      {open && (
+      {open && createPortal(
         <div
           className="daily-notebook-overlay"
           role="presentation"
@@ -435,7 +414,9 @@ function DailyNotebook() {
             <div className="daily-notebook-top">
               <div>
                 <div className="daily-plan-label">Daily Notebook</div>
-                <div className="daily-notebook-title">Today</div>
+                <div className="daily-notebook-title">
+                  {mode === 'notes' && diaryEditorOpen ? (currentPage?.title || 'Title') : 'Diary'}
+                </div>
               </div>
               <button type="button" className="daily-notebook-close" onClick={() => setOpen(false)} aria-label="Close daily notebook">
                 ×
@@ -446,15 +427,21 @@ function DailyNotebook() {
               <button
                 type="button"
                 className={`daily-notebook-option daily-notebook-option-notes${mode === 'notes' ? ' active' : ''}`}
-                onClick={() => setMode('notes')}
+                onClick={() => {
+                  setMode('notes');
+                  closeEditor();
+                }}
               >
                 <span>Diary</span>
-                <small>Write diary pages and add images</small>
+                <small>Write in your diary</small>
               </button>
               <button
                 type="button"
                 className={`daily-notebook-option daily-notebook-option-checklist${mode === 'checklist' ? ' active' : ''}`}
-                onClick={() => setMode('checklist')}
+                onClick={() => {
+                  setMode('checklist');
+                  closeEditor();
+                }}
               >
                 <span>Checklist</span>
                 <small>Make a check-off list</small>
@@ -463,15 +450,18 @@ function DailyNotebook() {
 
             {mode === 'notes' ? (
               <div className="daily-note-panel">
-                <div className="daily-note-workspace">
-                  <aside className="daily-pages-board" aria-label="Diary pages">
+                <div className={`daily-note-workspace${diaryEditorOpen ? ' editor-open' : ' pages-only'}`}>
+                  <aside className="daily-pages-board" aria-label="Diary entries">
                     <div className="daily-pages-board-top">
-                      <span>Diary pages</span>
-                      <button type="button" className="daily-page-add" onClick={addNotebookPage} aria-label="Add new diary page">
+                      <span>Entries</span>
+                      <button type="button" className="daily-page-add" onClick={addNotebookPage} aria-label="Add new entry">
                         +
                       </button>
                     </div>
                     <div className="daily-page-list">
+                      {data.pages.length === 0 && (
+                        <div className="daily-page-empty">No entries yet — tap ＋ to write one.</div>
+                      )}
                       {data.pages.map(page => {
                         const mood = MOOD_CHOICES.find(choice => choice.id === page.mood);
                         return (
@@ -481,7 +471,7 @@ function DailyNotebook() {
                             className={`daily-page-card${page.id === data.activePageId ? ' active' : ''}`}
                             onClick={() => selectNotebookPage(page.id)}
                           >
-                            <strong>{page.title || 'Untitled diary'}</strong>
+                            <strong>{page.title || 'Title'}</strong>
                             <span>{mood ? `${mood.emoji} ${mood.label}` : 'No mood yet'}</span>
                             <small>{formatNotebookSavedAt(page.updatedAt)}</small>
                           </button>
@@ -490,40 +480,55 @@ function DailyNotebook() {
                     </div>
                   </aside>
 
+                  {diaryEditorOpen && currentPage && (
                   <section className="daily-note-editor">
-                    <div className="daily-note-editor-head">
+                    <button type="button" className="daily-note-back" onClick={closeEditor}>
+                      ‹ Back
+                    </button>
+
+                    <div className="daily-note-title-row">
                       <input
                         className="daily-page-title-input"
                         type="text"
                         value={currentPage?.title || ''}
                         onChange={e => updateCurrentPage({ title: e.target.value })}
-                        placeholder="What is this diary page about?"
+                        placeholder="Title"
                       />
-                      <div className="daily-note-editor-actions">
-                        <button type="button" className="daily-note-btn save" onClick={saveCurrentPage}>
-                          Save
+                      <div className="daily-note-meta">
+                        <span className="daily-note-date">{formatDiaryDate(currentPage?.updatedAt)}</span>
+                        <button
+                          type="button"
+                          className={`daily-note-current-mood${currentMood ? ' has-mood' : ''}${moodPickerOpen ? ' is-open' : ''}`}
+                          onClick={() => setMoodPickerOpen(open => !open)}
+                          aria-expanded={moodPickerOpen}
+                          aria-label={currentMood ? `Mood: ${currentMood.label}. Tap to change.` : 'Choose a mood'}
+                        >
+                          {currentMood ? `${currentMood.emoji} ${currentMood.label}` : '＋ Mood'}
                         </button>
-                        {data.pages.length > 1 && (
-                          <button type="button" className="daily-note-btn danger" onClick={deleteCurrentPage}>
-                            Delete page
-                          </button>
-                        )}
                       </div>
                     </div>
 
-                    <div className="daily-mood-row" aria-label="Mood choices">
-                      {MOOD_CHOICES.map(mood => (
-                        <button
-                          key={mood.id}
-                          type="button"
-                          className={`daily-mood-chip${currentPage?.mood === mood.id ? ' active' : ''}`}
-                          onClick={() => updateMood(mood.id)}
-                        >
-                          <span>{mood.emoji}</span>
-                          <small>{mood.label}</small>
-                        </button>
-                      ))}
-                    </div>
+                    {moodPickerOpen && (
+                      <div className="daily-mood-row" aria-label="Mood choices">
+                        {MOOD_CHOICES.map(mood => (
+                          <button
+                            key={mood.id}
+                            type="button"
+                            className={`daily-mood-chip${currentPage?.mood === mood.id ? ' active' : ''}`}
+                            onClick={() => updateMood(mood.id)}
+                          >
+                            <span>{mood.emoji}</span>
+                            <small>{mood.label}</small>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {data.pages.length > 0 && (
+                      <button type="button" className="daily-note-btn danger daily-delete-page-btn" onClick={deleteCurrentPage}>
+                        Delete page
+                      </button>
+                    )}
 
                     <textarea
                       className="daily-note-input"
@@ -531,52 +536,8 @@ function DailyNotebook() {
                       onChange={e => updateNote(e.target.value)}
                       placeholder="Write your diary here..."
                     />
-                    <div className="daily-note-actions">
-                      <button type="button" className="daily-note-btn" onClick={() => uploadRef.current?.click()}>
-                        Upload image
-                      </button>
-                      <button type="button" className="daily-note-btn" onClick={() => cameraRef.current?.click()}>
-                        Use camera
-                      </button>
-                      {currentPage?.note && (
-                        <button type="button" className="daily-note-btn danger" onClick={() => updateNote('')}>
-                          Clear note
-                        </button>
-                      )}
-                    </div>
-                    <input
-                      ref={uploadRef}
-                      className="daily-note-file"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageChange}
-                    />
-                    <input
-                      ref={cameraRef}
-                      className="daily-note-file"
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={handleImageChange}
-                    />
-                    {imageError && <div className="daily-note-error">{imageError}</div>}
-                    {(currentPage?.images || []).length > 0 && (
-                      <div className="daily-note-images">
-                        {(currentPage?.images || []).map(img => (
-                          <div key={img.id} className="daily-note-image-wrap">
-                            <img className="daily-note-image" src={img.src} alt={img.name} />
-                            <button type="button" className="daily-note-delete" onClick={() => removeImage(img.id)} aria-label="Delete image">
-                              ×
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div className={`daily-note-save${saveFlash ? ' is-flash' : ''}`}>
-                      {saveFlash ? 'Saved just now' : `${savedAtText} · ${offlineSaveText}`}
-                    </div>
                   </section>
+                  )}
                 </div>
               </div>
             ) : (
@@ -617,7 +578,8 @@ function DailyNotebook() {
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
