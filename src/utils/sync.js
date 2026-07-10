@@ -22,6 +22,9 @@ const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_dai
 const SYNC_CODE_KEY = 'gp_sync_code';
 const SYNC_META_KEY = 'gp_sync_meta';
 const SYNC_ADOPT_KEY = 'gp_sync_adopt';
+const DEVICE_ID_KEY = 'gp_device_id';
+const DEVICE_NAME_KEY = 'gp_device_name';
+const PRESENCE_INTERVAL_MS = 5 * 60 * 1000;
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^GP-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/;
 
@@ -29,6 +32,9 @@ let initialized = false;
 let applyingRemote = false;
 let syncActive = false;
 let statusCallbacks = new Set();
+let deviceCallbacks = new Set();
+let latestDevices = {};
+let presenceTimer = null;
 let pushTimer = null;
 let dirtyKeys = new Set();
 let dbRef = null;
@@ -201,6 +207,8 @@ function handleRemoteSnapshot(snapshot) {
     const remote = snapshot.data() || {};
     const remoteData = remote.data || {};
     const remoteMeta = remote.meta || {};
+    latestDevices = remote.devices || {};
+    notifyDevices();
     const adopting = safeGetItem(SYNC_ADOPT_KEY) === '1';
     let applied = false;
 
@@ -276,6 +284,98 @@ function adoptFromUrl() {
     history.replaceState(null, '', nextUrl);
   } catch {
     // URL adoption is optional; startup continues without it.
+  }
+}
+
+function getDeviceId() {
+  let id = safeGetItem(DEVICE_ID_KEY);
+  if (!id) {
+    const bytes = new Uint8Array(8);
+    crypto.getRandomValues(bytes);
+    id = 'd-' + [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+    safeSetItem(DEVICE_ID_KEY, id);
+  }
+  return id;
+}
+
+// A friendly label for this device, guessed once from the user agent so the
+// gadget list reads "iPad", "iPhone", "Mac" instead of a random id.
+function guessDeviceName() {
+  const stored = safeGetItem(DEVICE_NAME_KEY);
+  if (stored) return stored;
+  let name = 'Device';
+  try {
+    const ua = navigator.userAgent || '';
+    const touch = navigator.maxTouchPoints || 0;
+    if (/iPad/.test(ua) || (/Macintosh/.test(ua) && touch > 1)) name = 'iPad';
+    else if (/iPhone/.test(ua)) name = 'iPhone';
+    else if (/Android/.test(ua)) name = /Mobile/.test(ua) ? 'Android phone' : 'Android tablet';
+    else if (/Macintosh|Mac OS X/.test(ua)) name = 'Mac';
+    else if (/Windows/.test(ua)) name = 'Windows PC';
+    else if (/CrOS/.test(ua)) name = 'Chromebook';
+    else if (/Linux/.test(ua)) name = 'Linux';
+  } catch {
+    // Fall back to the generic name.
+  }
+  safeSetItem(DEVICE_NAME_KEY, name);
+  return name;
+}
+
+export function getThisDeviceId() {
+  return getDeviceId();
+}
+
+export function onDevices(cb) {
+  deviceCallbacks.add(cb);
+  try {
+    cb(latestDevices);
+  } catch {
+    // Device listeners should not break registration.
+  }
+  return () => {
+    deviceCallbacks.delete(cb);
+  };
+}
+
+function notifyDevices() {
+  deviceCallbacks.forEach(cb => {
+    try {
+      cb(latestDevices);
+    } catch {
+      // Device listeners should not break sync delivery.
+    }
+  });
+}
+
+// Record this device in the shared doc so every gadget can see who is linked
+// and when they were last online. Kept in its own `devices` field so it never
+// interferes with the synced data/meta.
+async function writePresence() {
+  if (!dbRef) return;
+  const id = getDeviceId();
+  try {
+    await setDoc(dbRef, {
+      devices: { [id]: { name: guessDeviceName(), lastSeen: Date.now() } },
+    }, { merge: true });
+  } catch {
+    // Presence is best-effort and never blocks the app.
+  }
+}
+
+function startPresence() {
+  writePresence();
+  try {
+    if (presenceTimer) clearInterval(presenceTimer);
+    presenceTimer = setInterval(() => {
+      if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+        writePresence();
+      }
+    }, PRESENCE_INTERVAL_MS);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') writePresence();
+    });
+  } catch {
+    // Heartbeat wiring is optional.
   }
 }
 
@@ -376,6 +476,7 @@ export function initSync() {
     }
     dbRef = doc(db, 'sync', code);
     registerFlushHandlers();
+    startPresence();
     onSnapshot(dbRef, handleRemoteSnapshot, () => {
       // Firestore snapshot errors are non-fatal for the local app.
     });

@@ -7,7 +7,6 @@ import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import Settings from './components/Settings';
 import { getAvatarByProfile } from './avatars';
-import { isSyncActive, onSyncStatus } from './utils/sync';
 import './styles/index.css';
 
 const DEFAULT_PROFILE = {
@@ -39,7 +38,7 @@ const NAV_ITEMS = [
   { id: 'workout',    label: 'Workouts',   icon: '💪' },
   { id: 'challenges', label: 'Challenges', icon: '🏆' },
   { id: 'skincare',   label: 'Body',       icon: '✨' },
-  { id: 'settings',   label: 'Settings',   icon: '⚙️' },
+  // Settings is reached via the flower/avatar button, not a separate nav item.
 ];
 
 const SEARCH_INDEX = [
@@ -212,8 +211,6 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
   const [syncEpoch, setSyncEpoch] = useState(0);
-  const [syncActive, setSyncActive] = useState(isSyncActive);
-  const [online, setOnline] = useState(() => navigator.onLine);
 
   useEffect(() => {
     const handleRemoteSync = () => {
@@ -223,19 +220,6 @@ export default function App() {
     };
     window.addEventListener('gp-remote-sync', handleRemoteSync);
     return () => window.removeEventListener('gp-remote-sync', handleRemoteSync);
-  }, []);
-
-  useEffect(() => onSyncStatus(setSyncActive), []);
-
-  useEffect(() => {
-    const handleOnline = () => setOnline(true);
-    const handleOffline = () => setOnline(false);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
   // Apply gender-based color theme
@@ -461,12 +445,6 @@ export default function App() {
             <span className="nav-icon">{item.icon}</span>
             <span className="nav-label">
               {item.label}
-              {item.id === 'settings' && (
-                <span className={`nav-sync-status${!online ? ' offline' : syncActive ? ' active' : ''}`}>
-                  <span className="nav-sync-dot" />
-                  <span className="nav-sync-text">{!online ? 'Offline' : syncActive ? 'Synced' : 'Syncing'}</span>
-                </span>
-              )}
             </span>
           </button>
         ))}

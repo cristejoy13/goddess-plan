@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import { calcTDEE, generatePlan } from '../utils/planGenerator';
-import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, isSyncActive, onSyncStatus } from '../utils/sync';
+import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, getThisDeviceId, isSyncActive, onDevices, onSyncStatus } from '../utils/sync';
 
 /* ─── Helpers ─── */
 function GuideStep({ num, title, desc }) {
@@ -363,6 +363,18 @@ function AboutScreen({ onBack }) {
   );
 }
 
+function relTime(ts, now) {
+  if (!ts) return 'never';
+  const s = Math.max(0, Math.floor((now - ts) / 1000));
+  if (s < 45) return 'just now';
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h} hr ago`;
+  const d = Math.round(h / 24);
+  return `${d} day${d === 1 ? '' : 's'} ago`;
+}
+
 function DeviceSyncSection() {
   const [active, setActive] = useState(isSyncActive());
   const [code] = useState(getSyncCode);
@@ -371,9 +383,22 @@ function DeviceSyncSection() {
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const [pushState, setPushState] = useState('idle');
+  const [devices, setDevices] = useState({});
+  const [now, setNow] = useState(() => Date.now());
   const codeRef = useRef(null);
+  const thisId = getThisDeviceId();
 
   useEffect(() => onSyncStatus(setActive), []);
+  useEffect(() => onDevices(setDevices), []);
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(t);
+  }, []);
+
+  const deviceList = Object.entries(devices)
+    .map(([id, d]) => ({ id, name: d?.name || 'Device', lastSeen: Number(d?.lastSeen) || 0 }))
+    .sort((a, b) => b.lastSeen - a.lastSeen);
+  const otherCount = deviceList.filter(d => d.id !== thisId).length;
 
   async function pushToAllDevices() {
     setPushState('pushing');
@@ -422,10 +447,44 @@ function DeviceSyncSection() {
     setError('Enter a valid sync code.');
   }
 
+  const headline = !active
+    ? 'Connecting…'
+    : otherCount > 0
+      ? 'All synced across your gadgets'
+      : 'Synced — this gadget only';
+
   return (
     <div className="g-card splash-item settings-card sync-card">
-      <div className="settings-section-title">Device Sync</div>
-      <div className="sync-status">{active ? '🟢 Sync on — live' : '⚪ Connecting…'}</div>
+      <div className={`sync-hero${active ? ' ok' : ''}`}>
+        <span className="sync-hero-icon">{active ? '✓' : '…'}</span>
+        <span className="sync-hero-text">{headline}</span>
+      </div>
+      <div className="sync-note">
+        Your notes, checklist, plan, and profile are saved to the cloud and shared with every gadget below.
+      </div>
+
+      <div className="settings-section-title">Your gadgets</div>
+      <div className="sync-devices">
+        {deviceList.length === 0 && (
+          <div className="sync-note">Looking for your gadgets…</div>
+        )}
+        {deviceList.map(d => {
+          const online = now - d.lastSeen < 12 * 60 * 1000;
+          return (
+            <div key={d.id} className="sync-device-row">
+              <span className={`sync-device-dot${online ? ' online' : ''}`} />
+              <span className="sync-device-name">
+                {d.name}{d.id === thisId ? ' · this gadget' : ''}
+              </span>
+              <span className="sync-device-time">{online ? 'online now' : relTime(d.lastSeen, now)}</span>
+            </div>
+          );
+        })}
+      </div>
+      {otherCount === 0 && (
+        <div className="sync-note">No other gadgets yet. Scan the QR code below on your phone or tablet to add one.</div>
+      )}
+
       <button
         className="ob-btn-primary sync-push-btn"
         type="button"
@@ -435,21 +494,21 @@ function DeviceSyncSection() {
         {pushState === 'pushing' ? 'Sending…'
           : pushState === 'done' ? 'Sent to all gadgets ✓'
           : pushState === 'error' ? 'Could not send — try again'
-          : 'Push this gadget’s notes to all my devices'}
+          : 'Push this gadget’s data to all my gadgets'}
       </button>
-      <div className="sync-note">Use this on the gadget that has the notes you want everywhere. It makes your other linked gadgets match this one.</div>
+      <div className="sync-note">Use this on the gadget that has the data you want everywhere — it makes the others match this one.</div>
+
+      <div className="settings-section-title">Add another gadget</div>
       <button className="sync-code-row" type="button" onClick={copyCode}>
         <code ref={codeRef}>{code}</code>
         <span>{copied ? 'Copied ✓' : 'Tap to copy'}</span>
       </button>
       {qrUrl && <img className="sync-qr" src={qrUrl} alt="Sync QR code" />}
       <div className="sync-help">
-        <div className="sync-help-title">How to use the QR code</div>
-        <p>Open Settings on your laptop and show this QR code. On your phone or tablet, open the Camera app and scan the QR code from the laptop screen.</p>
-        <p>You do not copy the QR image to your phone. Scanning opens the app with your sync code already attached.</p>
-        <p>Repeat the same scan on each extra device you want to connect. Five or six devices can use the same code; if one device does not scan, tap the code above and paste/type it below on that device.</p>
+        <div className="sync-help-title">How to connect a new gadget</div>
+        <p>On the new phone or tablet, open the Camera app and scan this QR code from this screen. It opens the app already linked to your sync code.</p>
+        <p>If scanning does not work, tap the code above to copy it, then type it into the box below on the other gadget.</p>
       </div>
-      <div className="settings-section-title">Have a code from another device?</div>
       <div className="sync-join-row">
         <input
           className="ob-input"
@@ -461,7 +520,7 @@ function DeviceSyncSection() {
         <button className="ob-btn-primary" type="button" onClick={connectCode}>Connect</button>
       </div>
       {error && <div className="sync-note">{error}</div>}
-      <div className="sync-note">Connecting replaces this device&apos;s data with the synced data.</div>
+      <div className="sync-note">Connecting replaces this gadget&apos;s data with the synced data.</div>
     </div>
   );
 }
