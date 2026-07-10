@@ -2312,24 +2312,25 @@ body {
 .daily-notebook-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 1300;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 18px;
+  padding: calc(70px + env(safe-area-inset-top)) 18px calc(88px + env(safe-area-inset-bottom));
   background: rgba(0,0,0,0.58);
   backdrop-filter: blur(10px);
+  overflow: auto;
 }
 .daily-notebook {
   position: relative;
   width: min(1120px, calc(100vw - 36px));
   max-width: 1120px;
-  min-height: min(760px, calc(100dvh - 36px));
-  max-height: calc(100dvh - 36px);
+  min-height: auto;
+  max-height: calc(100dvh - 158px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: auto;
+  overflow: hidden;
   padding: 16px;
   border-radius: 18px;
   border: 1px solid rgba(240,204,96,0.18);
@@ -2337,6 +2338,7 @@ body {
   box-shadow: 0 16px 42px rgba(0,0,0,0.18);
 }
 .daily-notebook-top {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2364,6 +2366,7 @@ body {
   cursor: pointer;
 }
 .daily-notebook-options {
+  flex: none;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
@@ -2429,18 +2432,23 @@ body {
 }
 .daily-note-panel,
 .daily-check-panel {
+  min-height: 0;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-right: 2px;
 }
 .daily-note-workspace {
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
   gap: 12px;
-  min-height: 530px;
+  min-height: 0;
+  overflow: hidden;
 }
 .daily-pages-board {
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2517,6 +2525,7 @@ body {
 }
 .daily-note-editor {
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2644,7 +2653,8 @@ body {
 }
 .daily-note-input {
   width: 100%;
-  min-height: 250px;
+  min-height: 220px;
+  max-height: min(34dvh, 340px);
   resize: vertical;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 13px;
@@ -3341,10 +3351,13 @@ body {
     height: 38px;
   }
   .today-dashboard { padding: 12px; border-radius: 16px; }
+  .daily-notebook-overlay {
+    padding: calc(62px + env(safe-area-inset-top)) 9px calc(78px + env(safe-area-inset-bottom));
+  }
   .daily-notebook {
     width: calc(100vw - 18px);
     min-height: auto;
-    max-height: calc(100dvh - 18px);
+    max-height: calc(100dvh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     padding: 12px;
     border-radius: 16px;
   }
