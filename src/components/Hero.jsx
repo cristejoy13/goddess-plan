@@ -90,11 +90,14 @@ function loadChecks() {
 function loadNotebook() {
   try {
     const s = JSON.parse(localStorage.getItem('gp_daily_notebook'));
-    if (s && s.date === todayKey()) {
+    // Notes and the checklist persist across days (and sync across devices);
+    // we intentionally do NOT reset on a date change. Each diary page keeps its
+    // own createdAt date for display.
+    if (s) {
       return normalizeNotebookData(s);
     }
   } catch {
-    // Local daily notebook data is optional.
+    // Local notebook data is optional.
   }
   return createEmptyNotebook();
 }
@@ -184,7 +187,7 @@ function stampNotebookUpdate(patch) {
 }
 
 function formatNotebookSavedAt(value) {
-  if (!value) return 'Not saved yet today';
+  if (!value) return 'Not saved yet';
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return 'Saved today';
   return `Saved ${d.toLocaleDateString(undefined, {
@@ -216,8 +219,18 @@ function DailyNotebook() {
   const [draftItem, setDraftItem] = useState('');
   const [storageState, setStorageState] = useState('saved');
   const removeTimersRef = useRef({});
+  const didMountRef = useRef(false);
 
   useEffect(() => {
+    // Skip the initial mount: `data` was just loaded from storage (or freshly
+    // applied by a remote sync, since a sync remounts this component). Saving it
+    // back here would stamp a new timestamp and push an empty/stale blob that
+    // wins last-write-wins and wipes the other device's notes. Only persist
+    // once the user actually edits something.
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
     setStorageState(saveNotebook(data) ? 'saved' : 'error');
   }, [data]);
 
