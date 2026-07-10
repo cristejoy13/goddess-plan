@@ -34,7 +34,7 @@ function saveProfile(p) {
 }
 
 const NAV_ITEMS = [
-  { id: 'home',       label: 'Home',       icon: '🌸' },
+  { id: 'home',       label: 'Home',       icon: '🏠' },
   { id: 'workout',    label: 'Workouts',   icon: '💪' },
   { id: 'challenges', label: 'Challenges', icon: '🏆' },
   { id: 'skincare',   label: 'Body',       icon: '✨' },
@@ -387,7 +387,7 @@ export default function App() {
           {avatar && (
             <button className="mob-avatar-btn" onClick={() => navigate('settings')} aria-label="Profile">
               <div className="mob-avatar-circle" style={{ background: avatar.bg }}>
-                <span style={{ fontSize: 16 }}>{avatar.emoji}</span>
+                <span>{avatar.emoji}</span>
               </div>
             </button>
           )}

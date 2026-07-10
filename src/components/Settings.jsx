@@ -423,7 +423,12 @@ function DeviceSyncSection() {
         <span>{copied ? 'Copied ✓' : 'Tap to copy'}</span>
       </button>
       {qrUrl && <img className="sync-qr" src={qrUrl} alt="Sync QR code" />}
-      <div className="sync-note">Scan on your other device.</div>
+      <div className="sync-help">
+        <div className="sync-help-title">How to use the QR code</div>
+        <p>Open Settings on your laptop and show this QR code. On your phone or tablet, open the Camera app and scan the QR code from the laptop screen.</p>
+        <p>You do not copy the QR image to your phone. Scanning opens the app with your sync code already attached.</p>
+        <p>Repeat the same scan on each extra device you want to connect. Five or six devices can use the same code; if one device does not scan, tap the code above and paste/type it below on that device.</p>
+      </div>
       <div className="settings-section-title">Have a code from another device?</div>
       <div className="sync-join-row">
         <input
@@ -444,7 +449,6 @@ function DeviceSyncSection() {
 /* ─── Main Settings ─── */
 export default function Settings({
   profile, onProfileUpdate,
-  colorMode, setColorMode,
   pushBack, clearInnerBack,
 }) {
   const [screen, setScreen] = useState('main');
@@ -480,9 +484,6 @@ export default function Settings({
           desc="Edit name, gender, and avatar" onClick={() => openScreen('profile')} />
         <SettingsPill icon="📊" label="Body Stats & Calories"
           desc={profile?.tdeeKcal ? `Maintenance ${profile.tdeeKcal.toLocaleString()} kcal · Target ${profile.deficitKcal?.toLocaleString() || '—'} kcal` : 'Set stats and calorie targets'} onClick={() => openScreen('body-stats')} />
-        <SettingsPill icon="🌓" label="Appearance"
-          desc={colorMode === 'dark' ? 'Currently dark mode' : 'Currently light mode'}
-          onClick={() => setColorMode(colorMode === 'dark' ? 'light' : 'dark')} />
         <SettingsPill icon="🗂️" label="Navigate the App"
           desc="Gestures, shortcuts, tips" onClick={() => openScreen('navigate')} />
         <SettingsPill icon="🌸" label="About & Help"
