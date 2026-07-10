@@ -195,6 +195,54 @@ function applyRemoteValue(key, value, timestamp) {
   }
 }
 
+// Two-way, per-key reconcile between this device and the cloud doc. Runs on
+// EVERY snapshot, so sync self-heals: if the cloud is missing a key this
+// device has (e.g. the doc was created by a presence write before any data
+// upload, or the app was killed before a push finished, or edits were made
+// offline), the local value is queued for upload; if the cloud has a newer
+// value, it is applied locally. Strict > comparisons both ways mean a stable,
+// fully-synced state produces no writes — no loops.
+function reconcileWithRemote(remoteData, remoteMeta, adopting) {
+  const localMeta = readMeta();
+  let applied = false;
+  let needPush = false;
+  let metaChanged = false;
+
+  SYNC_KEYS.forEach(key => {
+    const remoteHas = Object.prototype.hasOwnProperty.call(remoteData, key);
+    const remoteTime = remoteMeta[key] || 0;
+    const localTime = localMeta[key] || 0;
+    const localValue = safeGetItem(key);
+
+    if (adopting && remoteHas) {
+      // Adoption: take the cloud's value for every key it has, regardless of
+      // local timestamps — the user asked this device to match the group.
+      applyRemoteValue(key, remoteData[key], remoteTime || Date.now());
+      applied = true;
+      return;
+    }
+
+    if (remoteHas && remoteTime > localTime) {
+      applyRemoteValue(key, remoteData[key], remoteTime);
+      applied = true;
+    } else if (localTime > remoteTime || (!remoteHas && localValue !== null)) {
+      // This device is ahead of the cloud (newer edit — including a deletion,
+      // where the local value is null and pushes as null to delete remotely),
+      // or the cloud is missing a key this device has. Send it up.
+      if (!localMeta[key]) {
+        localMeta[key] = Date.now();
+        metaChanged = true;
+      }
+      dirtyKeys.add(key);
+      needPush = true;
+    }
+  });
+
+  if (metaChanged) writeMeta(localMeta);
+  if (needPush) schedulePush();
+  return applied;
+}
+
 function handleRemoteSnapshot(snapshot) {
   try {
     markSyncActive();
@@ -205,32 +253,11 @@ function handleRemoteSnapshot(snapshot) {
     }
 
     const remote = snapshot.data() || {};
-    const remoteData = remote.data || {};
-    const remoteMeta = remote.meta || {};
     latestDevices = remote.devices || {};
     notifyDevices();
     const adopting = safeGetItem(SYNC_ADOPT_KEY) === '1';
-    let applied = false;
-
-    if (adopting) {
-      Object.keys(remoteData).forEach(key => {
-        if (!SYNC_KEYS.includes(key)) return;
-        applyRemoteValue(key, remoteData[key], remoteMeta[key] || Date.now());
-        applied = true;
-      });
-      safeRemoveItem(SYNC_ADOPT_KEY);
-    } else {
-      const localMeta = readMeta();
-      Object.keys(remoteData).forEach(key => {
-        if (!SYNC_KEYS.includes(key)) return;
-        const remoteTime = remoteMeta[key] || 0;
-        const localTime = localMeta[key] || 0;
-        if (remoteTime > localTime) {
-          applyRemoteValue(key, remoteData[key], remoteTime);
-          applied = true;
-        }
-      });
-    }
+    const applied = reconcileWithRemote(remote.data || {}, remote.meta || {}, adopting);
+    if (adopting) safeRemoveItem(SYNC_ADOPT_KEY);
 
     if (applied) {
       window.dispatchEvent(new CustomEvent('gp-remote-sync'));
@@ -449,6 +476,8 @@ function registerFlushHandlers() {
       if (document.visibilityState === 'hidden') flushNow();
     });
     window.addEventListener('pagehide', flushNow);
+    // Back online (wifi returned): send anything still waiting right away.
+    window.addEventListener('online', flushNow);
   } catch {
     // Event wiring is best-effort; sync still works while the app is open.
   }
@@ -464,22 +493,30 @@ export function initSync() {
     patchLocalStorage();
     const app = initializeApp(firebaseConfig);
     // Persistent cache keeps queued writes in IndexedDB, so a note written just
-    // before the app is closed is delivered on the next launch instead of being
-    // lost. Fall back to the in-memory Firestore if persistence is unavailable.
+    // before the app is closed (or while offline) is delivered automatically on
+    // the next launch / when wifi returns. Fall back to the in-memory Firestore
+    // when IndexedDB is unavailable (private mode, restricted webviews).
     let db;
     try {
-      db = initializeFirestore(app, {
-        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-      });
+      if (typeof indexedDB !== 'undefined') {
+        db = initializeFirestore(app, {
+          localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+        });
+      } else {
+        db = getFirestore(app);
+      }
     } catch {
       db = getFirestore(app);
     }
     dbRef = doc(db, 'sync', code);
     registerFlushHandlers();
-    startPresence();
+    // Subscribe BEFORE the first presence write: presence creates the doc, and
+    // the data bootstrap must never be skipped because presence got there first.
+    // (reconcileWithRemote also covers this, as a second line of defense.)
     onSnapshot(dbRef, handleRemoteSnapshot, () => {
       // Firestore snapshot errors are non-fatal for the local app.
     });
+    startPresence();
   } catch {
     // Sync failures must never break the app.
   }

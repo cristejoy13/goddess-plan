@@ -507,6 +507,7 @@ function DeviceSyncSection() {
       <div className="sync-help">
         <div className="sync-help-title">How to connect a new gadget</div>
         <p>On the new phone or tablet, open the Camera app and scan this QR code from this screen. It opens the app already linked to your sync code.</p>
+        <p><strong>Using the installed app icon?</strong> Scanning opens the browser, which keeps separate data from the installed app. In that case open the installed app instead, go to Settings, and type the code into the box below.</p>
         <p>If scanning does not work, tap the code above to copy it, then type it into the box below on the other gadget.</p>
       </div>
       <div className="sync-join-row">
