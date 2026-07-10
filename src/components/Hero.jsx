@@ -60,6 +60,17 @@ const RULE_BOARDS = [
   },
 ];
 
+const MOOD_CHOICES = [
+  { id: 'happy', emoji: '😊', label: 'Happy' },
+  { id: 'horny', emoji: '😘', label: 'Horny' },
+  { id: 'angry', emoji: '😡', label: 'Angry' },
+  { id: 'sad', emoji: '😢', label: 'Sad' },
+  { id: 'scared', emoji: '😨', label: 'Scared' },
+  { id: 'confused', emoji: '😵‍💫', label: 'Confused' },
+  { id: 'calm', emoji: '🌙', label: 'Calm' },
+  { id: 'delusional', emoji: '🦄', label: 'Delusional' },
+];
+
 function todayKey() {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -79,25 +90,80 @@ function loadNotebook() {
   try {
     const s = JSON.parse(localStorage.getItem('gp_daily_notebook'));
     if (s && s.date === todayKey()) {
-      return {
-        note: s.note || '',
-        images: Array.isArray(s.images) ? s.images : [],
-        checklist: Array.isArray(s.checklist) ? s.checklist : [],
-        updatedAt: s.updatedAt || '',
-      };
+      return normalizeNotebookData(s);
     }
   } catch {
     // Local daily notebook data is optional.
   }
-  return { note: '', images: [], checklist: [], updatedAt: '' };
+  return createEmptyNotebook();
 }
 
 function saveNotebook(data) {
   try {
     localStorage.setItem('gp_daily_notebook', JSON.stringify({ date: todayKey(), ...data }));
+    return true;
   } catch {
     // Storage can fail if the browser quota is full.
   }
+  return false;
+}
+
+function makeNotebookId(prefix) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function createNotebookPage(seed = {}) {
+  const now = new Date().toISOString();
+  return {
+    id: seed.id || makeNotebookId('page'),
+    title: seed.title ?? '',
+    note: seed.note || '',
+    images: Array.isArray(seed.images) ? seed.images : [],
+    mood: seed.mood || '',
+    createdAt: seed.createdAt || now,
+    updatedAt: seed.updatedAt || seed.createdAt || now,
+  };
+}
+
+function createEmptyNotebook() {
+  const page = createNotebookPage();
+  return {
+    pages: [page],
+    activePageId: page.id,
+    checklist: [],
+    updatedAt: '',
+  };
+}
+
+function normalizeNotebookData(raw = {}) {
+  const legacyPage = raw.note || Array.isArray(raw.images)
+    ? createNotebookPage({
+        title: 'Today',
+        note: raw.note || '',
+        images: raw.images || [],
+        mood: raw.mood || '',
+        createdAt: raw.createdAt || raw.updatedAt,
+        updatedAt: raw.updatedAt,
+      })
+    : null;
+
+  const pages = Array.isArray(raw.pages) && raw.pages.length > 0
+    ? raw.pages.map(page => createNotebookPage(page))
+    : [legacyPage || createNotebookPage()];
+  const activePageId = pages.some(page => page.id === raw.activePageId)
+    ? raw.activePageId
+    : pages[0].id;
+
+  return {
+    pages,
+    activePageId,
+    checklist: Array.isArray(raw.checklist) ? raw.checklist.map(item => ({
+      ...item,
+      pinned: Boolean(item.pinned),
+      done: Boolean(item.done),
+    })) : [],
+    updatedAt: raw.updatedAt || '',
+  };
 }
 
 function stampNotebookUpdate(patch) {
@@ -156,12 +222,21 @@ function DailyNotebook() {
   const [data, setData] = useState(loadNotebook);
   const [draftItem, setDraftItem] = useState('');
   const [imageError, setImageError] = useState('');
+  const [saveFlash, setSaveFlash] = useState(false);
+  const [storageState, setStorageState] = useState('saved');
   const uploadRef = useRef(null);
   const cameraRef = useRef(null);
+  const removeTimersRef = useRef({});
+  const saveFlashRef = useRef(null);
 
   useEffect(() => {
-    saveNotebook(data);
+    setStorageState(saveNotebook(data) ? 'saved' : 'error');
   }, [data]);
+
+  useEffect(() => () => {
+    Object.values(removeTimersRef.current).forEach(clearTimeout);
+    if (saveFlashRef.current) clearTimeout(saveFlashRef.current);
+  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -172,8 +247,60 @@ function DailyNotebook() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [open]);
 
+  const currentPage = data.pages.find(page => page.id === data.activePageId) || data.pages[0];
+
+  function updateCurrentPage(patch) {
+    setData(prev => {
+      const activePageId = prev.pages.some(page => page.id === prev.activePageId)
+        ? prev.activePageId
+        : prev.pages[0]?.id;
+      const now = new Date().toISOString();
+      return stampNotebookUpdate({
+        ...prev,
+        activePageId,
+        pages: prev.pages.map(page => page.id === activePageId ? { ...page, ...patch, updatedAt: now } : page),
+      });
+    });
+  }
+
   function updateNote(note) {
-    setData(prev => stampNotebookUpdate({ ...prev, note }));
+    updateCurrentPage({ note });
+  }
+
+  function addNotebookPage() {
+    const page = createNotebookPage();
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      pages: [...prev.pages, page],
+      activePageId: page.id,
+    }));
+  }
+
+  function selectNotebookPage(id) {
+    setData(prev => ({ ...prev, activePageId: id }));
+  }
+
+  function saveCurrentPage() {
+    updateCurrentPage({});
+    setSaveFlash(true);
+    if (saveFlashRef.current) clearTimeout(saveFlashRef.current);
+    saveFlashRef.current = setTimeout(() => setSaveFlash(false), 1600);
+  }
+
+  function deleteCurrentPage() {
+    if (data.pages.length <= 1 || !currentPage) return;
+    setData(prev => {
+      const pages = prev.pages.filter(page => page.id !== prev.activePageId);
+      return stampNotebookUpdate({
+        ...prev,
+        pages,
+        activePageId: pages[0]?.id || '',
+      });
+    });
+  }
+
+  function updateMood(mood) {
+    updateCurrentPage({ mood });
   }
 
   async function handleImageChange(e) {
@@ -182,7 +309,18 @@ function DailyNotebook() {
     setImageError('');
     try {
       const images = await Promise.all(files.map(readImageFile));
-      setData(prev => stampNotebookUpdate({ ...prev, images: [...prev.images, ...images].slice(-6) }));
+      setData(prev => {
+        const activePageId = prev.pages.some(page => page.id === prev.activePageId)
+          ? prev.activePageId
+          : prev.pages[0]?.id;
+        const now = new Date().toISOString();
+        return stampNotebookUpdate({
+          ...prev,
+          pages: prev.pages.map(page => page.id === activePageId
+            ? { ...page, images: [...(page.images || []), ...images].slice(-6), updatedAt: now }
+            : page),
+        });
+      });
     } catch (err) {
       setImageError(err.message || 'Could not add image.');
     } finally {
@@ -191,7 +329,7 @@ function DailyNotebook() {
   }
 
   function removeImage(id) {
-    setData(prev => stampNotebookUpdate({ ...prev, images: prev.images.filter(img => img.id !== id) }));
+    updateCurrentPage({ images: (currentPage?.images || []).filter(img => img.id !== id) });
   }
 
   function addChecklistItem(e) {
@@ -202,25 +340,63 @@ function DailyNotebook() {
       ...prev,
       checklist: [
         ...prev.checklist,
-        { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, text, done: false },
+        { id: makeNotebookId('check'), text, done: false, pinned: false, createdAt: new Date().toISOString() },
       ],
     }));
     setDraftItem('');
   }
 
   function toggleChecklistItem(id) {
+    const item = data.checklist.find(entry => entry.id === id);
+    if (!item) return;
+
+    if (item.done) {
+      if (removeTimersRef.current[id]) {
+        clearTimeout(removeTimersRef.current[id]);
+        delete removeTimersRef.current[id];
+      }
+      setData(prev => stampNotebookUpdate({
+        ...prev,
+        checklist: prev.checklist.map(entry => entry.id === id ? { ...entry, done: false, completedAt: '' } : entry),
+      }));
+      return;
+    }
+
     setData(prev => stampNotebookUpdate({
       ...prev,
-      checklist: prev.checklist.map(item => item.id === id ? { ...item, done: !item.done } : item),
+      checklist: prev.checklist.map(entry => entry.id === id ? { ...entry, done: true, completedAt: new Date().toISOString() } : entry),
+    }));
+    if (removeTimersRef.current[id]) clearTimeout(removeTimersRef.current[id]);
+    removeTimersRef.current[id] = setTimeout(() => {
+      setData(prev => stampNotebookUpdate({
+        ...prev,
+        checklist: prev.checklist.filter(entry => entry.id !== id),
+      }));
+      delete removeTimersRef.current[id];
+    }, 3000);
+  }
+
+  function togglePinChecklistItem(id) {
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      checklist: prev.checklist.map(item => item.id === id ? { ...item, pinned: !item.pinned } : item),
     }));
   }
 
   function deleteChecklistItem(id) {
+    if (removeTimersRef.current[id]) {
+      clearTimeout(removeTimersRef.current[id]);
+      delete removeTimersRef.current[id];
+    }
     setData(prev => stampNotebookUpdate({ ...prev, checklist: prev.checklist.filter(item => item.id !== id) }));
   }
 
   const checkedCount = data.checklist.filter(item => item.done).length;
-  const savedAtText = formatNotebookSavedAt(data.updatedAt);
+  const sortedChecklist = [...data.checklist].sort((a, b) => Number(b.pinned) - Number(a.pinned));
+  const savedAtText = formatNotebookSavedAt(currentPage?.updatedAt || data.updatedAt);
+  const offlineSaveText = storageState === 'saved'
+    ? 'Saved offline on this device'
+    : 'Could not save. Storage may be full.';
 
   return (
     <>
@@ -269,15 +445,15 @@ function DailyNotebook() {
             <div className="daily-notebook-options" role="tablist" aria-label="Notebook type">
               <button
                 type="button"
-                className={`daily-notebook-option${mode === 'notes' ? ' active' : ''}`}
+                className={`daily-notebook-option daily-notebook-option-notes${mode === 'notes' ? ' active' : ''}`}
                 onClick={() => setMode('notes')}
               >
-                <span>Notes</span>
-                <small>Write notes and add images</small>
+                <span>Diary</span>
+                <small>Write diary pages and add images</small>
               </button>
               <button
                 type="button"
-                className={`daily-notebook-option${mode === 'checklist' ? ' active' : ''}`}
+                className={`daily-notebook-option daily-notebook-option-checklist${mode === 'checklist' ? ' active' : ''}`}
                 onClick={() => setMode('checklist')}
               >
                 <span>Checklist</span>
@@ -287,55 +463,121 @@ function DailyNotebook() {
 
             {mode === 'notes' ? (
               <div className="daily-note-panel">
-                <textarea
-                  className="daily-note-input"
-                  value={data.note}
-                  onChange={e => updateNote(e.target.value)}
-                  placeholder="Write anything you want to remember today..."
-                />
-                <div className="daily-note-actions">
-                  <button type="button" className="daily-note-btn" onClick={() => uploadRef.current?.click()}>
-                    Upload image
-                  </button>
-                  <button type="button" className="daily-note-btn" onClick={() => cameraRef.current?.click()}>
-                    Use camera
-                  </button>
-                  {data.note && (
-                    <button type="button" className="daily-note-btn danger" onClick={() => updateNote('')}>
-                      Clear note
-                    </button>
-                  )}
-                </div>
-                <input
-                  ref={uploadRef}
-                  className="daily-note-file"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                />
-                <input
-                  ref={cameraRef}
-                  className="daily-note-file"
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={handleImageChange}
-                />
-                {imageError && <div className="daily-note-error">{imageError}</div>}
-                {data.images.length > 0 && (
-                  <div className="daily-note-images">
-                    {data.images.map(img => (
-                      <div key={img.id} className="daily-note-image-wrap">
-                        <img className="daily-note-image" src={img.src} alt={img.name} />
-                        <button type="button" className="daily-note-delete" onClick={() => removeImage(img.id)} aria-label="Delete image">
-                          ×
+                <div className="daily-note-workspace">
+                  <aside className="daily-pages-board" aria-label="Diary pages">
+                    <div className="daily-pages-board-top">
+                      <span>Diary pages</span>
+                      <button type="button" className="daily-page-add" onClick={addNotebookPage} aria-label="Add new diary page">
+                        +
+                      </button>
+                    </div>
+                    <div className="daily-page-list">
+                      {data.pages.map(page => {
+                        const mood = MOOD_CHOICES.find(choice => choice.id === page.mood);
+                        return (
+                          <button
+                            key={page.id}
+                            type="button"
+                            className={`daily-page-card${page.id === data.activePageId ? ' active' : ''}`}
+                            onClick={() => selectNotebookPage(page.id)}
+                          >
+                            <strong>{page.title || 'Untitled diary'}</strong>
+                            <span>{mood ? `${mood.emoji} ${mood.label}` : 'No mood yet'}</span>
+                            <small>{formatNotebookSavedAt(page.updatedAt)}</small>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </aside>
+
+                  <section className="daily-note-editor">
+                    <div className="daily-note-editor-head">
+                      <input
+                        className="daily-page-title-input"
+                        type="text"
+                        value={currentPage?.title || ''}
+                        onChange={e => updateCurrentPage({ title: e.target.value })}
+                        placeholder="What is this diary page about?"
+                      />
+                      <div className="daily-note-editor-actions">
+                        <button type="button" className="daily-note-btn save" onClick={saveCurrentPage}>
+                          Save
                         </button>
+                        {data.pages.length > 1 && (
+                          <button type="button" className="daily-note-btn danger" onClick={deleteCurrentPage}>
+                            Delete page
+                          </button>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                )}
-                <div className="daily-note-save">{savedAtText}</div>
+                    </div>
+
+                    <div className="daily-mood-row" aria-label="Mood choices">
+                      {MOOD_CHOICES.map(mood => (
+                        <button
+                          key={mood.id}
+                          type="button"
+                          className={`daily-mood-chip${currentPage?.mood === mood.id ? ' active' : ''}`}
+                          onClick={() => updateMood(mood.id)}
+                        >
+                          <span>{mood.emoji}</span>
+                          <small>{mood.label}</small>
+                        </button>
+                      ))}
+                    </div>
+
+                    <textarea
+                      className="daily-note-input"
+                      value={currentPage?.note || ''}
+                      onChange={e => updateNote(e.target.value)}
+                      placeholder="Write your diary here..."
+                    />
+                    <div className="daily-note-actions">
+                      <button type="button" className="daily-note-btn" onClick={() => uploadRef.current?.click()}>
+                        Upload image
+                      </button>
+                      <button type="button" className="daily-note-btn" onClick={() => cameraRef.current?.click()}>
+                        Use camera
+                      </button>
+                      {currentPage?.note && (
+                        <button type="button" className="daily-note-btn danger" onClick={() => updateNote('')}>
+                          Clear note
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      ref={uploadRef}
+                      className="daily-note-file"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageChange}
+                    />
+                    <input
+                      ref={cameraRef}
+                      className="daily-note-file"
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleImageChange}
+                    />
+                    {imageError && <div className="daily-note-error">{imageError}</div>}
+                    {(currentPage?.images || []).length > 0 && (
+                      <div className="daily-note-images">
+                        {(currentPage?.images || []).map(img => (
+                          <div key={img.id} className="daily-note-image-wrap">
+                            <img className="daily-note-image" src={img.src} alt={img.name} />
+                            <button type="button" className="daily-note-delete" onClick={() => removeImage(img.id)} aria-label="Delete image">
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className={`daily-note-save${saveFlash ? ' is-flash' : ''}`}>
+                      {saveFlash ? 'Saved just now' : `${savedAtText} · ${offlineSaveText}`}
+                    </div>
+                  </section>
+                </div>
               </div>
             ) : (
               <div className="daily-check-panel">
@@ -349,17 +591,22 @@ function DailyNotebook() {
                   <button type="submit">Add</button>
                 </form>
                 <div className="daily-check-count">{checkedCount}/{data.checklist.length} done today</div>
+                <div className={`daily-note-save${storageState === 'error' ? ' is-error' : ''}`}>{offlineSaveText}</div>
                 <div className="daily-check-list">
                   {data.checklist.length === 0 && (
                     <div className="daily-check-empty">No checklist items yet.</div>
                   )}
-                  {data.checklist.map(item => (
+                  {sortedChecklist.map(item => (
                     <div key={item.id} className={`daily-check-item${item.done ? ' done' : ''}`}>
                       <button type="button" className="daily-check-toggle" onClick={() => toggleChecklistItem(item.id)} aria-label={`Toggle ${item.text}`}>
                         <span />
                       </button>
                       <button type="button" className="daily-check-text" onClick={() => toggleChecklistItem(item.id)}>
+                        {item.pinned && <em className="daily-check-pin-mark">Pinned</em>}
                         {item.text}
+                      </button>
+                      <button type="button" className={`daily-check-pin${item.pinned ? ' active' : ''}`} onClick={() => togglePinChecklistItem(item.id)} aria-label={`${item.pinned ? 'Unpin' : 'Pin'} ${item.text} to today`}>
+                        Pin
                       </button>
                       <button type="button" className="daily-check-delete" onClick={() => deleteChecklistItem(item.id)} aria-label={`Delete ${item.text}`}>
                         Delete

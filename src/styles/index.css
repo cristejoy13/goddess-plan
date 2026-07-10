@@ -194,6 +194,9 @@
 }
 [data-mode="light"] .daily-notebook-launcher,
 [data-mode="light"] .daily-notebook-option,
+[data-mode="light"] .daily-pages-board,
+[data-mode="light"] .daily-page-card,
+[data-mode="light"] .daily-page-title-input,
 [data-mode="light"] .daily-note-input,
 [data-mode="light"] .daily-check-add input,
 [data-mode="light"] .daily-check-item,
@@ -206,6 +209,33 @@
 [data-mode="light"] .daily-check-add button {
   background: rgba(154,104,0,0.08);
   border-color: rgba(154,104,0,0.2);
+}
+[data-mode="light"] .daily-notebook-option-notes {
+  background: rgba(200,23,110,0.08);
+  border-color: rgba(200,23,110,0.18);
+}
+[data-mode="light"] .daily-notebook-option-checklist {
+  background: rgba(154,104,0,0.08);
+  border-color: rgba(154,104,0,0.2);
+}
+[data-mode="light"] .daily-notebook-option-notes span { color: var(--rose); }
+[data-mode="light"] .daily-notebook-option-checklist span { color: var(--gold); }
+[data-mode="light"] .daily-page-tab {
+  background: rgba(200,23,110,0.07);
+  border-color: rgba(200,23,110,0.16);
+}
+[data-mode="light"] .daily-page-card.active {
+  background: rgba(200,23,110,0.12);
+  border-color: rgba(200,23,110,0.32);
+}
+[data-mode="light"] .daily-page-add,
+[data-mode="light"] .daily-check-pin {
+  background: rgba(154,104,0,0.08);
+  border-color: rgba(154,104,0,0.2);
+}
+[data-mode="light"] .daily-mood-chip {
+  background: rgba(255,240,248,0.72);
+  border-color: rgba(200,23,110,0.12);
 }
 [data-mode="light"] .daily-notebook-overlay {
   background: rgba(40,10,30,0.28);
@@ -501,6 +531,35 @@ body {
 .nav-btn:hover .nav-label {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
+}
+.nav-sync-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+  color: var(--text-soft);
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.nav-sync-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(240,204,96,0.65);
+  box-shadow: 0 0 8px rgba(240,204,96,0.36);
+}
+.nav-sync-status.active .nav-sync-dot {
+  background: #66e187;
+  box-shadow: 0 0 10px rgba(102,225,135,0.58);
+}
+.nav-sync-status.offline .nav-sync-dot {
+  background: var(--rose);
+  box-shadow: 0 0 10px rgba(255,92,157,0.58);
 }
 .nav-btn:hover {
   color: var(--gold-light);
@@ -1556,6 +1615,10 @@ body {
     z-index: auto;
   }
   .nav-label::before { display: none; }
+  .nav-sync-status {
+    justify-content: flex-start;
+    margin-top: 3px;
+  }
 
   .hero { padding: 70px 20px 48px; }
   .hero h1 { letter-spacing: -1px; }
@@ -2259,14 +2322,15 @@ body {
 }
 .daily-notebook {
   position: relative;
-  width: 100%;
-  max-width: 720px;
-  max-height: min(760px, calc(100vh - 36px));
+  width: min(1120px, calc(100vw - 36px));
+  max-width: 1120px;
+  min-height: min(760px, calc(100dvh - 36px));
+  max-height: calc(100dvh - 36px);
   display: flex;
   flex-direction: column;
   gap: 12px;
   overflow: auto;
-  padding: 14px;
+  padding: 16px;
   border-radius: 18px;
   border: 1px solid rgba(240,204,96,0.18);
   background: rgba(255,255,255,0.035);
@@ -2301,7 +2365,7 @@ body {
 }
 .daily-notebook-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
 }
 .daily-notebook-option {
@@ -2319,24 +2383,49 @@ body {
   font-family: 'Outfit', sans-serif;
   text-align: left;
   cursor: pointer;
+  min-width: 0;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.daily-notebook-option:hover {
+  transform: translateY(-1px);
+}
+.daily-notebook-option-notes {
+  border-color: rgba(255,92,157,0.24);
+  background: rgba(255,92,157,0.08);
+}
+.daily-notebook-option-checklist {
+  border-color: rgba(240,204,96,0.24);
+  background: rgba(240,204,96,0.08);
 }
 .daily-notebook-option span {
   color: var(--text);
   font-size: 14px;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 .daily-notebook-option small {
   color: var(--text-soft);
   font-size: 11px;
   line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.daily-notebook-option-notes span {
+  color: var(--rose);
+}
+.daily-notebook-option-checklist span {
+  color: var(--gold);
 }
 .daily-notebook-option.active {
-  color: var(--gold);
-  border-color: rgba(240,204,96,0.28);
-  background: rgba(240,204,96,0.08);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px currentColor, 0 8px 22px rgba(0,0,0,0.12);
 }
-.daily-notebook-option.active span {
-  color: var(--gold);
+.daily-notebook-option-notes.active {
+  border-color: rgba(255,92,157,0.46);
+  background: rgba(255,92,157,0.14);
+}
+.daily-notebook-option-checklist.active {
+  border-color: rgba(240,204,96,0.46);
+  background: rgba(240,204,96,0.14);
 }
 .daily-note-panel,
 .daily-check-panel {
@@ -2344,9 +2433,218 @@ body {
   flex-direction: column;
   gap: 10px;
 }
+.daily-note-workspace {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 12px;
+  min-height: 530px;
+}
+.daily-pages-board {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(255,92,157,0.16);
+  border-radius: 14px;
+  background: rgba(255,92,157,0.055);
+}
+.daily-pages-board-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--rose);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.daily-page-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  overflow: auto;
+  padding-right: 2px;
+  align-content: start;
+}
+.daily-page-card {
+  min-width: 0;
+  min-height: 66px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.14);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.daily-page-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,92,157,0.28);
+}
+.daily-page-card strong {
+  color: var(--rose);
+  font-size: 12px;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.daily-page-card span {
+  color: var(--text-mid);
+  font-size: 10px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.daily-page-card small {
+  color: var(--text-soft);
+  font-size: 8.5px;
+  line-height: 1.25;
+}
+.daily-page-card.active {
+  border-color: rgba(255,92,157,0.44);
+  background: rgba(255,92,157,0.12);
+  box-shadow: inset 0 0 0 1px rgba(255,92,157,0.2);
+}
+.daily-note-editor {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.daily-note-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.daily-page-title-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.14);
+  color: var(--text);
+  padding: 0 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 700;
+  outline: none;
+}
+.daily-page-title-input::placeholder {
+  color: var(--text-soft);
+}
+.daily-note-editor-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.daily-page-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 42px;
+  gap: 8px;
+  align-items: stretch;
+}
+.daily-page-tab,
+.daily-page-add {
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid rgba(255,92,157,0.2);
+  border-radius: 12px;
+  background: rgba(255,92,157,0.07);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+}
+.daily-page-tab {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding: 8px 10px;
+  text-align: left;
+}
+.daily-page-tab span {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--rose);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.daily-page-tab small {
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--text-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.daily-page-tab.active {
+  border-color: rgba(255,92,157,0.46);
+  background: rgba(255,92,157,0.14);
+  box-shadow: inset 0 0 0 1px rgba(255,92,157,0.28);
+}
+.daily-page-add {
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  border-color: rgba(240,204,96,0.28);
+  background: rgba(240,204,96,0.08);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+.daily-mood-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 6px;
+}
+.daily-mood-chip {
+  min-width: 0;
+  min-height: 50px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.14);
+  color: var(--text-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+}
+.daily-mood-chip span {
+  font-size: 17px;
+  line-height: 1;
+}
+.daily-mood-chip small {
+  max-width: 100%;
+  color: var(--text-soft);
+  font-size: 8.5px;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.daily-mood-chip.active {
+  border-color: rgba(255,92,157,0.44);
+  background: rgba(255,92,157,0.12);
+  box-shadow: 0 0 0 1px rgba(255,92,157,0.2);
+}
 .daily-note-input {
   width: 100%;
-  min-height: 118px;
+  min-height: 250px;
   resize: vertical;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 13px;
@@ -2387,6 +2685,12 @@ body {
   border-color: rgba(255,92,157,0.24);
   background: rgba(255,92,157,0.07);
 }
+.daily-note-btn.save {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--rose), var(--gold));
+  box-shadow: 0 8px 18px rgba(255,92,157,0.16);
+}
 .daily-note-file {
   display: none;
 }
@@ -2397,6 +2701,14 @@ body {
   font-size: 11px;
   color: var(--text-soft);
   text-align: left;
+}
+.daily-note-save.is-flash {
+  color: #74eaa0;
+  font-weight: 800;
+}
+.daily-note-save.is-error {
+  color: var(--rose);
+  font-weight: 800;
 }
 .daily-note-images {
   display: grid;
@@ -2497,6 +2809,9 @@ body {
 .daily-check-text {
   flex: 1 1 auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   border: 0;
   background: transparent;
   color: var(--text);
@@ -2510,6 +2825,33 @@ body {
 .daily-check-item.done .daily-check-text {
   color: var(--text-soft);
   text-decoration: line-through;
+}
+.daily-check-pin-mark {
+  color: var(--gold);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.daily-check-pin {
+  flex: none;
+  border: 1px solid rgba(240,204,96,0.22);
+  background: rgba(240,204,96,0.06);
+  color: var(--gold);
+  border-radius: 10px;
+  min-height: 32px;
+  padding: 0 9px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.daily-check-pin.active {
+  background: rgba(240,204,96,0.14);
+  border-color: rgba(240,204,96,0.42);
 }
 .daily-check-delete {
   flex: none;
@@ -2999,10 +3341,53 @@ body {
     height: 38px;
   }
   .today-dashboard { padding: 12px; border-radius: 16px; }
-  .daily-notebook { padding: 12px; border-radius: 16px; }
+  .daily-notebook {
+    width: calc(100vw - 18px);
+    min-height: auto;
+    max-height: calc(100dvh - 18px);
+    padding: 12px;
+    border-radius: 16px;
+  }
   .daily-notebook-top { align-items: stretch; flex-direction: column; }
   .daily-notebook-close { position: absolute; top: 12px; right: 12px; }
-  .daily-notebook-options { grid-template-columns: 1fr; }
+  .daily-notebook-options { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 7px; }
+  .daily-notebook-option { min-height: 66px; padding: 10px; }
+  .daily-notebook-option span { font-size: 13px; }
+  .daily-notebook-option small { font-size: 10px; }
+  .daily-note-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .daily-pages-board {
+    padding: 8px;
+  }
+  .daily-page-list {
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    overflow: visible;
+    padding: 0;
+  }
+  .daily-page-card {
+    min-height: 66px;
+  }
+  .daily-note-editor-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .daily-page-title-input {
+    width: 100%;
+    font-size: 22px;
+  }
+  .daily-note-editor-actions,
+  .daily-note-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .daily-note-btn {
+    width: 100%;
+    padding: 0 10px;
+  }
+  .daily-mood-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .daily-note-input { min-height: 220px; }
   .daily-check-add { flex-direction: column; }
   .daily-check-add button { width: 100%; }
   .today-dashboard-date { font-size: 20px; }
