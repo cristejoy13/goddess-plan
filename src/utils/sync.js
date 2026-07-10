@@ -1,5 +1,13 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  doc,
+  onSnapshot,
+  setDoc,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAsWJPYWcwJ5XtnJPOV_PRmL7dyt5eJems',
@@ -103,6 +111,17 @@ function schedulePush() {
     pushTimer = null;
     pushDirtyKeys();
   }, 600);
+}
+
+// Push any pending changes immediately, without waiting for the debounce.
+// Called when the app is hidden/closed so a note written right before the
+// user backgrounds the app is not lost with the pending timer.
+function flushNow() {
+  if (pushTimer) {
+    clearTimeout(pushTimer);
+    pushTimer = null;
+  }
+  pushDirtyKeys();
 }
 
 async function pushDirtyKeys() {
@@ -292,6 +311,49 @@ export function onSyncStatus(cb) {
   };
 }
 
+// Force this device's data up to the cloud right now, stamping every key with
+// the current time so it wins last-write-wins on all other linked devices.
+// This is the "make everyone match this device" button.
+export async function forceSyncFromThisDevice() {
+  if (!dbRef) return false;
+  const now = Date.now();
+  const meta = readMeta();
+  const data = {};
+  const metaPatch = {};
+
+  SYNC_KEYS.forEach(key => {
+    const value = safeGetItem(key);
+    if (value !== null) {
+      data[key] = value;
+      meta[key] = now;
+      metaPatch[key] = now;
+    }
+  });
+
+  writeMeta(meta);
+
+  try {
+    await setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function registerFlushHandlers() {
+  try {
+    // When the app is backgrounded or closed (very common on phones/tablets
+    // right after writing a note), send pending changes before the OS suspends
+    // or kills the page.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flushNow();
+    });
+    window.addEventListener('pagehide', flushNow);
+  } catch {
+    // Event wiring is best-effort; sync still works while the app is open.
+  }
+}
+
 export function initSync() {
   if (initialized) return;
   initialized = true;
@@ -301,8 +363,19 @@ export function initSync() {
     const code = getSyncCode();
     patchLocalStorage();
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    // Persistent cache keeps queued writes in IndexedDB, so a note written just
+    // before the app is closed is delivered on the next launch instead of being
+    // lost. Fall back to the in-memory Firestore if persistence is unavailable.
+    let db;
+    try {
+      db = initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+      });
+    } catch {
+      db = getFirestore(app);
+    }
     dbRef = doc(db, 'sync', code);
+    registerFlushHandlers();
     onSnapshot(dbRef, handleRemoteSnapshot, () => {
       // Firestore snapshot errors are non-fatal for the local app.
     });

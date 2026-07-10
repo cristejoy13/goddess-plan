@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import { calcTDEE, generatePlan } from '../utils/planGenerator';
-import { adoptSyncCode, getSyncCode, isSyncActive, onSyncStatus } from '../utils/sync';
+import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, isSyncActive, onSyncStatus } from '../utils/sync';
 
 /* ─── Helpers ─── */
 function GuideStep({ num, title, desc }) {
@@ -370,9 +370,17 @@ function DeviceSyncSection() {
   const [copied, setCopied] = useState(false);
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
+  const [pushState, setPushState] = useState('idle');
   const codeRef = useRef(null);
 
   useEffect(() => onSyncStatus(setActive), []);
+
+  async function pushToAllDevices() {
+    setPushState('pushing');
+    const ok = await forceSyncFromThisDevice();
+    setPushState(ok ? 'done' : 'error');
+    setTimeout(() => setPushState('idle'), 3000);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -418,6 +426,18 @@ function DeviceSyncSection() {
     <div className="g-card splash-item settings-card sync-card">
       <div className="settings-section-title">Device Sync</div>
       <div className="sync-status">{active ? '🟢 Sync on — live' : '⚪ Connecting…'}</div>
+      <button
+        className="ob-btn-primary sync-push-btn"
+        type="button"
+        onClick={pushToAllDevices}
+        disabled={pushState === 'pushing'}
+      >
+        {pushState === 'pushing' ? 'Sending…'
+          : pushState === 'done' ? 'Sent to all gadgets ✓'
+          : pushState === 'error' ? 'Could not send — try again'
+          : 'Push this gadget’s notes to all my devices'}
+      </button>
+      <div className="sync-note">Use this on the gadget that has the notes you want everywhere. It makes your other linked gadgets match this one.</div>
       <button className="sync-code-row" type="button" onClick={copyCode}>
         <code ref={codeRef}>{code}</code>
         <span>{copied ? 'Copied ✓' : 'Tap to copy'}</span>
