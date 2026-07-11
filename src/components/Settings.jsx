@@ -395,8 +395,18 @@ function DeviceSyncSection() {
     return () => clearInterval(t);
   }, []);
 
-  const deviceList = Object.entries(devices)
-    .map(([id, d]) => ({ id, name: d?.name || 'Device', lastSeen: Number(d?.lastSeen) || 0 }))
+  // Deduplicate by name (keep most recent): same physical device shouldn't
+  // appear multiple times if it had its storage cleared or was opened in
+  // different browser contexts (installed app vs Safari on iPhone).
+  const deduped = {};
+  Object.entries(devices).forEach(([id, d]) => {
+    const name = d?.name || 'Device';
+    const lastSeen = Number(d?.lastSeen) || 0;
+    if (!deduped[name] || lastSeen > deduped[name].lastSeen) {
+      deduped[name] = { id, name, lastSeen };
+    }
+  });
+  const deviceList = Object.values(deduped)
     .sort((a, b) => b.lastSeen - a.lastSeen);
   const otherCount = deviceList.filter(d => d.id !== thisId).length;
 
