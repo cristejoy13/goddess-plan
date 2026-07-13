@@ -2445,6 +2445,20 @@ body {
   gap: 10px;
   padding-right: 2px;
 }
+/* Checklist scroll fix: the workspace's overflow:hidden was clipping a long
+   item list (which has no inner scroll of its own), so items past the fold
+   were unreachable on phones and tablets. Let the surrounding panel scroll the
+   list instead, with momentum + touch scrolling enabled. Scoped to the
+   checklist so the diary editor (whose textarea scrolls internally) is
+   unchanged. */
+.daily-check-panel {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+.daily-check-panel .daily-note-workspace {
+  overflow: visible;
+}
 .daily-note-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
