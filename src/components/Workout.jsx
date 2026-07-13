@@ -6,44 +6,10 @@ import IngredientDetailPage from './IngredientDetailPage';
 import { FOODS, FOOD_CATS } from '../data/foods';
 import { RecipesPanel, FoodGuide } from './Nutrition';
 
-// Calorie lookup by ingredient name (for ingredients with key: null)
-const NAME_CAL_MAP = {
-  'Berries': 40, 'Fruits': 80, 'Kiwi': 42, 'Mango': 100,
-  'Grapes': 70, 'Dragon Fruit': 60, 'Strawberries': 45, 'Orange': 65,
-  'Steamed Zucchini': 22, 'Steamed Carrots': 30, 'Steamed Spinach': 25,
-  'Cucumber': 16, 'Steamed Green Beans': 35, 'Steamed Cauliflower': 28,
-  'Egg': 70, '1 Egg': 70, '2 Eggs': 140, 'Shrimp': 90, 'Tilapia': 155,
-  'Greek Yogurt': 130,
-  'Papaya Bowl': 140, 'Pineapple Bowl': 120, 'Watermelon Bowl': 90,
-  'Banana (2)': 210, 'Grapes (1 cup)': 100, 'Kiwi (2)': 84,
-  'Mango Bowl': 150, 'Berries (1 cup)': 85,
-  'Oats (1/2 cup)': 150, 'Chia Seeds (2 tbsp)': 140,
-  'Almonds (30g)': 170, 'Walnuts (30g)': 185, 'Avocado (1/2)': 120,
-  'Sweet Potato 250g': 225, 'Squash 2 cups': 160,
-  'Steamed Broccoli 2 cups': 110, 'Steamed Spinach 2 cups': 50,
-  'Eggplant 2 cups': 70, 'Carrots 2 cups': 100,
-  'Tofu 200g': 190, 'Fish 200g': 245, 'Chicken 180g': 300,
-  'Eggs (3, boiled)': 210, 'Brown Rice 1 cup': 215, 'Quinoa 1 cup': 220,
-  'Coconut Water': 46,
-  'lemon water': 5, 'green tea': 2, 'spearmint tea': 2, 'collagen water': 30,
-};
-
-// Estimated calories for base meal ingredients (keyed by ingredient key from workouts.js)
-const CAL_MAP = {
-  'egg': 105, 'banana': 50, 'green-tea': 2, 'ginger-juice': 10,
-  'fish': 165, 'chicken': 165, 'broccoli': 55, 'sweet potato': 90,
-  'collagen-water': 30, 'salad': 35, 'pineapple': 50, 'apple': 80,
-  'papaya': 55, 'watermelon': 46, 'spearmint-tea': 2, 'kiwi': 42,
-  'avocado': 120, 'oats': 150, 'beef': 220, 'banana-nice-cream': 120,
-  'chia-mango-pudding': 140, 'cacao-banana-bites': 110, 'sweet-potato-brownie': 130,
-  'coconut-chia-balls': 120, 'avocado-choc-mousse': 140, 'banana-oat-cookies': 115,
-};
-
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
   'day-friday', 'day-saturday', 'day-sunday',
 ];
-const DAY_TYPES = ['strength', 'light', 'light', 'strength', 'light', 'strength', 'light'];
 
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
@@ -60,17 +26,6 @@ const GRID_DAYS = [
 
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
-}
-
-function CalorieBanner({ tdee, deficit }) {
-  if (!tdee) return null;
-  return (
-    <div className="cal-banner">
-      <span className="cal-banner-item">🔥 Maintenance <strong>{tdee} kcal</strong></span>
-      <span className="cal-banner-sep">·</span>
-      <span className="cal-banner-item">🎯 Deficit target <strong>{deficit} kcal</strong></span>
-    </div>
-  );
 }
 
 // Basic info for food items that don't have a dedicated detail page.
@@ -195,7 +150,7 @@ function useDayRemovedBase(dayId) {
   return [removed, removeItem, resetRemoved];
 }
 
-function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, deficit }) {
+function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
   const [custom, saveCustom]                    = useDayMeals(dayId, userId);
   const [removedBase, removeBaseItem, resetRemovedBase] = useDayRemovedBase(dayId);
   const [query, setQuery]       = useState('');
@@ -445,104 +400,35 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
       )}
 
       {/* Meal table */}
-      {(() => {
-        let totalCal = 0;
-        const rowData = rows.map(r => {
-          const cal = r.ingredients.reduce((sum, ingr) => {
-            if (ingr.custom) {
-              const food = FOODS.find(f => f.name === ingr.rawName);
-              return sum + (food?.cal || 0);
-            }
-            return sum + (ingr.key ? (CAL_MAP[ingr.key] || 0) : (NAME_CAL_MAP[ingr.name] || 0));
-          }, 0);
-          totalCal += cal;
-          return { ...r, cal };
-        });
-        return (
-          <div className="meal-table">
-            {tdee ? (
-              <div className="meal-tdee-banner">
-                <div className="meal-tdee-item">
-                  <span className="meal-tdee-ico">🔥</span>
-                  <div>
-                    <div className="meal-tdee-label">Maintenance</div>
-                    <div className="meal-tdee-val">{tdee.toLocaleString()}<span className="meal-tdee-unit"> kcal/day</span></div>
-                  </div>
-                </div>
-                <div className="meal-tdee-divider" />
-                <div className="meal-tdee-item">
-                  <span className="meal-tdee-ico">🎯</span>
-                  <div>
-                    <div className="meal-tdee-label">Your Target</div>
-                    <div className="meal-tdee-val">{(deficit || tdee).toLocaleString()}<span className="meal-tdee-unit"> kcal/day</span></div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="meal-tdee-empty">
-                ⚙️ Set height &amp; weight in <strong>Settings → Body Stats</strong> for calorie targets.
-              </div>
-            )}
-            <div className="meal-table-top">
-              <div className="meal-table-lbl">{baseMeals.label}</div>
-              <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Tap any food for options.</div>
+      <div className="meal-table">
+        <div className="meal-table-top">
+          <div className="meal-table-lbl">{baseMeals.label}</div>
+          <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Tap any food for options.</div>
+        </div>
+        <div className="meal-table-head">
+          <div className="mth-time">Meal</div>
+          <div className="mth-foods">Foods</div>
+        </div>
+        {rows.map((r, i) => (
+          <div key={i} className="meal-table-row">
+            <div className="mtr-time">{r.time}</div>
+            <div className="mtr-foods">
+              {r.ingredients.map((ingr, j) => {
+                const holdName = ingr.custom ? ingr.rawName : ingr.name;
+                return (
+                  <button
+                    key={j}
+                    className={`meal-ingr-chip meal-ingr-tappable${ingr.custom ? ' custom' : ''}`}
+                    onClick={() => openMenu(ingr, holdName)}
+                  >
+                    {ingr.name}
+                  </button>
+                );
+              })}
             </div>
-            <div className="meal-table-head">
-              <div className="mth-time">Meal</div>
-              <div className="mth-foods">Foods</div>
-              <div className="mth-cal">~kcal</div>
-            </div>
-            {rowData.map((r, i) => (
-              <div key={i} className="meal-table-row">
-                <div className="mtr-time">{r.time}</div>
-                <div className="mtr-foods">
-                  {r.ingredients.map((ingr, j) => {
-                    const holdName = ingr.custom ? ingr.rawName : ingr.name;
-                    return (
-                      <button
-                        key={j}
-                        className={`meal-ingr-chip meal-ingr-tappable${ingr.custom ? ' custom' : ''}`}
-                        onClick={() => openMenu(ingr, holdName)}
-                      >
-                        {ingr.name}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="mtr-cal">{r.cal > 0 ? `~${r.cal}` : '—'}</div>
-              </div>
-            ))}
-            {totalCal > 0 && (
-              <>
-                <div className="meal-table-total">
-                  <div className="mtt-label">Total</div>
-                  <div className={`mtt-verdict ${tdee && totalCal > (deficit || tdee) ? 'over' : 'ok'}`}>
-                    {tdee
-                      ? totalCal > (deficit || tdee)
-                        ? `+${totalCal - (deficit || tdee)} over`
-                        : `${(deficit || tdee) - totalCal} left`
-                      : ''}
-                  </div>
-                  <div className="mtt-cal">~{totalCal} kcal</div>
-                </div>
-                {tdee && (
-                  <div className="meal-cal-progress">
-                    <div className="meal-cal-bar">
-                      <div
-                        className={`meal-cal-fill ${totalCal > (deficit || tdee) ? 'over' : ''}`}
-                        style={{ width: `${Math.min(100, Math.round((totalCal / (deficit || tdee)) * 100))}%` }}
-                      />
-                    </div>
-                    <div className="meal-cal-pct">
-                      {Math.round((totalCal / (deficit || tdee)) * 100)}% of daily target
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
           </div>
-        );
-      })()}
+        ))}
+      </div>
 
       {(custom.length > 0 || removedBase.length > 0) && (
         <button className="mb-reset-btn" onClick={resetToOriginal}>
@@ -553,7 +439,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId, tdee, defici
   );
 }
 
-function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onBack, userId }) {
+function DayDetailPage({ day, id, isToday, onIngredientClick, onBack, userId }) {
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
@@ -588,7 +474,6 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
         <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.length} exercises</div>
       </div>
 
-      <CalorieBanner tdee={tdee} deficit={deficit} />
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
       <div className="exercise-hint">👆 Tap a video (▶) to open it on YouTube, or tap any exercise for a form demo.</div>
       <ul className="workout-list">
@@ -605,7 +490,7 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, tdee, deficit, onB
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} userId={userId} tdee={tdee} deficit={deficit} />
+      <MealBuilder dayId={id} baseMeals={day.meals} onIngredientClick={onIngredientClick} userId={userId} />
     </div>
   );
 }
@@ -651,12 +536,10 @@ function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
   );
 }
 
-export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, profile, user }) {
+export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, user }) {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [selectedDayIdx, setSelectedDayIdx]         = useState(null);
   const [showNutrPanel, setShowNutrPanel]           = useState(false);
-  const tdeeByType    = profile?.tdeeKcal    || null;
-  const deficitByType = profile?.deficitKcal || null;
   const userId        = user?.uid || null;
   const todayDay = WORKOUT_DAYS[todayIndex];
 
@@ -721,7 +604,6 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
 
   if (selectedDayIdx !== null) {
     const day   = WORKOUT_DAYS[selectedDayIdx];
-    const dtype = DAY_TYPES[selectedDayIdx];
     return (
       <div className="section">
         <DayDetailPage
@@ -729,8 +611,6 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           id={DAY_IDS[selectedDayIdx]}
           isToday={selectedDayIdx === todayIndex}
           onIngredientClick={selectIngredient}
-          tdee={tdeeByType}
-          deficit={deficitByType}
           onBack={closeDay}
           userId={userId}
         />

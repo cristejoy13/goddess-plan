@@ -7681,7 +7681,7 @@ body {
 .meal-table-lbl { font-size: 11.5px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.3px; }
 .meal-table-head {
   display: grid;
-  grid-template-columns: 100px 1fr 60px;
+  grid-template-columns: 110px 1fr;
   padding: 8px 14px;
   background: rgba(240,204,96,0.07);
   border-bottom: 1px solid rgba(240,204,96,0.15);
@@ -7696,7 +7696,7 @@ body {
 .mth-cal { text-align: right; }
 .meal-table-row {
   display: grid;
-  grid-template-columns: 100px 1fr 60px;
+  grid-template-columns: 110px 1fr;
   padding: 10px 14px;
   border-bottom: 1px solid rgba(255,255,255,0.04);
   align-items: start;
