@@ -7,6 +7,8 @@ import {
   doc,
   onSnapshot,
   setDoc,
+  updateDoc,
+  deleteField,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -27,11 +29,25 @@ const DEVICE_NAME_KEY = 'gp_device_name';
 const PRESENCE_INTERVAL_MS = 5 * 60 * 1000;
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^GP-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/;
+// A device that has not checked in for this long is dropped from the shared
+// doc. This bounds unbounded growth over the years: every reinstall, new
+// browser, or cleared-storage event mints a fresh device id that would
+// otherwise live in the doc forever. A device that returns after being pruned
+// simply re-registers on its next launch, so pruning is always safe.
+const STALE_DEVICE_MS = 180 * 24 * 60 * 60 * 1000; // 180 days
+// A Firestore document is hard-capped at 1,048,576 bytes. Because everything
+// (all synced keys + meta + the devices map) lives in one doc, we watch the
+// serialized size so sync degrades loudly — with a warning the user can act on
+// — instead of silently dying the first time a write crosses the ceiling.
+const DOC_SIZE_LIMIT = 1024 * 1024;
+const DOC_SIZE_WARN = 850 * 1024;
 
 let initialized = false;
 let applyingRemote = false;
 let syncActive = false;
 let statusCallbacks = new Set();
+let healthCallbacks = new Set();
+let syncHealth = { state: 'ok', sizeBytes: 0, limitBytes: DOC_SIZE_LIMIT };
 let deviceCallbacks = new Set();
 let latestDevices = {};
 let presenceTimer = null;
@@ -110,6 +126,66 @@ function markSyncActive() {
   }
 }
 
+function notifySyncHealth() {
+  healthCallbacks.forEach(cb => {
+    try {
+      cb(syncHealth);
+    } catch {
+      // Health listeners should not break sync delivery.
+    }
+  });
+}
+
+function setSyncHealth(next) {
+  const merged = { ...syncHealth, ...next };
+  if (
+    merged.state === syncHealth.state &&
+    merged.sizeBytes === syncHealth.sizeBytes
+  ) {
+    return;
+  }
+  syncHealth = merged;
+  notifySyncHealth();
+}
+
+// Byte length of a UTF-8 string. TextEncoder is available in every browser
+// that can run this app; the length fallback is only a rough guard for exotic
+// environments and never throws.
+function byteLength(str) {
+  if (str == null) return 0;
+  try {
+    return new TextEncoder().encode(str).length;
+  } catch {
+    return String(str).length;
+  }
+}
+
+// Estimate the serialized size of the shared document from the data this
+// device holds. The synced values are the overwhelming bulk of the doc; we add
+// a fixed cushion for meta, the devices map, and Firestore field overhead so
+// the warning fires early rather than late.
+function estimateDocSize() {
+  let bytes = 0;
+  SYNC_KEYS.forEach(key => {
+    const value = safeGetItem(key);
+    if (value !== null) bytes += byteLength(value) + byteLength(key);
+  });
+  return bytes + 16 * 1024; // cushion for meta + devices + overhead
+}
+
+// Recompute health from the current data size. Called before every write so
+// the user sees a warning while there is still room to act (trim old diary
+// pages, clear photos) instead of only after writes start failing.
+function refreshSizeHealth() {
+  const sizeBytes = estimateDocSize();
+  let state = syncHealth.state === 'error' ? 'error' : 'ok';
+  if (sizeBytes >= DOC_SIZE_LIMIT) state = 'error';
+  else if (sizeBytes >= DOC_SIZE_WARN) state = 'warning';
+  else if (state !== 'error') state = 'ok';
+  setSyncHealth({ state, sizeBytes });
+  return sizeBytes;
+}
+
 function schedulePush() {
   if (!dbRef) return;
   if (pushTimer) clearTimeout(pushTimer);
@@ -130,6 +206,21 @@ function flushNow() {
   pushDirtyKeys();
 }
 
+// Mark a write as succeeded/failed and refresh the health state so the UI can
+// show a warning (approaching the doc limit) or an error (write failing) —
+// never a silent stall.
+function markWriteResult(ok, sizeBytes) {
+  const size = typeof sizeBytes === 'number' ? sizeBytes : estimateDocSize();
+  if (!ok) {
+    setSyncHealth({ state: 'error', sizeBytes: size });
+    return;
+  }
+  let state = 'ok';
+  if (size >= DOC_SIZE_LIMIT) state = 'error';
+  else if (size >= DOC_SIZE_WARN) state = 'warning';
+  setSyncHealth({ state, sizeBytes: size });
+}
+
 async function pushDirtyKeys() {
   if (!dbRef || dirtyKeys.size === 0) return;
   const keys = [...dirtyKeys];
@@ -143,10 +234,13 @@ async function pushDirtyKeys() {
     metaPatch[key] = meta[key] || Date.now();
   });
 
+  const sizeBytes = refreshSizeHealth();
   try {
     await setDoc(dbRef, { data: dataPatch, meta: metaPatch }, { merge: true });
+    markWriteResult(true, sizeBytes);
   } catch {
     keys.forEach(key => dirtyKeys.add(key));
+    markWriteResult(false, sizeBytes);
     schedulePush();
   }
 }
@@ -172,10 +266,13 @@ async function pushAllLocalKeys() {
   if (!changed) return;
   writeMeta(meta);
 
+  const sizeBytes = refreshSizeHealth();
   try {
     await setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
+    markWriteResult(true, sizeBytes);
   } catch {
     // Firestore queues offline writes; failures should not break the app.
+    markWriteResult(false, sizeBytes);
   }
 }
 
@@ -387,6 +484,32 @@ async function writePresence() {
   } catch {
     // Presence is best-effort and never blocks the app.
   }
+  pruneStaleDevices();
+}
+
+// Drop device entries that have not checked in within STALE_DEVICE_MS so the
+// shared doc does not accumulate dead ids for the lifetime of the sync code.
+// Runs on the presence cadence (every ~5 min while visible), uses whatever the
+// last snapshot delivered, and never touches this device's own entry. Deleting
+// an already-deleted field is a no-op, so it is safe for every device to run.
+async function pruneStaleDevices() {
+  if (!dbRef) return;
+  const selfId = getDeviceId();
+  const cutoff = Date.now() - STALE_DEVICE_MS;
+  const patch = {};
+  Object.entries(latestDevices || {}).forEach(([id, info]) => {
+    if (id === selfId) return;
+    const lastSeen = Number(info && info.lastSeen) || 0;
+    if (lastSeen && lastSeen < cutoff) {
+      patch['devices.' + id] = deleteField();
+    }
+  });
+  if (Object.keys(patch).length === 0) return;
+  try {
+    await updateDoc(dbRef, patch);
+  } catch {
+    // Pruning is opportunistic; a failure just retries on the next heartbeat.
+  }
 }
 
 function startPresence() {
@@ -438,6 +561,26 @@ export function onSyncStatus(cb) {
   };
 }
 
+export function getSyncHealth() {
+  return syncHealth;
+}
+
+// Subscribe to sync-health changes: { state: 'ok' | 'warning' | 'error',
+// sizeBytes, limitBytes }. 'warning' means the shared doc is approaching the
+// 1 MiB Firestore ceiling; 'error' means a write is failing (usually the doc
+// is full). Lets the UI surface a problem instead of failing silently.
+export function onSyncHealth(cb) {
+  healthCallbacks.add(cb);
+  try {
+    cb(syncHealth);
+  } catch {
+    // Health listeners should not break registration.
+  }
+  return () => {
+    healthCallbacks.delete(cb);
+  };
+}
+
 // Force this device's data up to the cloud right now, stamping every key with
 // the current time so it wins last-write-wins on all other linked devices.
 // This is the "make everyone match this device" button.
@@ -459,10 +602,13 @@ export async function forceSyncFromThisDevice() {
 
   writeMeta(meta);
 
+  const sizeBytes = refreshSizeHealth();
   try {
     await setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
+    markWriteResult(true, sizeBytes);
     return true;
   } catch {
+    markWriteResult(false, sizeBytes);
     return false;
   }
 }

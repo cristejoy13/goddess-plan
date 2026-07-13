@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import { calcTDEE, generatePlan } from '../utils/planGenerator';
-import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, getThisDeviceId, isSyncActive, onDevices, onSyncStatus } from '../utils/sync';
+import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, getSyncHealth, getThisDeviceId, isSyncActive, onDevices, onSyncHealth, onSyncStatus } from '../utils/sync';
 
 /* ─── Helpers ─── */
 function GuideStep({ num, title, desc }) {
@@ -384,11 +384,13 @@ function DeviceSyncSection() {
   const [error, setError] = useState('');
   const [pushState, setPushState] = useState('idle');
   const [devices, setDevices] = useState({});
+  const [health, setHealth] = useState(getSyncHealth);
   const [now, setNow] = useState(() => Date.now());
   const codeRef = useRef(null);
   const thisId = getThisDeviceId();
 
   useEffect(() => onSyncStatus(setActive), []);
+  useEffect(() => onSyncHealth(setHealth), []);
   useEffect(() => onDevices(setDevices), []);
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
@@ -469,6 +471,23 @@ function DeviceSyncSection() {
         <span className="sync-hero-icon">{active ? '✓' : '…'}</span>
         <span className="sync-hero-text">{headline}</span>
       </div>
+      {health.state !== 'ok' && (
+        <div className={`sync-health sync-health-${health.state}`} role="status">
+          {health.state === 'error' ? (
+            <>
+              <strong>Sync couldn’t save.</strong> Your gadget’s cloud storage is full,
+              so new changes aren’t reaching your other gadgets. Free up room by deleting
+              old diary pages or photos, then tap “Push this gadget’s data” below.
+            </>
+          ) : (
+            <>
+              <strong>Storage is filling up.</strong> You’ve used about {Math.round((health.sizeBytes / health.limitBytes) * 100)}%
+              of the space that keeps your gadgets in sync. Clearing old diary pages or photos
+              now will keep everything syncing smoothly.
+            </>
+          )}
+        </div>
+      )}
       <div className="sync-note">
         Your notes, checklist, plan, and profile are saved to the cloud and shared with every gadget below.
       </div>

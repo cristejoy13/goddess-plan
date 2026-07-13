@@ -130,11 +130,34 @@ function createNotebookPage(seed = {}) {
   };
 }
 
+function createChecklistItem(seed = {}) {
+  return {
+    id: seed.id || makeNotebookId('check'),
+    text: seed.text || '',
+    done: Boolean(seed.done),
+    pinned: Boolean(seed.pinned),
+    createdAt: seed.createdAt || new Date().toISOString(),
+    completedAt: seed.completedAt || '',
+  };
+}
+
+function createChecklist(seed = {}) {
+  const now = new Date().toISOString();
+  return {
+    id: seed.id || makeNotebookId('list'),
+    title: seed.title ?? '',
+    items: Array.isArray(seed.items) ? seed.items.map(createChecklistItem) : [],
+    createdAt: seed.createdAt || now,
+    updatedAt: seed.updatedAt || seed.createdAt || now,
+  };
+}
+
 function createEmptyNotebook() {
   return {
     pages: [],
     activePageId: '',
-    checklist: [],
+    checklists: [],
+    activeChecklistId: '',
     updatedAt: '',
   };
 }
@@ -170,14 +193,23 @@ function normalizeNotebookData(raw = {}) {
     ? raw.activePageId
     : (pages[0]?.id || '');
 
+  // Checklists support multiple named lists. Migrate the old single `checklist`
+  // array (one list per device) into the new `checklists` shape so existing
+  // items are never lost when the app updates on any device.
+  const checklists = Array.isArray(raw.checklists) && raw.checklists.length > 0
+    ? raw.checklists.map(createChecklist)
+    : (Array.isArray(raw.checklist) && raw.checklist.length > 0
+        ? [createChecklist({ title: '', items: raw.checklist })]
+        : []);
+  const activeChecklistId = checklists.some(list => list.id === raw.activeChecklistId)
+    ? raw.activeChecklistId
+    : (checklists[0]?.id || '');
+
   return {
     pages,
     activePageId,
-    checklist: Array.isArray(raw.checklist) ? raw.checklist.map(item => ({
-      ...item,
-      pinned: Boolean(item.pinned),
-      done: Boolean(item.done),
-    })) : [],
+    checklists,
+    activeChecklistId,
     updatedAt: raw.updatedAt || '',
   };
 }
@@ -214,6 +246,7 @@ function DailyNotebook() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('notes');
   const [diaryEditorOpen, setDiaryEditorOpen] = useState(false);
+  const [checklistEditorOpen, setChecklistEditorOpen] = useState(false);
   const [moodPickerOpen, setMoodPickerOpen] = useState(false);
   const [data, setData] = useState(loadNotebook);
   const [draftItem, setDraftItem] = useState('');
@@ -260,6 +293,7 @@ function DailyNotebook() {
   }, [open]);
 
   const currentPage = data.pages.find(page => page.id === data.activePageId) || data.pages[0];
+  const currentChecklist = data.checklists.find(list => list.id === data.activeChecklistId) || data.checklists[0];
 
   function updateCurrentPage(patch) {
     setData(prev => {
@@ -300,6 +334,7 @@ function DailyNotebook() {
   function closeEditor() {
     setMoodPickerOpen(false);
     setDiaryEditorOpen(false);
+    setChecklistEditorOpen(false);
   }
 
   function deleteCurrentPage() {
@@ -321,22 +356,80 @@ function DailyNotebook() {
     setMoodPickerOpen(false);
   }
 
+  // Apply a change to the items of the currently-open checklist, stamping it so
+  // last-write-wins sync carries the edit to every device.
+  function updateActiveChecklist(mapItems) {
+    setData(prev => {
+      const activeId = prev.checklists.some(list => list.id === prev.activeChecklistId)
+        ? prev.activeChecklistId
+        : prev.checklists[0]?.id;
+      if (!activeId) return prev;
+      const now = new Date().toISOString();
+      return stampNotebookUpdate({
+        ...prev,
+        activeChecklistId: activeId,
+        checklists: prev.checklists.map(list => list.id === activeId
+          ? { ...list, items: mapItems(list.items), updatedAt: now }
+          : list),
+      });
+    });
+  }
+
+  function addChecklist() {
+    const list = createChecklist();
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      checklists: [...prev.checklists, list],
+      activeChecklistId: list.id,
+    }));
+    setChecklistEditorOpen(true);
+  }
+
+  function selectChecklist(id) {
+    setData(prev => ({ ...prev, activeChecklistId: id }));
+    setChecklistEditorOpen(true);
+  }
+
+  function deleteChecklist() {
+    if (!currentChecklist) return;
+    setData(prev => {
+      const checklists = prev.checklists.filter(list => list.id !== prev.activeChecklistId);
+      return stampNotebookUpdate({
+        ...prev,
+        checklists,
+        activeChecklistId: checklists[0]?.id || '',
+      });
+    });
+    setChecklistEditorOpen(false);
+  }
+
+  function updateChecklistTitle(title) {
+    setData(prev => {
+      const activeId = prev.checklists.some(list => list.id === prev.activeChecklistId)
+        ? prev.activeChecklistId
+        : prev.checklists[0]?.id;
+      if (!activeId) return prev;
+      const now = new Date().toISOString();
+      return stampNotebookUpdate({
+        ...prev,
+        activeChecklistId: activeId,
+        checklists: prev.checklists.map(list => list.id === activeId
+          ? { ...list, title, updatedAt: now }
+          : list),
+      });
+    });
+  }
+
   function addChecklistItem(e) {
     e.preventDefault();
     const text = draftItem.trim();
     if (!text) return;
-    setData(prev => stampNotebookUpdate({
-      ...prev,
-      checklist: [
-        ...prev.checklist,
-        { id: makeNotebookId('check'), text, done: false, pinned: false, createdAt: new Date().toISOString() },
-      ],
-    }));
+    updateActiveChecklist(items => [...items, createChecklistItem({ text })]);
     setDraftItem('');
   }
 
   function toggleChecklistItem(id) {
-    const item = data.checklist.find(entry => entry.id === id);
+    const item = currentChecklist?.items.find(entry => entry.id === id);
     if (!item) return;
 
     if (item.done) {
@@ -344,32 +437,25 @@ function DailyNotebook() {
         clearTimeout(removeTimersRef.current[id]);
         delete removeTimersRef.current[id];
       }
-      setData(prev => stampNotebookUpdate({
-        ...prev,
-        checklist: prev.checklist.map(entry => entry.id === id ? { ...entry, done: false, completedAt: '' } : entry),
-      }));
+      updateActiveChecklist(items => items.map(entry => entry.id === id ? { ...entry, done: false, completedAt: '' } : entry));
       return;
     }
 
-    setData(prev => stampNotebookUpdate({
-      ...prev,
-      checklist: prev.checklist.map(entry => entry.id === id ? { ...entry, done: true, completedAt: new Date().toISOString() } : entry),
-    }));
+    updateActiveChecklist(items => items.map(entry => entry.id === id ? { ...entry, done: true, completedAt: new Date().toISOString() } : entry));
     if (removeTimersRef.current[id]) clearTimeout(removeTimersRef.current[id]);
     removeTimersRef.current[id] = setTimeout(() => {
+      // Remove from whichever list still holds it, in case the user switched
+      // lists during the 3s grace period.
       setData(prev => stampNotebookUpdate({
         ...prev,
-        checklist: prev.checklist.filter(entry => entry.id !== id),
+        checklists: prev.checklists.map(list => ({ ...list, items: list.items.filter(entry => entry.id !== id) })),
       }));
       delete removeTimersRef.current[id];
     }, 3000);
   }
 
   function togglePinChecklistItem(id) {
-    setData(prev => stampNotebookUpdate({
-      ...prev,
-      checklist: prev.checklist.map(item => item.id === id ? { ...item, pinned: !item.pinned } : item),
-    }));
+    updateActiveChecklist(items => items.map(item => item.id === id ? { ...item, pinned: !item.pinned } : item));
   }
 
   function deleteChecklistItem(id) {
@@ -377,11 +463,12 @@ function DailyNotebook() {
       clearTimeout(removeTimersRef.current[id]);
       delete removeTimersRef.current[id];
     }
-    setData(prev => stampNotebookUpdate({ ...prev, checklist: prev.checklist.filter(item => item.id !== id) }));
+    updateActiveChecklist(items => items.filter(item => item.id !== id));
   }
 
-  const checkedCount = data.checklist.filter(item => item.done).length;
-  const sortedChecklist = [...data.checklist].sort((a, b) => Number(b.pinned) - Number(a.pinned));
+  const checklistItems = currentChecklist?.items || [];
+  const checkedCount = checklistItems.filter(item => item.done).length;
+  const sortedChecklist = [...checklistItems].sort((a, b) => Number(b.pinned) - Number(a.pinned));
   const currentMood = MOOD_CHOICES.find(choice => choice.id === currentPage?.mood);
   const offlineSaveText = storageState === 'saved'
     ? 'Saved offline on this device'
@@ -428,7 +515,9 @@ function DailyNotebook() {
               <div>
                 <div className="daily-plan-label">Daily Notebook</div>
                 <div className="daily-notebook-title">
-                  {mode === 'notes' && diaryEditorOpen ? (currentPage?.title || 'Title') : 'Diary'}
+                  {mode === 'notes'
+                    ? (diaryEditorOpen ? (currentPage?.title || 'Title') : 'Diary')
+                    : (checklistEditorOpen ? (currentChecklist?.title || 'Untitled list') : 'Checklists')}
                 </div>
               </div>
               <button type="button" className="daily-notebook-close" onClick={() => setOpen(false)} aria-label="Close daily notebook">
@@ -555,38 +644,90 @@ function DailyNotebook() {
               </div>
             ) : (
               <div className="daily-check-panel">
-                <form className="daily-check-add" onSubmit={addChecklistItem}>
-                  <input
-                    type="text"
-                    value={draftItem}
-                    onChange={e => setDraftItem(e.target.value)}
-                    placeholder="Add a checklist item..."
-                  />
-                  <button type="submit">Add</button>
-                </form>
-                <div className="daily-check-count">{checkedCount}/{data.checklist.length} done today</div>
-                <div className={`daily-note-save${storageState === 'error' ? ' is-error' : ''}`}>{offlineSaveText}</div>
-                <div className="daily-check-list">
-                  {data.checklist.length === 0 && (
-                    <div className="daily-check-empty">No checklist items yet.</div>
-                  )}
-                  {sortedChecklist.map(item => (
-                    <div key={item.id} className={`daily-check-item${item.done ? ' done' : ''}`}>
-                      <button type="button" className="daily-check-toggle" onClick={() => toggleChecklistItem(item.id)} aria-label={`Toggle ${item.text}`}>
-                        <span />
-                      </button>
-                      <button type="button" className="daily-check-text" onClick={() => toggleChecklistItem(item.id)}>
-                        {item.pinned && <em className="daily-check-pin-mark">Pinned</em>}
-                        {item.text}
-                      </button>
-                      <button type="button" className={`daily-check-pin${item.pinned ? ' active' : ''}`} onClick={() => togglePinChecklistItem(item.id)} aria-label={`${item.pinned ? 'Unpin' : 'Pin'} ${item.text} to today`}>
-                        Pin
-                      </button>
-                      <button type="button" className="daily-check-delete" onClick={() => deleteChecklistItem(item.id)} aria-label={`Delete ${item.text}`}>
-                        Delete
+                <div className={`daily-note-workspace${checklistEditorOpen ? ' editor-open' : ' pages-only'}`}>
+                  <aside className="daily-pages-board" aria-label="Your checklists">
+                    <div className="daily-pages-board-top">
+                      <span>Lists</span>
+                      <button type="button" className="daily-page-add" onClick={addChecklist} aria-label="Add new checklist">
+                        +
                       </button>
                     </div>
-                  ))}
+                    <div className="daily-page-list">
+                      {data.checklists.length === 0 && (
+                        <div className="daily-page-empty">No lists yet — tap ＋ to make one (groceries, to-do, packing…).</div>
+                      )}
+                      {data.checklists.map(list => {
+                        const done = list.items.filter(item => item.done).length;
+                        return (
+                          <button
+                            key={list.id}
+                            type="button"
+                            className={`daily-page-card${list.id === data.activeChecklistId ? ' active' : ''}`}
+                            onClick={() => selectChecklist(list.id)}
+                          >
+                            <strong>{list.title || 'Untitled list'}</strong>
+                            <span>{list.items.length ? `${done}/${list.items.length} done` : 'Empty list'}</span>
+                            <small>{formatNotebookSavedAt(list.updatedAt)}</small>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </aside>
+
+                  {checklistEditorOpen && currentChecklist && (
+                  <section className="daily-note-editor daily-check-editor">
+                    <button type="button" className="daily-note-back" onClick={closeEditor}>
+                      ‹ Back
+                    </button>
+
+                    <input
+                      className="daily-page-title-input"
+                      type="text"
+                      value={currentChecklist.title || ''}
+                      onChange={e => updateChecklistTitle(e.target.value)}
+                      placeholder="List name (e.g. Groceries, To-do, Packing)"
+                    />
+
+                    <form className="daily-check-add" onSubmit={addChecklistItem}>
+                      <input
+                        type="text"
+                        value={draftItem}
+                        onChange={e => setDraftItem(e.target.value)}
+                        placeholder="Add an item..."
+                      />
+                      <button type="submit">Add</button>
+                    </form>
+                    <div className="daily-check-count">{checkedCount}/{checklistItems.length} done</div>
+                    <div className={`daily-note-save${storageState === 'error' ? ' is-error' : ''}`}>{offlineSaveText}</div>
+
+                    <button type="button" className="daily-note-btn danger daily-delete-page-btn" onClick={deleteChecklist}>
+                      Delete list
+                    </button>
+
+                    <div className="daily-check-list">
+                      {checklistItems.length === 0 && (
+                        <div className="daily-check-empty">No items yet.</div>
+                      )}
+                      {sortedChecklist.map(item => (
+                        <div key={item.id} className={`daily-check-item${item.done ? ' done' : ''}`}>
+                          <button type="button" className="daily-check-toggle" onClick={() => toggleChecklistItem(item.id)} aria-label={`Toggle ${item.text}`}>
+                            <span />
+                          </button>
+                          <button type="button" className="daily-check-text" onClick={() => toggleChecklistItem(item.id)}>
+                            {item.pinned && <em className="daily-check-pin-mark">Pinned</em>}
+                            {item.text}
+                          </button>
+                          <button type="button" className={`daily-check-pin${item.pinned ? ' active' : ''}`} onClick={() => togglePinChecklistItem(item.id)} aria-label={`${item.pinned ? 'Unpin' : 'Pin'} ${item.text}`}>
+                            Pin
+                          </button>
+                          <button type="button" className="daily-check-delete" onClick={() => deleteChecklistItem(item.id)} aria-label={`Delete ${item.text}`}>
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                  )}
                 </div>
               </div>
             )}

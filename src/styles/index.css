@@ -3903,6 +3903,27 @@ body {
 .sync-join-row input { flex: 1 1 auto; min-width: 0; width: auto; text-transform: uppercase; }
 .sync-join-row button { flex: 0 0 auto; width: auto; padding-left: 18px; padding-right: 18px; }
 .sync-note { font-size: 11px; color: var(--text-soft); line-height: 1.4; }
+.sync-health {
+  width: 100%;
+  max-width: 460px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: left;
+}
+.sync-health strong { display: block; margin-bottom: 2px; }
+.sync-health-warning {
+  background: rgba(240, 204, 96, 0.14);
+  border: 1px solid rgba(240, 204, 96, 0.5);
+  color: #f4d97a;
+}
+.sync-health-error {
+  background: rgba(240, 96, 120, 0.14);
+  border: 1px solid rgba(240, 96, 120, 0.55);
+  color: #f6a6b6;
+}
 .sync-help {
   width: 100%;
   max-width: 460px;
