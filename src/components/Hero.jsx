@@ -42,8 +42,8 @@ const RULE_BOARDS = [
     emoji: '✨',
     tone: 'yes',
     items: [
-      ['P', 'Protein', '3 PM on hard days'],
-      ['F', 'Fruit', '12 PM every day'],
+      ['P', 'Protein', '5 PM main meal'],
+      ['F', 'Fruit', 'first meal at 3 PM'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -54,9 +54,9 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['S', 'Small bites', 'put the fork down'],
-      ['L', 'Last meal', 'finish by 5 PM'],
+      ['L', 'Last meal', 'always stop by 5 PM'],
       ['O', 'Only 80%', 'light, not stuffed'],
-      ['W', 'Walk', '10–15 min after meals'],
+      ['W', 'Walk', '15 min after meals'],
     ],
   },
 ];
@@ -242,6 +242,54 @@ function formatDiaryDate(value) {
   });
 }
 
+// Auto-categorization for checklist items. Each item is matched (case-insensitive,
+// whole-word-ish substring) against these keyword sets in order; the first match
+// wins, and anything unrecognised falls into "Other". Order here is also the order
+// categories appear in the checklist.
+const CHECKLIST_CATEGORIES = [
+  { id: 'fruits', label: 'Fruits', emoji: '🍎', keywords: ['apple','banana','orange','mango','grape','grapes','berry','berries','strawberry','blueberry','pineapple','papaya','watermelon','melon','kiwi','peach','pear','plum','cherry','lemon','lime','avocado','coconut','dragon fruit','guava','lychee','fruit'] },
+  { id: 'veggies', label: 'Vegetables', emoji: '🥦', keywords: ['broccoli','spinach','carrot','carrots','lettuce','cabbage','cauliflower','cucumber','tomato','tomatoes','onion','garlic','potato','sweet potato','squash','eggplant','pepper','peppers','celery','kale','zucchini','mushroom','mushrooms','beans','peas','corn','ginger','veg','veggie','veggies','vegetable','salad','okra','asparagus'] },
+  { id: 'protein', label: 'Meat & Protein', emoji: '🍗', keywords: ['chicken','beef','pork','fish','salmon','sardine','sardines','tuna','shrimp','prawn','egg','eggs','tofu','tempeh','turkey','bacon','ham','sausage','meat','protein','steak','lamb','crab','squid'] },
+  { id: 'dairy', label: 'Dairy', emoji: '🧀', keywords: ['milk','cheese','yogurt','yoghurt','butter','cream','ice cream'] },
+  { id: 'grains', label: 'Grains & Carbs', emoji: '🍞', keywords: ['rice','bread','pasta','noodle','noodles','oats','oatmeal','quinoa','flour','cereal','cracker','crackers','tortilla','bun','bagel'] },
+  { id: 'beverages', label: 'Beverages', emoji: '🥤', keywords: ['water','coffee','tea','juice','soda','wine','beer','drink','smoothie','coconut water','matcha','kombucha'] },
+  { id: 'snacks', label: 'Snacks', emoji: '🍫', keywords: ['chips','chocolate','cookie','cookies','candy','nuts','almond','almonds','walnut','walnuts','popcorn','biscuit','granola','snack','chia'] },
+  { id: 'skincare', label: 'Skincare', emoji: '🧴', keywords: ['sunscreen','spf','niacinamide','retinol','serum','moisturizer','moisturiser','cleanser','toner','cream','face wash','vitamin c','hyaluronic','exfoliant','micellar','eye cream','skincare','sheet mask'] },
+  { id: 'makeup', label: 'Makeup', emoji: '💄', keywords: ['lipstick','lip tint','foundation','concealer','mascara','eyeliner','eyeshadow','blush','powder','primer','brow','highlighter','setting spray','makeup','lip balm','bb cream','cushion'] },
+  { id: 'haircare', label: 'Hair Care', emoji: '💇', keywords: ['shampoo','conditioner','hair oil','hair mask','hairspray','hair serum','scalp','comb','hair tie','hair'] },
+  { id: 'personal', label: 'Personal Care', emoji: '🪥', keywords: ['toothpaste','toothbrush','floss','deodorant','soap','body wash','razor','shaving','lotion','perfume','cotton','pads','tampon','wipes','sanitizer','nail'] },
+  { id: 'household', label: 'Household', emoji: '🏠', keywords: ['detergent','dish soap','sponge','tissue','tissues','toilet paper','paper towel','trash bag','cleaner','bleach','fabric softener','broom','candle','battery','batteries','light bulb','foil','plastic wrap','ziplock','laundry','cleaning'] },
+  { id: 'health', label: 'Health & Pharmacy', emoji: '💊', keywords: ['vitamin','supplement','medicine','paracetamol','ibuprofen','bandage','plaster','collagen','probiotic','magnesium','psyllium','melatonin','painkiller','multivitamin'] },
+];
+const OTHER_CATEGORY = { id: 'other', label: 'Other', emoji: '📦' };
+
+function categorizeChecklistItem(text) {
+  const t = ` ${String(text || '').toLowerCase()} `;
+  for (const cat of CHECKLIST_CATEGORIES) {
+    if (cat.keywords.some(k => t.includes(k))) return cat;
+  }
+  return OTHER_CATEGORY;
+}
+
+// Group a list of items into ordered category buckets, keeping pinned items first
+// inside each category. Only non-empty categories are returned, in CHECKLIST_CATEGORIES
+// order with "Other" last.
+function groupChecklistByCategory(items) {
+  const buckets = new Map();
+  items.forEach(item => {
+    const cat = categorizeChecklistItem(item.text);
+    if (!buckets.has(cat.id)) buckets.set(cat.id, { cat, items: [] });
+    buckets.get(cat.id).items.push(item);
+  });
+  const order = [...CHECKLIST_CATEGORIES, OTHER_CATEGORY];
+  return order
+    .filter(cat => buckets.has(cat.id))
+    .map(cat => ({
+      cat,
+      items: buckets.get(cat.id).items.sort((a, b) => Number(b.pinned) - Number(a.pinned)),
+    }));
+}
+
 function DailyNotebook() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('notes');
@@ -253,6 +301,10 @@ function DailyNotebook() {
   const [storageState, setStorageState] = useState('saved');
   const removeTimersRef = useRef({});
   const didMountRef = useRef(false);
+  // Long-press (~0.6s) arms a delete option on a checklist card or item.
+  const longPressRef = useRef({ timer: null, fired: false });
+  const [armedListId, setArmedListId] = useState(null);
+  const [armedItemId, setArmedItemId] = useState(null);
 
   useEffect(() => {
     // Skip the initial mount: `data` was just loaded from storage (or freshly
@@ -390,17 +442,45 @@ function DailyNotebook() {
     setChecklistEditorOpen(true);
   }
 
-  function deleteChecklist() {
-    if (!currentChecklist) return;
+  function deleteChecklistById(id) {
     setData(prev => {
-      const checklists = prev.checklists.filter(list => list.id !== prev.activeChecklistId);
+      const checklists = prev.checklists.filter(list => list.id !== id);
       return stampNotebookUpdate({
         ...prev,
         checklists,
-        activeChecklistId: checklists[0]?.id || '',
+        activeChecklistId: prev.activeChecklistId === id ? (checklists[0]?.id || '') : prev.activeChecklistId,
       });
     });
-    setChecklistEditorOpen(false);
+    setArmedListId(null);
+    if (id === data.activeChecklistId) setChecklistEditorOpen(false);
+  }
+
+  // Press-and-hold (~0.6s) to reveal a delete option on a card or item.
+  function startLongPress(kind, id) {
+    clearTimeout(longPressRef.current.timer);
+    longPressRef.current.fired = false;
+    longPressRef.current.timer = setTimeout(() => {
+      longPressRef.current.fired = true;
+      if (kind === 'list') { setArmedListId(id); setArmedItemId(null); }
+      else { setArmedItemId(id); setArmedListId(null); }
+      try { navigator.vibrate?.(15); } catch { /* haptics optional */ }
+    }, 600);
+  }
+  function cancelLongPress() {
+    clearTimeout(longPressRef.current.timer);
+    longPressRef.current.timer = null;
+  }
+  // Returns true if a long-press just fired, so the tap that follows is ignored.
+  function consumedLongPress() {
+    if (longPressRef.current.fired) {
+      longPressRef.current.fired = false;
+      return true;
+    }
+    return false;
+  }
+  function disarmDelete() {
+    setArmedListId(null);
+    setArmedItemId(null);
   }
 
   function updateChecklistTitle(title) {
@@ -468,7 +548,7 @@ function DailyNotebook() {
 
   const checklistItems = currentChecklist?.items || [];
   const checkedCount = checklistItems.filter(item => item.done).length;
-  const sortedChecklist = [...checklistItems].sort((a, b) => Number(b.pinned) - Number(a.pinned));
+  const checklistGroups = groupChecklistByCategory(checklistItems);
   const currentMood = MOOD_CHOICES.find(choice => choice.id === currentPage?.mood);
   const offlineSaveText = storageState === 'saved'
     ? 'Saved offline on this device'
@@ -658,17 +738,33 @@ function DailyNotebook() {
                       )}
                       {data.checklists.map(list => {
                         const done = list.items.filter(item => item.done).length;
+                        const armed = armedListId === list.id;
                         return (
-                          <button
-                            key={list.id}
-                            type="button"
-                            className={`daily-page-card${list.id === data.activeChecklistId ? ' active' : ''}`}
-                            onClick={() => selectChecklist(list.id)}
-                          >
-                            <strong>{list.title || 'Untitled list'}</strong>
-                            <span>{list.items.length ? `${done}/${list.items.length} done` : 'Empty list'}</span>
-                            <small>{formatNotebookSavedAt(list.updatedAt)}</small>
-                          </button>
+                          <div key={list.id} className={`daily-page-card-wrap${armed ? ' armed' : ''}`}>
+                            <button
+                              type="button"
+                              className={`daily-page-card${list.id === data.activeChecklistId ? ' active' : ''}`}
+                              onClick={() => { if (consumedLongPress()) return; disarmDelete(); selectChecklist(list.id); }}
+                              onPointerDown={() => startLongPress('list', list.id)}
+                              onPointerUp={cancelLongPress}
+                              onPointerLeave={cancelLongPress}
+                              onPointerCancel={cancelLongPress}
+                              onContextMenu={e => e.preventDefault()}
+                            >
+                              <strong>{list.title || 'Untitled list'}</strong>
+                              <span>{list.items.length ? `${done}/${list.items.length} done` : 'Empty list'}</span>
+                              <small>{formatNotebookSavedAt(list.updatedAt)}</small>
+                            </button>
+                            {armed && (
+                              <div className="daily-delete-pop" role="dialog" aria-label={`Delete ${list.title || 'this list'}?`}>
+                                <span>Delete this list?</span>
+                                <div className="daily-delete-pop-btns">
+                                  <button type="button" className="daily-delete-confirm" onClick={() => deleteChecklistById(list.id)}>Delete</button>
+                                  <button type="button" className="daily-delete-cancel" onClick={disarmDelete}>Cancel</button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         );
                       })}
                     </div>
@@ -699,33 +795,52 @@ function DailyNotebook() {
                     </form>
                     <div className="daily-check-count">{checkedCount}/{checklistItems.length} done</div>
                     <div className={`daily-note-save${storageState === 'error' ? ' is-error' : ''}`}>{offlineSaveText}</div>
+                    <div className="daily-check-hint">Tip: press and hold a list or item to delete it. Items sort into categories automatically.</div>
 
-                    <button type="button" className="daily-note-btn danger daily-delete-page-btn" onClick={deleteChecklist}>
-                      Delete list
-                    </button>
-
-                    <div className="daily-check-list">
-                      {checklistItems.length === 0 && (
-                        <div className="daily-check-empty">No items yet.</div>
-                      )}
-                      {sortedChecklist.map(item => (
-                        <div key={item.id} className={`daily-check-item${item.done ? ' done' : ''}`}>
-                          <button type="button" className="daily-check-toggle" onClick={() => toggleChecklistItem(item.id)} aria-label={`Toggle ${item.text}`}>
-                            <span />
-                          </button>
-                          <button type="button" className="daily-check-text" onClick={() => toggleChecklistItem(item.id)}>
-                            {item.pinned && <em className="daily-check-pin-mark">Pinned</em>}
-                            {item.text}
-                          </button>
-                          <button type="button" className={`daily-check-pin${item.pinned ? ' active' : ''}`} onClick={() => togglePinChecklistItem(item.id)} aria-label={`${item.pinned ? 'Unpin' : 'Pin'} ${item.text}`}>
-                            Pin
-                          </button>
-                          <button type="button" className="daily-check-delete" onClick={() => deleteChecklistItem(item.id)} aria-label={`Delete ${item.text}`}>
-                            Delete
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                    {checklistItems.length === 0 ? (
+                      <div className="daily-check-empty">No items yet.</div>
+                    ) : (
+                      <div className="daily-check-groups">
+                        {checklistGroups.map(group => (
+                          <div key={group.cat.id} className="daily-check-group">
+                            <div className="daily-check-group-title">{group.cat.emoji} {group.cat.label}</div>
+                            <div className="daily-check-group-items">
+                              {group.items.map(item => {
+                                const armed = armedItemId === item.id;
+                                return (
+                                  <div
+                                    key={item.id}
+                                    className={`daily-check-item${item.done ? ' done' : ''}${armed ? ' armed' : ''}`}
+                                    onPointerDown={() => startLongPress('item', item.id)}
+                                    onPointerUp={cancelLongPress}
+                                    onPointerLeave={cancelLongPress}
+                                    onPointerCancel={cancelLongPress}
+                                    onContextMenu={e => e.preventDefault()}
+                                  >
+                                    <button type="button" className="daily-check-toggle" onPointerDown={e => e.stopPropagation()} onClick={() => { if (consumedLongPress()) return; toggleChecklistItem(item.id); }} aria-label={`Toggle ${item.text}`}>
+                                      <span />
+                                    </button>
+                                    <button type="button" className="daily-check-text" onClick={() => { if (consumedLongPress()) return; toggleChecklistItem(item.id); }}>
+                                      {item.pinned && <em className="daily-check-pin-mark">Pinned</em>}
+                                      {item.text}
+                                    </button>
+                                    <button type="button" className={`daily-check-pin${item.pinned ? ' active' : ''}`} onPointerDown={e => e.stopPropagation()} onClick={() => { if (consumedLongPress()) return; togglePinChecklistItem(item.id); }} aria-label={`${item.pinned ? 'Unpin' : 'Pin'} ${item.text}`}>
+                                      Pin
+                                    </button>
+                                    {armed && (
+                                      <div className="daily-item-delete-pop" onPointerDown={e => e.stopPropagation()}>
+                                        <button type="button" className="daily-delete-confirm" onClick={() => { deleteChecklistItem(item.id); setArmedItemId(null); }}>Delete</button>
+                                        <button type="button" className="daily-delete-cancel" onClick={() => setArmedItemId(null)} aria-label="Cancel">✕</button>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </section>
                   )}
                 </div>
@@ -765,17 +880,23 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
     };
   });
 
+  // Ordered morning → night: start with the morning routine, then the workout,
+  // then daytime meals + walk, then the evening shower and night routine.
   const rows = [
-    { id: 'am-skin', icon: '☀️', title: 'AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
+    { id: 'sec-morning', divider: true, label: '☀️ Morning' },
+    { id: 'am-skin', icon: '☀️', title: 'Morning routine · AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
     { id: 'workout', icon: today.emoji, title: today.title, note: today.sub, nav: ['workout', null, todayDayId] },
+    { id: 'sec-day', divider: true, label: '🌤️ Daytime · finish eating by 5 PM' },
     ...mealRows,
-    { id: 'walk', icon: '🚶', title: 'Walk 10–15 min after meals', note: 'beats bloating' },
-    { id: 'body', icon: '🫧', title: 'Body care', note: 'Shower · Moisturise · SPF', nav: ['skincare', 'body'] },
+    { id: 'walk', icon: '🚶', title: 'Walk 15 min after meals', note: 'beats bloating' },
+    { id: 'sec-night', divider: true, label: '🌙 Night' },
+    { id: 'body', icon: '🫧', title: 'Shower & body care', note: 'Shower · Moisturise · SPF', nav: ['skincare', 'body'] },
     { id: 'hair', icon: '💎', title: 'Hair care', note: 'Oil ritual · Scalp massage', nav: ['skincare', 'hair'] },
-    { id: 'pm-skin', icon: '🌙', title: 'PM skincare', note: 'Double cleanse · Treatment · Repair', nav: ['skincare', 'pm'] },
+    { id: 'pm-skin', icon: '🌙', title: 'Night routine · PM skincare', note: 'Double cleanse · Treatment · Repair', nav: ['skincare', 'pm'] },
   ];
 
-  const done = rows.filter(r => checked[r.id]).length;
+  const taskRows = rows.filter(r => !r.divider);
+  const done = taskRows.filter(r => checked[r.id]).length;
 
   return (
     <div className="today-dashboard splash-item">
@@ -783,7 +904,7 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
         <div>
           <div className="daily-plan-label">Today's Plan</div>
           <div className="today-dashboard-date">
-            {today.day} <span className="today-progress">{done}/{rows.length} ✨</span>
+            {today.day} <span className="today-progress">{done}/{taskRows.length} ✨</span>
           </div>
         </div>
         <button className="today-open-btn" onClick={() => onNavigate('workout', null, todayDayId)}>Open day</button>
@@ -791,6 +912,9 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
 
       <div className="today-timeline">
         {rows.map(r => (
+          r.divider ? (
+            <div key={r.id} className="tl-section">{r.label}</div>
+          ) : (
           <div key={r.id} className={`tl-row${checked[r.id] ? ' is-done' : ''}`}>
             <button className="tl-check" aria-label={`Mark ${r.title} done`} onClick={() => toggle(r.id)}>
               <span className="tl-ring" />
@@ -807,6 +931,7 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
               {r.nav && <span className="tl-arrow">›</span>}
             </button>
           </div>
+          )
         ))}
       </div>
     </div>
@@ -866,7 +991,7 @@ export default function Hero({ onNavigate }) {
   return (
     <div className="hero hero-dashboard">
       <div className="hero-brand">
-        <div className="hero-brand-tag">🌸 1,200 Light Days · 1,500 Hard Days 🌸</div>
+        <div className="hero-brand-tag">🌸 First Meal 3 PM · Main Meal 5 PM · Stop by 5 PM 🌸</div>
         <div className="hero-title-row">
           <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
           <DailyNotebook />
@@ -900,7 +1025,7 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🥭</span><span>Fruits earlier in the day, vegetables at 5 PM</span></div>
+          <div className="hero-rule"><span>🥭</span><span>First meal 3 PM (psyllium husk + fruits) · main meal 5 PM · never eat after 5 PM</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>
         </div>

@@ -3,10 +3,10 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'meat',    icon: '🍑', title: 'Protein Days (Glute & Sprint)', desc: 'Monday, Thursday, Saturday — ~1,500 kcal. Fruits 12 PM · protein/meat 3 PM · light fruit or veg 5 PM.' },
-  { id: 'light',   icon: '🍓', title: 'Core & Light Days',             desc: 'Tuesday, Wednesday, Friday, Sunday — ~1,200 kcal. Fruits 12 PM · fruit snack 3 PM · filling vegetables 5 PM.' },
-  { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',          desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
-  { id: 'guide',   icon: '📊', title: 'Food Guide',                    desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
+  { id: 'meat',    icon: '🍑', title: 'Glute Days · Eat Freely', desc: 'Monday & Thursday (glute days) — eat whenever you like, just stop eating by 5 PM.' },
+  { id: 'light',   icon: '🍓', title: 'Everyday Meals',          desc: 'First meal 3 PM (psyllium husk + fruits) · main meal 5 PM · always stop eating by 5 PM.' },
+  { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
+  { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
 
 /* ─── RECIPE CATEGORIES shown in the Recipes tab ─── */
@@ -20,7 +20,7 @@ const RECIPE_CATEGORIES = [
     ],
   },
   {
-    title: 'Fruits (12 PM daily)',
+    title: 'Fruits (3 PM first meal)',
     items: [
       { key: 'papaya',    label: 'Papaya' },
       { key: 'pineapple', label: 'Pineapple' },
@@ -41,95 +41,68 @@ const RECIPE_CATEGORIES = [
   },
 ];
 
-/* ─── PROTEIN DAYS (Glute & Sprint: Mon, Thu, Sat) ─── */
+/* ─── GLUTE DAYS · EAT FREELY (Mon, Thu) ─── */
 export function MeatDays() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍑 <strong>Protein days: Monday, Thursday, Saturday.</strong> Glute + sprint days: about 1,500 calories. Fruits at 12, protein at 3 PM, light fruit or veg at 5 PM.
+        🍑 <strong>Glute days: Monday &amp; Thursday.</strong> On your butt-building days, eat whenever you feel hungry — there is only one rule: <strong>stop eating by 5 PM.</strong>
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        💡 <strong>Why more food on hard days?</strong> Fuel training and recovery at 3 PM without heavy late food.
-      </div>
-      <div className="calorie-banner splash-item" style={{ marginBottom: 18 }}>
-        <div className="cal-block">
-          <div className="cal-phase">Fat-Loss Phase · Deficit</div>
-          <div className="cal-number">~1,200 cal/day</div>
-          <div className="cal-note">Core/light days · fruit, oats, nuts, vegetables · no meat</div>
-        </div>
-        <div className="cal-divider" />
-        <div className="cal-block">
-          <div className="cal-phase">Maintenance</div>
-          <div className="cal-number">~1,500 cal/day</div>
-          <div className="cal-note">Glute/sprint days · more carbs and protein for recovery</div>
-        </div>
+        💡 <strong>Why free eating today?</strong> Your glutes grow with enough food and protein. Don't restrict — just keep it clean and finish by 5 PM.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">12:00 PM</div>
+            <div className="hyd-time">Anytime</div>
             <div>
-              <div className="hyd-d">Breakfast — Fruits first</div>
-              <div className="hyd-n">Papaya, pineapple, kiwi, banana, grapes, or watermelon. Add oats or chia for more fuel.</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">3:00 PM</div>
-            <div>
-              <div className="hyd-d">Dinner — Protein (post-workout, for the glutes)</div>
-              <div className="hyd-n">Glute days: fish, eggs, or tofu. Sprint day: meat. Add rice, quinoa, sweet potato, broccoli, carrots, or spinach.</div>
+              <div className="hyd-d">Eat freely until 5 PM</div>
+              <div className="hyd-n">Psyllium husk + fruits, and protein when you want it: salmon, sardines, beef, egg, or tofu, with veggies on the side.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Last Meal — Light · No food after this</div>
-              <div className="hyd-n">Berries, papaya, avocado, or steamed vegetables. Lighter than 3 PM, still filling.</div>
+              <div className="hyd-d">Kitchen closed — no food after this</div>
+              <div className="hyd-n">Stop eating for the day. Spearmint or ginger tea after is fine.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🥩 <strong>Protein focus on these days:</strong> fish, eggs, tofu, or sprint-day meat at 3 PM. Eat protein first, then the carb and vegetable sides.
+        🥩 <strong>Protein for the glutes:</strong> salmon, sardines, beef, egg, or tofu. Eat protein first, then your veggies and fruit.
       </div>
     </>
   );
 }
 
-/* ─── FRUIT DAYS (Tue, Wed, Fri, Sun) ─── */
+/* ─── EVERYDAY MEALS (Tue, Wed, Fri, Sat, Sun) ─── */
 export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🍓 <strong>Core & light days: Tuesday, Wednesday, Friday, Sunday.</strong> Eating window 12 PM – 5 PM, about 1,200 calories. Fruits at 12 PM and 3 PM; filling vegetables at 5 PM.
+        🍓 <strong>Two meals a day, finishing by 5 PM.</strong> First meal at 3 PM (psyllium husk + fruits), main meal at 5 PM. <strong>Always stop eating by 5 PM.</strong>
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">12:00 PM</div>
-            <div>
-              <div className="hyd-d">Breakfast — Fruits</div>
-              <div className="hyd-n">Papaya + kiwi · pineapple + apple · watermelon + oats · add oats or chia for the 1,200-calorie target</div>
-            </div>
-          </div>
-          <div className="hyd-row">
             <div className="hyd-time">3:00 PM</div>
             <div>
-              <div className="hyd-d">Snack — Fruits</div>
-              <div className="hyd-n">Banana + apple · mango + berries · grapes + nuts · fruit-centered and substantial</div>
+              <div className="hyd-d">First Meal — Psyllium husk + fruits</div>
+              <div className="hyd-n">1 tbsp psyllium husk in water, then fruits: papaya, banana, berries, apple, kiwi, or pineapple.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Last Meal — Light veg · No food after this</div>
-              <div className="hyd-n">Sweet potato, squash, broccoli, spinach, eggplant, carrots, cucumber, or avocado. No meat on core days.</div>
+              <div className="hyd-d">Main Meal — finish by 5 PM</div>
+              <div className="hyd-n">Fruits and your protein: salmon, sardines, beef, egg, or tofu, with veggies. This is your last food for the day.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 Light days are not starvation days. Eat enough: fruit earlier, vegetables at 5 PM, then walk 10–15 min after meals.
+        🌸 This is not starvation. Eat enough at both meals, then walk 15 min after eating. Nothing after 5 PM — spearmint or ginger tea only.
       </div>
     </>
   );
@@ -155,10 +128,10 @@ export function RecipeCard({ itemKey, label, onSelect }) {
 function HydrationSection() {
   const rows = [
     { time: 'On waking',   d: '500ml warm water + fresh lemon or calamansi',   n: 'Wake digestion and add Vitamin C before your first meal.' },
-    { time: 'Before 12 PM', d: 'Plain water + green tea (unsweetened)',          n: 'Fast until noon. Water and green tea support fullness, metabolism, and clear skin.' },
-    { time: '12 PM breakfast', d: 'Water — sip, don\'t gulp',                    n: 'Sip around fruit; do not drown it.' },
-    { time: '3 PM meal',   d: 'Collagen peptides in water (glute days)',        n: 'Dairy-free collagen supports skin, hair, joints, and gut lining.' },
-    { time: '5 PM + evening', d: 'Spearmint or ginger tea',                     n: 'Drink after your last meal. No food after 5 PM.' },
+    { time: 'Before 3 PM', d: 'Plain water + green tea (unsweetened)',          n: 'Fast until your 3 PM first meal. Water and green tea support fullness, metabolism, and clear skin.' },
+    { time: '3 PM first meal', d: 'Water — sip, don\'t gulp',                   n: 'Sip around fruit; do not drown it. Psyllium husk in a full glass of water.' },
+    { time: '5 PM main meal', d: 'Collagen peptides in water (glute days)',     n: 'Dairy-free collagen supports skin, hair, joints, and gut lining.' },
+    { time: 'After 5 PM', d: 'Spearmint or ginger tea',                         n: 'Drink after your last meal. No food after 5 PM.' },
     { time: 'All day',     d: 'Plain water — 2–2.5L total, sipped slowly',      n: 'Sip steadily to reduce bloat and puffiness.' },
   ];
   return (
@@ -353,9 +326,9 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Fuel Protocol · 1,200 Light Days · 1,500 Hard Days</div>
+        <div className="s-tag">Fuel Protocol · First Meal 3 PM · Stop by 5 PM</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">Eat 12 PM, 3 PM, and 5 PM · fruit at 12 · vegetables at 5 on light days · protein at 3 on hard days.</p>
+        <p className="s-desc">First meal 3 PM (psyllium husk + fruits) · main meal 5 PM · always stop eating by 5 PM · glute days eat freely until 5.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (

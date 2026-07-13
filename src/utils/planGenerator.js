@@ -5,7 +5,7 @@ export function addMinutes(timeStr, mins) {
 }
 
 export function calcLastMealTime() {
-  return '17:00'; // 5pm every day — 9-2-5 method
+  return '17:00'; // 5pm every day — always stop eating by 5 PM
 }
 
 export function calcTDEE(gender, age, heightCm, weightKg, activityLevel) {
