@@ -7952,6 +7952,80 @@ body {
 }
 .meal-ingr-tappable.custom { border-color: rgba(240,204,96,0.35); background: rgba(240,204,96,0.08); }
 
+/* "Choose a…" chooser chip — dashed to read as an action, not a food */
+.meal-ingr-pick {
+  background: rgba(240,204,96,0.06);
+  border: 1.5px dashed rgba(240,204,96,0.5);
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.meal-ingr-pick:hover, .meal-ingr-pick:active {
+  background: rgba(240,204,96,0.16);
+  border-color: var(--gold);
+}
+
+/* Food chooser sheet (bottom sheet, matches the ingredient menu) */
+.mb-pick-sheet {
+  width: 100%;
+  max-width: 480px;
+  max-height: min(72dvh, 620px);
+  background: linear-gradient(160deg, rgba(42,10,32,0.99), rgba(18,4,14,0.99));
+  border: 1.5px solid rgba(240,204,96,0.28);
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: sheetUp 0.28s cubic-bezier(.34,1.56,.64,1) both;
+}
+.mb-pick-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: capitalize;
+}
+.mb-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+  min-height: 0;
+}
+.mb-pick-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+.mb-pick-item:hover, .mb-pick-item:active {
+  border-color: rgba(255,92,157,0.45);
+  background: rgba(255,92,157,0.08);
+}
+.mb-pick-em { flex: none; font-size: 17px; }
+.mb-pick-name { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.mb-pick-avoid { flex: none; font-size: 11px; opacity: 0.8; }
+
 /* Reset to original pill */
 .mb-reset-btn {
   display: block;

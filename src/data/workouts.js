@@ -73,12 +73,12 @@ const STANDARD_MEALS = {
   rows: [
     { time: '3:00 PM — First Meal', ingredients: [
       { name: 'Psyllium husk (in water)', key: null },
-      { name: 'Fruit — any', key: null },
+      { name: 'Choose a fruit', key: null, pick: 'fruit', slot: 'morning' },
     ]},
     { time: '5:00 PM — Main Meal · finish by 5 PM', ingredients: [
-      { name: 'Pick 1 protein: salmon / sardines / beef / egg / tofu', key: null },
-      { name: 'Veggies — any', key: null },
-      { name: 'Fruit — optional', key: null },
+      { name: 'Choose a protein', key: null, pick: 'protein', slot: 'dinner' },
+      { name: 'Choose veggies', key: null, pick: 'veggie', slot: 'dinner' },
+      { name: 'Fruit (optional)', key: null, pick: 'fruit', slot: 'dinner' },
     ]},
   ],
 };
@@ -86,9 +86,10 @@ const GLUTE_MEALS = {
   label: '🍑 Glute day — eat whenever you like, just stop eating by 5 PM',
   rows: [
     { time: 'Anytime — Eat freely (until 5 PM)', ingredients: [
-      { name: 'Psyllium husk + fruit', key: null },
-      { name: 'Pick 1 protein: salmon / sardines / beef / egg / tofu', key: null },
-      { name: 'Veggies — any', key: null },
+      { name: 'Psyllium husk (in water)', key: null },
+      { name: 'Choose a fruit', key: null, pick: 'fruit', slot: 'morning' },
+      { name: 'Choose a protein', key: null, pick: 'protein', slot: 'morning' },
+      { name: 'Choose veggies', key: null, pick: 'veggie', slot: 'morning' },
     ]},
     { time: '5:00 PM — Kitchen closed', ingredients: [
       { name: 'Stop eating for the day', key: null },

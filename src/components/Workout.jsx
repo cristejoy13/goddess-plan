@@ -150,12 +150,21 @@ function useDayRemovedBase(dayId) {
   return [removed, removeItem, resetRemoved];
 }
 
+// "Choose a…" chips in the meal plan open a picker filtered to these food
+// categories, so you can pick the exact fruit / protein / veggie you want.
+const PICK_DEFS = {
+  fruit:   { label: 'a fruit',   cats: ['Fruit'] },
+  veggie:  { label: 'veggies',   cats: ['Vegetable'] },
+  protein: { label: 'a protein', cats: ['Protein', 'Seafood', 'Egg & Dairy', 'Legume'] },
+};
+
 function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
   const [custom, saveCustom]                    = useDayMeals(dayId, userId);
   const [removedBase, removeBaseItem, resetRemovedBase] = useDayRemovedBase(dayId);
   const [query, setQuery]       = useState('');
   const [browse, setBrowse]     = useState(false);
   const [pendingFood, setPendingFood] = useState(null);
+  const [pickSheet, setPickSheet] = useState(null); // { pick, slot }
   const [menuIngr, setMenuIngr]   = useState(null); // { ingr, holdName }
   const [infoSheet, setInfoSheet] = useState(null); // { name, tab: 'ingredients'|'howto' }
   const [confirmRemove, setConfirmRemove] = useState(null); // holdName
@@ -208,6 +217,14 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
 
   function openMenu(ingr, holdName) {
     setMenuIngr({ ingr, holdName });
+  }
+
+  // Add a food chosen from a "Choose a…" picker straight into its meal slot.
+  function addPickedFood(food, slot) {
+    if (!custom.find(c => c.name === food.name)) {
+      saveCustom([...custom, { name: food.name, emoji: food.emoji, meal: slot }]);
+    }
+    setPickSheet(null);
   }
 
   function handleMenuIngredients() {
@@ -350,6 +367,25 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
         </div>
       )}
 
+      {/* "Choose a…" food picker (fruit / protein / veggie) */}
+      {pickSheet && (
+        <div className="ingr-menu-backdrop" onClick={() => setPickSheet(null)}>
+          <div className="mb-pick-sheet" onClick={e => e.stopPropagation()}>
+            <div className="mb-pick-title">Choose {PICK_DEFS[pickSheet.pick].label}</div>
+            <div className="mb-pick-grid">
+              {FOODS.filter(f => PICK_DEFS[pickSheet.pick].cats.includes(f.cat)).map(f => (
+                <button key={f.name} className="mb-pick-item" onClick={() => addPickedFood(f, pickSheet.slot)}>
+                  <span className="mb-pick-em">{f.emoji}</span>
+                  <span className="mb-pick-name">{f.name}</span>
+                  {f.avoid && <span className="mb-pick-avoid">⚠️</span>}
+                </button>
+              ))}
+            </div>
+            <button className="ingr-menu-cancel" onClick={() => setPickSheet(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
       {/* 3-option ingredient menu overlay */}
       {menuIngr && (
         <div className="ingr-menu-backdrop" onClick={() => setMenuIngr(null)}>
@@ -403,7 +439,7 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
       <div className="meal-table">
         <div className="meal-table-top">
           <div className="meal-table-lbl">{baseMeals.label}</div>
-          <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Tap any food for options.</div>
+          <div className="mb-plan-note" style={{ marginTop: 4, marginBottom: 0 }}>Tap ＋ to choose a fruit, protein, or veggie · tap a food for options.</div>
         </div>
         <div className="meal-table-head">
           <div className="mth-time">Meal</div>
@@ -414,6 +450,17 @@ function MealBuilder({ dayId, baseMeals, onIngredientClick, userId }) {
             <div className="mtr-time">{r.time}</div>
             <div className="mtr-foods">
               {r.ingredients.map((ingr, j) => {
+                if (ingr.pick) {
+                  return (
+                    <button
+                      key={j}
+                      className="meal-ingr-chip meal-ingr-pick"
+                      onClick={() => setPickSheet({ pick: ingr.pick, slot: ingr.slot })}
+                    >
+                      ＋ {ingr.name}
+                    </button>
+                  );
+                }
                 const holdName = ingr.custom ? ingr.rawName : ingr.name;
                 return (
                   <button
