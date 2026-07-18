@@ -25,6 +25,9 @@ function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
 
+// Emoji shown on each meal-group header in the meal plan.
+const GROUP_EMOJI = { Sardines: '🐟', Chicken: '🍗', Egg: '🥚', 'Greek yogurt': '🥣', Fruit: '🍓' };
+
 // Per-day meal selection — the meals you'll eat today, saved locally per day.
 function useDayMeals(dayId) {
   const key = `gp_meal_${dayId}`;
@@ -51,9 +54,10 @@ function MealBuilder({ dayId, baseMeals }) {
   const [filter, setFilter]  = useState('All');
   const [openMeal, setOpenMeal] = useState(null);
 
-  const meals = filter === 'All'
-    ? RECOMMENDED_MEALS
-    : RECOMMENDED_MEALS.filter(m => m.tag === filter);
+  // Group meals by protein category so the plan reads clean and organised.
+  const groups = (filter === 'All' ? MEAL_TAGS.filter(t => t !== 'All') : [filter])
+    .map(tag => ({ tag, items: RECOMMENDED_MEALS.filter(m => m.tag === tag) }))
+    .filter(g => g.items.length > 0);
 
   function toggleChosen(name) {
     saveChosen(chosen.includes(name) ? chosen.filter(n => n !== name) : [...chosen, name]);
@@ -78,38 +82,48 @@ function MealBuilder({ dayId, baseMeals }) {
         ))}
       </div>
 
-      <div className="meal-cards">
-        {meals.map(m => {
-          const isChosen = chosen.includes(m.name);
-          const isOpen   = openMeal === m.name;
-          return (
-            <div key={m.name} className={`meal-card${isChosen ? ' chosen' : ''}`}>
-              <div className="meal-card-row">
-                <button className="meal-card-main" onClick={() => setOpenMeal(isOpen ? null : m.name)}>
-                  <span className="meal-card-emoji">{m.emoji}</span>
-                  <span className="meal-card-text">
-                    <span className="meal-card-name">{m.name}</span>
-                    <span className="meal-card-ingr">{m.ingredients}</span>
-                  </span>
-                  <span className="meal-card-cal">~{m.cal} cal</span>
-                </button>
-                <button
-                  className={`meal-card-pick${isChosen ? ' picked' : ''}`}
-                  onClick={() => toggleChosen(m.name)}
-                  aria-label={isChosen ? 'Remove from today' : 'Add to today'}
-                >
-                  {isChosen ? '✓' : '＋'}
-                </button>
-              </div>
-              {isOpen && (
-                <div className="meal-card-steps">
-                  <div className="meal-card-steps-label">🍳 How to make it</div>
-                  <div>{m.steps}</div>
-                </div>
-              )}
+      <div className="meal-groups">
+        {groups.map(g => (
+          <div key={g.tag} className="meal-group">
+            <div className="meal-group-title">
+              <span>{GROUP_EMOJI[g.tag] || '🍽️'} {g.tag}</span>
+              <span className="meal-group-count">{g.items.length}</span>
             </div>
-          );
-        })}
+            <div className="meal-cards">
+              {g.items.map(m => {
+                const isChosen = chosen.includes(m.name);
+                const isOpen   = openMeal === m.name;
+                return (
+                  <div key={m.name} className={`meal-card${isChosen ? ' chosen' : ''}`}>
+                    <div className="meal-card-row">
+                      <button className="meal-card-main" onClick={() => setOpenMeal(isOpen ? null : m.name)}>
+                        <span className="meal-card-emoji">{m.emoji}</span>
+                        <span className="meal-card-text">
+                          <span className="meal-card-name">{m.name}</span>
+                          <span className="meal-card-ingr">{m.ingredients}</span>
+                        </span>
+                        <span className="meal-card-cal">~{m.cal} cal</span>
+                      </button>
+                      <button
+                        className={`meal-card-pick${isChosen ? ' picked' : ''}`}
+                        onClick={() => toggleChosen(m.name)}
+                        aria-label={isChosen ? 'Remove from today' : 'Add to today'}
+                      >
+                        {isChosen ? '✓' : '＋'}
+                      </button>
+                    </div>
+                    {isOpen && (
+                      <div className="meal-card-steps">
+                        <div className="meal-card-steps-label">🍳 How to make it</div>
+                        <div>{m.steps}</div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
       {chosen.length > 0 && (
