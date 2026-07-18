@@ -8140,3 +8140,103 @@ body {
   33%       { transform: rotate(-4deg) scale(1.05); }
   66%       { transform: rotate(4deg) scale(1.05); }
 }
+
+/* ── Meal ideas (display-only suggestions) ── */
+.meal-ideas { margin: 14px 0 10px; }
+.meal-ideas-title { font-size: 13px; font-weight: 600; color: var(--text-mid, #c090b8); margin-bottom: 8px; }
+.meal-ideas-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.meal-idea-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+  color: var(--text-mid, #e7d6e8); border-radius: 999px;
+  padding: 6px 12px; font-size: 12.5px; line-height: 1.3;
+}
+
+/* ── Monthly challenge: reward / consequence ── */
+.m-rc { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 4px; }
+.m-rc-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.4; border-radius: 10px; padding: 8px 10px; }
+.m-rc-ic { flex: none; }
+.m-reward { background: rgba(120,220,160,0.10); border: 1px solid rgba(120,220,160,0.28); color: #cfeede; }
+.m-consequence { background: rgba(255,150,120,0.10); border: 1px solid rgba(255,150,120,0.28); color: #ffd9cc; }
+.m-reward strong, .m-consequence strong { font-weight: 700; }
+
+/* ── Monthly challenge: edit form ── */
+.m-edit-trigger {
+  margin-top: 10px; width: 100%; text-align: center;
+  background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.20);
+  color: var(--text-mid, #c090b8); border-radius: 12px; padding: 9px 12px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.m-edit-trigger:hover { background: rgba(255,255,255,0.08); }
+.m-edit { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.m-edit-field { display: flex; flex-direction: column; gap: 4px; }
+.m-edit-field > span { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); }
+.m-edit-field input, .m-edit-field textarea {
+  width: 100%; box-sizing: border-box;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+  color: #f8eed4; border-radius: 10px; padding: 9px 11px; font-size: 14px;
+  font-family: inherit; resize: vertical;
+}
+.m-edit-field input:focus, .m-edit-field textarea:focus { outline: none; border-color: #ff5c9d; }
+.m-edit-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.m-edit-save { background: #ff5c9d; color: #fff; border: none; border-radius: 10px; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.m-edit-cancel { background: rgba(255,255,255,0.08); color: var(--text-mid, #e7d6e8); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.m-edit-reset { background: transparent; color: #ffb3b3; border: 1px solid rgba(255,120,120,0.4); border-radius: 10px; padding: 9px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; margin-left: auto; }
+
+/* ── Simplified meal plan: curated meal cards ── */
+.meal-plan-head { margin: 14px 0 10px; }
+.meal-plan-label { font-size: 13.5px; font-weight: 700; color: #f8eed4; margin-bottom: 4px; }
+.meal-plan-hint { font-size: 12px; color: var(--text-mid, #c090b8); line-height: 1.4; }
+
+.meal-filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.meal-filter-chip {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-mid, #e7d6e8); border-radius: 999px;
+  padding: 6px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.meal-filter-chip.active { background: #ff5c9d; border-color: #ff5c9d; color: #fff; }
+
+.meal-cards { display: flex; flex-direction: column; gap: 10px; }
+.meal-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px; overflow: hidden;
+}
+.meal-card.chosen { border-color: rgba(120,220,160,0.55); background: rgba(120,220,160,0.08); }
+.meal-card-row { display: flex; align-items: stretch; }
+.meal-card-main {
+  flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 12px;
+  background: transparent; border: none; cursor: pointer; text-align: left;
+  padding: 12px 10px 12px 14px; color: inherit;
+}
+.meal-card-emoji { font-size: 24px; flex: none; }
+.meal-card-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.meal-card-name { font-size: 14px; font-weight: 700; color: #f8eed4; line-height: 1.25; }
+.meal-card-ingr { font-size: 12px; color: var(--text-mid, #c090b8); line-height: 1.35; }
+.meal-card-cal {
+  flex: none; align-self: center; font-size: 11px; font-weight: 700;
+  color: var(--text-mid, #e7d6e8); background: rgba(255,255,255,0.07);
+  border-radius: 999px; padding: 3px 9px; white-space: nowrap;
+}
+.meal-card-pick {
+  flex: none; width: 52px; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.05); color: var(--text-mid, #e7d6e8);
+  font-size: 20px; font-weight: 700; border-left: 1px solid rgba(255,255,255,0.10);
+}
+.meal-card-pick.picked { background: rgba(120,220,160,0.22); color: #7fe3a8; }
+.meal-card-steps {
+  padding: 12px 14px; border-top: 1px dashed rgba(255,255,255,0.12);
+  font-size: 13px; color: #e7d6e8; line-height: 1.5;
+}
+.meal-card-steps-label { font-size: 12px; font-weight: 700; color: var(--text-mid, #c090b8); margin-bottom: 5px; }
+
+.meal-chosen-summary {
+  margin-top: 14px; display: flex; align-items: center; gap: 10px;
+  background: rgba(120,220,160,0.10); border: 1px solid rgba(120,220,160,0.28);
+  border-radius: 12px; padding: 10px 12px;
+}
+.meal-chosen-text { flex: 1 1 auto; font-size: 12.5px; color: #cfeede; line-height: 1.4; }
+.meal-chosen-clear {
+  flex: none; background: transparent; border: 1px solid rgba(255,255,255,0.20);
+  color: var(--text-mid, #e7d6e8); border-radius: 8px; padding: 5px 12px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+}

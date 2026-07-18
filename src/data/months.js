@@ -22,7 +22,7 @@ export const MONTHS = [
     tasks: [
       'Week 1 — 500ml warm lemon water on waking, every day, before anything else.',
       'Week 2 — Hit 2–2.5L plain water daily, sipped slowly (not chugged).',
-      'Week 3 — Add dairy-free collagen at your 3 PM meal on glute days.',
+      'Week 3 — Add dairy-free collagen to your 5 PM meal.',
       'Week 4 — Spearmint or green tea daily. Assess skin clarity and morning puffiness.',
     ],
   },
@@ -89,13 +89,13 @@ export const MONTHS = [
   // August — Journey month 3
   {
     name: 'August',
-    ch: 'First Meal 3 PM & Stop by 5',
-    why: "Anchor the day on two meals: psyllium husk + fruit at 3 PM, main meal at 5 PM. Always stop eating by 5 PM to stay light.",
+    ch: 'OMAD — One Meal at 5 PM',
+    why: "Anchor the day on OMAD: water, tea, and psyllium husk during the day, then one satisfying meal at 5 PM. Always stop eating by 5 PM to stay light.",
     tasks: [
-      'Week 1 — First food at 3 PM: 1 tbsp psyllium husk in water, then fruit. Water + tea before then.',
-      'Week 2 — Build the 5 PM main meal: fruits + protein (salmon, sardines, beef, egg, tofu) + veggies.',
-      'Week 3 — Choose low-bloat fruits (papaya, pineapple, kiwi, berries, watermelon).',
-      'Week 4 — Make the 3 PM / 5 PM rhythm automatic. Never eat after 5 PM.',
+      'Week 1 — Fast on water, tea, and 1 tbsp psyllium husk in water during the day. Meal at 5 PM.',
+      'Week 2 — Build the 5 PM meal: protein (fish, chicken, egg whites, or Greek yogurt) + fruits + fibre.',
+      'Week 3 — Choose low-bloat fruits (papaya, pineapple, kiwi, berries, dragon fruit).',
+      'Week 4 — Make the OMAD 5 PM rhythm automatic. Never eat after 5 PM.',
     ],
   },
   // September — Journey month 4
@@ -104,8 +104,8 @@ export const MONTHS = [
     ch: 'Walk After Every Meal',
     why: "Walk 15 minutes after eating to move digestion, blunt blood sugar spikes, and reduce bloating.",
     tasks: [
-      'Week 1 — Walk 15 min after your 3 PM first meal, every day.',
-      'Week 2 — Walk 15 min after both meals (3 PM and 5 PM). Even a slow loop counts.',
+      'Week 1 — Walk 15 min after your 5 PM meal, every day.',
+      'Week 2 — Add a short daytime walk too. Even a slow loop counts.',
       'Week 3 — Add the full-body stretch warm-up before, and 10–20 min of jump rope to cool down after, every training session.',
       'Week 4 — Make post-meal walks automatic. Notice digestion and energy.',
     ],
@@ -125,22 +125,22 @@ export const MONTHS = [
   // November — Journey month 6
   {
     name: 'November',
-    ch: 'Sprint & Conditioning',
-    why: "Saturday sprints burn fat and shape glutes and legs without bulk. Follow the monthly progression.",
+    ch: 'Pilates & Inversions',
+    why: "Pilates days build a strong core and posture. Add handstand and elbow-stand drills to build balance and shoulder strength.",
     tasks: [
-      'Week 1 — Do the full Saturday sprint protocol. Warm up with jump rope first.',
-      'Week 2 — Hit every interval at true effort — the app\'s numbers are your target.',
-      'Week 3 — Add the 30-min brisk walk cool-down after every sprint (non-negotiable).',
-      'Week 4 — Sprints are a weekly ritual. Log your times and how each round felt.',
+      'Week 1 — Do all five pilates days. Warm up, do the vacuum, then pick one video.',
+      'Week 2 — Add a handstand or elbow-stand drill to each pilates day.',
+      'Week 3 — Add the 10–20 min jump-rope cool-down after every session.',
+      'Week 4 — Pilates is a weekly ritual. Note your balance and core progress.',
     ],
   },
   // December — Journey month 7
   {
     name: 'December',
-    ch: 'Gut Healing — Fuel Rhythm Mastery',
-    why: "Tie the meal rhythm together: first meal 3 PM (psyllium husk + fruits), main meal 5 PM, and always stop eating by 5 PM. Glute days you eat freely until 5.",
+    ch: 'Gut Healing — OMAD Mastery',
+    why: "Tie the OMAD rhythm together: water, tea, and psyllium husk during the day, one meal at 5 PM, and always stop eating by 5 PM. Glute days you eat freely until 5.",
     tasks: [
-      'Week 1 — Hit the rhythm: fruits at 12, fruit snack at 3 on light days, protein/meat at 3 on hard days, vegetables at 5.',
+      'Week 1 — Hit the rhythm: fast on water/tea/psyllium by day, one balanced 5 PM meal. Glute days, eat freely until 5.',
       'Week 2 — Steam or boil all veg — no oils, no dairy, no gluten (GODSSSS out).',
       'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
       'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',

@@ -20,11 +20,6 @@ export function getCurrentSprintProtocol() {
   return SPRINT_PROGRESSION[offset];
 }
 
-// Build the dynamic sprint exercise detail at load time
-const sp = getCurrentSprintProtocol();
-const sprintDetail = `${sp.reps} reps · ${sp.sprint}s all-out sprint → ${sp.rest}s complete rest · push every interval · protocol updates monthly · track where form breaks`;
-const sprintSub = `${sp.reps} reps · ${sp.sprint}s on / ${sp.rest}s off · ${sp.month} Protocol · ~${Math.round((sp.sprint + sp.rest) * sp.reps / 60 + 15 + 30)} min total`;
-
 // Shared warm-up & cool-down (used on every training day)
 const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves · loosen every major muscle before you train · dynamic swings then gentle holds' };
 const COOLDOWN = { name: 'Jump Rope Cool-Down', detail: '10–20 min · steady, light on the balls of your feet · flush the legs and burn extra fat · then walk 15 min after meals' };
@@ -54,6 +49,15 @@ const THUY_MAI_WORKOUTS = [
   { name: 'Full Body (Thuý Mai) — No-Equipment Video', detail: 'Thuý Mai Thuý Mai · Facebook full-body workout video · choose this for a no-equipment sweat without heavy lifting', url: 'https://www.facebook.com/share/v/1DDLPaGusb/' },
 ];
 
+// Intermediate hand-balancing: learn hand standing + elbow (forearm) standing.
+const HANDSTAND_INTERMEDIATE = [
+  { name: 'Handstand — Complete Handstand Guide',        detail: 'from beginner to intermediate · wall drills, hollow body, and balance · build to a free handstand', url: 'https://www.youtube.com/watch?v=2-3wv5kLNnw' },
+  { name: 'Handstand — Master the Handstand & Press',    detail: 'step-by-step handstand + press handstand · intermediate strength and control', url: 'https://www.youtube.com/watch?v=KknM6GXJJIs' },
+  { name: 'Elbow Stand — Forearm Stand (Calisthenics)',  detail: 'School of Calisthenics · elbow/forearm stand · the "brakes", kick-up, and balance', url: 'https://www.youtube.com/watch?v=6abRwGwQ704' },
+  { name: 'Elbow Stand — Pincha Mayurasana Tips',        detail: 'forearm-stand tips & tricks · shoulder alignment and a controlled kick-up', url: 'https://www.youtube.com/watch?v=emCch6a0DV4' },
+  { name: 'Elbow Stand — Float into Forearm Stand',      detail: 'intermediate follow-along · float up with control instead of kicking', url: 'https://www.youtube.com/watch?v=DtvzGQj5C6I' },
+];
+
 const YOGA_BEGINNER = [
   { name: 'Yoga — Complete Beginners (20 min)', detail: 'Yoga With Adriene · gentle intro, build the basics', url: 'https://www.youtube.com/watch?v=v7AYKMP6rOE' },
   { name: 'Yoga — Beginners: The Basics',       detail: 'Yoga With Adriene · foundational poses & alignment', url: 'https://www.youtube.com/watch?v=pWobp3phsEU' },
@@ -63,25 +67,103 @@ const YOGA_BEGINNER = [
 const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · do this FIRST before your video' };
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
-// Two meals a day, always finishing by 5 PM:
-//   • First meal 3 PM — psyllium husk + fruits
-//   • Main meal  5 PM — fruits, salmon, sardines, beef, egg, tofu, or veggies
-// On glute ("butt") days you eat whenever you like — the only rule is to stop
-// eating by 5 PM.
-const STANDARD_MEALS = {
-  label: '🍓 First meal 3 PM · Main meal 5 PM · Always stop eating by 5 PM',
+// OMAD (one meal a day). On pilates days you eat ONE meal at 5 PM; water, tea,
+// and psyllium husk during the day. On glute days you eat whenever you like —
+// the only rule is to stop eating by 5 PM. You choose whatever you want to eat;
+// tap ＋ to pick a fruit, protein, or veggie, or open the search to add anything.
+
+// Recommended meals — simple, oil-free, low/no salt, low-calorie. Proteins are
+// fish, chicken, egg whites, or Greek yogurt; carbs only with fibre; a little
+// good fat sometimes (avocado, chia). No sauces, nothing complicated to cook.
+// tag drives the filter chips in the meal plan.
+export const MEAL_TAGS = ['All', 'Fish', 'Chicken', 'Egg whites', 'Greek yogurt', 'Fruit'];
+
+export const RECOMMENDED_MEALS = [
+  // ── Fish ──
+  { emoji: '🐟', name: 'Steamed Salmon & Sweet Potato', tag: 'Fish', cal: 350,
+    ingredients: 'Salmon fillet · sweet potato · lemon',
+    steps: 'Steam the salmon 8–10 min with lemon. Boil or steam the sweet potato until fork-tender. No oil, no salt.' },
+  { emoji: '🐟', name: 'Sardines & Tomato Bowl', tag: 'Fish', cal: 250,
+    ingredients: 'Sardines (in water) · tomatoes · bell pepper · lemon',
+    steps: 'Drain the sardines. Chop tomato and bell pepper, toss together, squeeze lemon. Eat cold — no cooking.' },
+  { emoji: '🐟', name: 'Baked Fish & Bell Pepper', tag: 'Fish', cal: 280,
+    ingredients: 'Any white fish · bell pepper · tomato · lemon',
+    steps: 'Bake fish at 190°C for 12–15 min with sliced peppers and tomato. Finish with lemon. No oil.' },
+  { emoji: '🐟', name: 'Salmon & Berry Salad', tag: 'Fish', cal: 320,
+    ingredients: 'Cooked salmon · mixed berries · cucumber',
+    steps: 'Flake cooked salmon over sliced cucumber and berries. Squeeze lemon. Fresh, no cooking needed.' },
+  { emoji: '🐟', name: 'Steamed Fish & Greens', tag: 'Fish', cal: 260,
+    ingredients: 'Any fish · spinach or greens · ginger · lemon',
+    steps: 'Steam fish 8–10 min with ginger. Steam the greens 1–2 min. Squeeze lemon. No oil, light on salt.' },
+  { emoji: '🐟', name: 'Sardine & Sweet Potato Mash', tag: 'Fish', cal: 300,
+    ingredients: 'Sardines (in water) · sweet potato · black pepper',
+    steps: 'Boil and mash the sweet potato. Flake sardines on top, crack black pepper. Done in minutes.' },
+  // ── Chicken ──
+  { emoji: '🍗', name: 'Boiled Chicken & Sweet Potato', tag: 'Chicken', cal: 360,
+    ingredients: 'Chicken breast · sweet potato · tomato',
+    steps: 'Boil the chicken breast 15–18 min. Boil or steam the sweet potato. Slice tomato on the side. No oil.' },
+  { emoji: '🍗', name: 'Chicken & Bell Pepper Bowl', tag: 'Chicken', cal: 280,
+    ingredients: 'Chicken breast · bell pepper · tomato · lemon',
+    steps: 'Steam or dry-pan the chicken. Add sliced bell pepper and tomato, squeeze lemon. No oil, no sauce.' },
+  { emoji: '🍗', name: 'Chicken & Berry Bowl', tag: 'Chicken', cal: 300,
+    ingredients: 'Shredded chicken breast · mixed berries · cucumber',
+    steps: 'Boil and shred the chicken. Toss with berries and cucumber. Fresh and light.' },
+  { emoji: '🍗', name: 'Chicken & Pineapple Plate', tag: 'Chicken', cal: 320,
+    ingredients: 'Chicken breast · fresh pineapple',
+    steps: 'Cook chicken in a dry non-stick pan until done. Serve with fresh pineapple slices. No oil.' },
+  // ── Egg whites ──
+  { emoji: '🥚', name: 'Egg Whites & Sweet Potato', tag: 'Egg whites', cal: 230,
+    ingredients: '3 egg whites · sweet potato · tomato',
+    steps: 'Boil or poach the egg whites. Boil the sweet potato. Slice tomato on the side. No oil.' },
+  { emoji: '🥚', name: 'Egg White Veggie Scramble', tag: 'Egg whites', cal: 150,
+    ingredients: '3 egg whites · bell pepper · tomato',
+    steps: 'Scramble the egg whites in a non-stick pan (no oil) with chopped bell pepper and tomato.' },
+  { emoji: '🥚', name: 'Egg Whites & Avocado', tag: 'Egg whites', cal: 220,
+    ingredients: '3 egg whites · ¼ avocado · tomato',
+    steps: 'Boil or poach the egg whites. Add ¼ sliced avocado and tomato. A little good fat.' },
+  // ── Greek yogurt ──
+  { emoji: '🥣', name: 'Greek Yogurt & Berry Bowl', tag: 'Greek yogurt', cal: 250,
+    ingredients: 'Plain Greek yogurt · mixed berries · chia seeds',
+    steps: 'Top the yogurt with berries and a spoon of chia seeds. No sugar. No cooking.' },
+  { emoji: '🥣', name: 'Greek Yogurt, Banana & Chia', tag: 'Greek yogurt', cal: 280,
+    ingredients: 'Plain Greek yogurt · banana · chia seeds',
+    steps: 'Slice banana over the yogurt, sprinkle chia seeds. Let sit 5 min so the chia softens.' },
+  { emoji: '🥣', name: 'Greek Yogurt & Kiwi Bowl', tag: 'Greek yogurt', cal: 230,
+    ingredients: 'Plain Greek yogurt · kiwi · berries',
+    steps: 'Top the yogurt with sliced kiwi and berries. Fresh, high-fibre, no sugar.' },
+  // ── Fruit / fibre ──
+  { emoji: '🥤', name: '3-Fruit Smoothie', tag: 'Fruit', cal: 220,
+    ingredients: 'Banana · berries · papaya · water',
+    steps: 'Blend the fruit with water (no milk, no sugar). Drink fresh.' },
+  { emoji: '🥗', name: 'Fruit Salad Bowl', tag: 'Fruit', cal: 200,
+    ingredients: 'Apple · kiwi · dragon fruit · chia seeds',
+    steps: 'Chop the fruit, toss with chia seeds. Squeeze lime if you like. No cooking.' },
+  { emoji: '🍓', name: 'Papaya & Chia Bowl', tag: 'Fruit', cal: 180,
+    ingredients: 'Papaya · chia seeds · lime',
+    steps: 'Scoop papaya, top with chia seeds and a squeeze of lime. Gentle on the gut.' },
+  { emoji: '🍍', name: 'Pineapple & Berry Chia', tag: 'Fruit', cal: 190,
+    ingredients: 'Pineapple · mixed berries · chia seeds',
+    steps: 'Chop pineapple, add berries and chia seeds. Fresh and fibre-rich.' },
+  { emoji: '🍠', name: 'Sweet Potato & Egg', tag: 'Egg whites', cal: 280,
+    ingredients: 'Sweet potato · 1–2 eggs',
+    steps: 'Boil or steam the sweet potato. Boil the egg 7–10 min. No oil, no butter.' },
+];
+
+const OMAD_MEALS = {
+  label: '🍽️ OMAD — one meal at 5 PM · water, tea & psyllium husk during the day',
   rows: [
-    { time: '3:00 PM — First Meal', ingredients: [
+    { time: 'Daytime — Fasting window', ingredients: [
       { name: 'Psyllium husk (in water)', key: null },
-      { name: 'Choose a fruit', key: null, pick: 'fruit', slot: 'morning' },
+      { name: 'Water, lemon water, or tea', key: null },
     ]},
-    { time: '5:00 PM — Main Meal · finish by 5 PM', ingredients: [
+    { time: '5:00 PM — Your one meal (OMAD)', ingredients: [
       { name: 'Choose a protein', key: null, pick: 'protein', slot: 'dinner' },
       { name: 'Choose veggies', key: null, pick: 'veggie', slot: 'dinner' },
-      { name: 'Fruit (optional)', key: null, pick: 'fruit', slot: 'dinner' },
+      { name: 'Choose a fruit', key: null, pick: 'fruit', slot: 'dinner' },
     ]},
   ],
 };
+
 const GLUTE_MEALS = {
   label: '🍑 Glute day — eat whenever you like, just stop eating by 5 PM',
   rows: [
@@ -98,12 +180,10 @@ const GLUTE_MEALS = {
 };
 
 export const WORKOUT_DAYS = [
-  // ─── MONDAY: Glute A — Compound Power ──────────────────────────────────────
+  // MONDAY — Glute A (KEEP existing exercises + notes verbatim)
   {
-    emoji: '🍑',
-    emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Monday · Glute A',
-    title: 'Glutes — Compound Power',
+    emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
+    day: 'Monday · Glute A', title: 'Glutes — Compound Power',
     sub: '3 main lifts + stretch & jump rope · ~70 min total',
     noteBefore: { type: 'rose', text: '🍑 Heaviest glute day. Go heavy, slow, and full range on all three lifts. Eat whenever you like today — just stop by 5 PM.' },
     exercises: [
@@ -118,53 +198,30 @@ export const WORKOUT_DAYS = [
     noteAfter: { type: 'gold', text: '📋 Track hip thrust weight every Monday. Add 1–2 kg when all 4 sets feel controlled. Fuel up freely today, stop eating by 5 PM.' },
     meals: GLUTE_MEALS,
   },
-
-  // ─── TUESDAY: Core & Back A — Posture Foundation ───────────────────────────
+  // TUESDAY — Pilates
   {
-    emoji: '🪷',
-    emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Tuesday · Core & Back A',
-    title: 'Deep Core & Back — Posture',
-    sub: 'Full-body stretch + vacuum + your choice of video + jump rope · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Stretch first, do the vacuum, pick ONE video, then finish with 10–20 min of jump rope.' },
-    exercises: [
-      WARMUP,
-      VACUUM,
-      ...IZZY_ABS,
-      ...NICOLE_FULLBODY,
-      ...THUY_MAI_WORKOUTS,
-      COOLDOWN,
-    ],
-    noteAfter: { type: 'rose', text: '💡 First meal 3 PM (psyllium husk + fruits), main meal 5 PM. Eat slowly to 80% full and stop eating by 5 PM.' },
-    meals: STANDARD_MEALS,
+    emoji: '🪷', emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Tuesday · Pilates', title: 'Pilates — Deep Core & Posture',
+    sub: 'Stretch + vacuum + your choice of video + jump rope · ~60 min',
+    noteBefore: { type: 'gold', text: '🪷 Pilates day. Stretch first, do the vacuum, pick ONE video (core, full body, or a handstand/elbow-stand drill), then finish with 10–20 min of jump rope.' },
+    exercises: [ WARMUP, VACUUM, ...IZZY_ABS, ...NICOLE_FULLBODY, ...THUY_MAI_WORKOUTS, ...HANDSTAND_INTERMEDIATE, COOLDOWN ],
+    noteAfter: { type: 'rose', text: '💡 OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day. Stop eating by 5 PM.' },
+    meals: OMAD_MEALS,
   },
-
-  // ─── WEDNESDAY: Core & Back B — Deep Core & Lats ───────────────────────────
+  // WEDNESDAY — Pilates
   {
-    emoji: '🌿',
-    emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Wednesday · Core & Back B',
-    title: 'Deep Core & Back — Lats',
-    sub: 'Full-body stretch + vacuum + your choice of video + jump rope · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Stretch first, do the vacuum, pick ONE video, then finish with 10–20 min of jump rope.' },
-    exercises: [
-      WARMUP,
-      VACUUM,
-      ...IZZY_ABS,
-      ...NICOLE_FULLBODY,
-      ...THUY_MAI_WORKOUTS,
-      COOLDOWN,
-    ],
-    noteAfter: { type: 'rose', text: '💡 First meal 3 PM (psyllium husk + fruits), main meal 5 PM (fruits, salmon, sardines, beef, egg, tofu, or veggies). Stop eating by 5 PM.' },
-    meals: STANDARD_MEALS,
+    emoji: '🌿', emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Wednesday · Pilates', title: 'Pilates — Full Body & Lats',
+    sub: 'Stretch + vacuum + your choice of video + jump rope · ~60 min',
+    noteBefore: { type: 'gold', text: '🪷 Pilates day. Stretch first, do the vacuum, pick ONE video, then finish with 10–20 min of jump rope.' },
+    exercises: [ WARMUP, VACUUM, ...IZZY_ABS, ...NICOLE_FULLBODY, ...THUY_MAI_WORKOUTS, ...HANDSTAND_INTERMEDIATE, COOLDOWN ],
+    noteAfter: { type: 'rose', text: '💡 OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day. Stop eating by 5 PM.' },
+    meals: OMAD_MEALS,
   },
-
-  // ─── THURSDAY: Glute B — Shape & Round ─────────────────────────────────────
+  // THURSDAY — Glute B (KEEP existing exercises + notes verbatim)
   {
-    emoji: '🔥',
-    emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Thursday · Glute B',
-    title: 'Glutes — Shape & Round',
+    emoji: '🔥', emojiBg: 'rgba(252,228,239,0.5)',
+    day: 'Thursday · Glute B', title: 'Glutes — Shape & Round',
     sub: '3 main lifts + stretch & jump rope · ~65 min total',
     noteBefore: { type: 'rose', text: '🔥 Second glute day. Hit lower glutes, upper glutes, and outer shape. Eat whenever you like — just stop by 5 PM.' },
     exercises: [
@@ -179,63 +236,34 @@ export const WORKOUT_DAYS = [
     noteAfter: { type: 'gold', text: '📋 Track cable kickback and sumo squat weights each Thursday. Add resistance when reps feel easy. Fuel up freely today, stop eating by 5 PM.' },
     meals: GLUTE_MEALS,
   },
-
-  // ─── FRIDAY: Core & Back C — Stability & Alignment ─────────────────────────
+  // FRIDAY — Pilates
   {
-    emoji: '✨',
-    emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Friday · Core & Back C',
-    title: 'Deep Core & Back — Alignment',
-    sub: 'Full-body stretch + vacuum + your choice of video + jump rope · ~60 min',
-    noteBefore: { type: 'gold', text: '🪷 Deep-core & back day. Stretch first, do the vacuum, pick ONE video, then finish with 10–20 min of jump rope.' },
-    exercises: [
-      WARMUP,
-      VACUUM,
-      ...IZZY_ABS,
-      ...NICOLE_FULLBODY,
-      ...THUY_MAI_WORKOUTS,
-      COOLDOWN,
-    ],
-    noteAfter: { type: 'rose', text: '💡 Hydrate for sprints tomorrow. First meal 3 PM, main meal 5 PM, walk 15 min after meals, and sleep well.' },
-    meals: STANDARD_MEALS,
+    emoji: '✨', emojiBg: 'rgba(253,245,208,0.4)',
+    day: 'Friday · Pilates', title: 'Pilates — Core & Alignment',
+    sub: 'Stretch + vacuum + your choice of video + jump rope · ~60 min',
+    noteBefore: { type: 'gold', text: '🪷 Pilates day. Stretch first, do the vacuum, pick ONE video, then finish with 10–20 min of jump rope.' },
+    exercises: [ WARMUP, VACUUM, ...IZZY_ABS, ...NICOLE_FULLBODY, ...THUY_MAI_WORKOUTS, ...HANDSTAND_INTERMEDIATE, COOLDOWN ],
+    noteAfter: { type: 'rose', text: '💡 OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day. Stop eating by 5 PM.' },
+    meals: OMAD_MEALS,
   },
-
-  // ─── SATURDAY: Sprint ───────────────────────────────────────────────────────
+  // SATURDAY — Pilates
   {
-    emoji: '⚡',
-    emojiBg: 'rgba(252,228,239,0.6)',
-    day: 'Saturday · Sprint',
-    title: 'Sprint — Progressive Intervals',
-    sub: sprintSub,
-    sprintDay: true,
-    noteBefore: { type: 'rose', text: `⚡ ${sp.month} Sprint Protocol: ${sp.sprint}s on / ${sp.rest}s off × ${sp.reps} reps. It levels up monthly. Sprint on track, road, or treadmill.` },
-    exercises: [
-      WARMUP,
-      { name: 'Dynamic Warm-Up', detail: '5 min · leg swings × 10 each · hip circles × 10 each · high knees × 20 · butt kicks × 20 · 2 build-up strides at 70%' },
-      { name: `Sprint Intervals — ${sp.reps} Reps (${sp.month} Protocol)`, detail: sprintDetail },
-      { name: 'Fuel Note', detail: 'First meal 3 PM (psyllium husk + fruits), main meal 5 PM with protein (salmon, sardines, beef, egg, or tofu) + veggies to rebuild legs and glutes · always stop eating by 5 PM' },
-      COOLDOWN,
-    ],
-    noteAfter: { type: 'gold', text: `📋 ${sp.month} Protocol: ${sp.sprint}s sprint / ${sp.rest}s rest × ${sp.reps} reps. Log times and effort. Recover with protein, water, and 8+ hours sleep.` },
-    meals: STANDARD_MEALS,
+    emoji: '🌷', emojiBg: 'rgba(252,228,239,0.4)',
+    day: 'Saturday · Pilates', title: 'Pilates — Full Body Flow',
+    sub: 'Stretch + vacuum + your choice of video + jump rope · ~60 min',
+    noteBefore: { type: 'gold', text: '🪷 Pilates day. Stretch first, do the vacuum, pick ONE video, then finish with 10–20 min of jump rope.' },
+    exercises: [ WARMUP, VACUUM, ...IZZY_ABS, ...NICOLE_FULLBODY, ...THUY_MAI_WORKOUTS, ...HANDSTAND_INTERMEDIATE, COOLDOWN ],
+    noteAfter: { type: 'rose', text: '💡 OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day. Stop eating by 5 PM.' },
+    meals: OMAD_MEALS,
   },
-
-  // ─── SUNDAY: Rest — Walk & Stretch ─────────────────────────────────────────
+  // SUNDAY — Pilates
   {
-    emoji: '🌸',
-    emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Sunday · Rest',
-    title: 'Rest — Light Walk & Stretch',
-    sub: 'Walk · Swim · Yoga · Stretch — your choice · ~45 min',
-    noteBefore: { type: 'gold', text: '🌸 Rest and restore: walk, swim, beginner yoga, or stretch. Build wrist, shoulder, and core strength for handstands.' },
-    exercises: [
-      { name: 'Choose your movement', detail: 'Pick a walk, swim, yoga video, or full stretch. Keep it light and restorative.' },
-      { name: 'Light Walk — 30–45 min', detail: 'easy conversational pace, outside if possible · support muscle repair' },
-      { name: 'Swim — optional, 20–30 min', detail: 'easy laps if you have pool access · low-impact full-body recovery' },
-      ...YOGA_BEGINNER,
-      { name: 'Full-Body Stretch — 15 min', detail: 'figure-four glute stretch, hip flexor, hamstring, cat-cow, chest opener, world\'s greatest stretch · hold 45 sec each' },
-    ],
-    noteAfter: { type: 'rose', text: '🌿 Sunday prep: batch-cook chicken and fish, portion fruit, and set your jump rope by the door.' },
-    meals: STANDARD_MEALS,
+    emoji: '🌸', emojiBg: 'rgba(253,245,208,0.4)',
+    day: 'Sunday · Pilates', title: 'Pilates — Balance & Inversions',
+    sub: 'Stretch + vacuum + your choice of video + jump rope · ~60 min',
+    noteBefore: { type: 'gold', text: '🪷 Pilates day. Stretch first, do the vacuum, then work a handstand or elbow-stand drill. Finish with 10–20 min of jump rope.' },
+    exercises: [ WARMUP, VACUUM, ...IZZY_ABS, ...NICOLE_FULLBODY, ...THUY_MAI_WORKOUTS, ...HANDSTAND_INTERMEDIATE, COOLDOWN ],
+    noteAfter: { type: 'rose', text: '💡 OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day. Stop eating by 5 PM.' },
+    meals: OMAD_MEALS,
   },
 ];

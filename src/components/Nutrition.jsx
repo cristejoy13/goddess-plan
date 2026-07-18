@@ -4,7 +4,7 @@ import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
   { id: 'meat',    icon: '🍑', title: 'Glute Days · Eat Freely', desc: 'Monday & Thursday (glute days) — eat whenever you like, just stop eating by 5 PM.' },
-  { id: 'light',   icon: '🍓', title: 'Everyday Meals',          desc: 'First meal 3 PM (psyllium husk + fruits) · main meal 5 PM · always stop eating by 5 PM.' },
+  { id: 'light',   icon: '🍓', title: 'Everyday Meals',          desc: 'OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day — always stop eating by 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -20,7 +20,7 @@ const RECIPE_CATEGORIES = [
     ],
   },
   {
-    title: 'Fruits (3 PM first meal)',
+    title: 'Fruits (OMAD)',
     items: [
       { key: 'papaya',    label: 'Papaya' },
       { key: 'pineapple', label: 'Pineapple' },
@@ -57,7 +57,7 @@ export function MeatDays() {
             <div className="hyd-time">Anytime</div>
             <div>
               <div className="hyd-d">Eat freely until 5 PM</div>
-              <div className="hyd-n">Psyllium husk + fruits, and protein when you want it: salmon, sardines, beef, egg, or tofu, with veggies on the side.</div>
+              <div className="hyd-n">Psyllium husk + fruits, and protein when you want it: salmon, sardines, any fish, chicken, egg whites, or Greek yogurt, with veggies on the side.</div>
             </div>
           </div>
           <div className="hyd-row">
@@ -70,7 +70,7 @@ export function MeatDays() {
         </div>
       </div>
       <div className="note-box note-rose">
-        🥩 <strong>Protein for the glutes:</strong> salmon, sardines, beef, egg, or tofu. Eat protein first, then your veggies and fruit.
+        🐟 <strong>Protein for the glutes:</strong> salmon, sardines, any fish, chicken, egg whites, or Greek yogurt. Eat protein first, then your veggies and fruit.
       </div>
     </>
   );
@@ -81,28 +81,28 @@ export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🍓 <strong>Two meals a day, finishing by 5 PM.</strong> First meal at 3 PM (psyllium husk + fruits), main meal at 5 PM. <strong>Always stop eating by 5 PM.</strong>
+        🍽️ <strong>OMAD — one meal a day at 5 PM.</strong> Water, tea, and psyllium husk during the day, then one satisfying meal at 5 PM. <strong>Always stop eating by 5 PM.</strong>
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">3:00 PM</div>
+            <div className="hyd-time">Daytime</div>
             <div>
-              <div className="hyd-d">First Meal — Psyllium husk + fruits</div>
-              <div className="hyd-n">1 tbsp psyllium husk in water, then fruits: papaya, banana, berries, apple, kiwi, or pineapple.</div>
+              <div className="hyd-d">Fasting window — water, tea, psyllium</div>
+              <div className="hyd-n">Warm lemon water, plain water, and green tea. 1 tbsp psyllium husk in a full glass of water helps you stay full.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Main Meal — finish by 5 PM</div>
-              <div className="hyd-n">Fruits and your protein: salmon, sardines, beef, egg, or tofu, with veggies. This is your last food for the day.</div>
+              <div className="hyd-d">Your one meal — finish by 5 PM</div>
+              <div className="hyd-n">Protein (fish, chicken, egg whites, or Greek yogurt) + fruits and fibre. Keep it simple, oil-free, and lightly salted. This is your last food for the day.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 This is not starvation. Eat enough at both meals, then walk 15 min after eating. Nothing after 5 PM — spearmint or ginger tea only.
+        🌸 This is not starvation. Eat a full, satisfying meal at 5 PM, then walk 15 min after. Nothing after 5 PM — spearmint or ginger tea only.
       </div>
     </>
   );
@@ -127,11 +127,11 @@ export function RecipeCard({ itemKey, label, onSelect }) {
 /* ─── HYDRATION (embedded inside Recipes) ─── */
 function HydrationSection() {
   const rows = [
-    { time: 'On waking',   d: '500ml warm water + fresh lemon or calamansi',   n: 'Wake digestion and add Vitamin C before your first meal.' },
-    { time: 'Before 3 PM', d: 'Plain water + green tea (unsweetened)',          n: 'Fast until your 3 PM first meal. Water and green tea support fullness, metabolism, and clear skin.' },
-    { time: '3 PM first meal', d: 'Water — sip, don\'t gulp',                   n: 'Sip around fruit; do not drown it. Psyllium husk in a full glass of water.' },
-    { time: '5 PM main meal', d: 'Collagen peptides in water (glute days)',     n: 'Dairy-free collagen supports skin, hair, joints, and gut lining.' },
-    { time: 'After 5 PM', d: 'Spearmint or ginger tea',                         n: 'Drink after your last meal. No food after 5 PM.' },
+    { time: 'On waking',   d: '500ml warm water + fresh lemon or calamansi',   n: 'Wake digestion and add Vitamin C before anything else.' },
+    { time: 'Daytime',     d: 'Plain water + green tea (unsweetened)',          n: 'Fast until your 5 PM meal. Water and green tea support fullness, metabolism, and clear skin.' },
+    { time: 'Psyllium',    d: '1 tbsp psyllium husk in a full glass of water',  n: 'Take during the day to stay full and support digestion.' },
+    { time: '5 PM meal',   d: 'Water — sip, don\'t gulp · collagen optional',   n: 'Sip around your meal; do not drown it. Dairy-free collagen supports skin, hair, joints, and gut.' },
+    { time: 'After 5 PM',  d: 'Spearmint or ginger tea',                        n: 'Drink after your meal. No food after 5 PM.' },
     { time: 'All day',     d: 'Plain water — 2–2.5L total, sipped slowly',      n: 'Sip steadily to reduce bloat and puffiness.' },
   ];
   return (
@@ -326,9 +326,9 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Fuel Protocol · First Meal 3 PM · Stop by 5 PM</div>
+        <div className="s-tag">Fuel Protocol · OMAD · Stop by 5 PM</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">First meal 3 PM (psyllium husk + fruits) · main meal 5 PM · always stop eating by 5 PM · glute days eat freely until 5.</p>
+        <p className="s-desc">OMAD: one meal at 5 PM · water, tea &amp; psyllium husk during the day · always stop eating by 5 PM · glute days (Mon &amp; Thu) eat freely until 5.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (

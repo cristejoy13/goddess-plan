@@ -66,24 +66,120 @@ function saveState(state) {
   } catch {}
 }
 
-function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, isOpen, onOpen }) {
+function loadCustomChallenges() {
+  try { return JSON.parse(localStorage.getItem('gp_challenges_custom') || '{}') || {}; }
+  catch { return {}; }
+}
+function saveCustomChallenges(obj) {
+  try { localStorage.setItem('gp_challenges_custom', JSON.stringify(obj)); } catch {}
+}
+
+function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, isOpen, onOpen, custom, onSaveChallenge, onResetChallenge }) {
   const weeks = getMonthWeeks(monthIdx);
   const daysInMonth = new Date(CURRENT_YEAR, monthIdx + 1, 0).getDate();
   const prefix = `${CURRENT_YEAR}-${String(monthIdx + 1).padStart(2, '0')}-`;
   const checkedCount = Object.keys(daily).filter(k => k.startsWith(prefix) && daily[k]).length;
   const pct = Math.round((checkedCount / daysInMonth) * 100);
+  const ch          = (custom?.ch || '').trim() || month.ch;
+  const why         = (custom?.why || '').trim() || month.why;
+  const reward      = custom?.reward || '';
+  const consequence = custom?.consequence || '';
+  const hasCustom   = !!custom && Object.keys(custom).length > 0;
+
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ ch: '', why: '', reward: '', consequence: '' });
+
+  function openEdit() {
+    setDraft({
+      ch: custom?.ch ?? month.ch,
+      why: custom?.why ?? month.why,
+      reward: custom?.reward ?? '',
+      consequence: custom?.consequence ?? '',
+    });
+    setEditing(true);
+  }
+  function saveEdit() {
+    onSaveChallenge({
+      ch: draft.ch.trim(),
+      why: draft.why.trim(),
+      reward: draft.reward.trim(),
+      consequence: draft.consequence.trim(),
+    });
+    setEditing(false);
+  }
 
   return (
     <div className={`month-card${done[monthIdx] ? ' done' : ''}`}>
       <div className="m-top">
         <div>
           <div className="m-name">{month.name}</div>
-          <div className="m-challenge">{month.ch}</div>
+          <div className="m-challenge">{ch}</div>
         </div>
         <span className="m-badge">{done[monthIdx] ? '✓ Complete' : 'In Progress'}</span>
       </div>
 
-      <p className="m-why">{month.why}</p>
+      <p className="m-why">{why}</p>
+
+      {(reward || consequence) && (
+        <div className="m-rc">
+          {reward && (
+            <div className="m-rc-item m-reward">
+              <span className="m-rc-ic">🎁</span>
+              <span><strong>Reward:</strong> {reward}</span>
+            </div>
+          )}
+          {consequence && (
+            <div className="m-rc-item m-consequence">
+              <span className="m-rc-ic">⚠️</span>
+              <span><strong>Consequence:</strong> {consequence}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {!editing && (
+        <button className="m-edit-trigger" onClick={openEdit}>
+          ✏️ Edit challenge, reward &amp; consequence
+        </button>
+      )}
+
+      {editing && (
+        <div className="m-edit">
+          <label className="m-edit-field">
+            <span>Challenge this month</span>
+            <input type="text" value={draft.ch}
+              onChange={e => setDraft(d => ({ ...d, ch: e.target.value }))}
+              placeholder="e.g. Glute Foundation" />
+          </label>
+          <label className="m-edit-field">
+            <span>Why / notes (optional)</span>
+            <textarea rows={2} value={draft.why}
+              onChange={e => setDraft(d => ({ ...d, why: e.target.value }))}
+              placeholder="Why this matters this month" />
+          </label>
+          <label className="m-edit-field">
+            <span>🎁 Reward if I do it</span>
+            <input type="text" value={draft.reward}
+              onChange={e => setDraft(d => ({ ...d, reward: e.target.value }))}
+              placeholder="e.g. New workout set" />
+          </label>
+          <label className="m-edit-field">
+            <span>⚠️ Consequence if I don't</span>
+            <input type="text" value={draft.consequence}
+              onChange={e => setDraft(d => ({ ...d, consequence: e.target.value }))}
+              placeholder="e.g. No sweets for a week" />
+          </label>
+          <div className="m-edit-btns">
+            <button className="m-edit-save" onClick={saveEdit}>Save</button>
+            <button className="m-edit-cancel" onClick={() => setEditing(false)}>Cancel</button>
+            {hasCustom && (
+              <button className="m-edit-reset" onClick={() => { onResetChallenge(); setEditing(false); }}>
+                Reset to default
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <button className={`m-toggle${isOpen ? ' open' : ''}`} onClick={onOpen}>
         <span>View Calendar &amp; Daily Checklist</span>
@@ -150,6 +246,7 @@ const NUTR_TABS = [
 
 export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
   const [state, setState] = useState(loadState);
+  const [custom, setCustom] = useState(loadCustomChallenges);
   const currentMonth = new Date().getMonth();
   const [openMonthIdx, setOpenMonthIdx] = useState(currentMonth);
   const currentMonthRef = useRef(null);
@@ -180,6 +277,23 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
     setState(prev => {
       const next = { ...prev, done: { ...prev.done, [monthIdx]: !prev.done[monthIdx] } };
       saveState(next);
+      return next;
+    });
+  }, []);
+
+  const updateMonthChallenge = useCallback((idx, fields) => {
+    setCustom(prev => {
+      const next = { ...prev, [idx]: { ...(prev[idx] || {}), ...fields } };
+      saveCustomChallenges(next);
+      return next;
+    });
+  }, []);
+
+  const resetMonthChallenge = useCallback((idx) => {
+    setCustom(prev => {
+      const next = { ...prev };
+      delete next[idx];
+      saveCustomChallenges(next);
       return next;
     });
   }, []);
@@ -225,7 +339,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">June {CURRENT_YEAR} — May {CURRENT_YEAR + 1}</div>
         <h2 className="s-title">Monthly <em>Challenges</em></h2>
-        <p className="s-desc">Expand a month, then tap days to track consistency.</p>
+        <p className="s-desc">Set your own challenge, reward, and consequence for each month — it syncs across your devices. Tap days to track consistency.</p>
       </div>
 
       {state.autoReset && (
@@ -246,6 +360,9 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
               onToggleDone={toggleDone}
               isOpen={openMonthIdx === i}
               onOpen={() => toggleMonth(i)}
+              custom={custom[i]}
+              onSaveChallenge={(fields) => updateMonthChallenge(i, fields)}
+              onResetChallenge={() => resetMonthChallenge(i)}
             />
           </div>
         ))}
@@ -267,7 +384,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
       {/* ── Nutrition & Meals ── */}
       <div className="divider splash-item" style={{ marginTop: 36 }}>🍽️ Nutrition &amp; Meals</div>
       <p className="s-desc splash-item" style={{ marginBottom: 16 }}>
-        First meal 3 PM (psyllium husk + fruits) · main meal 5 PM (fruits + salmon/sardines/beef/egg/tofu + veggies) · always stop eating by 5 PM · glute days (Mon &amp; Thu): eat freely, just stop by 5 PM
+        OMAD: one meal at 5 PM · water, tea &amp; psyllium husk during the day · always stop eating by 5 PM · glute days (Mon &amp; Thu): eat freely, just stop by 5 PM
       </p>
 
       <div className="sk-top-tabs splash-item">

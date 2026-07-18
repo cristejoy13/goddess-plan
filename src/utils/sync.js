@@ -20,7 +20,7 @@ const firebaseConfig = {
   appId: '1:225308869833:web:b5cc454324237a0ec87918',
 };
 
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_daily', 'gp_done', 'gp_year', 'gp_color_mode'];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_daily', 'gp_done', 'gp_year', 'gp_color_mode', 'gp_challenges_custom'];
 const SYNC_CODE_KEY = 'gp_sync_code';
 const SYNC_META_KEY = 'gp_sync_meta';
 const SYNC_ADOPT_KEY = 'gp_sync_adopt';

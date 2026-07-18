@@ -42,8 +42,8 @@ const RULE_BOARDS = [
     emoji: '✨',
     tone: 'yes',
     items: [
-      ['P', 'Protein', '5 PM main meal'],
-      ['F', 'Fruit', 'first meal at 3 PM'],
+      ['P', 'Protein', 'fish, chicken, egg whites, yogurt'],
+      ['F', 'Fruit', 'fibre & fruits at your 5 PM meal'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -249,7 +249,7 @@ function formatDiaryDate(value) {
 const CHECKLIST_CATEGORIES = [
   { id: 'fruits', label: 'Fruits', emoji: '🍎', keywords: ['apple','banana','orange','mango','grape','grapes','berry','berries','strawberry','blueberry','pineapple','papaya','watermelon','melon','kiwi','peach','pear','plum','cherry','lemon','lime','avocado','coconut','dragon fruit','guava','lychee','fruit'] },
   { id: 'veggies', label: 'Vegetables', emoji: '🥦', keywords: ['broccoli','spinach','carrot','carrots','lettuce','cabbage','cauliflower','cucumber','tomato','tomatoes','onion','garlic','potato','sweet potato','squash','eggplant','pepper','peppers','celery','kale','zucchini','mushroom','mushrooms','beans','peas','corn','ginger','veg','veggie','veggies','vegetable','salad','okra','asparagus'] },
-  { id: 'protein', label: 'Meat & Protein', emoji: '🍗', keywords: ['chicken','beef','pork','fish','salmon','sardine','sardines','tuna','shrimp','prawn','egg','eggs','tofu','tempeh','turkey','bacon','ham','sausage','meat','protein','steak','lamb','crab','squid'] },
+  { id: 'protein', label: 'Protein', emoji: '🍗', keywords: ['chicken','beef','pork','fish','salmon','sardine','sardines','tuna','shrimp','prawn','egg','eggs','tofu','tempeh','turkey','bacon','ham','sausage','meat','protein','steak','lamb','crab','squid'] },
   { id: 'dairy', label: 'Dairy', emoji: '🧀', keywords: ['milk','cheese','yogurt','yoghurt','butter','cream','ice cream'] },
   { id: 'grains', label: 'Grains & Carbs', emoji: '🍞', keywords: ['rice','bread','pasta','noodle','noodles','oats','oatmeal','quinoa','flour','cereal','cracker','crackers','tortilla','bun','bagel'] },
   { id: 'beverages', label: 'Beverages', emoji: '🥤', keywords: ['water','coffee','tea','juice','soda','wine','beer','drink','smoothie','coconut water','matcha','kombucha'] },
@@ -991,7 +991,7 @@ export default function Hero({ onNavigate }) {
   return (
     <div className="hero hero-dashboard">
       <div className="hero-brand">
-        <div className="hero-brand-tag">🌸 First Meal 3 PM · Main Meal 5 PM · Stop by 5 PM 🌸</div>
+        <div className="hero-brand-tag">🌸 OMAD · One Meal at 5 PM · Stop by 5 PM 🌸</div>
         <div className="hero-title-row">
           <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
           <DailyNotebook />
@@ -1025,7 +1025,7 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🥭</span><span>First meal 3 PM (psyllium husk + fruits) · main meal 5 PM · never eat after 5 PM</span></div>
+          <div className="hero-rule"><span>🥭</span><span>OMAD: one meal at 5 PM · water, tea &amp; psyllium husk during the day · never eat after 5 PM</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>
         </div>
