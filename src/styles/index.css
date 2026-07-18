@@ -8255,3 +8255,56 @@ body {
   color: var(--text-mid, #e7d6e8); background: rgba(255,255,255,0.07);
   border-radius: 999px; padding: 2px 9px; text-transform: none;
 }
+
+/* ── Compact meal board: Notion/Trello-style columns of small pills ── */
+.meal-board {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  align-items: start;
+}
+.meal-col {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px; padding: 12px;
+}
+.meal-col-title {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--text-mid, #c090b8); margin-bottom: 10px;
+}
+.meal-col-count {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0; text-transform: none;
+  color: var(--text-mid, #e7d6e8); background: rgba(255,255,255,0.07);
+  border-radius: 999px; padding: 1px 8px;
+}
+.meal-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.meal-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  color: #f8eed4; border-radius: 999px; padding: 6px 11px;
+  font-size: 12.5px; font-weight: 600; line-height: 1.2; cursor: pointer;
+  max-width: 100%;
+}
+.meal-pill:hover { background: rgba(255,255,255,0.10); }
+.meal-pill.chosen { background: rgba(120,220,160,0.16); border-color: rgba(120,220,160,0.55); }
+.meal-pill-em { font-size: 15px; flex: none; }
+.meal-pill-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meal-pill-cal { font-size: 10.5px; font-weight: 700; color: var(--text-mid, #c090b8); flex: none; }
+.meal-pill-check { color: #7fe3a8; font-weight: 800; flex: none; }
+
+/* Recipe detail sheet (opened from a pill) */
+.meal-detail-sheet {
+  width: min(440px, 92vw); max-height: 82vh; overflow-y: auto;
+  background: #17101f; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px;
+}
+.meal-detail-top { display: flex; align-items: center; gap: 12px; }
+.meal-detail-em { font-size: 34px; flex: none; }
+.meal-detail-name { font-size: 17px; font-weight: 800; color: #f8eed4; line-height: 1.2; }
+.meal-detail-cal { font-size: 12px; color: var(--text-mid, #c090b8); margin-top: 3px; }
+.meal-detail-sec { font-size: 13.5px; color: #e7d6e8; line-height: 1.5; }
+.meal-detail-lbl { font-size: 12px; font-weight: 700; color: var(--text-mid, #c090b8); margin-bottom: 4px; }
+.meal-detail-add {
+  width: 100%; background: #ff5c9d; color: #fff; border: none; border-radius: 12px;
+  padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.meal-detail-add.added { background: rgba(120,220,160,0.20); color: #7fe3a8; border: 1px solid rgba(120,220,160,0.5); }

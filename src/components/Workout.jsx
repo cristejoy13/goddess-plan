@@ -47,14 +47,14 @@ function useDayMeals(dayId) {
   return [items, save];
 }
 
-// Simple meal plan: pick from a curated list of easy, oil-free, low-calorie
-// meals. Tap a meal to see how to make it; tap ＋/✓ to mark what you'll eat.
+// Compact meal board — small pills grouped into columns (Notion/Trello style)
+// so the whole plan is scannable without long scrolling. Tap a pill for the
+// recipe sheet (ingredients + how-to) and to add it to today.
 function MealBuilder({ dayId, baseMeals }) {
   const [chosen, saveChosen] = useDayMeals(dayId);
   const [filter, setFilter]  = useState('All');
-  const [openMeal, setOpenMeal] = useState(null);
+  const [detail, setDetail]  = useState(null);
 
-  // Group meals by protein category so the plan reads clean and organised.
   const groups = (filter === 'All' ? MEAL_TAGS.filter(t => t !== 'All') : [filter])
     .map(tag => ({ tag, items: RECOMMENDED_MEALS.filter(m => m.tag === tag) }))
     .filter(g => g.items.length > 0);
@@ -67,7 +67,7 @@ function MealBuilder({ dayId, baseMeals }) {
     <div className="meal-builder">
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
-        <div className="meal-plan-hint">Tap a meal to see how to make it. Tap ＋ to mark what you'll eat today.</div>
+        <div className="meal-plan-hint">Tap a meal for the recipe and to add it to today.</div>
       </div>
 
       <div className="meal-filter-row">
@@ -82,43 +82,27 @@ function MealBuilder({ dayId, baseMeals }) {
         ))}
       </div>
 
-      <div className="meal-groups">
+      <div className="meal-board">
         {groups.map(g => (
-          <div key={g.tag} className="meal-group">
-            <div className="meal-group-title">
+          <div key={g.tag} className="meal-col">
+            <div className="meal-col-title">
               <span>{GROUP_EMOJI[g.tag] || '🍽️'} {g.tag}</span>
-              <span className="meal-group-count">{g.items.length}</span>
+              <span className="meal-col-count">{g.items.length}</span>
             </div>
-            <div className="meal-cards">
+            <div className="meal-pills">
               {g.items.map(m => {
                 const isChosen = chosen.includes(m.name);
-                const isOpen   = openMeal === m.name;
                 return (
-                  <div key={m.name} className={`meal-card${isChosen ? ' chosen' : ''}`}>
-                    <div className="meal-card-row">
-                      <button className="meal-card-main" onClick={() => setOpenMeal(isOpen ? null : m.name)}>
-                        <span className="meal-card-emoji">{m.emoji}</span>
-                        <span className="meal-card-text">
-                          <span className="meal-card-name">{m.name}</span>
-                          <span className="meal-card-ingr">{m.ingredients}</span>
-                        </span>
-                        <span className="meal-card-cal">~{m.cal} cal</span>
-                      </button>
-                      <button
-                        className={`meal-card-pick${isChosen ? ' picked' : ''}`}
-                        onClick={() => toggleChosen(m.name)}
-                        aria-label={isChosen ? 'Remove from today' : 'Add to today'}
-                      >
-                        {isChosen ? '✓' : '＋'}
-                      </button>
-                    </div>
-                    {isOpen && (
-                      <div className="meal-card-steps">
-                        <div className="meal-card-steps-label">🍳 How to make it</div>
-                        <div>{m.steps}</div>
-                      </div>
-                    )}
-                  </div>
+                  <button
+                    key={m.name}
+                    className={`meal-pill${isChosen ? ' chosen' : ''}`}
+                    onClick={() => setDetail(m)}
+                  >
+                    <span className="meal-pill-em">{m.emoji}</span>
+                    <span className="meal-pill-name">{m.name}</span>
+                    <span className="meal-pill-cal">{m.cal}</span>
+                    {isChosen && <span className="meal-pill-check">✓</span>}
+                  </button>
                 );
               })}
             </div>
@@ -130,6 +114,35 @@ function MealBuilder({ dayId, baseMeals }) {
         <div className="meal-chosen-summary">
           <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')}</span>
           <button className="meal-chosen-clear" onClick={() => saveChosen([])}>Clear</button>
+        </div>
+      )}
+
+      {detail && (
+        <div className="ingr-menu-backdrop" onClick={() => setDetail(null)}>
+          <div className="meal-detail-sheet" onClick={e => e.stopPropagation()}>
+            <div className="meal-detail-top">
+              <span className="meal-detail-em">{detail.emoji}</span>
+              <div className="meal-detail-meta">
+                <div className="meal-detail-name">{detail.name}</div>
+                <div className="meal-detail-cal">~{detail.cal} cal · {detail.tag}</div>
+              </div>
+            </div>
+            <div className="meal-detail-sec">
+              <div className="meal-detail-lbl">🥗 Ingredients</div>
+              <div>{detail.ingredients}</div>
+            </div>
+            <div className="meal-detail-sec">
+              <div className="meal-detail-lbl">🍳 How to make it</div>
+              <div>{detail.steps}</div>
+            </div>
+            <button
+              className={`meal-detail-add${chosen.includes(detail.name) ? ' added' : ''}`}
+              onClick={() => toggleChosen(detail.name)}
+            >
+              {chosen.includes(detail.name) ? '✓ Added to today — tap to remove' : '＋ Add to today'}
+            </button>
+            <button className="ingr-menu-cancel" onClick={() => setDetail(null)}>Close</button>
+          </div>
         </div>
       )}
     </div>
