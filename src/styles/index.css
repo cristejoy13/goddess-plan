@@ -1143,6 +1143,40 @@ body {
 .workout-list li:last-child { border-bottom: none; }
 .workout-list li::before { content: '🌸'; font-size: 11px; margin-top: 3px; flex-shrink: 0; }
 
+/* Section headings inside a day's exercise list — so you can see at a glance
+   whether a line is a shoulder move, a back move, or a core video. */
+.workout-list li.ex-group {
+  display: block;
+  margin: 18px 0 4px;
+  padding: 8px 12px;
+  border: 1px solid rgba(240,204,96,0.22);
+  border-radius: 12px;
+  background: rgba(240,204,96,0.07);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold, #f0cc60);
+  line-height: 1.45;
+}
+.workout-list li.ex-group:first-child { margin-top: 4px; }
+.workout-list li.ex-group::before { content: none; }
+.workout-list li.ex-group small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text-mid);
+  opacity: 0.9;
+}
+.workout-list li.ex-group-core {
+  border-color: rgba(244,164,196,0.28);
+  background: rgba(244,164,196,0.08);
+  color: var(--rose, #f4a4c4);
+}
+
 .meal-box {
   margin-top: 16px;
   background: linear-gradient(135deg, rgba(30,20,5,0.6), rgba(40,10,25,0.5));

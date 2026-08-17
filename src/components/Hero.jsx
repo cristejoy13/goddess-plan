@@ -15,12 +15,12 @@ function todayLabel() {
 
 const WEEK_PILLS = [
   { label: 'Mon', emoji: '🍑', dayId: 'day-monday'    },
-  { label: 'Tue', emoji: '🪷', dayId: 'day-tuesday'   },
-  { label: 'Wed', emoji: '🌿', dayId: 'day-wednesday' },
-  { label: 'Thu', emoji: '🔥', dayId: 'day-thursday'  },
+  { label: 'Tue', emoji: '💪', dayId: 'day-tuesday'   },
+  { label: 'Wed', emoji: '🔥', dayId: 'day-wednesday' },
+  { label: 'Thu', emoji: '⚡', dayId: 'day-thursday'  },
   { label: 'Fri', emoji: '✨', dayId: 'day-friday'    },
-  { label: 'Sat', emoji: '⚡', dayId: 'day-saturday'  },
-  { label: 'Sun', emoji: '🌸', dayId: 'day-sunday'    },
+  { label: 'Sat', emoji: '🧘', dayId: 'day-saturday'  },
+  { label: 'Sun', emoji: '🤸', dayId: 'day-sunday'    },
 ];
 
 const RULE_BOARDS = [
@@ -42,8 +42,8 @@ const RULE_BOARDS = [
     emoji: '✨',
     tone: 'yes',
     items: [
-      ['P', 'Protein', 'fish, chicken, egg whites, yogurt'],
-      ['F', 'Fruit', 'fibre & fruits at your 5 PM meal'],
+      ['P', 'Protein', 'meat on glute days · eggs & yogurt otherwise'],
+      ['F', 'Fruit', 'smoothie bowls at 10 AM & 2 PM'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -54,7 +54,7 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['S', 'Small bites', 'put the fork down'],
-      ['L', 'Last meal', 'always stop by 5 PM'],
+      ['L', 'Last meal', '5 PM at sunset — sweet potato & banana'],
       ['O', 'Only 80%', 'light, not stuffed'],
       ['W', 'Walk', '15 min after meals'],
     ],
@@ -873,7 +873,7 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
     const [time, name] = row.time.split(' — ');
     return {
       id: `meal-${i}`,
-      icon: ['🍓', '🍽️', '🥗'][i],
+      icon: ['🥑', '🥣', '🍠'][i],
       time,
       title: name || 'Meal',
       note: row.ingredients.slice(0, 3).map(item => item.name).join(' · '),
@@ -886,9 +886,9 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
     { id: 'sec-morning', divider: true, label: '☀️ Morning' },
     { id: 'am-skin', icon: '☀️', title: 'Morning routine · AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
     { id: 'workout', icon: today.emoji, title: today.title, note: today.sub, nav: ['workout', null, todayDayId] },
-    { id: 'sec-day', divider: true, label: '🌤️ Daytime · finish eating by 5 PM' },
+    { id: 'cardio', icon: today.cardio?.icon || '🚶', title: today.cardio?.title || 'Walk after training', note: today.cardio?.note },
+    { id: 'sec-day', divider: true, label: '🌤️ Meals · 10 AM · 2 PM · 5 PM (sunset)' },
     ...mealRows,
-    { id: 'walk', icon: '🚶', title: 'Walk 15 min after meals', note: 'beats bloating' },
     { id: 'sec-night', divider: true, label: '🌙 Night' },
     { id: 'body', icon: '🫧', title: 'Shower & body care', note: 'Shower · Moisturise · SPF', nav: ['skincare', 'body'] },
     { id: 'hair', icon: '💎', title: 'Hair care', note: 'Oil ritual · Scalp massage', nav: ['skincare', 'hair'] },
@@ -991,7 +991,7 @@ export default function Hero({ onNavigate }) {
   return (
     <div className="hero hero-dashboard">
       <div className="hero-brand">
-        <div className="hero-brand-tag">🌸 OMAD · One Meal at 5 PM · Stop by 5 PM 🌸</div>
+        <div className="hero-brand-tag">🌸 3 Meals · 10 AM · 2 PM · 5 PM at Sunset 🌸</div>
         <div className="hero-title-row">
           <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
           <DailyNotebook />
@@ -1025,7 +1025,10 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🥭</span><span>OMAD: one meal at 5 PM · water, tea &amp; psyllium husk during the day · never eat after 5 PM</span></div>
+          <div className="hero-rule"><span>🥭</span><span>10 AM protein &amp; fats · 2 PM smoothie bowl · 5 PM sweet potato &amp; banana — nothing after sunset</span></div>
+          <div className="hero-rule"><span>🍑</span><span>Meat only on glute days (Mon · Wed · Fri) — the other days are smoothie bowls and fruit</span></div>
+          <div className="hero-rule"><span>🏋️</span><span>5 strength days: 3 glute days + 30-min walk · 2 upper-body days + jump rope · Sat &amp; Sun rest</span></div>
+          <div className="hero-rule"><span>🤍</span><span>Back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>
         </div>

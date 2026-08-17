@@ -3,8 +3,8 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'meat',    icon: '🍑', title: 'Glute Days · Eat Freely', desc: 'Monday & Thursday (glute days) — eat whenever you like, just stop eating by 5 PM.' },
-  { id: 'light',   icon: '🍓', title: 'Everyday Meals',          desc: 'OMAD: one meal at 5 PM. Water, tea, and psyllium husk during the day — always stop eating by 5 PM.' },
+  { id: 'meat',    icon: '🍑', title: 'Glute Days · Meat Days',  desc: 'Monday, Wednesday & Friday — the only days you eat meat. 10 AM protein & fats, 2 PM smoothie bowl, 5 PM sweet potato & banana.' },
+  { id: 'light',   icon: '🍓', title: 'No-Meat Days',            desc: 'Tuesday, Thursday, Saturday & Sunday — smoothie bowls and fruit at 10 AM and 2 PM, sweet potato & banana at 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -12,7 +12,7 @@ export const TABS = [
 /* ─── RECIPE CATEGORIES shown in the Recipes tab ─── */
 const RECIPE_CATEGORIES = [
   {
-    title: 'Protein (Glute Days)',
+    title: 'Protein (Glute Days · Mon · Wed · Fri)',
     items: [
       { key: 'egg',     label: 'Eggs' },
       { key: 'chicken', label: 'Chicken' },
@@ -20,7 +20,7 @@ const RECIPE_CATEGORIES = [
     ],
   },
   {
-    title: 'Fruits (OMAD)',
+    title: 'Fruits (Smoothie Bowls)',
     items: [
       { key: 'papaya',    label: 'Papaya' },
       { key: 'pineapple', label: 'Pineapple' },
@@ -41,68 +41,82 @@ const RECIPE_CATEGORIES = [
   },
 ];
 
-/* ─── GLUTE DAYS · EAT FREELY (Mon, Thu) ─── */
+/* ─── GLUTE DAYS · MEAT DAYS (Mon, Wed, Fri) ─── */
 export function MeatDays() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍑 <strong>Glute days: Monday &amp; Thursday.</strong> On your butt-building days, eat whenever you feel hungry — there is only one rule: <strong>stop eating by 5 PM.</strong>
+        🍑 <strong>Glute days: Monday, Wednesday &amp; Friday.</strong> These are your <strong>only meat days</strong> — the days you train glutes are the days you eat meat.
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        💡 <strong>Why free eating today?</strong> Your glutes grow with enough food and protein. Don't restrict — just keep it clean and finish by 5 PM.
+        💡 <strong>Why meat today?</strong> Your glutes grow on protein, and training day is when your body uses it best. Same three meal times as every other day.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">Anytime</div>
+            <div className="hyd-time">10:00 AM</div>
             <div>
-              <div className="hyd-d">Eat freely until 5 PM</div>
-              <div className="hyd-n">Psyllium husk + fruits, and protein when you want it: salmon, sardines, any fish, chicken, egg whites, or Greek yogurt, with veggies on the side.</div>
+              <div className="hyd-d">Protein &amp; fats</div>
+              <div className="hyd-n">Chicken, fish, sardines, or eggs — plus a good fat like avocado, chia, or nuts. Veggies on the side. Oil-free, no salt.</div>
+            </div>
+          </div>
+          <div className="hyd-row">
+            <div className="hyd-time">2:00 PM</div>
+            <div>
+              <div className="hyd-d">Smoothie bowl</div>
+              <div className="hyd-n">Banana, berries, or mango blended thick with water. Top with chia. No milk, no sugar.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Kitchen closed — no food after this</div>
-              <div className="hyd-n">Stop eating for the day. Spearmint or ginger tea after is fine.</div>
+              <div className="hyd-d">Last meal · sunset — sweet potato &amp; banana</div>
+              <div className="hyd-n">Slow carbs to keep you full all night. Nothing after sunset — spearmint or ginger tea only.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🐟 <strong>Protein for the glutes:</strong> salmon, sardines, any fish, chicken, egg whites, or Greek yogurt. Eat protein first, then your veggies and fruit.
+        🐟 <strong>Protein for the glutes:</strong> salmon, sardines, any fish, chicken, or eggs. Eat the protein first, then your fats and veggies.
       </div>
     </>
   );
 }
 
-/* ─── EVERYDAY MEALS (Tue, Wed, Fri, Sat, Sun) ─── */
+/* ─── NO-MEAT DAYS (Tue, Thu, Sat, Sun) ─── */
 export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🍽️ <strong>OMAD — one meal a day at 5 PM.</strong> Water, tea, and psyllium husk during the day, then one satisfying meal at 5 PM. <strong>Always stop eating by 5 PM.</strong>
+        🍓 <strong>No-meat days: Tuesday, Thursday, Saturday &amp; Sunday.</strong> Smoothie bowls and fruit instead — same three meal times, same 5 PM sunset finish.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">Daytime</div>
+            <div className="hyd-time">10:00 AM</div>
             <div>
-              <div className="hyd-d">Fasting window — water, tea, psyllium</div>
-              <div className="hyd-n">Warm lemon water, plain water, and green tea. 1 tbsp psyllium husk in a full glass of water helps you stay full.</div>
+              <div className="hyd-d">Smoothie bowl &amp; fats</div>
+              <div className="hyd-n">Banana, berries, or mango blended thick, with avocado, chia, or nut butter for the fats. No meat today.</div>
+            </div>
+          </div>
+          <div className="hyd-row">
+            <div className="hyd-time">2:00 PM</div>
+            <div>
+              <div className="hyd-d">Smoothie bowl or fruit</div>
+              <div className="hyd-n">Papaya, pineapple, kiwi, or berries with chia seeds. Water or green tea alongside.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Your one meal — finish by 5 PM</div>
-              <div className="hyd-n">Protein (fish, chicken, egg whites, or Greek yogurt) + fruits and fibre. Keep it simple, oil-free, and lightly salted. This is your last food for the day.</div>
+              <div className="hyd-d">Last meal · sunset — sweet potato &amp; banana</div>
+              <div className="hyd-n">Your fullest meal of the day in slow carbs. Nothing after sunset — spearmint or ginger tea only.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 This is not starvation. Eat a full, satisfying meal at 5 PM, then walk 15 min after. Nothing after 5 PM — spearmint or ginger tea only.
+        🌸 This is not starvation — three real meals, just plant-based today. Walk 15 min after your 5 PM meal, then nothing but tea.
       </div>
     </>
   );
@@ -128,10 +142,10 @@ export function RecipeCard({ itemKey, label, onSelect }) {
 function HydrationSection() {
   const rows = [
     { time: 'On waking',   d: '500ml warm water + fresh lemon or calamansi',   n: 'Wake digestion and add Vitamin C before anything else.' },
-    { time: 'Daytime',     d: 'Plain water + green tea (unsweetened)',          n: 'Fast until your 5 PM meal. Water and green tea support fullness, metabolism, and clear skin.' },
-    { time: 'Psyllium',    d: '1 tbsp psyllium husk in a full glass of water',  n: 'Take during the day to stay full and support digestion.' },
+    { time: 'Between meals', d: 'Plain water + green tea (unsweetened)',        n: 'Sip between your 10 AM, 2 PM, and 5 PM meals. Water and green tea support fullness, metabolism, and clear skin.' },
+    { time: 'Psyllium',    d: '1 tbsp psyllium husk in a full glass of water',  n: 'Take between meals to stay full and support digestion.' },
     { time: '5 PM meal',   d: 'Water — sip, don\'t gulp · collagen optional',   n: 'Sip around your meal; do not drown it. Dairy-free collagen supports skin, hair, joints, and gut.' },
-    { time: 'After 5 PM',  d: 'Spearmint or ginger tea',                        n: 'Drink after your meal. No food after 5 PM.' },
+    { time: 'After sunset', d: 'Spearmint or ginger tea',                       n: 'Drink after your last meal. No food after 5 PM.' },
     { time: 'All day',     d: 'Plain water — 2–2.5L total, sipped slowly',      n: 'Sip steadily to reduce bloat and puffiness.' },
   ];
   return (
@@ -326,9 +340,9 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Fuel Protocol · OMAD · Stop by 5 PM</div>
+        <div className="s-tag">Fuel Protocol · 10 AM · 2 PM · 5 PM</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">OMAD: one meal at 5 PM · water, tea &amp; psyllium husk during the day · always stop eating by 5 PM · glute days (Mon &amp; Thu) eat freely until 5.</p>
+        <p className="s-desc">10 AM protein &amp; fats · 2 PM smoothie bowl · 5 PM sweet potato &amp; banana at sunset · nothing after. Meat only on glute days (Mon · Wed · Fri).</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (

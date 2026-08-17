@@ -46,7 +46,7 @@ export const MONTHS = [
     tasks: [
       'Week 1 — Log your current weights on hip thrust, RDL, and sumo squat.',
       'Week 2 — Add 1–2 kg to each main lift when all sets feel controlled.',
-      'Week 3 — Add a second finisher set to each glute day; on glute days eat freely, just stop by 5 PM.',
+      'Week 3 — Add a second finisher set to each of the three glute days; those are your meat days.',
       'Week 4 — Compare lifts + glute measurements to March.',
     ],
   },
@@ -66,12 +66,12 @@ export const MONTHS = [
   {
     name: 'June',
     ch: 'Glute Foundation',
-    why: "Learn Monday and Thursday glute days. Build the mind-muscle connection so glutes, not back or quads, do the work.",
+    why: "Learn your three glute days (Monday, Wednesday, Friday). Build the mind-muscle connection so glutes, not back or quads, do the work.",
     tasks: [
-      'Week 1 — Do both glute days. Focus on feeling the squeeze at the top of every rep.',
+      'Week 1 — Do all three glute days. Focus on feeling the squeeze at the top of every rep.',
       'Week 2 — Add glute activation (bridges + clamshells) before every glute session.',
       'Week 3 — Nail your form on hip thrust, RDL, and Bulgarian split squat — go lighter if needed.',
-      'Week 4 — Finish both glute days weekly. Journal which moves hit glutes most.',
+      'Week 4 — Finish all three glute days weekly, each with a 30-min walk after. Journal which moves hit glutes most.',
     ],
   },
   // July — Journey month 2
@@ -89,13 +89,13 @@ export const MONTHS = [
   // August — Journey month 3
   {
     name: 'August',
-    ch: 'OMAD — One Meal at 5 PM',
-    why: "Anchor the day on OMAD: water, tea, and psyllium husk during the day, then one satisfying meal at 5 PM. Always stop eating by 5 PM to stay light.",
+    ch: 'Three Meals — 10 AM · 2 PM · 5 PM',
+    why: "Anchor the day on three fixed meal times: protein and fats at 10 AM, a smoothie bowl at 2 PM, and sweet potato with banana at 5 PM to carry you through the night.",
     tasks: [
-      'Week 1 — Fast on water, tea, and 1 tbsp psyllium husk in water during the day. Meal at 5 PM.',
-      'Week 2 — Build the 5 PM meal: protein (fish, chicken, egg whites, or Greek yogurt) + fruits + fibre.',
-      'Week 3 — Choose low-bloat fruits (papaya, pineapple, kiwi, berries, dragon fruit).',
-      'Week 4 — Make the OMAD 5 PM rhythm automatic. Never eat after 5 PM.',
+      'Week 1 — Hit all three meal times every day. Water, tea, and psyllium husk in between.',
+      'Week 2 — Build the 10 AM meal: protein plus a good fat (avocado, chia, nuts). Meat only on glute days.',
+      'Week 3 — Choose low-bloat fruits for your bowls (papaya, pineapple, kiwi, berries, dragon fruit).',
+      'Week 4 — Make the 5 PM sunset finish automatic. Nothing after — tea only.',
     ],
   },
   // September — Journey month 4
@@ -105,42 +105,42 @@ export const MONTHS = [
     why: "Walk 15 minutes after eating to move digestion, blunt blood sugar spikes, and reduce bloating.",
     tasks: [
       'Week 1 — Walk 15 min after your 5 PM meal, every day.',
-      'Week 2 — Add a short daytime walk too. Even a slow loop counts.',
-      'Week 3 — Add the full-body stretch warm-up before, and 10–20 min of jump rope to cool down after, every training session.',
+      'Week 2 — Lock in the 30-min walk after each of your three glute days.',
+      'Week 3 — Add the full-body stretch warm-up before every session, and 10–20 min of jump rope after both upper-body days.',
       'Week 4 — Make post-meal walks automatic. Notice digestion and energy.',
     ],
   },
   // October — Journey month 5
   {
     name: 'October',
-    ch: 'Deep Core & Posture',
-    why: "Deep-core and back days build a flatter waist and upright posture. Use light weights, high reps, and clean form.",
+    ch: 'Shoulder Healing & Posture',
+    why: "Shoulder pain comes from weak stabilisers and a tight chest, not weak arms. Light-load, high-rep work on the rotator cuff, lower traps, and serratus makes the joint strong and pain-free — without adding size.",
     tasks: [
-      'Week 1 — Complete all three core & back days. Keep every upper-body move light + high-rep.',
-      'Week 2 — Focus on the posture move each day (band pull-aparts, face pulls, wall angels).',
-      'Week 3 — Add 5 sec to your planks and holds; keep the deep core braced, not bulging.',
-      'Week 4 — Lock in three core days. Notice posture and waistline.',
+      'Week 1 — Both upper-body days, mobility first. Band pull-aparts and wall angels every single session.',
+      'Week 2 — Add the doorway chest stretch daily, not just on training days — the tight chest is the root cause.',
+      'Week 3 — Keep the load light and add reps instead of weight. Note pain levels before and after each session.',
+      'Week 4 — Compare shoulder pain to Week 1. Only add overhead pressing once you have been pain-free 2–3 weeks.',
     ],
   },
   // November — Journey month 6
   {
     name: 'November',
-    ch: 'Pilates & Inversions',
-    why: "Pilates days build a strong core and posture. Add handstand and elbow-stand drills to build balance and shoulder strength.",
+    ch: 'Forearm Stand — Weekend Skill',
+    why: "Saturday and Sunday are for stretching, light walking, and learning the forearm stand. Dolphin holds and hollow-body work build the shoulders and core the balance needs.",
     tasks: [
-      'Week 1 — Do all five pilates days. Warm up, do the vacuum, then pick one video.',
-      'Week 2 — Add a handstand or elbow-stand drill to each pilates day.',
-      'Week 3 — Add the 10–20 min jump-rope cool-down after every session.',
-      'Week 4 — Pilates is a weekly ritual. Note your balance and core progress.',
+      'Week 1 — Both rest days: long stretch, a walk you enjoy, and the five forearm-stand drills.',
+      'Week 2 — Hold dolphin pose 45 sec × 4 and add dolphin wall walks.',
+      'Week 3 — Start dolphin pike hops — hips over shoulders, land soft. Follow one forearm-stand video.',
+      'Week 4 — Film your best attempt. Compare shoulder stack to Week 1.',
     ],
   },
   // December — Journey month 7
   {
     name: 'December',
-    ch: 'Gut Healing — OMAD Mastery',
-    why: "Tie the OMAD rhythm together: water, tea, and psyllium husk during the day, one meal at 5 PM, and always stop eating by 5 PM. Glute days you eat freely until 5.",
+    ch: 'Gut Healing — Meal Rhythm Mastery',
+    why: "Tie the rhythm together: 10 AM protein and fats, 2 PM smoothie bowl, 5 PM sweet potato and banana at sunset. Meat lands on glute days only.",
     tasks: [
-      'Week 1 — Hit the rhythm: fast on water/tea/psyllium by day, one balanced 5 PM meal. Glute days, eat freely until 5.',
+      'Week 1 — Hit all three meal times daily. Meat on Mon/Wed/Fri, smoothie bowls and fruit the rest.',
       'Week 2 — Steam or boil all veg — no oils, no dairy, no gluten (GODSSSS out).',
       'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
       'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',

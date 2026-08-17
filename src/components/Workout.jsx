@@ -12,13 +12,13 @@ const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glute A', focus: 'Hip Thrust · RDL · Split Squat',  color: 'pr' },
-  { lbl: 'Tue', emoji: '🪷', name: 'Pilates', focus: 'Deep Core · Posture · Videos',     color: 'py' },
-  { lbl: 'Wed', emoji: '🌿', name: 'Pilates', focus: 'Full Body · Lats · Videos',        color: 'py' },
-  { lbl: 'Thu', emoji: '🔥', name: 'Glute B', focus: 'Sumo · Kickback · Abduction',      color: 'pr' },
-  { lbl: 'Fri', emoji: '✨', name: 'Pilates', focus: 'Core · Alignment · Videos',        color: 'py' },
-  { lbl: 'Sat', emoji: '🌷', name: 'Pilates', focus: 'Full Body Flow · Videos',          color: 'py' },
-  { lbl: 'Sun', emoji: '🌸', name: 'Pilates', focus: 'Balance · Inversions · Videos',    color: 'py' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',  focus: 'Hip Thrust · RDL · 30-min walk',   color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Upper A',  focus: 'Back · Shoulders · Core · Rope',   color: 'py' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute B',  focus: 'Sumo · Kickback · 30-min walk',    color: 'pr' },
+  { lbl: 'Thu', emoji: '⚡', name: 'Upper B',  focus: 'Back · Shoulders · Core · Rope',   color: 'py' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glute C',  focus: 'Kas Bridge · Step-Up · Walk',      color: 'pr' },
+  { lbl: 'Sat', emoji: '🧘', name: 'Rest',     focus: 'Stretch · Walk · Forearm Stand',   color: 'py' },
+  { lbl: 'Sun', emoji: '🤸', name: 'Rest',     focus: 'Stretch · Walk · Forearm Stand',   color: 'py' },
 ];
 
 function NoteBox({ type, text }) {
@@ -26,7 +26,7 @@ function NoteBox({ type, text }) {
 }
 
 // Emoji shown on each meal-group header in the meal plan.
-const GROUP_EMOJI = { Sardines: '🐟', Chicken: '🍗', Egg: '🥚', 'Greek yogurt': '🥣', Fruit: '🍓' };
+const GROUP_EMOJI = { 'Protein & fats': '🥑', 'Smoothie bowls': '🥣', Fruit: '🍓', Sunset: '🍠' };
 
 // Per-day meal selection — the meals you'll eat today, saved locally per day.
 function useDayMeals(dayId) {
@@ -157,7 +157,8 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, onBack, userId }) 
   const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('back') || day.title?.toLowerCase().includes('core');
   const hasSprint  = day.title?.toLowerCase().includes('sprint') || day.sprintDay;
   const hasZone2   = day.sub?.toLowerCase().includes('zone 2');
-  const isMobility = day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility') || day.title?.toLowerCase().includes('recovery');
+  const isRest     = day.day?.toLowerCase().includes('rest');
+  const isMobility = isRest || day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility') || day.title?.toLowerCase().includes('recovery') || day.title?.toLowerCase().includes('stretch');
 
   return (
     <div className="day-detail-page">
@@ -182,13 +183,19 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, onBack, userId }) 
         {isStrength && <div className="dd-stat dd-stat-strength"><span>💪</span>Strength</div>}
         {hasZone2   && <div className="dd-stat dd-stat-zone"><span>🫀</span>Zone 2</div>}
         {isMobility && <div className="dd-stat dd-stat-mobility"><span>🌿</span>Mobility</div>}
-        <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.length} exercises</div>
+        <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.filter(e => !e.heading).length} exercises</div>
       </div>
 
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
       <div className="exercise-hint">👆 Tap a video (▶) to open it on YouTube, or tap any exercise for a form demo.</div>
       <ul className="workout-list">
         {day.exercises.map((ex, i) => (
+          ex.heading ? (
+            <li key={i} className={`ex-group${ex.tone === 'core' ? ' ex-group-core' : ''}`}>
+              {ex.heading}
+              {ex.hint && <small>{ex.hint}</small>}
+            </li>
+          ) : (
           <li key={i}>
             <a
               className={ex.url ? 'ex-link ex-video' : 'ex-link'}
@@ -198,6 +205,7 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, onBack, userId }) 
             >{ex.url ? '▶ ' : ''}{ex.name}</a>
             {ex.detail ? <>{' '}— {ex.detail}</> : null}
           </li>
+          )
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}

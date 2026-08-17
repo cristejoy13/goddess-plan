@@ -238,8 +238,8 @@ function MonthCard({ month, monthIdx, daily, done, onToggleDay, onToggleDone, is
 }
 
 const NUTR_TABS = [
-  { id: 'meat',    icon: '🍑', label: 'Glute Days' },
-  { id: 'light',   icon: '🍓', label: 'Everyday Meals' },
+  { id: 'meat',    icon: '🍑', label: 'Glute Days (Meat)' },
+  { id: 'light',   icon: '🍓', label: 'No-Meat Days' },
   { id: 'recipes', icon: '🥘', label: 'Recipes' },
   { id: 'guide',   icon: '📊', label: 'Food Guide' },
 ];
@@ -384,7 +384,7 @@ export default function Challenges({ onNavigate, pushBack, clearInnerBack }) {
       {/* ── Nutrition & Meals ── */}
       <div className="divider splash-item" style={{ marginTop: 36 }}>🍽️ Nutrition &amp; Meals</div>
       <p className="s-desc splash-item" style={{ marginBottom: 16 }}>
-        OMAD: one meal at 5 PM · water, tea &amp; psyllium husk during the day · always stop eating by 5 PM · glute days (Mon &amp; Thu): eat freely, just stop by 5 PM
+        10 AM protein &amp; fats · 2 PM smoothie bowl · 5 PM sweet potato &amp; banana at sunset · nothing after · meat only on glute days (Mon · Wed · Fri)
       </p>
 
       <div className="sk-top-tabs splash-item">
