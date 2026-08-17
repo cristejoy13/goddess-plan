@@ -12,6 +12,8 @@
 // opened or resumed (and hourly while open), then reloads once the new worker
 // takes over. Nothing here ever requires reinstalling the app.
 
+import { hasPendingSyncWrites } from './sync';
+
 const CHECK_INTERVAL_MS = 60 * 60 * 1000; // hourly while the app stays open
 
 export function initSwUpdates() {
@@ -35,6 +37,17 @@ export function initSwUpdates() {
     // Never yank the page out from under her mid-sentence — wait for the
     // next resume instead.
     if (isTyping()) return;
+    // Let queued diary/notes edits finish uploading first, so a device that
+    // updates right after an edit still hands that edit to the others.
+    try {
+      if (hasPendingSyncWrites()) {
+        setTimeout(applyUpdate, 3000);
+        return;
+      }
+    } catch {
+      // If sync cannot be consulted, updating is still safe: every edit is
+      // already written to localStorage, which a reload never clears.
+    }
     reloading = true;
     window.location.reload();
   }

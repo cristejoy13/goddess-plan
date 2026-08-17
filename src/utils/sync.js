@@ -545,6 +545,14 @@ export function adoptSyncCode(code) {
   return true;
 }
 
+// True while this device still has edits queued for upload. A reload would not
+// lose them — they live in localStorage with a newer timestamp than the cloud,
+// so the next reconcile pushes them anyway — but the auto-update reload waits
+// for the queue to drain so diary edits reach the other devices promptly.
+export function hasPendingSyncWrites() {
+  return dirtyKeys.size > 0;
+}
+
 export function isSyncActive() {
   return syncActive;
 }
