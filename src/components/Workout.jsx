@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORKOUT_DAYS, RECOMMENDED_MEALS, MEAL_TAGS } from '../data/workouts';
+import { WORKOUT_DAYS, MEAL_SLOTS, slotMeals, suggestMeals } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import { RecipesPanel, FoodGuide } from './Nutrition';
 
@@ -12,10 +12,10 @@ const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',  focus: 'Hip Thrust · RDL · 30-min walk',   color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Upper A',  focus: 'Back · Shoulders · Core · Rope',   color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute B',  focus: 'Sumo · Kickback · 30-min walk',    color: 'pr' },
-  { lbl: 'Thu', emoji: '⚡', name: 'Upper B',  focus: 'Back · Shoulders · Core · Rope',   color: 'py' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',  focus: 'Hip Thrust · RDL · Walk',          color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Upper A',  focus: 'Back · Shoulders · Rope · Walk',   color: 'py' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute B',  focus: 'Sumo · Kickback · Walk',           color: 'pr' },
+  { lbl: 'Thu', emoji: '⚡', name: 'Upper B',  focus: 'Back · Shoulders · Rope · Walk',   color: 'py' },
   { lbl: 'Fri', emoji: '✨', name: 'Glute C',  focus: 'Kas Bridge · Step-Up · Walk',      color: 'pr' },
   { lbl: 'Sat', emoji: '🧘', name: 'Rest',     focus: 'Stretch · Walk · Forearm Stand',   color: 'py' },
   { lbl: 'Sun', emoji: '🤸', name: 'Rest',     focus: 'Stretch · Walk · Forearm Stand',   color: 'py' },
@@ -24,9 +24,6 @@ const GRID_DAYS = [
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
-
-// Emoji shown on each meal-group header in the meal plan.
-const GROUP_EMOJI = { 'Protein & fats': '🥑', 'Smoothie bowls': '🥣', Fruit: '🍓', Sunset: '🍠' };
 
 // Per-day meal selection — the meals you'll eat today, saved locally per day.
 function useDayMeals(dayId) {
@@ -47,67 +44,103 @@ function useDayMeals(dayId) {
   return [items, save];
 }
 
-// Compact meal board — small pills grouped into columns (Notion/Trello style)
-// so the whole plan is scannable without long scrolling. Tap a pill for the
-// recipe sheet (ingredients + how-to) and to add it to today.
-function MealBuilder({ dayId, baseMeals }) {
+// The meal plan reads as a clock: three meal times, 10 AM → 2 PM → 5 PM. Each
+// time opens with a short list of picks chosen for that day — fish on glute
+// days, tofu or eggs otherwise — and "more choices" reveals the rest of the
+// slot if none of them appeal. Tap a meal for the ingredients, the
+// step-by-step method, and to add it to today.
+function MealBuilder({ dayId, dayIndex, baseMeals }) {
   const [chosen, saveChosen] = useDayMeals(dayId);
-  const [filter, setFilter]  = useState('All');
-  const [detail, setDetail]  = useState(null);
-
-  const groups = (filter === 'All' ? MEAL_TAGS.filter(t => t !== 'All') : [filter])
-    .map(tag => ({ tag, items: RECOMMENDED_MEALS.filter(m => m.tag === tag) }))
-    .filter(g => g.items.length > 0);
+  const [openSlot, setOpenSlot] = useState(null);
+  const [showAll, setShowAll]   = useState({});
+  const [detail, setDetail]     = useState(null);
+  const mealMode = baseMeals.mealMode || 'light';
 
   function toggleChosen(name) {
     saveChosen(chosen.includes(name) ? chosen.filter(n => n !== name) : [...chosen, name]);
+  }
+
+  function Pill({ m }) {
+    const isChosen = chosen.includes(m.name);
+    return (
+      <button className={`meal-pill${isChosen ? ' chosen' : ''}`} onClick={() => setDetail(m)}>
+        <span className="meal-pill-em">{m.emoji}</span>
+        <span className="meal-pill-name">{m.name}</span>
+        <span className="meal-pill-cal">{m.cal}</span>
+        {isChosen && <span className="meal-pill-check">✓</span>}
+      </button>
+    );
   }
 
   return (
     <div className="meal-builder">
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
-        <div className="meal-plan-hint">Tap a meal for the recipe and to add it to today.</div>
+        <div className="meal-plan-hint">
+          {mealMode === 'glute'
+            ? 'Fish day — you only eat fish on glute days (Mon · Wed · Fri). Tap a meal time to see today’s picks.'
+            : 'No fish today — tofu or eggs at 10 AM. Tap a meal time to see today’s picks.'}
+        </div>
       </div>
 
-      <div className="meal-filter-row">
-        {MEAL_TAGS.map(tag => (
-          <button
-            key={tag}
-            className={`meal-filter-chip${filter === tag ? ' active' : ''}`}
-            onClick={() => setFilter(tag)}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
+      <div className="meal-times">
+        {MEAL_SLOTS.map(slot => {
+          const all       = slotMeals(slot.id, mealMode);
+          const suggested = suggestMeals(slot.id, mealMode, dayIndex);
+          const rest      = all.filter(m => !suggested.includes(m));
+          const picked    = all.filter(m => chosen.includes(m.name));
+          const isOpen    = openSlot === slot.id;
+          const expanded  = !!showAll[slot.id];
+          return (
+            <div key={slot.id} className={`meal-time${isOpen ? ' open' : ''}`}>
+              <button
+                className="meal-time-head"
+                onClick={() => setOpenSlot(isOpen ? null : slot.id)}
+                aria-expanded={isOpen}
+              >
+                <span className="meal-time-em">{slot.emoji}</span>
+                <span className="meal-time-meta">
+                  <span className="meal-time-clock">{slot.time}</span>
+                  <span className="meal-time-label">{slot.label}</span>
+                  <span className="meal-time-hint">
+                    {picked.length ? `✓ ${picked.map(m => m.name).join(' · ')}` : slot.hint}
+                  </span>
+                </span>
+                <span className="meal-time-count">{all.length}</span>
+                <span className="meal-time-caret">{isOpen ? '▲' : '▼'}</span>
+              </button>
 
-      <div className="meal-board">
-        {groups.map(g => (
-          <div key={g.tag} className="meal-col">
-            <div className="meal-col-title">
-              <span>{GROUP_EMOJI[g.tag] || '🍽️'} {g.tag}</span>
-              <span className="meal-col-count">{g.items.length}</span>
+              {isOpen && (
+                <div className="meal-time-body">
+                  <div className="meal-sug-label">
+                    {slot.id === 'am' && mealMode === 'glute' ? '🐟 Today’s picks · glute day' : '✨ Today’s picks'}
+                  </div>
+                  <div className="meal-pills">
+                    {suggested.map(m => <Pill key={m.name} m={m} />)}
+                  </div>
+
+                  {rest.length > 0 && (expanded ? (
+                    <>
+                      <div className="meal-sug-label">🍽️ All other choices</div>
+                      <div className="meal-pills">
+                        {rest.map(m => <Pill key={m.name} m={m} />)}
+                      </div>
+                      <button
+                        className="meal-more-btn"
+                        onClick={() => setShowAll(v => ({ ...v, [slot.id]: false }))}
+                      >Show fewer</button>
+                    </>
+                  ) : (
+                    <button
+                      className="meal-more-btn"
+                      onClick={() => setShowAll(v => ({ ...v, [slot.id]: true }))}
+                    >Don’t like these? {rest.length} more choices ▾</button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="meal-pills">
-              {g.items.map(m => {
-                const isChosen = chosen.includes(m.name);
-                return (
-                  <button
-                    key={m.name}
-                    className={`meal-pill${isChosen ? ' chosen' : ''}`}
-                    onClick={() => setDetail(m)}
-                  >
-                    <span className="meal-pill-em">{m.emoji}</span>
-                    <span className="meal-pill-name">{m.name}</span>
-                    <span className="meal-pill-cal">{m.cal}</span>
-                    {isChosen && <span className="meal-pill-check">✓</span>}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {chosen.length > 0 && (
@@ -124,7 +157,9 @@ function MealBuilder({ dayId, baseMeals }) {
               <span className="meal-detail-em">{detail.emoji}</span>
               <div className="meal-detail-meta">
                 <div className="meal-detail-name">{detail.name}</div>
-                <div className="meal-detail-cal">~{detail.cal} cal · {detail.tag}</div>
+                <div className="meal-detail-cal">
+                  ~{detail.cal} cal · {MEAL_SLOTS.find(sl => sl.id === detail.slot)?.time}
+                </div>
               </div>
             </div>
             <div className="meal-detail-sec">
@@ -133,7 +168,11 @@ function MealBuilder({ dayId, baseMeals }) {
             </div>
             <div className="meal-detail-sec">
               <div className="meal-detail-lbl">🍳 How to make it</div>
-              <div>{detail.steps}</div>
+              <ol className="meal-detail-steps">
+                {(Array.isArray(detail.steps) ? detail.steps : [detail.steps]).map((st, i) => (
+                  <li key={i}>{st}</li>
+                ))}
+              </ol>
             </div>
             <button
               className={`meal-detail-add${chosen.includes(detail.name) ? ' added' : ''}`}
@@ -150,7 +189,7 @@ function MealBuilder({ dayId, baseMeals }) {
 }
 
 
-function DayDetailPage({ day, id, isToday, onIngredientClick, onBack, userId }) {
+function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId }) {
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
@@ -209,7 +248,7 @@ function DayDetailPage({ day, id, isToday, onIngredientClick, onBack, userId }) 
         ))}
       </ul>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBuilder dayId={id} baseMeals={day.meals} />
+      <MealBuilder dayId={id} dayIndex={dayIndex} baseMeals={day.meals} />
     </div>
   );
 }
@@ -328,6 +367,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         <DayDetailPage
           day={day}
           id={DAY_IDS[selectedDayIdx]}
+          dayIndex={selectedDayIdx}
           isToday={selectedDayIdx === todayIndex}
           onIngredientClick={selectIngredient}
           onBack={closeDay}

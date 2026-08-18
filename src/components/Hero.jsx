@@ -1027,7 +1027,7 @@ export default function Hero({ onNavigate }) {
         <div className="hero-rules">
           <div className="hero-rule"><span>🥭</span><span>10 AM protein &amp; fats · 2 PM smoothie bowl · 5 PM sweet potato &amp; banana — nothing after sunset</span></div>
           <div className="hero-rule"><span>🍑</span><span>Meat only on glute days (Mon · Wed · Fri) — the other days are smoothie bowls and fruit</span></div>
-          <div className="hero-rule"><span>🏋️</span><span>5 strength days: 3 glute days + 30-min walk · 2 upper-body days + jump rope · Sat &amp; Sun rest</span></div>
+          <div className="hero-rule"><span>🏋️</span><span>5 strength days: 3 glute days · 2 upper-body days + jump rope · a 20-min walk to cool down every single day</span></div>
           <div className="hero-rule"><span>🤍</span><span>Back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>

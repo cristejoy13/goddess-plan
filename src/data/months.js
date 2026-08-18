@@ -71,7 +71,7 @@ export const MONTHS = [
       'Week 1 — Do all three glute days. Focus on feeling the squeeze at the top of every rep.',
       'Week 2 — Add glute activation (bridges + clamshells) before every glute session.',
       'Week 3 — Nail your form on hip thrust, RDL, and Bulgarian split squat — go lighter if needed.',
-      'Week 4 — Finish all three glute days weekly, each with a 30-min walk after. Journal which moves hit glutes most.',
+      'Week 4 — Finish all three glute days weekly, each with a 20-min walk after. Journal which moves hit glutes most.',
     ],
   },
   // July — Journey month 2
@@ -105,7 +105,7 @@ export const MONTHS = [
     why: "Walk 15 minutes after eating to move digestion, blunt blood sugar spikes, and reduce bloating.",
     tasks: [
       'Week 1 — Walk 15 min after your 5 PM meal, every day.',
-      'Week 2 — Lock in the 30-min walk after each of your three glute days.',
+      'Week 2 — Lock in the 20-min walk after every workout, glute and upper-body days alike.',
       'Week 3 — Add the full-body stretch warm-up before every session, and 10–20 min of jump rope after both upper-body days.',
       'Week 4 — Make post-meal walks automatic. Notice digestion and energy.',
     ],

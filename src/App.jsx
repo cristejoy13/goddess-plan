@@ -42,10 +42,10 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  { label: 'Monday — Glute A',        hint: 'Workouts · Hip Thrust · RDL · 30-min walk', section: 'workout', scrollTo: 'day-monday'    },
-  { label: 'Tuesday — Upper Body A',  hint: 'Workouts · Back, Shoulders & Core',         section: 'workout', scrollTo: 'day-tuesday'   },
-  { label: 'Wednesday — Glute B',     hint: 'Workouts · Sumo · Kickback · 30-min walk',  section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Thursday — Upper Body B', hint: 'Workouts · Back, Shoulders & Core',         section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Monday — Glute A',        hint: 'Workouts · Hip Thrust · RDL · 20-min walk', section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Tuesday — Upper Body A',  hint: 'Workouts · Back, Shoulders & Core · Rope · Walk', section: 'workout', scrollTo: 'day-tuesday'   },
+  { label: 'Wednesday — Glute B',     hint: 'Workouts · Sumo · Kickback · 20-min walk',  section: 'workout', scrollTo: 'day-wednesday' },
+  { label: 'Thursday — Upper Body B', hint: 'Workouts · Back, Shoulders & Core · Rope · Walk', section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Friday — Glute C',        hint: 'Workouts · Kas Bridge · Step-Up · Walk',    section: 'workout', scrollTo: 'day-friday'    },
   { label: 'Saturday — Rest Day',     hint: 'Workouts · Stretch · Walk · Forearm Stand', section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Sunday — Rest Day',       hint: 'Workouts · Stretch · Walk · Forearm Stand', section: 'workout', scrollTo: 'day-sunday'    },
