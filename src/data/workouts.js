@@ -26,8 +26,10 @@ export function getCurrentSprintProtocol() {
 //     Fri glutes & hamstrings — each finishes with the cool-down walk
 //   • Upper body days (2×: Tue · Thu) — back, shoulders & core, then jump
 //     rope, then the cool-down walk
-// Rest days (Sat · Sun): stretching, forearm-stand training, and the same
-// 20-minute cool-down walk.
+// Weekend (Sat · Sun): running, forearm-stand training, a long stretch, and
+// the same 20-minute cool-down walk. Saturday is an easy run, Sunday is the
+// sprint-interval protocol that advances each challenge month. No lifting
+// either day.
 
 // Shared warm-up. The cool-down is ALWAYS a 20-minute walk, every day. Upper-body days add jump rope before the walk.
 const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves · loosen every major muscle before you train · dynamic swings then gentle holds' };
@@ -116,6 +118,18 @@ const YOGA_BEGINNER = [
   { name: 'Yoga — Flexible Mind & Body',        detail: 'Yoga With Adriene · flexibility flow toward inversions', url: 'https://www.youtube.com/watch?v=xFEAOzWLx8Y' },
 ];
 
+// Weekend running. Saturday is the easy one, Sunday runs the interval protocol
+// that already advances by itself each challenge month (SPRINT_PROGRESSION at
+// the top of this file) — so the session gets harder without you editing it.
+const RUN_WARMUP = { name: 'Run Warm-Up', detail: '5 min · brisk walk building to a slow jog · ankle circles, leg swings, 3 × 20 m build-ups · never start a run cold' };
+const RUN_EASY = { name: 'Easy Run', detail: '20–30 min · conversational pace — if you cannot talk, slow down · flat route, land soft under your hips, shoulders loose · builds your engine without eating into leg recovery for Monday' };
+const RUN_INTERVALS = (() => {
+  const sp = getCurrentSprintProtocol();
+  return {
+    name: `Sprint Intervals — ${sp.reps} rounds`,
+    detail: `${sp.reps} rounds · ${sp.sprint} sec hard, ${sp.rest} sec easy walk between · hold form over speed; the moment your form breaks, that round was your last · this protocol steps up on its own every challenge month (${sp.month})`,
+  };
+})();
 const REST_STRETCH = { name: 'Long Full-Body Stretch', detail: '15–25 min · hold each stretch 45–60 sec · hamstrings, hips, chest, shoulders, wrists, calves · this is the work on a rest day' };
 const REST_WALK = { name: '20-Minute Walk', detail: '20 min · no pace target · you walk every day, rest days included · sunshine, podcast, whatever you like' };
 const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · do this FIRST before your core video' };
@@ -578,50 +592,57 @@ export const WORKOUT_DAYS = [
   },
   // SATURDAY — Rest
   {
-    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Saturday · Rest', title: 'Stretch, Walk & Forearm Stand',
-    sub: 'Stretching + 20-min walk + forearm-stand training',
-    cardio: { icon: '🚶', title: '20-minute walk', note: 'every day, rest days included' },
-    noteBefore: { type: 'gold', text: '🧘 Rest day. No lifting. Stretch long and slow, walk your 20 minutes, and train toward your forearm stand. Keep it playful — stop before you feel tired.' },
+    emoji: '🏃', emojiBg: 'rgba(253,245,208,0.4)',
+    day: 'Saturday · Run & Skill', title: 'Run, Stretch & Forearm Stand',
+    sub: 'Easy run + forearm-stand training + long stretch + 20-min walk',
+    cardio: { icon: '🏃', title: 'Easy run, then your 20-minute walk', note: '20–30 min conversational pace' },
+    noteBefore: { type: 'gold', text: '🏃 No lifting today — run, train the forearm stand, and stretch long. Keep the run conversational: this is meant to leave your legs fresh for Monday, not tire them out. Stop before you feel tired.' },
     exercises: [
-      H('🤍 Stretching', 'The main event on a rest day. Long, slow holds.'),
-      REST_STRETCH,
-      H('🚶 Cool-Down Walk', '20 minutes, any pace. Every day, no exceptions.'),
-      REST_WALK,
-      H('🤸 Forearm Stand — Drills', 'Do these first, every rest day. This is how the skill is built.'),
+      H('🏃 Running', 'First, while you are fresh. Warm up properly — a cold start is how ankles and shins get hurt.'),
+      RUN_WARMUP,
+      RUN_EASY,
+      H('🤸 Forearm Stand — Drills', 'Skill work next. Running does not tire your arms, so this is still sharp.'),
       ...FOREARM_STAND_DRILLS,
       H('▶ Forearm Stand — Videos', 'Then pick ONE to follow along with.', 'core'),
       ...HANDSTAND_INTERMEDIATE,
+      H('🤍 Stretching', 'Long, slow holds — the run tightens hips and calves, this is where you give it back.'),
+      REST_STRETCH,
+      H('🚶 Cool-Down Walk', '20 minutes, any pace. Every day, no exceptions.'),
+      REST_WALK,
       H('🪷 Optional · Gentle Yoga', 'Only if you want more. Never mandatory on a rest day.', 'core'),
       ...YOGA_BEGINNER,
       H('🧘 Optional · Full Body · Move With Nicole', 'Only if you feel like moving — five short 30-minute classes.', 'core'),
       ...NICOLE_FULLBODY,
     ],
-    noteAfter: { type: 'rose', text: '💡 Forearm stand: drills first, then one video. The Nicole full-body pilates classes are optional — only if you feel like moving. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
+    noteAfter: { type: 'rose', text: '💡 Order matters: run, then skill, then stretch, then the walk. The yoga and Nicole classes are optional — only if you still feel like moving. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
     meals: LIGHT_MEALS,
   },
   // SUNDAY — Rest
   {
-    emoji: '🤸', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Rest', title: 'Stretch, Walk & Forearm Stand',
-    sub: 'Stretching + 20-min walk + forearm-stand training',
-    cardio: { icon: '🚶', title: '20-minute walk', note: 'every day, rest days included' },
-    noteBefore: { type: 'gold', text: '🤸 Second rest day. Same freedom: stretch, walk your 20 minutes, and practise the forearm stand. Two rest days is what makes five strength days possible.' },
+    emoji: '⚡', emojiBg: 'rgba(252,228,239,0.4)',
+    day: 'Sunday · Sprints & Skill', title: 'Sprints, Stretch & Forearm Stand',
+    sub: 'Sprint intervals + forearm-stand training + long stretch + 20-min walk',
+    cardio: { icon: '⚡', title: 'Sprint intervals, then your 20-minute walk', note: 'steps up every challenge month' },
+    sprintDay: true,
+    noteBefore: { type: 'gold', text: '⚡ Sprint day — the one hard run of the week. Full effort on the hard rounds, full walk on the rest; if your form falls apart, that round was your last. Then the forearm stand and a long stretch. Still no lifting.' },
     exercises: [
-      H('🤍 Stretching', 'The main event on a rest day. Long, slow holds.'),
-      REST_STRETCH,
-      H('🚶 Cool-Down Walk', '20 minutes, any pace. Every day, no exceptions.'),
-      REST_WALK,
-      H('🤸 Forearm Stand — Drills', 'Do these first, every rest day. This is how the skill is built.'),
+      H('⚡ Sprint Intervals', 'First, while you are fresh. Warm up properly — sprinting cold is the fastest way to pull a hamstring.'),
+      RUN_WARMUP,
+      RUN_INTERVALS,
+      H('🤸 Forearm Stand — Drills', 'Skill work next. Running does not tire your arms, so this is still sharp.'),
       ...FOREARM_STAND_DRILLS,
       H('▶ Forearm Stand — Videos', 'Then pick ONE to follow along with.', 'core'),
       ...HANDSTAND_INTERMEDIATE,
+      H('🤍 Stretching', 'Long, slow holds — sprints tighten hamstrings and calves hard, this is where you give it back.'),
+      REST_STRETCH,
+      H('🚶 Cool-Down Walk', '20 minutes, any pace. Every day, no exceptions.'),
+      REST_WALK,
       H('🪷 Optional · Gentle Yoga', 'Only if you want more. Never mandatory on a rest day.', 'core'),
       ...YOGA_BEGINNER,
       H('🧘 Optional · Full Body · Move With Nicole', 'Only if you feel like moving — five short 30-minute classes.', 'core'),
       ...NICOLE_FULLBODY,
     ],
-    noteAfter: { type: 'rose', text: '💡 Hold dolphin longer every week — that is how the forearm stand arrives. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
+    noteAfter: { type: 'rose', text: '💡 Hold dolphin longer every week — that is how the forearm stand arrives. If your legs still feel Friday, run the sprints easier or walk them; never sprint on sore hamstrings. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
     meals: LIGHT_MEALS,
   },
 ];
