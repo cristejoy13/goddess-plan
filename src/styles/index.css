@@ -431,23 +431,25 @@ body {
   z-index: 200;
   padding: 8px 16px;
   padding-top: calc(env(safe-area-inset-top) + 8px);
-  background: rgba(8, 2, 6, 0.95);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid rgba(235,80,160,0.14);
+  /* No panel, no blur, no border: the background continues straight through, so
+     there is no empty strip above the page. The controls carry their own
+     circular backgrounds, which is what keeps them readable over anything that
+     scrolls beneath. A short fade at the bottom stops text colliding with them
+     mid-scroll without reintroducing a visible bar. */
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 2, 6, 0.72) 0%,
+    rgba(8, 2, 6, 0.45) 55%,
+    rgba(8, 2, 6, 0) 100%
+  );
+  pointer-events: none;   /* the sky behind stays scrollable; buttons re-enable it */
 }
+.search-bar-fixed > * { pointer-events: auto; }
 .search-bar-fixed .search-wrap { margin: 0 auto; }
 
 /* Desktop: search bar centers at vw/2 matching .main symmetric padding — no Joy in flow */
 @media (min-width: 769px) {
-  .search-bar-fixed {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 118px;   /* sidebar width */
-    padding-right: 118px;  /* mirror sidebar — true center */
-  }
-  .search-bar-fixed .search-wrap { flex: 0 1 680px; min-width: 200px; margin: 0; }
+  .search-bar-fixed .search-wrap { flex: 0 1 680px; min-width: 200px; margin: 0 auto; }
 }
 
 /* ─── SIDEBAR NAV — fixed left, below search bar ─── */
@@ -6564,51 +6566,19 @@ body {
 }
 
 /* ── Mobile layout — hamburger drawer ── */
+/* The settings and menu buttons live in the top bar at EVERY width — they are
+   the two controls that must always be thumb-reachable. Only the hamburger
+   itself drops away on desktop, where the sidebar is permanently open and a
+   drawer toggle would do nothing. */
 .mobile-controls {
-  display: none; /* visible only on mobile */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-  /* Mobile controls (avatar + ☰) live in the search bar */
-  .mobile-controls {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-  .mob-avatar-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    flex-shrink: 0;
-  }
-  .mob-avatar-circle {
-    width: auto;
-    height: auto;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    border: none;
-    background: transparent !important;
-  }
-  .mob-hamburger {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
 
+@media (max-width: 768px) {
   .mob-joy-btn {
     background: none;
     border: none;
@@ -6635,34 +6605,10 @@ body {
   .search-joy-emoji { font-size: 16px; }
   .search-joy-name { display: none; }
 
-  .mob-mode-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    flex-shrink: 0;
-    touch-action: manipulation;
-  }
-  .mob-mode-circle {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    border: 1.5px solid rgba(255,92,157,0.35);
-    background: rgba(26,8,40,0.6);
-  }
-
   /* Hide floating FAB on mobile — Joy lives in the top bar instead */
   .joy-fab { display: none; }
 
-  /* Search bar becomes flex row: [controls] [input] */
   .search-bar-fixed {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     padding: 6px 12px;
     padding-top: calc(env(safe-area-inset-top) + 6px);
   }
@@ -8481,3 +8427,156 @@ body {
   .pp-item { padding: 12px; gap: 10px; }
   .pp-icon-btn { width: 30px; height: 30px; }
 }
+
+/* ── TOP BAR ──────────────────────────────────────────────────────────────
+   One row of controls: the two big tap targets (settings + menu) on the left,
+   and the two small icons (theme + search) paired on the right. Search is an
+   icon until you ask for it, then it drops down as its own row. */
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* all four sit together, centred over the title */
+  gap: 10px;
+  min-height: 48px;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.topbar-icon-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,92,157,0.32);
+  background: rgba(20,6,18,0.55);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s, border-color 0.18s;
+  touch-action: manipulation;
+}
+.topbar-icon-btn:hover { background: rgba(255,255,255,0.11); }
+.topbar-icon-btn:active { transform: scale(0.92); }
+.topbar-icon-btn.active { background: rgba(255,92,157,0.22); border-color: rgba(255,92,157,0.6); }
+
+.topbar-search-row { margin-top: 8px; }
+.topbar-search-row .search-wrap { margin: 0 auto; }
+
+/* ── MY PURPOSE · pastel cards ────────────────────────────────────────────
+   Each purpose takes the next pastel in the rotation, so the list reads lively
+   without any one card shouting. Tints stay low-alpha so they sit correctly on
+   both the deep violet dark theme and the light theme. */
+.pp-item.pp-c0 { background: rgba(255,183,213,0.11); border-color: rgba(255,183,213,0.38); }
+.pp-item.pp-c1 { background: rgba(255,214,178,0.11); border-color: rgba(255,214,178,0.38); }
+.pp-item.pp-c2 { background: rgba(255,240,179,0.10); border-color: rgba(255,240,179,0.36); }
+.pp-item.pp-c3 { background: rgba(183,240,208,0.10); border-color: rgba(183,240,208,0.36); }
+.pp-item.pp-c4 { background: rgba(180,219,255,0.11); border-color: rgba(180,219,255,0.38); }
+.pp-item.pp-c5 { background: rgba(214,196,255,0.11); border-color: rgba(214,196,255,0.38); }
+
+.pp-item.pp-c0 .pp-kind { color: #ffd3e5; background: rgba(255,183,213,0.20); }
+.pp-item.pp-c1 .pp-kind { color: #ffe3c9; background: rgba(255,214,178,0.20); }
+.pp-item.pp-c2 .pp-kind { color: #fff4c4; background: rgba(255,240,179,0.18); }
+.pp-item.pp-c3 .pp-kind { color: #ccf5de; background: rgba(183,240,208,0.18); }
+.pp-item.pp-c4 .pp-kind { color: #cfe7ff; background: rgba(180,219,255,0.20); }
+.pp-item.pp-c5 .pp-kind { color: #e3d7ff; background: rgba(214,196,255,0.20); }
+
+.pp-item.pp-c0 .pp-check { border-color: rgba(255,183,213,0.65); }
+.pp-item.pp-c1 .pp-check { border-color: rgba(255,214,178,0.65); }
+.pp-item.pp-c2 .pp-check { border-color: rgba(255,240,179,0.60); }
+.pp-item.pp-c3 .pp-check { border-color: rgba(183,240,208,0.60); }
+.pp-item.pp-c4 .pp-check { border-color: rgba(180,219,255,0.65); }
+.pp-item.pp-c5 .pp-check { border-color: rgba(214,196,255,0.65); }
+
+/* Reaching a purpose overrides its pastel with the same soft green everywhere,
+   so "done" is instantly readable no matter which colour the card started as. */
+.pp-item.done,
+.pp-item.done[class*="pp-c"] {
+  background: rgba(183,240,208,0.16);
+  border-color: rgba(183,240,208,0.55);
+}
+.pp-item.done .pp-check { background: #a9ebc4; border-color: #a9ebc4; }
+
+/* Light theme: pastels need more saturation to survive a white background. */
+[data-mode="light"] .pp-item.pp-c0 { background: rgba(255,183,213,0.30); border-color: rgba(240,140,185,0.45); }
+[data-mode="light"] .pp-item.pp-c1 { background: rgba(255,214,178,0.34); border-color: rgba(240,175,120,0.45); }
+[data-mode="light"] .pp-item.pp-c2 { background: rgba(255,240,179,0.38); border-color: rgba(230,200,110,0.45); }
+[data-mode="light"] .pp-item.pp-c3 { background: rgba(183,240,208,0.34); border-color: rgba(120,205,160,0.45); }
+[data-mode="light"] .pp-item.pp-c4 { background: rgba(180,219,255,0.34); border-color: rgba(120,175,235,0.45); }
+[data-mode="light"] .pp-item.pp-c5 { background: rgba(214,196,255,0.34); border-color: rgba(165,140,235,0.45); }
+[data-mode="light"] .pp-item .pp-title { color: #3a1030; }
+[data-mode="light"] .pp-item .pp-kind { color: #7a2358; background: rgba(255,255,255,0.55); }
+[data-mode="light"] .pp-item.done,
+[data-mode="light"] .pp-item.done[class*="pp-c"] {
+  background: rgba(150,230,185,0.38); border-color: rgba(90,190,140,0.55);
+}
+
+/* ── TOP BAR CONTROLS ─────────────────────────────────────────────────────
+   Two sizes on purpose. The left pair — settings and the menu — are the ones
+   reached constantly, so they get 48px: the size Apple and Google both give as
+   the minimum a finger can hit reliably, at any screen size. The right pair —
+   theme and search — are occasional, so they stay small and tuck into the
+   corner. margin-left:auto on the right group is what pushes the two clusters
+   to opposite ends, so the bar reads as edge · space · edge at every width
+   instead of bunching in the middle. */
+.mob-avatar-btn,
+.mob-hamburger {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,92,157,0.34);
+  background: rgba(20,6,18,0.55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Kills the ~300ms tap delay and the grey flash on iOS/Android. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.mob-avatar-btn:active,
+.mob-hamburger:active { transform: scale(0.93); background: rgba(255,92,157,0.20); }
+.mob-avatar-btn:hover,
+.mob-hamburger:hover { background: rgba(255,255,255,0.12); }
+
+.mob-avatar-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 1;
+  border: none;
+  pointer-events: none;   /* the button owns the tap, not the circle inside it */
+}
+
+.mob-hamburger {
+  flex-direction: column;
+  gap: 5px;
+}
+.mob-hamburger .hamburger-bar {
+  width: 22px;
+  height: 2.5px;
+  background: var(--text);
+  pointer-events: none;
+}
+
+/* Light theme: the controls need a real edge against a pale background. */
+[data-mode="light"] .mob-avatar-btn,
+[data-mode="light"] .mob-hamburger,
+[data-mode="light"] .topbar-icon-btn {
+  background: rgba(255,255,255,0.75);
+  border-color: rgba(200,23,110,0.30);
+}
+[data-mode="light"] .mob-hamburger .hamburger-bar { background: #7a1050; }

@@ -94,7 +94,7 @@ const SEARCH_INDEX = [
 
 const FLOWER_EMOJIS = ['🌸', '🌺', '🌼', '🌸', '🌷', '💐', '🌸', '🌺'];
 
-const PETALS = Array.from({ length: 18 }, (_, i) => ({
+const PETALS = Array.from({ length: 10 }, (_, i) => ({
   id: i,
   size: Math.random() * 10 + 12,
   left: Math.random() * 100,
@@ -104,7 +104,7 @@ const PETALS = Array.from({ length: 18 }, (_, i) => ({
 }));
 
 // Twinkling star-sparkles scattered across the upper sky (matches the image)
-const SPARKLES = Array.from({ length: 38 }, (_, i) => ({
+const SPARKLES = Array.from({ length: 16 }, (_, i) => ({
   id: i,
   x: Math.random() * 100,
   y: Math.random() * 65,       // upper 65% of screen only
@@ -155,7 +155,7 @@ function AtmosphericSparkles() {
   );
 }
 
-function SearchBar({ onNavigate }) {
+function SearchBar({ onNavigate, onClose }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -184,6 +184,7 @@ function SearchBar({ onNavigate }) {
     onNavigate(item.section, item.tab || null, item.scrollTo || null);
     setQuery('');
     setOpen(false);
+    onClose?.();
   }
 
   return (
@@ -196,6 +197,7 @@ function SearchBar({ onNavigate }) {
         value={query}
         onChange={e => { setQuery(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
+        onKeyDown={e => { if (e.key === 'Escape') onClose?.(); }}
       />
       <span className="search-icon">🔍</span>
       {open && results.length > 0 && (
@@ -218,6 +220,7 @@ export default function App() {
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
   const [syncEpoch, setSyncEpoch] = useState(0);
 
@@ -390,31 +393,50 @@ export default function App() {
       {background}
       <InstallBanner />
 
-      <div className="search-bar-fixed">
-        {/* Mobile only: avatar circle + hamburger in the top bar */}
-        <div className="mobile-controls">
-          {avatar && (
-            <button className="mob-avatar-btn" onClick={() => navigate('settings')} aria-label="Profile">
-              <div className="mob-avatar-circle" style={{ background: avatar.bg }}>
-                <span>{avatar.emoji}</span>
-              </div>
+      <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`}>
+        <div className="topbar-row">
+          {/* Menu, then settings — the two big tap targets */}
+          <div className="mobile-controls">
+            <button className="mob-hamburger" onClick={() => setMenuOpen(o => !o)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
+              <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+              <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
+              <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
             </button>
-          )}
-          <button className="mob-hamburger" onClick={() => setMenuOpen(o => !o)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
-            <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-            <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-            <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-          </button>
-          <button
-            className="mob-mode-btn"
-            onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
-            aria-label="Toggle light/dark mode"
-          >
-            <div className="mob-mode-circle">{colorMode === 'dark' ? '☀️' : '🌙'}</div>
-          </button>
+            {avatar && (
+              <button className="mob-avatar-btn" onClick={() => navigate('settings')} aria-label="Settings">
+                <div className="mob-avatar-circle" style={{ background: avatar.bg }}>
+                  <span>{avatar.emoji}</span>
+                </div>
+              </button>
+            )}
+          </div>
+
+          {/* The two small icons, side by side on the right */}
+          <div className="topbar-actions">
+            <button
+              className="topbar-icon-btn"
+              onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
+              aria-label="Toggle light/dark mode"
+            >
+              {colorMode === 'dark' ? '☀️' : '🌙'}
+            </button>
+            <button
+              className={`topbar-icon-btn${searchOpen ? ' active' : ''}`}
+              onClick={() => setSearchOpen(o => !o)}
+              aria-label={searchOpen ? 'Close search' : 'Open search'}
+              aria-expanded={searchOpen}
+            >
+              {searchOpen ? '✕' : '🔍'}
+            </button>
+          </div>
         </div>
-        <SearchBar onNavigate={navigate} />
+
+        {searchOpen && (
+          <div className="topbar-search-row">
+            <SearchBar onNavigate={navigate} onClose={() => setSearchOpen(false)} />
+          </div>
+        )}
       </div>
 
       {/* Backdrop — closes the drawer when tapping outside on mobile */}

@@ -97,7 +97,10 @@ function PurposeForm({ initial, onSave, onCancel }) {
   );
 }
 
-function PurposeRow({ item, onToggle, onEdit, onDelete }) {
+// Six pastels, rotated by position so a long list never repeats side by side.
+const PASTELS = 6;
+
+function PurposeRow({ item, index, onToggle, onEdit, onDelete }) {
   const [editing, setEditing] = useState(false);
 
   if (editing) {
@@ -113,7 +116,7 @@ function PurposeRow({ item, onToggle, onEdit, onDelete }) {
   }
 
   return (
-    <li className={`pp-item${item.done ? ' done' : ''}`}>
+    <li className={`pp-item pp-c${index % PASTELS}${item.done ? ' done' : ''}`}>
       <button
         className={`pp-check${item.done ? ' checked' : ''}`}
         onClick={onToggle}
@@ -190,10 +193,11 @@ export default function Purpose() {
       </div>
 
       <ul className="pp-list splash-item">
-        {items.map(item => (
+        {items.map((item, i) => (
           <PurposeRow
             key={item.id}
             item={item}
+            index={i}
             onToggle={() => toggle(item.id)}
             onEdit={(fields) => edit(item.id, fields)}
             onDelete={() => remove(item)}

@@ -1,15 +1,20 @@
-import { initializeApp } from 'firebase/app';
-import {
-  getFirestore,
-  initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager,
-  doc,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-  deleteField,
-} from 'firebase/firestore';
+// Firebase is loaded on demand rather than imported at the top of the module.
+// It is by far the largest dependency in the bundle, and importing it eagerly
+// meant the browser had to download and parse all of it before the app could
+// respond to a single tap — which showed up as a long "loading" stretch where
+// the top-bar controls did nothing. Sync is not needed for the first paint, so
+// it now arrives after the UI is already interactive.
+let fb = null;
+
+async function loadFirebase() {
+  if (fb) return fb;
+  const [appMod, storeMod] = await Promise.all([
+    import('firebase/app'),
+    import('firebase/firestore'),
+  ]);
+  fb = { ...appMod, ...storeMod };
+  return fb;
+}
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAsWJPYWcwJ5XtnJPOV_PRmL7dyt5eJems',
@@ -242,7 +247,7 @@ async function pushDirtyKeys() {
 
   const sizeBytes = refreshSizeHealth();
   try {
-    await setDoc(dbRef, { data: dataPatch, meta: metaPatch }, { merge: true });
+    await fb.setDoc(dbRef, { data: dataPatch, meta: metaPatch }, { merge: true });
     markWriteResult(true, sizeBytes);
   } catch {
     keys.forEach(key => dirtyKeys.add(key));
@@ -274,7 +279,7 @@ async function pushAllLocalKeys() {
 
   const sizeBytes = refreshSizeHealth();
   try {
-    await setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
+    await fb.setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
     markWriteResult(true, sizeBytes);
   } catch {
     // Firestore queues offline writes; failures should not break the app.
@@ -508,7 +513,7 @@ async function writePresence() {
   if (!dbRef) return;
   const id = getDeviceId();
   try {
-    await setDoc(dbRef, {
+    await fb.setDoc(dbRef, {
       devices: { [id]: { name: guessDeviceName(), lastSeen: Date.now() } },
     }, { merge: true });
   } catch {
@@ -531,12 +536,12 @@ async function pruneStaleDevices() {
     if (id === selfId) return;
     const lastSeen = Number(info && info.lastSeen) || 0;
     if (lastSeen && lastSeen < cutoff) {
-      patch['devices.' + id] = deleteField();
+      patch['devices.' + id] = fb.deleteField();
     }
   });
   if (Object.keys(patch).length === 0) return;
   try {
-    await updateDoc(dbRef, patch);
+    await fb.updateDoc(dbRef, patch);
   } catch {
     // Pruning is opportunistic; a failure just retries on the next heartbeat.
   }
@@ -642,7 +647,7 @@ export async function forceSyncFromThisDevice() {
 
   const sizeBytes = refreshSizeHealth();
   try {
-    await setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
+    await fb.setDoc(dbRef, { data, meta: metaPatch }, { merge: true });
     markWriteResult(true, sizeBytes);
     return true;
   } catch {
@@ -682,11 +687,11 @@ async function purgeRetiredRemote(remoteData, remoteMeta) {
   }
   const patch = {};
   stale.forEach(key => {
-    patch[`data.${key}`] = deleteField();
-    patch[`meta.${key}`] = deleteField();
+    patch[`data.${key}`] = fb.deleteField();
+    patch[`meta.${key}`] = fb.deleteField();
   });
   try {
-    await updateDoc(dbRef, patch);
+    await fb.updateDoc(dbRef, patch);
     safeSetItem(PURGE_DONE_KEY, '1');
   } catch {
     // Offline or a transient failure — the next snapshot tries again.
@@ -709,15 +714,19 @@ function registerFlushHandlers() {
   }
 }
 
-export function initSync() {
+export async function initSync() {
   if (initialized) return;
   initialized = true;
 
   try {
     adoptFromUrl();
     const code = getSyncCode();
+    // localStorage is patched immediately, before any await: edits made while
+    // Firebase is still downloading are still stamped and queued, so nothing
+    // written in those first seconds is lost.
     patchLocalStorage();
-    const app = initializeApp(firebaseConfig);
+    await loadFirebase();
+    const app = fb.initializeApp(firebaseConfig);
     // Persistent cache keeps queued writes in IndexedDB, so a note written just
     // before the app is closed (or while offline) is delivered automatically on
     // the next launch / when wifi returns. Fall back to the in-memory Firestore
@@ -725,21 +734,21 @@ export function initSync() {
     let db;
     try {
       if (typeof indexedDB !== 'undefined') {
-        db = initializeFirestore(app, {
-          localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+        db = fb.initializeFirestore(app, {
+          localCache: fb.persistentLocalCache({ tabManager: fb.persistentMultipleTabManager() }),
         });
       } else {
-        db = getFirestore(app);
+        db = fb.getFirestore(app);
       }
     } catch {
-      db = getFirestore(app);
+      db = fb.getFirestore(app);
     }
-    dbRef = doc(db, 'sync', code);
+    dbRef = fb.doc(db, 'sync', code);
     registerFlushHandlers();
     // Subscribe BEFORE the first presence write: presence creates the doc, and
     // the data bootstrap must never be skipped because presence got there first.
     // (reconcileWithRemote also covers this, as a second line of defense.)
-    onSnapshot(dbRef, handleRemoteSnapshot, () => {
+    fb.onSnapshot(dbRef, handleRemoteSnapshot, () => {
       // Firestore snapshot errors are non-fatal for the local app.
     });
     startPresence();
