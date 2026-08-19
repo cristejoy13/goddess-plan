@@ -714,6 +714,24 @@ function registerFlushHandlers() {
   }
 }
 
+// Must run BEFORE the first render, and separately from initSync.
+//
+// Every local edit is stamped with a timestamp by the patched setItem, and the
+// reconcile decides who wins by comparing that stamp against the cloud's. An
+// edit written while the patch is not installed gets no stamp, so it reads as
+// older than anything in the cloud and is quietly overwritten on the next
+// snapshot. Since Firebase now loads lazily, initSync no longer runs early
+// enough to guarantee the patch is in place — so the patch is installed on its
+// own, synchronously, at startup. Cheap (it only wraps two functions) and it
+// closes the window where an edit could be lost.
+export function initSyncStorage() {
+  try {
+    patchLocalStorage();
+  } catch {
+    // Without the patch, edits still persist locally; only sync is affected.
+  }
+}
+
 export async function initSync() {
   if (initialized) return;
   initialized = true;
@@ -721,9 +739,7 @@ export async function initSync() {
   try {
     adoptFromUrl();
     const code = getSyncCode();
-    // localStorage is patched immediately, before any await: edits made while
-    // Firebase is still downloading are still stamped and queued, so nothing
-    // written in those first seconds is lost.
+    // No-op if initSyncStorage already ran at startup, which is the normal path.
     patchLocalStorage();
     await loadFirebase();
     const app = fb.initializeApp(firebaseConfig);

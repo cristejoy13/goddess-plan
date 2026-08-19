@@ -1,8 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App, { ErrorBoundary } from './App.jsx'
-import { initSync } from './utils/sync'
+import { initSync, initSyncStorage } from './utils/sync'
 import { initSwUpdates } from './utils/swUpdate'
+
+// Stamp-tracking for local edits must be live before anything can be edited,
+// so this runs first and synchronously. It touches no network and loads no
+// Firebase — see initSyncStorage for why the ordering matters.
+initSyncStorage()
 
 // Paint first. Sync and update checks both pull in code the first screen does
 // not need, so they start only once the UI is on screen and tappable.
