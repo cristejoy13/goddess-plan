@@ -32,6 +32,10 @@ export function getCurrentSprintProtocol() {
 // Shared warm-up. The cool-down is ALWAYS a 20-minute walk, every day. Upper-body days add jump rope before the walk.
 const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves · loosen every major muscle before you train · dynamic swings then gentle holds' };
 const WALK = { name: '20-Minute Walk', detail: '20 min · every single day, always the last thing you do · flat easy pace, relaxed breathing · burns fat and brings your heart rate down without eating into recovery' };
+// The same finisher closes every glute day. Keeping it identical is the point:
+// one bodyweight burnout you repeat three times a week is the clearest way to
+// feel yourself getting stronger, with no equipment and nothing to decide.
+const GLUTE_FINISHER = { name: 'Glute Bridge Burnout', detail: 'FINISHER · 2 × 25 reps · bodyweight, feet flat and hip-width, drive the hips up and squeeze hard at the top, lower without touching down · fast but controlled — same finisher on all three glute days' };
 const JUMP_ROPE = { name: 'Jump Rope Finisher', detail: '10–20 min · steady, light on the balls of your feet · rope first on back, shoulder & core days — then walk to cool down' };
 
 // ── VIDEOS ── Two channels only.
@@ -446,15 +450,16 @@ export const WORKOUT_DAYS = [
       H('🔥 Warm-Up & Glute Activation', 'Never load a cold glute — stretch, then wake them up.'),
       WARMUP,
       { name: 'Glute & Quad Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → bodyweight squats × 15 → hip circles × 10 each · wake the glutes and warm the knees before you load a squat' },
-      H('🍑 Glutes & Quads — 3 Main Lifts', 'Two squat patterns for the quads, then the hip thrust for the glutes. Heavy, slow, full range.'),
-      { name: '1. Barbell Back Squat', detail: 'MAIN 1 of 3 · 4 × 8–10 reps · bar on your upper back, chest tall, sit down between your heels to below parallel, drive up through the whole foot · the main quad builder — dumbbell or goblet squat works the same way if you have no bar' },
+      H('🍑 Glutes & Quads — 3 Main Lifts', 'Three sets of ten on all three. Two squat patterns for the quads, then the hip thrust for the glutes. Slow, full range.'),
+      { name: '1. Barbell Back Squat', detail: 'MAIN 1 of 3 · 3 × 10 reps · bar on your upper back, chest tall, sit down between your heels to below parallel, drive up through the whole foot · the main quad builder — dumbbell or goblet squat works the same way if you have no bar' },
       { name: '2. Bulgarian Split Squat', detail: 'MAIN 2 of 3 · 3 × 10 reps each leg · rear foot on bench, torso upright for quads (lean 10–15° forward to shift it to glutes), lower the front thigh to parallel · quads plus even hips' },
-      { name: '3. Barbell Hip Thrust', detail: 'MAIN 3 of 3 · 4 × 10–12 reps · shoulders on bench, drive hips to parallel, pause 2 sec, lower for 3 sec · the main glute builder, and the right place for it after squatting' },
-      { name: 'Glute Bridge Burnout', detail: 'FINISHER (bodyweight, not a main lift) · 2 × 25 reps · feet flat, drive hips up, squeeze hard · fast controlled reps' },
+      { name: '3. Barbell Hip Thrust', detail: 'MAIN 3 of 3 · 3 × 10 reps · shoulders on bench, drive hips to parallel, pause 2 sec, lower for 3 sec · the main glute builder, and the right place for it after squatting' },
+      GLUTE_FINISHER,
       H('🚶 Cool-Down · Walk', 'Always the last thing — 20 minutes, every day.'),
       WALK,
     ],
     noteAfter: { type: 'gold', text: '📋 Track squat and hip thrust weight every Monday. Add 1–2 kg when all 4 sets feel controlled. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
+    trackLifts: true,   // sets/reps/weight are editable on the glute days only
     meals: GLUTE_MEALS,
   },
   // TUESDAY — Upper Body A · back + shoulders + core
@@ -502,15 +507,16 @@ export const WORKOUT_DAYS = [
       H('🔥 Warm-Up & Glute Activation', 'Never load a cold glute — stretch, then wake them up.'),
       WARMUP,
       { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each · wake gluteus medius' },
-      H('🍑 Glute Isolation — 3 Main Movements', 'Upper glute, outer glute, and constant tension. Feel every rep in the glute alone — if you feel your back or quads, drop the weight.'),
-      { name: '1. Cable Kickback', detail: 'MAIN 1 of 3 · 4 × 15 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec at the top, lower slow · the cleanest upper-glute isolation there is' },
-      { name: '2. Hip Abduction (band or machine)', detail: 'MAIN 2 of 3 · 4 × 20 reps · push the knees apart, hold 2 sec at the widest point, release slow · builds the outer glute that gives you the round shape' },
-      { name: '3. Kas Glute Bridge', detail: 'MAIN 3 of 3 · 4 × 15–20 reps · short range at the top only, hold 2 sec every rep, never let the hips drop all the way down · constant tension, the best glute pump there is' },
-      { name: 'Frog Pump Finisher', detail: 'FINISHER (bodyweight, not a main lift) · 2 × 30 reps · heels together, knees wide, pump hips up fast and squeeze · burn out whatever is left' },
+      H('🍑 Glute Isolation — 3 Main Movements', 'Three sets of ten on all three. Upper glute, outer glute, and constant tension — if you feel your back or quads, drop the weight.'),
+      { name: '1. Cable Kickback', detail: 'MAIN 1 of 3 · 3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec at the top, lower slow · the cleanest upper-glute isolation there is' },
+      { name: '2. Hip Abduction (band or machine)', detail: 'MAIN 2 of 3 · 3 × 10 reps · push the knees apart, hold 2 sec at the widest point, release slow · builds the outer glute that gives you the round shape' },
+      { name: '3. Kas Glute Bridge', detail: 'MAIN 3 of 3 · 3 × 10 reps · short range at the top only, hold 2 sec every rep, never let the hips drop all the way down · constant tension, the best glute pump there is' },
+      GLUTE_FINISHER,
       H('🚶 Cool-Down · Walk', 'Always the last thing — 20 minutes, every day.'),
       WALK,
     ],
     noteAfter: { type: 'gold', text: '📋 Track cable kickback and abduction resistance each Wednesday. Add resistance only when you can still hold the 2-second squeeze on every rep — on isolation day the squeeze matters more than the load. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
+    trackLifts: true,   // sets/reps/weight are editable on the glute days only
     meals: GLUTE_MEALS,
   },
   // THURSDAY — Upper Body B · back + shoulders + core, different angles
@@ -558,15 +564,16 @@ export const WORKOUT_DAYS = [
       H('🔥 Warm-Up & Glute Activation', 'Never load a cold glute — stretch, then wake them up.'),
       WARMUP,
       { name: 'Glute & Hamstring Activation', detail: '5 min · banded glute bridges × 20 → bodyweight good mornings × 15 → donkey kicks × 15 each · get blood into the glutes and lengthen the hamstrings before you hinge' },
-      H('🍑 Glutes & Hamstrings — 3 Main Lifts', 'Every movement is a hinge or a curl. Slow on the way down — that is where hamstrings grow.'),
-      { name: '1. Romanian Deadlift (RDL)', detail: 'MAIN 1 of 3 · 4 × 10–12 reps · soft knees, hinge from the hips, lower 3 sec until you feel the hamstrings stretch, drive the hips forward to stand · the single best glute-and-hamstring lift' },
-      { name: '2. Hamstring Curl (machine or band)', detail: 'MAIN 2 of 3 · 3 × 15 reps · curl your heels to your glutes, squeeze 1 sec, lower for 3 sec · the only movement that trains the hamstring at the knee, which the RDL cannot do' },
-      { name: '3. Cable Pull-Through', detail: 'MAIN 3 of 3 · 3 × 15 reps · face away from a low cable, rope between your legs, hinge back until you feel the hamstrings, then squeeze the glutes to stand tall · all the glute work of a hinge with none of the load on your spine — the perfect third lift after heavy RDLs' },
-      { name: 'Single-Leg Glute Bridge', detail: 'FINISHER (bodyweight, not a main lift) · 2 × 15 reps each leg · drive the hips through the working heel and squeeze · controlled, to end the week' },
+      H('🍑 Glutes & Hamstrings — 3 Main Lifts', 'Three sets of ten on all three. Every movement is a hinge or a curl — slow on the way down, that is where hamstrings grow.'),
+      { name: '1. Romanian Deadlift (RDL)', detail: 'MAIN 1 of 3 · 3 × 10 reps · soft knees, hinge from the hips, lower 3 sec until you feel the hamstrings stretch, drive the hips forward to stand · the single best glute-and-hamstring lift' },
+      { name: '2. Hamstring Curl (machine or band)', detail: 'MAIN 2 of 3 · 3 × 10 reps · curl your heels to your glutes, squeeze 1 sec, lower for 3 sec · the only movement that trains the hamstring at the knee, which the RDL cannot do' },
+      { name: '3. Cable Pull-Through', detail: 'MAIN 3 of 3 · 3 × 10 reps · face away from a low cable, rope between your legs, hinge back until you feel the hamstrings, then squeeze the glutes to stand tall · all the glute work of a hinge with none of the load on your spine — the perfect third lift after heavy RDLs' },
+      GLUTE_FINISHER,
       H('🚶 Cool-Down · Walk', 'Always the last thing — 20 minutes, every day.'),
       WALK,
     ],
     noteAfter: { type: 'gold', text: '📋 Track RDL weight every Friday. If you feel it in your hamstrings and glutes and not your lower back, your hinge is right. Meals: 10 AM fish, tofu or eggs + fats · 2 PM smoothie bowl · 5 PM egg with sweet potato or banana.' },
+    trackLifts: true,   // sets/reps/weight are editable on the glute days only
     meals: GLUTE_MEALS,
   },
   // SATURDAY — Rest

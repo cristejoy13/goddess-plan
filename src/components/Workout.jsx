@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { WORKOUT_DAYS, MEAL_SLOTS, slotMeals, suggestMeals } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
+import LiftTracker from './LiftTracker';
+import { loadLifts, isTrackable } from '../utils/lifts';
 import { MeatDays, LightDays, RecipesPanel, FoodGuide } from './Nutrition';
 
 const DAY_IDS = [
@@ -190,6 +192,9 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 
 
 function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId }) {
+  // The whole lift log for every exercise, held once for the page so each row
+  // does not re-read localStorage on every render.
+  const [lifts, setLifts] = useState(loadLifts);
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
@@ -226,7 +231,10 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
       </div>
 
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
-      <div className="exercise-hint">👆 Tap a video (▶) to open it on YouTube, or tap any exercise for a form demo.</div>
+      <div className="exercise-hint">
+        👆 Tap a video (▶) to open it on YouTube, or tap any exercise for a form demo.
+        {day.trackLifts && ' Tap the grey bar under a lift to set your sets, reps, and weight — and the weight you are moving up to next.'}
+      </div>
       <ul className="workout-list">
         {day.exercises.map((ex, i) => (
           ex.heading ? (
@@ -243,6 +251,9 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
               rel="noopener noreferrer"
             >{ex.url ? '▶ ' : ''}{ex.name}</a>
             {ex.detail ? <>{' '}— {ex.detail}</> : null}
+            {day.trackLifts && isTrackable(ex) && (
+              <LiftTracker exercise={ex} lifts={lifts} onChange={setLifts} />
+            )}
           </li>
           )
         ))}

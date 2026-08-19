@@ -25,7 +25,7 @@ const firebaseConfig = {
   appId: '1:225308869833:web:b5cc454324237a0ec87918',
 };
 
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes'];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes', 'gp_lifts'];
 // Keys that USED to sync and no longer exist in the app. They are cleared from
 // this device and deleted from the shared cloud document once, so the doc does
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key
