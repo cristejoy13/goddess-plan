@@ -143,6 +143,52 @@ export const INGREDIENT_RECIPES = {
     ],
   },
 
+  tofu: {
+    emoji: '🍲',
+    color: 'rgba(255,235,180,0.07)',
+    tagline: 'Plant protein for your non-glute days',
+    options: [
+      {
+        name: 'Dry-seared',
+        emoji: '🍳',
+        time: '20 min',
+        steps: [
+          'Press firm tofu 10 min between two plates with something heavy on top to squeeze the water out.',
+          'Cut into thick slices or 2 cm cubes.',
+          'Heat a non-stick pan on medium-high — no oil needed once the pan is properly hot.',
+          'Sear 3–4 min a side without moving it, until golden and firm.',
+          'Finish with calamansi and grated ginger.',
+        ],
+        tip: 'Pressing is the whole trick. Unpressed tofu steams in its own water and never browns.',
+      },
+      {
+        name: 'Steamed',
+        emoji: '♨️',
+        time: '8 min',
+        steps: [
+          'Place silken or soft tofu on a heatproof plate.',
+          'Top with sliced ginger and spring onion.',
+          'Steam 5–8 min until hot all the way through.',
+          'Spoon the plate juices back over it and add calamansi.',
+        ],
+        tip: 'The gentlest way to eat tofu — good on a day your stomach feels heavy.',
+      },
+      {
+        name: 'Scrambled',
+        emoji: '🥄',
+        time: '12 min',
+        steps: [
+          'Press firm tofu 10 min, then crumble it with your hands into egg-sized pieces.',
+          'Soften chopped tomato and bell pepper in a dry non-stick pan.',
+          'Add the tofu with a pinch of turmeric for colour.',
+          'Cook 5 min, stirring, until the water has cooked off.',
+          'Finish with spring onion.',
+        ],
+        tip: 'Turmeric is what makes it look and feel like scrambled eggs.',
+      },
+    ],
+  },
+
   beef: {
     emoji: '🥩',
     color: 'rgba(200,80,80,0.07)',

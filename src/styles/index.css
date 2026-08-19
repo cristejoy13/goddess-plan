@@ -8384,3 +8384,100 @@ body {
   padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
 }
 .meal-detail-add.added { background: rgba(120,220,160,0.20); color: #7fe3a8; border: 1px solid rgba(120,220,160,0.5); }
+
+/* ── MY PURPOSE ───────────────────────────────────────────────────────────
+   The goals list. Deliberately quiet: the title carries the weight, the date
+   stamp stays small, and edit/delete sit out of the way on the right. */
+.pp-summary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,92,157,0.10); border: 1px solid rgba(255,92,157,0.30);
+  color: #ffc3da; border-radius: 999px; padding: 7px 15px;
+  font-size: 12.5px; font-weight: 700; margin-bottom: 14px;
+}
+
+.pp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.pp-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px; padding: 14px;
+}
+.pp-item.done { background: rgba(120,220,160,0.08); border-color: rgba(120,220,160,0.35); }
+.pp-item-editing { display: block; }
+
+.pp-check {
+  flex: none; width: 26px; height: 26px; margin-top: 1px;
+  border-radius: 9px; border: 2px solid rgba(255,255,255,0.28);
+  background: transparent; color: #07040f; cursor: pointer;
+  font-size: 15px; font-weight: 900; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.pp-check.checked { background: #7fe3a8; border-color: #7fe3a8; }
+
+.pp-body { flex: 1 1 auto; min-width: 0; }
+.pp-title { font-size: 15px; font-weight: 700; color: #f8eed4; line-height: 1.35; word-break: break-word; }
+.pp-item.done .pp-title { color: #cfeede; text-decoration: line-through; text-decoration-color: rgba(207,238,222,0.45); }
+.pp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
+.pp-kind {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+  color: #ffc3da; background: rgba(255,92,157,0.14); border-radius: 999px; padding: 2px 9px;
+}
+.pp-date  { font-size: 10.5px; color: var(--text-mid, #9d7f9c); }
+.pp-doneat { font-size: 10.5px; font-weight: 700; color: #7fe3a8; }
+
+.pp-actions { flex: none; display: flex; gap: 4px; }
+.pp-icon-btn {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+  font-size: 13px; cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.pp-icon-btn:hover { background: rgba(255,255,255,0.10); }
+.pp-del:hover { background: rgba(255,120,120,0.16); border-color: rgba(255,120,120,0.4); }
+
+.pp-empty {
+  text-align: center; padding: 22px 14px; font-size: 13px;
+  color: var(--text-mid, #c090b8);
+  background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: 16px;
+}
+
+.pp-add-wrap { margin-top: 14px; }
+.pp-add-btn {
+  width: 100%; background: rgba(255,92,157,0.12); border: 1px dashed rgba(255,92,157,0.45);
+  color: #ffc3da; border-radius: 14px; padding: 14px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.pp-add-btn:hover { background: rgba(255,92,157,0.20); }
+.pp-add-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 14px;
+}
+
+.pp-form { display: flex; flex-direction: column; gap: 12px; }
+.pp-field { display: flex; flex-direction: column; gap: 5px; }
+.pp-field > span { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); }
+.pp-field > span em { font-style: normal; opacity: 0.7; }
+.pp-field input {
+  width: 100%; box-sizing: border-box;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+  color: #f8eed4; border-radius: 11px; padding: 11px 12px;
+  font-size: 15px; font-family: inherit;
+}
+.pp-field input:focus { outline: none; border-color: #ff5c9d; }
+.pp-form-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-save {
+  background: #ff5c9d; color: #fff; border: none; border-radius: 11px;
+  padding: 11px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.pp-save:disabled { opacity: 0.45; cursor: not-allowed; }
+.pp-cancel {
+  background: rgba(255,255,255,0.08); color: var(--text-mid, #e7d6e8);
+  border: 1px solid rgba(255,255,255,0.14); border-radius: 11px;
+  padding: 11px 18px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+}
+
+@media (max-width: 380px) {
+  .pp-item { padding: 12px; gap: 10px; }
+  .pp-icon-btn { width: 30px; height: 30px; }
+}

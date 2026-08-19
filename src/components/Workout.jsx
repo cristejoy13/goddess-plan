@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { WORKOUT_DAYS, MEAL_SLOTS, slotMeals, suggestMeals } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
-import { RecipesPanel, FoodGuide } from './Nutrition';
+import { MeatDays, LightDays, RecipesPanel, FoodGuide } from './Nutrition';
 
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
@@ -280,14 +280,18 @@ function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
     <div className="section">
       <button className="day-detail-back" onClick={onBack}>← Back to Workouts</button>
       <div className="s-header">
-        <div className="s-tag">Food &amp; Recipes</div>
-        <h2 className="s-title">Nutrition <em>&amp;</em> Recipes</h2>
-        <p className="s-desc">Prep your food and check its impact.</p>
+        <div className="s-tag">Food, Meals &amp; Recipes</div>
+        <h2 className="s-title">Nutrition <em>&amp;</em> Meals</h2>
+        <p className="s-desc">How you eat on glute days and non-glute days, how to prep every food, and what each one does for you.</p>
       </div>
       <div className="sk-top-tabs splash-item">
+        <button className={`sk-top-tab${tab === 'meat'    ? ' active' : ''}`} onClick={() => setTab('meat')}>🐟 Glute Days</button>
+        <button className={`sk-top-tab${tab === 'light'   ? ' active' : ''}`} onClick={() => setTab('light')}>🌱 Non-Glute Days</button>
         <button className={`sk-top-tab${tab === 'recipes' ? ' active' : ''}`} onClick={() => setTab('recipes')}>🥘 Recipes</button>
         <button className={`sk-top-tab${tab === 'guide'   ? ' active' : ''}`} onClick={() => setTab('guide')}>📊 Food Guide</button>
       </div>
+      {tab === 'meat'    && <MeatDays />}
+      {tab === 'light'   && <LightDays />}
       {tab === 'recipes' && <RecipesPanel onSelectRecipe={openIngredient} />}
       {tab === 'guide'   && <FoodGuide />}
     </div>
@@ -417,7 +421,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           setShowNutrPanel(true);
           pushBack?.(() => { setShowNutrPanel(false); clearInnerBack?.(); });
         }}>
-          🥗 Nutrition &amp; Recipes →
+          🥗 Nutrition &amp; Meals →
         </button>
       </div>
     </div>

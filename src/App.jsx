@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, Component } from 'react';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
-import Challenges from './components/Challenges';
+import Purpose from './components/Purpose';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import Settings from './components/Settings';
@@ -36,7 +36,7 @@ function saveProfile(p) {
 const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🏠' },
   { id: 'workout',    label: 'Workouts',   icon: '💪' },
-  { id: 'challenges', label: 'Challenges', icon: '🏆' },
+  { id: 'purpose',    label: 'My Purpose', icon: '🎯' },
   { id: 'skincare',   label: 'Body',       icon: '✨' },
   // Settings is reached via the flower/avatar button, not a separate nav item.
 ];
@@ -86,8 +86,10 @@ const SEARCH_INDEX = [
   { label: 'Hormone-Protective Eating',    hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Skin Longevity Nutrients',     hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Supplement Stack',             hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
-  { label: 'Monthly Challenges',           hint: 'Challenges', section: 'challenges' },
-  { label: 'January Challenge',            hint: 'Challenges', section: 'challenges' },
+  { label: 'My Purpose',                   hint: 'The goals you are working toward', section: 'purpose' },
+  { label: 'Nutrition & Meals',            hint: 'Workouts → Nutrition',      section: 'workout' },
+  { label: 'Recipes',                      hint: 'Workouts → Nutrition',      section: 'workout' },
+  { label: 'Food Guide',                   hint: 'Workouts → Nutrition',      section: 'workout' },
 ];
 
 const FLOWER_EMOJIS = ['🌸', '🌺', '🌼', '🌸', '🌷', '💐', '🌸', '🌺'];
@@ -472,7 +474,7 @@ export default function App() {
       >
         {active === 'home'       && <Hero key={syncEpoch} onNavigate={navigate} />}
         {active === 'workout'    && <Workout key={`${navMeta.key}-${syncEpoch}`} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
-        {active === 'challenges' && <Challenges key={syncEpoch} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
+        {active === 'purpose'    && <Purpose key={syncEpoch} />}
         {active === 'nutrition'  && <Nutrition key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings

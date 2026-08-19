@@ -20,7 +20,7 @@ const firebaseConfig = {
   appId: '1:225308869833:web:b5cc454324237a0ec87918',
 };
 
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_daily', 'gp_done', 'gp_year', 'gp_color_mode', 'gp_challenges_custom'];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes'];
 const SYNC_CODE_KEY = 'gp_sync_code';
 const SYNC_META_KEY = 'gp_sync_meta';
 const SYNC_ADOPT_KEY = 'gp_sync_adopt';
@@ -290,6 +290,29 @@ function applyRemoteValue(key, value, timestamp) {
   } finally {
     applyingRemote = false;
   }
+}
+
+// Write a first-run default for a key this device has never had, WITHOUT
+// claiming it as a fresh edit. The value is stamped with the oldest possible
+// timestamp (1), so the very next reconcile hands victory to any real value
+// already in the cloud. That is what stops a newly installed device from
+// overwriting a list the user has been curating elsewhere: a fresh install can
+// only ever seed the cloud when the cloud has nothing at all.
+export function seedDefault(key, value) {
+  if (!SYNC_KEYS.includes(key)) {
+    safeSetItem(key, value);
+    return;
+  }
+  applyingRemote = true;
+  try {
+    safeSetItem(key, value);
+    const meta = readMeta();
+    meta[key] = 1;
+    writeMeta(meta);
+  } finally {
+    applyingRemote = false;
+  }
+  schedulePush();
 }
 
 // Two-way, per-key reconcile between this device and the cloud doc. Runs on

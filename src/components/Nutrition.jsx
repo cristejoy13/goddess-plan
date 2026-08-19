@@ -3,8 +3,8 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'meat',    icon: '🍑', title: 'Glute Days · Meat Days',  desc: 'Monday, Wednesday & Friday — the only days you eat meat. 10 AM protein & fats, 2 PM smoothie bowl, 5 PM sweet potato & banana.' },
-  { id: 'light',   icon: '🍓', title: 'No-Meat Days',            desc: 'Tuesday, Thursday, Saturday & Sunday — smoothie bowls and fruit at 10 AM and 2 PM, sweet potato & banana at 5 PM.' },
+  { id: 'meat',    icon: '🐟', title: 'Glute Days · Fish Days',  desc: 'Monday, Wednesday & Friday — the only days you eat fish. 10 AM fish & fats, 2 PM smoothie bowl, 5 PM egg with sweet potato or banana.' },
+  { id: 'light',   icon: '🌱', title: 'Non-Glute Days',          desc: 'Tuesday, Thursday, Saturday & Sunday — tofu or eggs at 10 AM, smoothie bowl at 2 PM, egg with sweet potato or banana at 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -12,11 +12,11 @@ export const TABS = [
 /* ─── RECIPE CATEGORIES shown in the Recipes tab ─── */
 const RECIPE_CATEGORIES = [
   {
-    title: 'Protein (Glute Days · Mon · Wed · Fri)',
+    title: 'Protein (fish on glute days · tofu & eggs otherwise)',
     items: [
       { key: 'egg',     label: 'Eggs' },
-      { key: 'chicken', label: 'Chicken' },
       { key: 'fish',    label: 'Fish' },
+      { key: 'tofu',    label: 'Tofu' },
     ],
   },
   {
@@ -41,15 +41,15 @@ const RECIPE_CATEGORIES = [
   },
 ];
 
-/* ─── GLUTE DAYS · MEAT DAYS (Mon, Wed, Fri) ─── */
+/* ─── GLUTE DAYS · FISH DAYS (Mon, Wed, Fri) ─── */
 export function MeatDays() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍑 <strong>Glute days: Monday, Wednesday &amp; Friday.</strong> These are your <strong>only meat days</strong> — the days you train glutes are the days you eat meat.
+        🍑 <strong>Glute days: Monday, Wednesday &amp; Friday.</strong> These are your <strong>only fish days</strong> — the days you train glutes are the days you eat fish.
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        💡 <strong>Why meat today?</strong> Your glutes grow on protein, and training day is when your body uses it best. Same three meal times as every other day.
+        💡 <strong>Why fish today?</strong> Your glutes grow on protein, and training day is when your body uses it best. Same three meal times as every other day.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
@@ -57,66 +57,66 @@ export function MeatDays() {
             <div className="hyd-time">10:00 AM</div>
             <div>
               <div className="hyd-d">Protein &amp; fats</div>
-              <div className="hyd-n">Chicken, fish, sardines, or eggs — plus a good fat like avocado, chia, or nuts. Veggies on the side. Oil-free, no salt.</div>
+              <div className="hyd-n">Salmon, sardines, tuna, tilapia or any white fish — plus a good fat like avocado or chia. Veggies on the side. Oil-free, no salt.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">2:00 PM</div>
             <div>
               <div className="hyd-d">Smoothie bowl</div>
-              <div className="hyd-n">Banana, berries, or mango blended thick with water. Top with chia. No milk, no sugar.</div>
+              <div className="hyd-n">Three fruits blended thick with a splash of water. Top with chia. No milk, no sugar.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Last meal · sunset — sweet potato &amp; banana</div>
+              <div className="hyd-d">Last meal · sunset — egg with sweet potato or banana</div>
               <div className="hyd-n">Slow carbs to keep you full all night. Nothing after sunset — spearmint or ginger tea only.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🐟 <strong>Protein for the glutes:</strong> salmon, sardines, any fish, chicken, or eggs. Eat the protein first, then your fats and veggies.
+        🐟 <strong>Protein for the glutes:</strong> salmon, sardines, tuna, tilapia, any fish. Eat the protein first, then your fats and veggies. No chicken, beef or pork on any day.
       </div>
     </>
   );
 }
 
-/* ─── NO-MEAT DAYS (Tue, Thu, Sat, Sun) ─── */
+/* ─── NON-GLUTE DAYS (Tue, Thu, Sat, Sun) ─── */
 export function LightDays() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🍓 <strong>No-meat days: Tuesday, Thursday, Saturday &amp; Sunday.</strong> Smoothie bowls and fruit instead — same three meal times, same 5 PM sunset finish.
+        🌱 <strong>Non-glute days: Tuesday, Thursday, Saturday &amp; Sunday.</strong> No fish today — tofu or eggs at 10 AM instead. Same three meal times, same 5 PM sunset finish.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
             <div className="hyd-time">10:00 AM</div>
             <div>
-              <div className="hyd-d">Smoothie bowl &amp; fats</div>
-              <div className="hyd-n">Banana, berries, or mango blended thick, with avocado, chia, or nut butter for the fats. No meat today.</div>
+              <div className="hyd-d">Protein &amp; fats</div>
+              <div className="hyd-n">Tofu or eggs — scrambled, boiled, steamed or seared dry — with avocado or chia for the fats. No fish today.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">2:00 PM</div>
             <div>
-              <div className="hyd-d">Smoothie bowl or fruit</div>
-              <div className="hyd-n">Papaya, pineapple, kiwi, or berries with chia seeds. Water or green tea alongside.</div>
+              <div className="hyd-d">Smoothie bowl</div>
+              <div className="hyd-n">Three fruits blended thick with chia on top. Water or green tea alongside.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Last meal · sunset — sweet potato &amp; banana</div>
+              <div className="hyd-d">Last meal · sunset — egg with sweet potato or banana</div>
               <div className="hyd-n">Your fullest meal of the day in slow carbs. Nothing after sunset — spearmint or ginger tea only.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🌸 This is not starvation — three real meals, just plant-based today. Walk 15 min after your 5 PM meal, then nothing but tea.
+        🌸 This is not starvation — three real meals, just no fish today. Your 20-minute cool-down walk still happens after training, then nothing but tea.
       </div>
     </>
   );
