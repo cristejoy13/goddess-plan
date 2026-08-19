@@ -12,11 +12,11 @@ const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glute A',  focus: 'Hip Thrust · RDL · Walk',          color: 'pr' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glutes & Quads', focus: 'Squat · Bulgarian · Hip Thrust', color: 'pr' },
   { lbl: 'Tue', emoji: '💪', name: 'Upper A',  focus: 'Back · Shoulders · Rope · Walk',   color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute B',  focus: 'Sumo · Kickback · Walk',           color: 'pr' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute Isolation', focus: 'Kickback · Abduction · Kas',  color: 'pr' },
   { lbl: 'Thu', emoji: '⚡', name: 'Upper B',  focus: 'Back · Shoulders · Rope · Walk',   color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glute C',  focus: 'Kas Bridge · Step-Up · Walk',      color: 'pr' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glutes & Hams', focus: 'RDL · Curl · Pull-Through',       color: 'pr' },
   { lbl: 'Sat', emoji: '🧘', name: 'Rest',     focus: 'Stretch · Walk · Forearm Stand',   color: 'py' },
   { lbl: 'Sun', emoji: '🤸', name: 'Rest',     focus: 'Stretch · Walk · Forearm Stand',   color: 'py' },
 ];
