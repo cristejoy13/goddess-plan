@@ -21,6 +21,12 @@ const firebaseConfig = {
 };
 
 const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes'];
+// Keys that USED to sync and no longer exist in the app. They are cleared from
+// this device and deleted from the shared cloud document once, so the doc does
+// not carry dead weight against its 1 MB ceiling forever. Only ever add a key
+// here once nothing reads it any more — this deletes real data.
+const RETIRED_KEYS = ['gp_challenges_custom', 'gp_daily', 'gp_done'];
+const PURGE_DONE_KEY = 'gp_purged_v1';
 const SYNC_CODE_KEY = 'gp_sync_code';
 const SYNC_META_KEY = 'gp_sync_meta';
 const SYNC_ADOPT_KEY = 'gp_sync_adopt';
@@ -378,6 +384,7 @@ function handleRemoteSnapshot(snapshot) {
     const adopting = safeGetItem(SYNC_ADOPT_KEY) === '1';
     const applied = reconcileWithRemote(remote.data || {}, remote.meta || {}, adopting);
     if (adopting) safeRemoveItem(SYNC_ADOPT_KEY);
+    purgeRetiredRemote(remote.data || {}, remote.meta || {});
 
     if (applied) {
       window.dispatchEvent(new CustomEvent('gp-remote-sync'));
@@ -644,6 +651,48 @@ export async function forceSyncFromThisDevice() {
   }
 }
 
+// Retired keys are cleaned up in two halves. Locally: wipe the values and drop
+// their sync timestamps, once per device. Remotely: delete their fields from
+// the shared doc, but only once a snapshot has actually shown one of them —
+// that way a device with no cloud doc yet never fires a pointless write, and a
+// device that is offline simply purges on the launch its snapshot arrives.
+// Both are best-effort; a failure here must never affect real syncing.
+function purgeRetiredLocal() {
+  const meta = readMeta();
+  let metaChanged = false;
+  RETIRED_KEYS.forEach(key => {
+    safeRemoveItem(key);
+    if (Object.prototype.hasOwnProperty.call(meta, key)) {
+      delete meta[key];
+      metaChanged = true;
+    }
+  });
+  if (metaChanged) writeMeta(meta);
+}
+
+async function purgeRetiredRemote(remoteData, remoteMeta) {
+  if (!dbRef || safeGetItem(PURGE_DONE_KEY) === '1') return;
+  const stale = RETIRED_KEYS.filter(key =>
+    Object.prototype.hasOwnProperty.call(remoteData, key) ||
+    Object.prototype.hasOwnProperty.call(remoteMeta, key));
+  if (stale.length === 0) {
+    // The cloud is already clean — nothing to do, now or ever.
+    safeSetItem(PURGE_DONE_KEY, '1');
+    return;
+  }
+  const patch = {};
+  stale.forEach(key => {
+    patch[`data.${key}`] = deleteField();
+    patch[`meta.${key}`] = deleteField();
+  });
+  try {
+    await updateDoc(dbRef, patch);
+    safeSetItem(PURGE_DONE_KEY, '1');
+  } catch {
+    // Offline or a transient failure — the next snapshot tries again.
+  }
+}
+
 function registerFlushHandlers() {
   try {
     // When the app is backgrounded or closed (very common on phones/tablets
@@ -694,6 +743,7 @@ export function initSync() {
       // Firestore snapshot errors are non-fatal for the local app.
     });
     startPresence();
+    purgeRetiredLocal();
   } catch {
     // Sync failures must never break the app.
   }
