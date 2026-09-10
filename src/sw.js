@@ -10,6 +10,15 @@ import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
 self.skipWaiting();
 clientsClaim();
 
+// Belt and braces for the home-screen app. skipWaiting() above already runs on
+// every new build, so a worker should never sit in "waiting" — but if one ever
+// does (an install interrupted mid-flight, a browser that defers activation),
+// the page can push it through instead of leaving her on the old code until
+// she reinstalls. Nothing in this app should ever require a reinstall.
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 // ── PWA: precache all app assets ──
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
