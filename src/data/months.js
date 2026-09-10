@@ -46,7 +46,7 @@ export const MONTHS = [
     tasks: [
       'Week 1 — Log your current weights on hip thrust, RDL, and sumo squat.',
       'Week 2 — Add 1–2 kg to each main lift when all sets feel controlled.',
-      'Week 3 — Add one more working set to your heaviest lift on each glute day. Those are your fish days too.',
+      'Week 3 — Add one more working set to your heaviest lift on each glute day. Keep the zone 2 run easy on those days so the extra set still has something behind it.',
       'Week 4 — Compare lifts + glute measurements to March.',
     ],
   },
@@ -71,7 +71,7 @@ export const MONTHS = [
       'Week 1 — Do all three glute days. Focus on feeling the squeeze at the top of every rep.',
       'Week 2 — Add glute activation (bridges + clamshells) before every glute session.',
       'Week 3 — Nail your form on hip thrust, RDL, and Bulgarian split squat — go lighter if needed.',
-      'Week 4 — Finish all three glute days weekly, each with a 20-min walk after. Journal which moves hit glutes most.',
+      'Week 4 — Finish all three glute days weekly, each opened with the 20-min zone 2 run and closed with rope or a walk. Journal which moves hit glutes most.',
     ],
   },
   // July — Journey month 2
@@ -89,13 +89,13 @@ export const MONTHS = [
   // August — Journey month 3
   {
     name: 'August',
-    ch: 'Two Clocks — Glute Days & Core Days',
-    why: "Learn the two eating clocks. On glute days you eat from the moment you wake: banana and coffee, banana and protein after training, protein and carbs at 5 PM. On every other day nothing passes your lips before noon or after five.",
+    ch: 'One Clock — The Same Four Meals Every Day',
+    why: "Learn the one eating clock and run it every day: coffee and banana before you train, protein with kimchi plus cucumber and banana after, a smoothie and granola bowl at 3 PM, apple sticks with yogurt at 5 PM. Same four meals, every single day — nothing to switch between.",
     tasks: [
-      'Week 1 — Get the glute-day banana right: one before training, one straight after. Every single session.',
-      'Week 2 — Hold the 12–5 window on Tue, Thu, Sat and Sun. Water, tea and psyllium through the morning fast.',
-      'Week 3 — Make the overnight yogurt bowl on Sunday night and keep making it. Yogurt, protein powder, psyllium, 10 blueberries.',
-      'Week 4 — Make the 5 PM sunset finish automatic on both kinds of day. Nothing after — tea only.',
+      'Week 1 — Get the banana right: one before training, one straight after. Every single session, every day of the week.',
+      'Week 2 — Make the 3 PM bowl a habit: two or three frozen fruits blended, granola and chia through it, fruit on top. Never more than three fruits.',
+      'Week 3 — Keep kimchi in the fridge so the after-training plate is never a decision. Protein, kimchi, then cucumber and banana.',
+      'Week 4 — Make the 5 PM finish automatic: apple sticks and yogurt, or sweet potato or boiled saba if you crave it. Nothing after — tea only.',
     ],
   },
   // September — Journey month 4
@@ -105,8 +105,8 @@ export const MONTHS = [
     why: "Walk 15 minutes after eating to move digestion, blunt blood sugar spikes, and reduce bloating.",
     tasks: [
       'Week 1 — Walk 15 min after your 5 PM meal, every day.',
-      'Week 2 — Lock in the 20-min walk after every glute day, and rope or walk to finish the core days.',
-      'Week 3 — Add the full-body stretch warm-up before every session, and the stomach vacuum on both core days.',
+      'Week 2 — Lock in the finisher on every weekday: rope or a walk, one or the other, never both.',
+      'Week 3 — Add the full-body stretch and the 20-min zone 2 run before every weekday session, and the stomach vacuum on both core days.',
       'Week 4 — Make post-meal walks automatic. Notice digestion and energy.',
     ],
   },
@@ -138,9 +138,9 @@ export const MONTHS = [
   {
     name: 'December',
     ch: 'Gut Healing — Meal Rhythm Mastery',
-    why: "Tie the rhythm together: glute days eat early and eat three times, core days hold the 12–5 window and eat twice. Fish lands on glute days only.",
+    why: "Tie the rhythm together: the same four meals every day, and the same weekday shape every day — stretch, zone 2 run, main workout, rope or walk.",
     tasks: [
-      'Week 1 — Run both clocks without thinking about it. Fish on Mon/Wed/Fri, yogurt bowls and fruit the rest.',
+      'Week 1 — Run the clock without thinking about it. Any protein any day; never chicken, beef or pork.',
       'Week 2 — Steam or boil all veg — no oils, no gluten, and no dairy beyond the yogurt bowl (GODSSSS out).',
       'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
       'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',

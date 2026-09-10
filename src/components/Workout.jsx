@@ -3,7 +3,7 @@ import { WORKOUT_DAYS, MEAL_SLOTS, mealSlots, slotMeals, suggestMeals } from '..
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { loadLifts, isTrackable } from '../utils/lifts';
-import { MeatDays, LightDays, RecipesPanel, FoodGuide } from './Nutrition';
+import { DailyClock, RecipesPanel, FoodGuide } from './Nutrition';
 
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
@@ -14,11 +14,11 @@ const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glutes & Quads', focus: 'Squat · Bulgarian · RDL',      color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Back & Core',    focus: 'Pull-Apart · Row · Core',      color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute Isolation', focus: 'Kickback · Abduction · Sumo', color: 'pr' },
-  { lbl: 'Thu', emoji: '⚡', name: 'Back & Core',    focus: 'Pull-Apart · Row · Core',      color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glutes & Hams',  focus: 'Hip Thrust · RDL · Squat',     color: 'pr' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glutes & Quads', focus: 'Run · Squat · Bulgarian · RDL',  color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Back & Core',    focus: 'Run · Pull-Apart · Row · Core',  color: 'py' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute Isolation', focus: 'Run · Kickback · Abduction · Sumo', color: 'pr' },
+  { lbl: 'Thu', emoji: '⚡', name: 'Back & Core',    focus: 'Run · Pull-Apart · Row · Core',  color: 'py' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glutes & Hams',  focus: 'Run · Hip Thrust · RDL · Squat', color: 'pr' },
   { lbl: 'Sat', emoji: '🏃', name: 'Run & Skill', focus: 'Easy Run · Forearm Stand · Stretch', color: 'py' },
   { lbl: 'Sun', emoji: '⚡', name: 'Sprints',    focus: 'Sprints · Forearm Stand · Stretch', color: 'py' },
 ];
@@ -46,19 +46,18 @@ function useDayMeals(dayId) {
   return [items, save];
 }
 
-// The meal plan reads as a clock, and the clock depends on the day: a glute
-// day starts on waking and runs three meals, a core day opens at noon and
-// closes at five with two. Each time opens with a short list of picks chosen
-// for that day — fish only on glute days — and "more choices" reveals the
-// rest of the slot if none of them appeal. Tap a meal for the ingredients,
-// the step-by-step method, and to add it to today.
+// The meal plan reads as a clock, and it is the same clock every day: coffee
+// and banana before you train, protein and kimchi after, the smoothie bowl at
+// 3 PM, apple sticks and yogurt at 5 PM. Each time opens with a short list of
+// picks rotated by the day of the week, and "more choices" reveals the rest of
+// the slot if none of them appeal. Tap a meal for the ingredients, the
+// step-by-step method, and to add it to today.
 function MealBuilder({ dayId, dayIndex, baseMeals }) {
   const [chosen, saveChosen] = useDayMeals(dayId);
   const [openSlot, setOpenSlot] = useState(null);
   const [showAll, setShowAll]   = useState({});
   const [detail, setDetail]     = useState(null);
-  const mealMode = baseMeals.mealMode || 'light';
-  const slots    = mealSlots(mealMode);
+  const slots = mealSlots();
 
   function toggleChosen(name) {
     saveChosen(chosen.includes(name) ? chosen.filter(n => n !== name) : [...chosen, name]);
@@ -81,16 +80,14 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
         <div className="meal-plan-hint">
-          {mealMode === 'glute'
-            ? 'You eat from the moment you wake today, because you are lifting. A banana on both sides of the session. Fish is a glute-day food only.'
-            : 'Nothing before noon, nothing after five. Two meals in that window — no fish today.'}
+          The same four meals every day. A banana on both sides of the session, the smoothie bowl at 3 PM, and apple sticks with yogurt to close. Any protein you like — never chicken, beef or pork.
         </div>
       </div>
 
       <div className="meal-times">
         {slots.map(slot => {
-          const all       = slotMeals(slot.id, mealMode);
-          const suggested = suggestMeals(slot.id, mealMode, dayIndex);
+          const all       = slotMeals(slot.id);
+          const suggested = suggestMeals(slot.id, dayIndex);
           const rest      = all.filter(m => !suggested.includes(m));
           const picked    = all.filter(m => chosen.includes(m.name));
           const isOpen    = openSlot === slot.id;
@@ -117,7 +114,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
               {isOpen && (
                 <div className="meal-time-body">
                   <div className="meal-sug-label">
-                    {slot.id === 'post' ? '🍌 Banana first — then one of these' : '✨ Today’s picks'}
+                    {slot.id === 'post' ? '🥬 Kimchi, cucumber and a banana alongside — pick your protein' : '✨ Today’s picks'}
                   </div>
                   <div className="meal-pills">
                     {suggested.map(m => <Pill key={m.name} m={m} />)}
@@ -295,16 +292,14 @@ function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">Food, Meals &amp; Recipes</div>
         <h2 className="s-title">Nutrition <em>&amp;</em> Meals</h2>
-        <p className="s-desc">How you eat on glute days and non-glute days, how to prep every food, and what each one does for you.</p>
+        <p className="s-desc">The one eating clock you run every day, how to prep every food, and what each one does for you.</p>
       </div>
       <div className="sk-top-tabs splash-item">
-        <button className={`sk-top-tab${tab === 'meat'    ? ' active' : ''}`} onClick={() => setTab('meat')}>🐟 Glute Days</button>
-        <button className={`sk-top-tab${tab === 'light'   ? ' active' : ''}`} onClick={() => setTab('light')}>🌱 Non-Glute Days</button>
+        <button className={`sk-top-tab${tab === 'daily'   ? ' active' : ''}`} onClick={() => setTab('daily')}>🍽️ Daily Clock</button>
         <button className={`sk-top-tab${tab === 'recipes' ? ' active' : ''}`} onClick={() => setTab('recipes')}>🥘 Recipes</button>
         <button className={`sk-top-tab${tab === 'guide'   ? ' active' : ''}`} onClick={() => setTab('guide')}>📊 Food Guide</button>
       </div>
-      {tab === 'meat'    && <MeatDays />}
-      {tab === 'light'   && <LightDays />}
+      {tab === 'daily'   && <DailyClock />}
       {tab === 'recipes' && <RecipesPanel onSelectRecipe={openIngredient} />}
       {tab === 'guide'   && <FoodGuide />}
     </div>

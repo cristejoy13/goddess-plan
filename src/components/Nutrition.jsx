@@ -3,8 +3,7 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'meat',    icon: '🍑', title: 'Glute Days · Mon · Wed · Fri', desc: 'You eat from the moment you wake, because you are lifting. Banana & coffee on waking, banana & protein after training, protein & carbs at 5 PM.' },
-  { id: 'light',   icon: '🌱', title: 'Core Days · Tue · Thu · Sat · Sun', desc: 'Nothing before noon, nothing after five. Yogurt bowl or fruit at 12 PM, egg & sweet potato at 5 PM.' },
+  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · Every Day', desc: 'The same four meals every single day. Coffee & banana before you train, protein & kimchi after, smoothie & granola bowl at 3 PM, apple sticks & yogurt at 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -47,82 +46,50 @@ const RECIPE_CATEGORIES = [
   },
 ];
 
-/* ─── GLUTE DAYS (Mon, Wed, Fri) ─── */
-export function MeatDays() {
+/* ─── THE DAILY CLOCK — the same four meals, every day of the week ─── */
+export function DailyClock() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍑 <strong>Glute days: Monday, Wednesday &amp; Friday.</strong> These are the days you eat early, because you are about to lift. They are also your <strong>only fish days</strong>.
+        🍽️ <strong>One clock, every day.</strong> Glute days, back &amp; core days, the weekend — all the same. Four meals, always in the same order. There is nothing to remember and nothing to switch between.
       </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        🍌 <strong>A banana on both sides of the session.</strong> One before, so you have fuel in your legs. One straight after, so you put back what you burned. This is the non-negotiable part of a glute day.
+        🍌 <strong>A banana on both sides of the session.</strong> One before, so you have fuel for the run and the lifts. One straight after, so you put back what you burned. This is the part that never moves.
       </div>
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">On waking</div>
+            <div className="hyd-time">Before workout</div>
             <div>
-              <div className="hyd-d">Banana &amp; coffee</div>
-              <div className="hyd-n">Eat the moment you get up — banana first, coffee second. Any carb works if you would rather: sweet potato, mango, a fruit plate. Or have the overnight yogurt bowl instead.</div>
+              <div className="hyd-d">Coffee &amp; banana</div>
+              <div className="hyd-n">Banana first, coffee second — caffeine on a truly empty stomach is what makes you shaky by set three. Give it 20–30 minutes before you start the zone 2 run.</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">After training</div>
+            <div className="hyd-time">After workout</div>
             <div>
-              <div className="hyd-d">Banana &amp; protein</div>
-              <div className="hyd-n">Second banana straight after the last set, then your protein — fish, eggs or tofu. Salmon, sardines, tuna, tilapia, any fish. Oil-free, no salt.</div>
+              <div className="hyd-d">Protein &amp; kimchi, then cucumber &amp; banana</div>
+              <div className="hyd-n">Any protein you like — fish, eggs or tofu — with a small bowl of kimchi on the side. Then the cucumber, and the banana last. Oil-free, no added salt; the kimchi is salty enough on its own.</div>
+            </div>
+          </div>
+          <div className="hyd-row">
+            <div className="hyd-time">3:00 PM</div>
+            <div>
+              <div className="hyd-d">Smoothie &amp; granola bowl</div>
+              <div className="hyd-n">Blend two or three frozen fruits — never more than three. Stir granola and chia seeds through, then berries and banana on top, or whatever fruit is in the house. This is a meal, not a snack.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Protein again + any carbs you want</div>
-              <div className="hyd-n">Protein a second time, and this is the meal where carbs are open — rice, sweet potato, banana, whatever you feel like. Nothing after sunset except tea.</div>
+              <div className="hyd-d">Apple sticks with yogurt for the sauce</div>
+              <div className="hyd-n">Apple cut into sticks, skin on, dipped in plain yogurt. Craving something warmer? Sweet potato or a boiled saba banana instead — 5 PM is the slot for it. Nothing after but tea.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🐟 <strong>Protein for the glutes:</strong> fish, eggs or tofu — nothing else. No chicken, beef or pork on any day. Eat the protein first, then your fats and veggies.
-      </div>
-    </>
-  );
-}
-
-/* ─── CORE DAYS (Tue, Thu, Sat, Sun) — the 12–5 window ─── */
-export function LightDays() {
-  return (
-    <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🌱 <strong>Back, shoulder &amp; core days — plus the weekend.</strong> Tuesday, Thursday, Saturday &amp; Sunday. Nothing before <strong>12 PM</strong>, nothing after <strong>5 PM</strong>. Two meals inside that five-hour window.
-      </div>
-      <div className="g-card splash-item" style={{ marginBottom: 18 }}>
-        <div className="hyd-timeline">
-          <div className="hyd-row">
-            <div className="hyd-time">Morning</div>
-            <div>
-              <div className="hyd-d">Nothing yet — water, black coffee or tea</div>
-              <div className="hyd-n">The fast runs until noon. Train on it if you want; these are the light days, so it holds up fine.</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">12:00 PM</div>
-            <div>
-              <div className="hyd-d">Yogurt bowl, or mostly fruit</div>
-              <div className="hyd-n">Either the overnight yogurt bowl — yogurt, protein powder, psyllium husk and 10 blueberries — or a plate of fruit: papaya, mango, banana, berries, watermelon.</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">5:00 PM</div>
-            <div>
-              <div className="hyd-d">Egg &amp; sweet potato</div>
-              <div className="hyd-n">Or something like it — the point is protein plus a slow carb to close the window. No fish today. Nothing after five except spearmint or ginger tea.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="note-box note-rose">
-        🥣 <strong>The yogurt bowl is made the night before.</strong> Yogurt, a scoop of protein powder, a teaspoon of psyllium husk, 10 blueberries. It sets overnight and is ready whenever you break the fast — noon on these days, or on waking before a glute session.
+        🐟 <strong>Protein:</strong> fish, eggs or tofu — any of them, any day. <strong>No chicken, beef or pork, ever.</strong> Eat the protein and the kimchi first, then your veggies and fruit.
       </div>
     </>
   );
@@ -255,8 +222,11 @@ export function FoodGuide() {
   );
 }
 
-const PANELS = { meat: MeatDays, light: LightDays, guide: FoodGuide };
-const TAB_ALIASES = { hydration: 'recipes', snacks: 'recipes' };
+const PANELS = { daily: DailyClock, guide: FoodGuide };
+// The two day-type tabs collapsed into one daily clock. Their ids stay mapped
+// so a bookmark or a search entry saved against the old plan still lands
+// somewhere sensible instead of rendering nothing.
+const TAB_ALIASES = { hydration: 'recipes', snacks: 'recipes', meat: 'daily', light: 'daily' };
 const resolveTab = (t) => (t ? TAB_ALIASES[t] || t : null);
 
 /* ─── Main Component ─── */
@@ -346,9 +316,9 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Fuel Protocol · two clocks, one for each kind of day</div>
+        <div className="s-tag">Fuel Protocol · one clock, every day of the week</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">Glute days you eat on waking — banana &amp; coffee, banana &amp; protein after training, protein &amp; carbs at 5 PM. Every other day is a 12–5 window: yogurt bowl or fruit at noon, egg &amp; sweet potato at five. Fish only on glute days.</p>
+        <p className="s-desc">The same four meals every day: coffee &amp; banana before you train, protein &amp; kimchi after, a smoothie &amp; granola bowl at 3 PM, and apple sticks with yogurt at 5 PM. Any protein, any day — never chicken, beef or pork.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (
