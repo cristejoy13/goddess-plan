@@ -74,11 +74,11 @@ const NICOLE_FULLBODY = [
 const H = (heading, hint, tone) => ({ heading, hint, tone });
 
 const CORE_VIDEO_HEADS = [
-  H('🪷 Core Videos · Pilates by Izzy', 'Pick ONE. Four core workouts plus her full CORE WORKOUTS playlist.', 'core'),
+  H('🌀 Core · Pilates by Izzy', 'Core comes first now, straight off the run. Pick ONE video — from here or from Nicole below, never both.', 'core'),
 ];
 
 const FULLBODY_VIDEO_HEADS = [
-  H('🧘 Full-Body Videos · Move With Nicole', 'Or pick ONE of these instead — five short 30-minute full-body classes.', 'core'),
+  H('🧘 Core · Or Move With Nicole', 'Or pick ONE of these instead — five short 30-minute full-body classes. One video total, then on to the shoulder.', 'core'),
 ];
 
 // Forearm-stand (elbow stand / Pincha Mayurasana) training — the weekend goal.
@@ -670,25 +670,24 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Tuesday · Back, Shoulders & Core', title: 'Back, Shoulders & Core',
-    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → shoulder, back & one core video → rope or walk',
+    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → one core video → shoulder → back → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
-    noteBefore: { type: 'gold', text: '💪 Short and simple. Stretch, vacuum, the 20-minute zone 2 run, then one shoulder movement, one back movement, one core video — and rope or walk to finish, whichever you feel like. Light weight and slow control on both lifts: this builds posture and stability, not bulk.' },
+    noteBefore: { type: 'gold', text: '💪 Short and simple. Stretch, vacuum, the 20-minute zone 2 run, then your core video — core comes first now, while you still have something left for it. Then one shoulder movement, one back movement, and rope or walk to finish. Light weight and slow control on both lifts: this builds posture and stability, not bulk.' },
     exercises: [
       H('🔥 Warm-Up', 'Both of these, in this order, before you run.'),
       WARMUP,
       VACUUM,
       H('🏃 Zone 2 Run · 20 min', 'Before the main workout, Monday to Friday. Easy enough to talk the whole way.'),
       ZONE2_RUN,
-      H('💪 Shoulder', 'One movement. Light band, slow, squeeze between the shoulder blades.'),
-      { name: 'Band Pull-Apart', detail: 'SHOULDER · 3 × 20 reps · light band, arms straight at chest height, pull apart and hold the squeeze between your shoulder blades for 1 sec, return slow · the single best fix for rounded posture — keep the weight light enough that you never feel it in your neck' },
-      H('🎯 Back', 'One movement. Both arms, flat back, row to the ribs.'),
-      { name: 'Double-Arm Dumbbell Row', detail: 'BACK · 3 × 12 reps · a dumbbell in each hand, hinge forward to about 45°, back flat and chest proud, row both dumbbells to your ribs and hold 1 sec, lower for 3 sec · both arms together keeps you square — if you feel it in your lower back, hinge less' },
-      H('🌀 Core', 'Pick ONE video from the two sections below. Just one.', 'core'),
       ...CORE_VIDEO_HEADS,
       ...IZZY_ABS,
       ...FULLBODY_VIDEO_HEADS,
       ...NICOLE_FULLBODY,
+      H('💪 Shoulder', 'After the core. One movement — light band, slow, squeeze between the shoulder blades.'),
+      { name: 'Band Pull-Apart', detail: 'SHOULDER · 3 × 20 reps · light band, arms straight at chest height, pull apart and hold the squeeze between your shoulder blades for 1 sec, return slow · the single best fix for rounded posture — keep the weight light enough that you never feel it in your neck' },
+      H('🎯 Back', 'Last lift of the day. One movement — both arms, flat back, row to the ribs.'),
+      { name: 'Double-Arm Dumbbell Row', detail: 'BACK · 3 × 12 reps · a dumbbell in each hand, hinge forward to about 45°, back flat and chest proud, row both dumbbells to your ribs and hold 1 sec, lower for 3 sec · both arms together keeps you square — if you feel it in your lower back, hinge less' },
       H('🪢 Finish · Rope OR Walk', 'One or the other, never both. Rope if you want to sweat, walk if you want to come down quietly.'),
       JUMP_ROPE,
       ALT_WALK,
@@ -728,25 +727,24 @@ export const WORKOUT_DAYS = [
   {
     emoji: '⚡', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Thursday · Back, Shoulders & Core', title: 'Back, Shoulders & Core',
-    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → shoulder, back & one core video → rope or walk',
+    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → one core video → shoulder → back → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
-    noteBefore: { type: 'gold', text: '⚡ Same shape as Tuesday, in the same order — that repetition is the point. Stretch, vacuum, the zone 2 run, then shoulder, back and one core video. You will feel the pull-apart and the row get easier week by week, which is exactly how you know your posture is changing.' },
+    noteBefore: { type: 'gold', text: '⚡ Same shape as Tuesday, in the same order — that repetition is the point. Stretch, vacuum, the zone 2 run, then the core video, then shoulder and back. You will feel the pull-apart and the row get easier week by week, which is exactly how you know your posture is changing.' },
     exercises: [
       H('🔥 Warm-Up', 'Both of these, in this order, before you run.'),
       WARMUP,
       VACUUM,
       H('🏃 Zone 2 Run · 20 min', 'Before the main workout, Monday to Friday. Easy enough to talk the whole way.'),
       ZONE2_RUN,
-      H('💪 Shoulder', 'One movement. Light band, slow, squeeze between the shoulder blades.'),
-      { name: 'Band Pull-Apart', detail: 'SHOULDER · 3 × 20 reps · light band, arms straight at chest height, pull apart and hold the squeeze between your shoulder blades for 1 sec, return slow · the single best fix for rounded posture — keep the weight light enough that you never feel it in your neck' },
-      H('🎯 Back', 'One movement. Both arms, flat back, row to the ribs.'),
-      { name: 'Double-Arm Dumbbell Row', detail: 'BACK · 3 × 12 reps · a dumbbell in each hand, hinge forward to about 45°, back flat and chest proud, row both dumbbells to your ribs and hold 1 sec, lower for 3 sec · both arms together keeps you square — if you feel it in your lower back, hinge less' },
-      H('🌀 Core', 'Pick ONE video from the two sections below. Just one.', 'core'),
       ...CORE_VIDEO_HEADS,
       ...IZZY_ABS,
       ...FULLBODY_VIDEO_HEADS,
       ...NICOLE_FULLBODY,
+      H('💪 Shoulder', 'After the core. One movement — light band, slow, squeeze between the shoulder blades.'),
+      { name: 'Band Pull-Apart', detail: 'SHOULDER · 3 × 20 reps · light band, arms straight at chest height, pull apart and hold the squeeze between your shoulder blades for 1 sec, return slow · the single best fix for rounded posture — keep the weight light enough that you never feel it in your neck' },
+      H('🎯 Back', 'Last lift of the day. One movement — both arms, flat back, row to the ribs.'),
+      { name: 'Double-Arm Dumbbell Row', detail: 'BACK · 3 × 12 reps · a dumbbell in each hand, hinge forward to about 45°, back flat and chest proud, row both dumbbells to your ribs and hold 1 sec, lower for 3 sec · both arms together keeps you square — if you feel it in your lower back, hinge less' },
       H('🪢 Finish · Rope OR Walk', 'One or the other, never both. Rope if you want to sweat, walk if you want to come down quietly.'),
       JUMP_ROPE,
       ALT_WALK,

@@ -23,6 +23,30 @@ const GRID_DAYS = [
   { lbl: 'Sun', emoji: '⚡', name: 'Sprints',    focus: 'Sprints · Forearm Stand · Stretch', color: 'py' },
 ];
 
+// A day's exercise array is flat: heading, its exercises, the next heading, and
+// so on. The page shows it as a stack of collapsed pills instead, so the whole
+// session fits on one screen and nothing has to be scrolled past to reach the
+// part she is actually doing. This walks the flat list once and returns the
+// groups. Anything before the first heading (there should be nothing) keeps its
+// place in an untitled group rather than being dropped.
+function groupExercises(exercises = []) {
+  const groups = [];
+  let current = null;
+  for (const ex of exercises) {
+    if (ex.heading) {
+      current = { heading: ex.heading, hint: ex.hint, tone: ex.tone, items: [] };
+      groups.push(current);
+    } else {
+      if (!current) {
+        current = { heading: null, hint: null, tone: null, items: [] };
+        groups.push(current);
+      }
+      current.items.push(ex);
+    }
+  }
+  return groups;
+}
+
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
@@ -194,6 +218,15 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
   // The whole lift log for every exercise, held once for the page so each row
   // does not re-read localStorage on every render.
   const [lifts, setLifts] = useState(loadLifts);
+  // Every section starts closed so the whole day is one screen — that is the
+  // point of the pills. More than one can be open at a time: doing a session
+  // means keeping the part you are on open while you look ahead to the next.
+  const groups = groupExercises(day.exercises);
+  const [openSecs, setOpenSecs] = useState({});
+  const allOpen = groups.length > 0 && groups.every((_, i) => openSecs[i]);
+  const toggleSec = (i) => setOpenSecs(v => ({ ...v, [i]: !v[i] }));
+  const toggleAll = () =>
+    setOpenSecs(allOpen ? {} : Object.fromEntries(groups.map((_, i) => [i, true])));
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
@@ -230,33 +263,58 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
       </div>
 
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
-      <div className="exercise-hint">
-        👆 Tap a video (▶) to open it on YouTube, or tap any exercise for a form demo.
-        {day.trackLifts && ' Tap the grey bar under a lift to set your sets, reps, and weight — and the weight you are moving up to next.'}
+      <div className="exercise-hint ex-hint-row">
+        <span>
+          👆 Tap a section to open it. Inside, tap a video (▶) for YouTube or any exercise for a form demo.
+          {day.trackLifts && ' Tap the grey bar under a lift to set your sets, reps, and weight.'}
+        </span>
+        <button className="ex-sec-all" onClick={toggleAll}>
+          {allOpen ? 'Close all' : 'Open all'}
+        </button>
       </div>
-      <ul className="workout-list">
-        {day.exercises.map((ex, i) => (
-          ex.heading ? (
-            <li key={i} className={`ex-group${ex.tone === 'core' ? ' ex-group-core' : ''}`}>
-              {ex.heading}
-              {ex.hint && <small>{ex.hint}</small>}
-            </li>
-          ) : (
-          <li key={i}>
-            <a
-              className={ex.url ? 'ex-link ex-video' : 'ex-link'}
-              href={ex.url || `https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >{ex.url ? '▶ ' : ''}{ex.name}</a>
-            {ex.detail ? <>{' '}— {ex.detail}</> : null}
-            {day.trackLifts && isTrackable(ex) && (
-              <LiftTracker exercise={ex} lifts={lifts} onChange={setLifts} />
-            )}
-          </li>
-          )
-        ))}
-      </ul>
+      <div className="ex-secs">
+        {groups.map((g, gi) => {
+          const open = !!openSecs[gi];
+          return (
+            <div
+              key={gi}
+              className={`ex-sec${open ? ' is-open' : ''}${g.tone === 'core' ? ' ex-sec-core' : ''}`}
+            >
+              <button
+                className="ex-sec-pill"
+                onClick={() => toggleSec(gi)}
+                aria-expanded={open}
+              >
+                <span className="ex-sec-name">{g.heading || 'Exercises'}</span>
+                <span className="ex-sec-count">{g.items.length}</span>
+                <span className="ex-sec-caret">▾</span>
+              </button>
+
+              {open && (
+                <div className="ex-sec-body">
+                  {g.hint && <div className="ex-sec-hint">{g.hint}</div>}
+                  <ul className="workout-list">
+                    {g.items.map((ex, i) => (
+                      <li key={i}>
+                        <a
+                          className={ex.url ? 'ex-link ex-video' : 'ex-link'}
+                          href={ex.url || `https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >{ex.url ? '▶ ' : ''}{ex.name}</a>
+                        {ex.detail ? <>{' '}— {ex.detail}</> : null}
+                        {day.trackLifts && isTrackable(ex) && (
+                          <LiftTracker exercise={ex} lifts={lifts} onChange={setLifts} />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
       <MealBuilder dayId={id} dayIndex={dayIndex} baseMeals={day.meals} />
     </div>

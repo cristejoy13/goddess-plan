@@ -1067,6 +1067,113 @@ body {
 .workout-list li:last-child { border-bottom: none; }
 .workout-list li::before { content: '🌸'; font-size: 11px; margin-top: 3px; flex-shrink: 0; }
 
+/* ── Collapsible sections inside a day ─────────────────────────────────────
+   A session used to render as one long flat list, so reaching the lift you
+   were actually on meant scrolling past everything before it. Each section is
+   now a small pill that opens on tap; closed, the whole day fits on a screen.
+   Sized for a thumb: the pill is a full-width row so the tap target spans the
+   screen, even though it reads as a pill. */
+.ex-secs { margin: 12px 0; display: flex; flex-direction: column; gap: 7px; }
+
+.ex-sec-pill {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 1px solid rgba(240,204,96,0.22);
+  border-radius: 999px;
+  background: rgba(240,204,96,0.07);
+  color: var(--gold, #f0cc60);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  line-height: 1.4;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.ex-sec-pill:active { opacity: 0.75; }
+.ex-sec.is-open .ex-sec-pill {
+  border-radius: 16px;
+  background: rgba(240,204,96,0.13);
+  border-color: rgba(240,204,96,0.34);
+}
+
+.ex-sec-name { flex: 1; min-width: 0; }
+
+/* How many exercises are behind the pill — so a closed section still tells
+   you whether it is one walk or five drills. */
+.ex-sec-count {
+  flex-shrink: 0;
+  min-width: 19px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(240,204,96,0.16);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  opacity: 0.95;
+}
+.ex-sec-caret {
+  flex-shrink: 0;
+  font-size: 10px;
+  opacity: 0.7;
+  transition: transform 0.25s ease;
+}
+.ex-sec.is-open .ex-sec-caret { transform: rotate(180deg); }
+
+.ex-sec-body { padding: 2px 6px 4px; }
+.ex-sec-body .workout-list { margin: 6px 0 0; }
+
+.ex-sec-hint {
+  margin: 8px 0 2px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-mid);
+  opacity: 0.9;
+}
+
+/* The core-video sections keep the rose tint they had as plain headings. */
+.ex-sec-core .ex-sec-pill {
+  border-color: rgba(244,164,196,0.28);
+  background: rgba(244,164,196,0.08);
+  color: var(--rose, #f4a4c4);
+}
+.ex-sec-core.is-open .ex-sec-pill {
+  background: rgba(244,164,196,0.14);
+  border-color: rgba(244,164,196,0.4);
+}
+.ex-sec-core .ex-sec-count { background: rgba(244,164,196,0.18); }
+
+/* Hint line above the pills, with the open/close-all control on the right. */
+.ex-hint-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ex-sec-all {
+  flex-shrink: 0;
+  padding: 5px 11px;
+  border: 1px solid rgba(240,204,96,0.24);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gold, #f0cc60);
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ex-sec-all:active { opacity: 0.7; }
+
 /* Section headings inside a day's exercise list — so you can see at a glance
    whether a line is a shoulder move, a back move, or a core video. */
 .workout-list li.ex-group {

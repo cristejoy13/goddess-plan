@@ -25,7 +25,16 @@ const firebaseConfig = {
   appId: '1:225308869833:web:b5cc454324237a0ec87918',
 };
 
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes', 'gp_lifts'];
+// The meals picked for each day live one key per weekday. They were the last
+// thing still stranded on whichever device chose them — pick lunch on the
+// phone and the iPad never heard about it — so they sync like everything else
+// now. Small values: a short list of meal names each.
+const MEAL_KEYS = [
+  'gp_meal_day-monday', 'gp_meal_day-tuesday', 'gp_meal_day-wednesday',
+  'gp_meal_day-thursday', 'gp_meal_day-friday', 'gp_meal_day-saturday',
+  'gp_meal_day-sunday',
+];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes', 'gp_lifts', ...MEAL_KEYS];
 // Keys that USED to sync and no longer exist in the app. They are cleared from
 // this device and deleted from the shared cloud document once, so the doc does
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key
