@@ -74,11 +74,11 @@ const NICOLE_FULLBODY = [
 const H = (heading, hint, tone) => ({ heading, hint, tone });
 
 const CORE_VIDEO_HEADS = [
-  H('🌀 Core · Pilates by Izzy', 'Core comes first now, straight off the run. Pick ONE video — from here or from Nicole below, never both.', 'core'),
+  H('🌀 Main Workout · Core', 'Core comes first now, straight off the run. Pick ONE video — from here or from Nicole below, never both.', 'core'),
 ];
 
 const FULLBODY_VIDEO_HEADS = [
-  H('🧘 Core · Or Move With Nicole', 'Or pick ONE of these instead — five short 30-minute full-body classes. One video total, then on to the shoulder.', 'core'),
+  H('🧘 Main Workout · Core — Nicole', 'Or pick ONE of these instead — five short 30-minute full-body classes. One video total, then on to the shoulder.', 'core'),
 ];
 
 // Forearm-stand (elbow stand / Pincha Mayurasana) training — the weekend goal.
@@ -643,7 +643,7 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Monday · Glutes & Quads', title: 'Squat · Split Squat · RDL',
-    sub: '~85 min total · stretch → zone 2 run 20 min → 3 lifts → rope or walk',
+    sub: '~85 min total · stretch → zone 2 run 20 min → main workout → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
     noteBefore: { type: 'rose', text: '🍑 The heaviest day of the week. Stretch, then the 20-minute zone 2 run, then the lifts: two squat patterns for the quads and glutes, and the RDL to finish through the hamstrings. Keep the run genuinely easy — it is there to burn fat, not to leave you with nothing for the bar. Banana and coffee before you start; you never train this on an empty stomach.' },
@@ -654,7 +654,7 @@ export const WORKOUT_DAYS = [
       ZONE2_RUN,
       H('🍑 Glute Activation', 'Straight off the run and straight before the bar — this is where it counts.'),
       { name: 'Glute & Quad Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → bodyweight squats × 15 → hip circles × 10 each · wake the glutes and warm the knees before you load a squat' },
-      H('🍑 The Three Lifts', 'Three sets of ten on all three. Squat, split squat, hinge — in that order, always.'),
+      H('🍑 Main Workout', 'Three sets of ten on all three. Squat, split squat, hinge — in that order, always.'),
       { name: '1. Barbell Back Squat', detail: 'MAIN 1 of 3 · 3 × 10 reps · bar on your upper back, chest tall, sit down between your heels to below parallel, drive up through the whole foot · the lift everything else is built on — dumbbell or goblet squat works the same way if you have no bar' },
       { name: '2. Bulgarian Split Squat', detail: 'MAIN 2 of 3 · 3 × 10 reps each leg · rear foot on a bench, lower the front thigh to parallel · lean 10–15° forward to put it in the glute, stay upright to put it in the quad · this is the lift that evens out your hips' },
       { name: '3. Romanian Deadlift (RDL)', detail: 'MAIN 3 of 3 · 3 × 10 reps · soft knees, hinge from the hips, lower for 3 sec until you feel the hamstrings stretch, drive the hips forward to stand tall · the best glute-and-hamstring lift there is, and the right way to finish after squatting' },
@@ -670,7 +670,7 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Tuesday · Back, Shoulders & Core', title: 'Back, Shoulders & Core',
-    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → one core video → shoulder → back → rope or walk',
+    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → main workout: core, shoulder, back → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
     noteBefore: { type: 'gold', text: '💪 Short and simple. Stretch, vacuum, the 20-minute zone 2 run, then your core video — core comes first now, while you still have something left for it. Then one shoulder movement, one back movement, and rope or walk to finish. Light weight and slow control on both lifts: this builds posture and stability, not bulk.' },
@@ -684,9 +684,9 @@ export const WORKOUT_DAYS = [
       ...IZZY_ABS,
       ...FULLBODY_VIDEO_HEADS,
       ...NICOLE_FULLBODY,
-      H('💪 Shoulder', 'After the core. One movement — light band, slow, squeeze between the shoulder blades.'),
+      H('💪 Main Workout · Shoulder', 'After the core. One movement — light band, slow, squeeze between the shoulder blades.'),
       { name: 'Band Pull-Apart', detail: 'SHOULDER · 3 × 20 reps · light band, arms straight at chest height, pull apart and hold the squeeze between your shoulder blades for 1 sec, return slow · the single best fix for rounded posture — keep the weight light enough that you never feel it in your neck' },
-      H('🎯 Back', 'Last lift of the day. One movement — both arms, flat back, row to the ribs.'),
+      H('🎯 Main Workout · Back', 'Last lift of the day. One movement — both arms, flat back, row to the ribs.'),
       { name: 'Double-Arm Dumbbell Row', detail: 'BACK · 3 × 12 reps · a dumbbell in each hand, hinge forward to about 45°, back flat and chest proud, row both dumbbells to your ribs and hold 1 sec, lower for 3 sec · both arms together keeps you square — if you feel it in your lower back, hinge less' },
       H('🪢 Finish · Rope OR Walk', 'One or the other, never both. Rope if you want to sweat, walk if you want to come down quietly.'),
       JUMP_ROPE,
@@ -700,7 +700,7 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🔥', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Wednesday · Glute Isolation', title: 'Kickback · Abduction · Sumo Squat',
-    sub: '~80 min total · stretch → zone 2 run 20 min → 3 lifts → rope or walk',
+    sub: '~80 min total · stretch → zone 2 run 20 min → main workout → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
     noteBefore: { type: 'rose', text: '🔥 The shaping day. Stretch, the 20-minute zone 2 run, then two pure isolation moves that hit the upper and outer glute directly, and the sumo squat to open the hips and bring in the inner thigh. Lighter weight, slower reps, and hold every squeeze. Banana and coffee first.' },
@@ -711,7 +711,7 @@ export const WORKOUT_DAYS = [
       ZONE2_RUN,
       H('🍑 Glute Activation', 'Straight off the run and straight before the bar — this is where it counts.'),
       { name: 'Glute Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each · wake gluteus medius, the outer glute you are about to isolate' },
-      H('🍑 The Three Lifts', 'Three sets of ten on all three. Upper glute, outer glute, then the wide squat.'),
+      H('🍑 Main Workout', 'Three sets of ten on all three. Upper glute, outer glute, then the wide squat.'),
       { name: '1. Cable Kickback', detail: 'MAIN 1 of 3 · 3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec at the top, lower slow · the cleanest upper-glute isolation there is — if your lower back is doing the work, you are swinging it' },
       { name: '2. Hip Abduction (machine or band)', detail: 'MAIN 2 of 3 · 3 × 10 reps · push the knees apart, hold 2 sec at the widest point, release slow · builds the outer glute that gives you the round shape — lean forward slightly for the upper glute, sit upright for the side' },
       { name: '3. Sumo Squat', detail: 'MAIN 3 of 3 · 3 × 10 reps · feet wide, toes turned out 45°, dumbbell or kettlebell held between your legs, sit straight down and drive the knees out · the wide stance shifts the work into the glutes and inner thighs where a normal squat cannot reach' },
@@ -727,7 +727,7 @@ export const WORKOUT_DAYS = [
   {
     emoji: '⚡', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Thursday · Back, Shoulders & Core', title: 'Back, Shoulders & Core',
-    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → one core video → shoulder → back → rope or walk',
+    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → main workout: core, shoulder, back → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
     noteBefore: { type: 'gold', text: '⚡ Same shape as Tuesday, in the same order — that repetition is the point. Stretch, vacuum, the zone 2 run, then the core video, then shoulder and back. You will feel the pull-apart and the row get easier week by week, which is exactly how you know your posture is changing.' },
@@ -741,9 +741,9 @@ export const WORKOUT_DAYS = [
       ...IZZY_ABS,
       ...FULLBODY_VIDEO_HEADS,
       ...NICOLE_FULLBODY,
-      H('💪 Shoulder', 'After the core. One movement — light band, slow, squeeze between the shoulder blades.'),
+      H('💪 Main Workout · Shoulder', 'After the core. One movement — light band, slow, squeeze between the shoulder blades.'),
       { name: 'Band Pull-Apart', detail: 'SHOULDER · 3 × 20 reps · light band, arms straight at chest height, pull apart and hold the squeeze between your shoulder blades for 1 sec, return slow · the single best fix for rounded posture — keep the weight light enough that you never feel it in your neck' },
-      H('🎯 Back', 'Last lift of the day. One movement — both arms, flat back, row to the ribs.'),
+      H('🎯 Main Workout · Back', 'Last lift of the day. One movement — both arms, flat back, row to the ribs.'),
       { name: 'Double-Arm Dumbbell Row', detail: 'BACK · 3 × 12 reps · a dumbbell in each hand, hinge forward to about 45°, back flat and chest proud, row both dumbbells to your ribs and hold 1 sec, lower for 3 sec · both arms together keeps you square — if you feel it in your lower back, hinge less' },
       H('🪢 Finish · Rope OR Walk', 'One or the other, never both. Rope if you want to sweat, walk if you want to come down quietly.'),
       JUMP_ROPE,
@@ -757,7 +757,7 @@ export const WORKOUT_DAYS = [
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Friday · Glutes & Hamstrings', title: 'Hip Thrust · RDL · Squat',
-    sub: '~85 min total · stretch → zone 2 run 20 min → 3 lifts → rope or walk',
+    sub: '~85 min total · stretch → zone 2 run 20 min → main workout → rope or walk',
     cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
     cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
     noteBefore: { type: 'rose', text: '✨ The glute-builder day. Stretch and run first, then the hip thrust while you are still freshest — it is the one lift that loads the glute at the top of the range where nothing else can. Then the RDL through the hamstrings, and the squat to finish. Banana and coffee before any of it.' },
@@ -768,7 +768,7 @@ export const WORKOUT_DAYS = [
       ZONE2_RUN,
       H('🍑 Glute Activation', 'Straight off the run and straight before the bar — this is where it counts.'),
       { name: 'Glute & Hamstring Activation', detail: '5 min · banded glute bridges × 20 → bodyweight good mornings × 15 → donkey kicks × 15 each · get blood into the glutes and lengthen the hamstrings before you hinge' },
-      H('🍑 The Three Lifts', 'Three sets of ten on all three. Thrust first while you are fresh, then hinge, then squat.'),
+      H('🍑 Main Workout', 'Three sets of ten on all three. Thrust first while you are fresh, then hinge, then squat.'),
       { name: '1. Barbell Hip Thrust', detail: 'MAIN 1 of 3 · 3 × 10 reps · shoulders on a bench, chin tucked, drive the hips up to parallel, pause 2 sec at the top and squeeze, lower for 3 sec · the single best glute builder — it goes first today so it gets your best effort' },
       { name: '2. Romanian Deadlift (RDL)', detail: 'MAIN 2 of 3 · 3 × 10 reps · soft knees, hinge from the hips, lower for 3 sec until you feel the hamstrings stretch, drive the hips forward to stand · if you feel it in your lower back instead of your hamstrings, your hinge has turned into a squat' },
       { name: '3. Barbell Back Squat', detail: 'MAIN 3 of 3 · 3 × 10 reps · bar on your upper back, chest tall, sit to below parallel, drive up through the whole foot · lighter than Monday — your hips have already done two lifts, so this one is about depth and control, not load' },
