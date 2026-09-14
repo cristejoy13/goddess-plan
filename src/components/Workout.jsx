@@ -71,9 +71,9 @@ function useDayMeals(dayId) {
   return [items, save];
 }
 
-// The meal plan reads as a clock, and it is the same clock every day: coffee
-// and banana before you train, protein and kimchi after, the smoothie bowl at
-// 3 PM, apple sticks and yogurt at 5 PM. Each time opens with a short list of
+// The meal plan reads as a clock, and it is the same clock every day: fruit and
+// black coffee at 8 AM, the egg plate at 11, beef or chicken at 2, and then the
+// window shuts. Each time opens with a short list of
 // picks rotated by the day of the week, and "more choices" reveals the rest of
 // the slot if none of them appeal. Tap a meal for the ingredients, the
 // step-by-step method, and to add it to today.
@@ -111,7 +111,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
         <div className="meal-plan-hint">
-          Three meals, 8 AM to 2 PM, then the window shuts. Fruit first, apple and Greek yogurt at 11, and the big plate at 2. Any protein you like — never chicken, beef or pork.
+          Three meals, 8 AM to 2 PM, then the window shuts. Fruit first, the egg plate at 11, beef or chicken at 2. Both plates are offered at both times, so swap them round whenever you like.
         </div>
       </div>
 

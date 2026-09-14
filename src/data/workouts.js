@@ -149,17 +149,20 @@ const UPPER_BODY = [
 // One eating window, 8 AM to 2 PM, and it is the same every single day — glute
 // day, abs day, weekend, all of it. Three meals, always in this order:
 //
-//   8:00 AM   fruit, and not much of it. This is also your fuel for training,
-//             so it goes in before the run, not after.
-//   11:00 AM  apple sticks with Greek yogurt for the sauce. Small on purpose.
-//   2:00 PM   THE BIG MEAL. Protein, sweet potato, eggs, veg and a banana.
-//             This is the meal the whole day is built around.
+//    8:00 AM   fruit: banana, berries or papaya. Black coffee alongside, and
+//              especially on a glute day. This is also the fuel for training,
+//              so it goes in before the run.
+//   11:00 AM   MEAL 1 — the egg plate. Whole eggs and whites fried in one
+//              teaspoon of olive oil with spinach, then kimchi, sweet potato,
+//              papaya, chia, pumpkin or sesame seeds, and Greek yogurt.
+//    2:00 PM   MEAL 2 — beef or chicken, with sweet potato, spinach, bell
+//              pepper, tomato, cucumber, kimchi, Greek yogurt and seeds.
 //
 //   After 2 PM — nothing but water, tea and black coffee. That is the window
 //   closing, and the closing is what makes the window work.
 //
-// No chicken, no beef, no pork — ever. Fish, eggs, tofu and yogurt are all
-// fair game on any day.
+// Both meals are offered at both times, so the eggs can go second and the meat
+// first on any day she would rather have it that way round.
 
 // ─── THE TWO NUMBERS ───────────────────────────────────────────────────────
 // Only two, and they pull against each other, which is the whole difficulty:
@@ -167,19 +170,22 @@ const UPPER_BODY = [
 //   1,000 calories a day  — the ceiling.
 //   50 grams of protein   — the floor.
 //
-// A thousand calories is a small budget, so almost all of it has to do real
-// work. That rules out oil, sugar and big piles of rice, and it rules IN the
-// foods that carry protein cheaply: white fish, eggs, Greek yogurt, tofu.
+// Her two plates at FULL size, with fruit, come to about 1,290 calories. That
+// is 290 over the ceiling, so both plates have a lighter version and the way
+// under 1,000 is this:
 //
-// The standard day, and what it costs:
-//    8:00 AM   banana & berries .................  140 cal ·  2 g
-//   11:00 AM   apple sticks & Greek yogurt ......  215 cal · 16 g
-//    2:00 PM   fish, sweet potato, eggs & banana   660 cal · 60 g
+//    8:00 AM   papaya & black coffee ...........   57 cal ·  1 g
+//   11:00 AM   egg plate, lighter ..............  480 cal · 29 g
+//    2:00 PM   beef plate, lighter .............  445 cal · 41 g
 //                                                 ————————   ————
-//                                                 1,015 cal · 78 g
+//                                                   982 cal · 71 g
 //
-// Under the ceiling, well over the floor. Both meters in the app count only
-// the meals actually chosen, so an untouched day honestly reads zero.
+// Two cuts do all of that work: ONE whole egg instead of two, and Greek yogurt
+// in ONE meal instead of both. Nothing else is dropped — the spinach, kimchi,
+// sweet potato, papaya, seeds and chia all stay exactly as she asked.
+//
+// Both meters in the app count only the meals actually chosen, so an untouched
+// day honestly reads zero.
 export const PROTEIN_TARGET = 50;
 export const CALORIE_TARGET = 1000;
 
@@ -194,24 +200,101 @@ export const CALORIE_TARGET = 1000;
 // those meals belong now. Nothing was thrown away.
 const SLOT_DEFS = {
   wake: { id: 'wake', time: '8:00 AM',  emoji: '🍌' },
-  noon: { id: 'noon', time: '11:00 AM', emoji: '🍏' },
-  post: { id: 'post', time: '2:00 PM',  emoji: '🍠' },
+  noon: { id: 'noon', time: '11:00 AM', emoji: '🍳' },
+  post: { id: 'post', time: '2:00 PM',  emoji: '🥩' },
 };
 
 // The same three slots every day, in clock order.
 export function mealSlots() {
   return [
-    { ...SLOT_DEFS.wake, label: 'Fruit — small',        hint: 'Just fruit, and not much of it · this is your fuel for training, so eat it before you run' },
-    { ...SLOT_DEFS.noon, label: 'Apple & Greek Yogurt', hint: 'Apple sticks, Greek yogurt for the sauce · small on purpose — the big meal is at 2 PM' },
-    { ...SLOT_DEFS.post, label: 'THE BIG MEAL',         hint: 'Protein, sweet potato, eggs, veg and a banana · most of your day\u2019s food and nearly all of its protein' },
+    { ...SLOT_DEFS.wake, label: 'Fruit & Coffee',      hint: 'Banana, berries or papaya · black coffee on glute days · eat it before you run' },
+    { ...SLOT_DEFS.noon, label: 'Meal 1 · Egg Plate',  hint: 'Eggs and whites fried in 1 tsp olive oil · spinach, kimchi, sweet potato, papaya, seeds, yogurt' },
+    { ...SLOT_DEFS.post, label: 'Meal 2 · Beef or Chicken', hint: 'Beef or chicken · sweet potato, spinach, bell pepper, tomato, cucumber, kimchi, yogurt, seeds' },
   ];
 }
 
 // Flat list, only for looking a meal's clock time up by its slot id.
 export const MEAL_SLOTS = [SLOT_DEFS.wake, SLOT_DEFS.noon, SLOT_DEFS.post];
 
-// Every meal you can pick, grouped by slot. Oil-free and salt-free by default.
+// Every meal you can pick, grouped by slot. Salt-free by default, and oil-free
+// apart from the one teaspoon of olive oil in the egg plate.
 export const RECOMMENDED_MEALS = [
+  // ══ JOY'S TWO PLATES ═══════════════════════════════════════════════════
+  // The two meals she actually wants, written exactly as she asked for them.
+  // Both are offered at 11 AM and at 2 PM, so she can take the eggs first and
+  // the meat second or the other way round, whichever suits the day.
+  //
+  // Two rules changed to make these possible, and they changed because she
+  // asked, not by accident:
+  //   • Beef and chicken are back. The old "no chicken, beef or pork, ever"
+  //     rule is gone. Pork is still not in the plan.
+  //   • One teaspoon of olive oil is allowed, for frying the egg plate. That
+  //     is the whole allowance — one teaspoon, one meal, once a day.
+  //
+  // Both plates at full size, plus fruit, come to about 1,290 calories. That
+  // is over the 1,000 ceiling, so the lighter versions below exist: keep the
+  // Greek yogurt in ONE meal instead of both, and take one whole egg instead
+  // of two. That lands the day near 980 with about 81 g of protein.
+
+  { emoji: '🍳', slot: 'noon', slots: ['noon', 'post'], main: true, protein: 'egg', name: 'Meal 1 · Egg Plate', cal: 670, pro: 50,
+    ingredients: '2 whole eggs · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · a small bowl of Greek yogurt · 1 tsp olive oil',
+    steps: [
+      'Boil or bake the sweet potato first — 20 min boiled, 40 min at 200°C baked, which makes it far sweeter.',
+      'Heat the teaspoon of olive oil in a pan on medium. One teaspoon is the whole allowance for the day, so measure it rather than pouring.',
+      'Wilt the spinach in the oil for a minute, then pour the 2 whole eggs and 3 egg whites over it and fold slowly on low heat.',
+      'Plate the eggs with the split sweet potato, the kimchi and the papaya alongside.',
+      'Scatter the chia and the pumpkin or sesame seeds over the top, and put the Greek yogurt in its own small bowl.',
+      'This plate on its own is 50 g of protein — your whole daily floor in one meal.',
+    ] },
+  { emoji: '🍳', slot: 'noon', slots: ['noon', 'post'], main: true, protein: 'egg', name: 'Meal 1 · Egg Plate — lighter', cal: 480, pro: 29,
+    ingredients: '1 whole egg · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · 1 tsp olive oil',
+    steps: [
+      'The same plate with one whole egg instead of two, and no yogurt — the yogurt goes in your other meal instead.',
+      'Boil or bake the sweet potato.',
+      'Wilt the spinach in the teaspoon of olive oil, then pour the egg and whites over and fold slowly.',
+      'Plate with the kimchi and papaya, and scatter the chia and seeds over.',
+      'Take this version on the days you want to stay under 1,000 calories. It saves you 190 calories and costs you 21 g of protein — which the meat plate puts straight back.',
+    ] },
+
+  { emoji: '🥩', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'beef', name: 'Meal 2 · Beef Plate', cal: 565, pro: 56,
+    ingredients: '100 g lean beef · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · a small bowl of Greek yogurt · 1 tbsp pumpkin seeds or chia',
+    steps: [
+      'Boil or bake the sweet potato while you get everything else ready.',
+      'Slice the beef thin across the grain — across the grain is what makes lean beef tender instead of chewy.',
+      'Sear it in a hot dry non-stick pan, one layer, and leave it alone for a full minute before you stir. A properly hot pan needs no oil.',
+      'Add the sliced bell pepper and spinach for the last two minutes, just until the spinach wilts.',
+      'Plate with the chopped tomato, cucumber and kimchi on the side, the yogurt in its own bowl, and the seeds scattered over.',
+      'Lean beef is where your iron and zinc come from, which a 1,000-calorie day otherwise runs short on.',
+    ] },
+  { emoji: '🍗', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'chicken', name: 'Meal 2 · Chicken Plate', cal: 550, pro: 57,
+    ingredients: '100 g chicken breast · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · a small bowl of Greek yogurt · 1 tbsp pumpkin seeds or chia',
+    steps: [
+      'Boil or bake the sweet potato first.',
+      'Pat the chicken dry with kitchen paper — wet chicken steams instead of browning, and that is the whole difference.',
+      'Grill or sear it 4–5 min a side in a hot dry pan without moving it, until the juices run clear.',
+      'Add the bell pepper and spinach to the pan for the last two minutes.',
+      'Plate with the tomato, cucumber and kimchi, the yogurt in its own bowl, and the seeds over the top.',
+      'Slightly leaner than the beef and almost the same protein — take the beef when you want the iron, the chicken when you want the calories back.',
+    ] },
+  { emoji: '🥩', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'beef', name: 'Meal 2 · Beef Plate — lighter', cal: 445, pro: 41,
+    ingredients: '100 g lean beef · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · 1 tbsp pumpkin seeds or chia',
+    steps: [
+      'The same plate without the Greek yogurt, because the yogurt is already in your egg plate.',
+      'Sear the thin-sliced beef in a hot dry pan, one layer, undisturbed for a minute.',
+      'Bell pepper and spinach in for the last two minutes.',
+      'Plate with the sweet potato, the chopped veg and the kimchi, seeds over the top.',
+      'Yogurt in one meal, not two — that single change is 120 calories, and it is the easiest cut in the plan.',
+    ] },
+  { emoji: '🍗', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'chicken', name: 'Meal 2 · Chicken Plate — lighter', cal: 430, pro: 42,
+    ingredients: '100 g chicken breast · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · 1 tbsp pumpkin seeds or chia',
+    steps: [
+      'The same plate without the Greek yogurt — keep the yogurt for your egg plate.',
+      'Pat the chicken dry, then grill or sear it 4–5 min a side in a hot dry pan.',
+      'Bell pepper and spinach in for the last two minutes.',
+      'Plate with the sweet potato, the chopped veg and the kimchi, seeds scattered over.',
+      'The lightest of the four meat plates, and still 42 g of protein.',
+    ] },
+
   // ══ THE BIG MEAL · 2:00 PM · every day ═════════════════════════════════
   // The meal the whole day is built around, and the last one before the
   // window shuts. Every plate here is built the same way: a protein, a sweet
@@ -278,7 +361,7 @@ export const RECOMMENDED_MEALS = [
   // so on a day you pick one the meter will read well under 1,000 — which is
   // fine on a rest day and not enough on a lifting day.
   // Any protein, any day: fish, eggs or tofu. Kimchi on the side, then the
-  // cucumber and the banana. Never chicken, beef or pork.
+  // cucumber and the banana.
   { emoji: '🥬', slot: 'post', protein: 'fish', name: 'Fish, Kimchi & Cucumber', cal: 360, pro: 32,
     ingredients: '150 g fish (any) · a small bowl of kimchi · ½ cucumber · 1 banana',
     steps: [
@@ -478,11 +561,39 @@ export const RECOMMENDED_MEALS = [
       'The no-fish version of the double-protein plate.',
     ] },
 
+  // ── 8:00 AM · her three fruits ─────────────────────────────────────────
+  // Banana, berries or papaya — those three, nothing else needed. Black coffee
+  // alongside on a glute day, when you want the lift before you lift.
+  { emoji: '🫐', slot: 'wake', main: true, name: 'Berries & Coffee', cal: 72, pro: 1,
+    ingredients: '1 cup berries · black coffee',
+    steps: [
+      'A cup of berries, fresh or thawed from frozen.',
+      'Black coffee alongside — no milk, no sugar. Take the coffee on glute days especially; it is the cheapest lift you will get before a hip thrust.',
+      'The lightest of your three fruit mornings, at about 70 calories.',
+      'Eat it 20–30 minutes before you warm up.',
+    ] },
+  { emoji: '🍈', slot: 'wake', main: true, name: 'Papaya & Coffee', cal: 57, pro: 1,
+    ingredients: '1 cup papaya · black coffee',
+    steps: [
+      'Scoop the papaya, discarding the seeds.',
+      'Black coffee alongside, especially on a glute day.',
+      'The gentlest one on your stomach, and the cheapest in calories — about 55.',
+      'Eat it 20–30 minutes before you warm up.',
+    ] },
+  { emoji: '🍌', slot: 'wake', main: true, name: 'Banana, Berries & Papaya', cal: 230, pro: 3,
+    ingredients: '1 banana · ½ cup berries · ½ cup papaya · black coffee',
+    steps: [
+      'All three of your fruits on one plate — nothing blended, nothing added.',
+      'Black coffee alongside.',
+      'The biggest fruit morning at about 230 calories. Take this before a heavy Monday or Wednesday, and one of the smaller ones on an abs day.',
+      'Eat it 20–30 minutes before you warm up.',
+    ] },
+
   // ── 8:00 AM · fruit, and not much of it ────────────────────────────────
   // Small on purpose, and it is also your fuel for training, so it goes in
   // before the run rather than after it. A banana is genuinely enough. Nothing
   // here costs more than 260 calories, because the 2 PM plate needs the room.
-  { emoji: '🍌', slot: 'wake', name: 'Banana & Coffee', cal: 100, pro: 1,
+  { emoji: '🍌', slot: 'wake', main: true, name: 'Banana & Coffee', cal: 100, pro: 1,
     ingredients: '1 banana · black coffee',
     steps: [
       'Eat the banana first, coffee second — caffeine on a truly empty stomach is what makes you shaky by set three.',
@@ -776,8 +887,7 @@ export const RECOMMENDED_MEALS = [
 const inSlot = (m, slotId) => (m.slots ? m.slots.includes(slotId) : m.slot === slotId);
 
 // Every protein is fair game on every day now — fish, eggs and tofu alike.
-// The one standing rule is the one that never moved: no chicken, no beef, no
-// pork.
+// Beef and chicken are both in the plan now. Pork is not.
 export function slotMeals(slotId) {
   return RECOMMENDED_MEALS.filter(m => inSlot(m, slotId));
 }
@@ -792,8 +902,11 @@ export function suggestMeals(slotId, dayIndex = 0, n = 3) {
   // than rotating through everything — the 2 PM slot is the only one that has
   // them, and burying the big plates under a small one is how a day ends up
   // hundreds of calories and twenty grams of protein short.
+  // A meal offered at two times is shown first at its home time, so 11 AM
+  // leads with the egg plate and 2 PM leads with the meat one.
   const featured = list.filter(m => m.main);
-  const pool = featured.length >= n ? featured : list;
+  const homeFirst = [...featured].sort((a, b) => (a.slot === slotId ? 0 : 1) - (b.slot === slotId ? 0 : 1));
+  const pool = homeFirst.length >= n ? homeFirst : list;
   const start = (Math.floor(dayIndex / 2) * n) % pool.length;
   return Array.from({ length: n }, (_, i) => pool[(start + i) % pool.length]);
 }
@@ -805,21 +918,22 @@ export const DAILY_MEALS = {
   label: '🍽️ The same three meals every day · fruit at 8 AM · apple & Greek yogurt at 11 AM · THE BIG MEAL at 2 PM · nothing after · under 1,000 calories, over 50 g of protein',
   rows: [
     { time: '8:00 AM — Fruit, and not much of it', icon: '🍌', ingredients: [
-      { name: 'A banana, and a few berries if you want them', key: 'banana' },
-      { name: 'Black coffee alongside — no milk, no sugar', key: null },
+      { name: 'Banana, berries or papaya — those three, pick one', key: 'banana' },
+      { name: 'Black coffee alongside, especially on a glute day', key: null },
       { name: 'This is your fuel for training, so eat it before you run', key: null },
     ]},
-    { time: '11:00 AM — Apple sticks & Greek yogurt', icon: '🍏', ingredients: [
-      { name: 'Apple cut into sticks, skin on', key: 'apple' },
-      { name: 'Greek yogurt as the sauce — twice the protein of plain, same small bowl', key: 'yogurtbowl' },
-      { name: 'Small on purpose. The big meal is three hours away', key: null },
-    ]},
-    { time: '2:00 PM — THE BIG MEAL', icon: '🍠', ingredients: [
-      { name: 'Your protein: fish, eggs or tofu — this is where most of your 50 g comes from', key: null, pick: 'protein', slot: 'morning' },
+    { time: '11:00 AM — Meal 1 · the egg plate', icon: '🍳', ingredients: [
+      { name: '2 whole eggs and 3 egg whites, fried in 1 tsp olive oil', key: 'egg' },
+      { name: 'Spinach wilted in with them, kimchi and papaya on the side', key: null },
       { name: 'A sweet potato, boiled or baked', key: null },
-      { name: 'Two boiled eggs', key: 'egg' },
-      { name: 'Kimchi, cucumber and tomato on the side', key: null },
-      { name: 'A banana last', key: 'banana' },
+      { name: 'Chia and pumpkin or sesame seeds over the top, Greek yogurt alongside', key: 'chia' },
+    ]},
+    { time: '2:00 PM — Meal 2 · beef or chicken', icon: '🥩', ingredients: [
+      { name: 'Beef or chicken — 100 g, seared in a hot dry pan', key: null, pick: 'protein', slot: 'morning' },
+      { name: 'A sweet potato, boiled or baked', key: null },
+      { name: 'Spinach, bell pepper, tomato and cucumber', key: null },
+      { name: 'Kimchi on the side', key: null },
+      { name: 'Greek yogurt and a spoon of pumpkin seeds or chia', key: 'yogurtbowl' },
     ]},
     { time: 'After 2:00 PM — the window shuts', icon: '🍵', ingredients: [
       { name: 'Water, tea and black coffee — as much as you like', key: null },

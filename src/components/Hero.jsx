@@ -30,8 +30,8 @@ const RULE_BOARDS = [
     tone: 'no',
     items: [
       ['G', 'Gluten', 'skip bread, pasta, flour'],
-      ['O', 'Oils', 'steam, boil, bake'],
-      ['D', 'Dairy', 'no milk or cheese — yogurt bowl is the one exception'],
+      ['O', 'Oils', 'steam, boil, sear dry — 1 tsp olive oil a day, for the egg plate only'],
+      ['D', 'Dairy', 'no milk or cheese — Greek yogurt is the one exception'],
       ['S', 'Sweet', 'fruit first, no added sugar'],
       ['S', 'Salty', 'keep seasoning light'],
       ['S', 'Stress', 'walk, breathe, sleep'],
@@ -42,8 +42,8 @@ const RULE_BOARDS = [
     emoji: '✨',
     tone: 'yes',
     items: [
-      ['P', 'Protein', 'fish, eggs or tofu — any of them, any day'],
-      ['F', 'Fruit', 'the 3 PM smoothie bowl · 2–3 frozen fruits only'],
+      ['P', 'Protein', 'beef, chicken, fish, eggs or tofu — any of them, any day'],
+      ['F', 'Fruit', 'banana, berries or papaya · 8 AM, before you run'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -54,7 +54,7 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['S', 'Small bites', 'put the fork down'],
-      ['L', 'Last meal', '5 PM — apple sticks & yogurt'],
+      ['L', 'Last meal', '2 PM — beef or chicken. Nothing after'],
       ['O', 'Only 80%', 'light, not stuffed'],
       ['W', 'Walk', '15 min after meals · rope or walk after training'],
     ],
@@ -1033,9 +1033,9 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🍌</span><span>Every day: coffee &amp; banana before you train · protein, kimchi, cucumber &amp; banana after · smoothie &amp; granola bowl at 3 PM · apple sticks &amp; yogurt at 5 PM</span></div>
+          <div className="hero-rule"><span>🍌</span><span>Every day, 8 AM to 2 PM: fruit &amp; black coffee at 8 · the egg plate at 11 · beef or chicken at 2 · nothing after but tea</span></div>
           <div className="hero-rule"><span>🏃</span><span>Mon–Fri: stretch → 20-min zone 2 run → the main workout → rope or walk. The run always goes first, never after.</span></div>
-          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each · 2 back, shoulder &amp; core days (pull-apart · row · one core video) · weekend running &amp; forearm stand — no zone 2 run at the weekend</span></div>
+          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · 2 abs &amp; upper-body days (Tue · Thu) — abs never land on a glute day · weekend running, Jessica Diễm &amp; forearm stand</span></div>
           <div className="hero-rule"><span>🤍</span><span>Back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>

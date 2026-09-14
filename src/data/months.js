@@ -140,8 +140,8 @@ export const MONTHS = [
     ch: 'Gut Healing — Meal Rhythm Mastery',
     why: "Tie the rhythm together: the same four meals every day, and the same weekday shape every day — stretch, zone 2 run, main workout, rope or walk.",
     tasks: [
-      'Week 1 — Run the clock without thinking about it. Any protein any day; never chicken, beef or pork.',
-      'Week 2 — Steam or boil all veg — no oils, no gluten, and no dairy beyond the yogurt bowl (GODSSSS out).',
+      'Week 1 — Run the window without thinking about it: fruit at 8 AM, the egg plate at 11, beef or chicken at 2, nothing after.',
+      'Week 2 — Steam, boil or sear dry. One teaspoon of olive oil a day for the egg plate, and no dairy beyond the Greek yogurt.',
       'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
       'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',
     ],
