@@ -91,11 +91,6 @@ const HANDSTAND_INTERMEDIATE = [
   { name: 'Handstand — Master the Handstand & Press',    detail: 'Bert Wang · step-by-step handstand + press handstand · intermediate control', url: 'https://www.youtube.com/watch?v=KknM6GXJJIs' },
 ];
 
-const YOGA_BEGINNER = [
-  { name: 'Yoga — Complete Beginners (20 min)', detail: 'Yoga With Adriene · gentle intro, build the basics', url: 'https://www.youtube.com/watch?v=v7AYKMP6rOE' },
-  { name: 'Yoga — Beginners: The Basics',       detail: 'Yoga With Adriene · foundational poses & alignment', url: 'https://www.youtube.com/watch?v=pWobp3phsEU' },
-  { name: 'Yoga — Flexible Mind & Body',        detail: 'Yoga With Adriene · flexibility flow toward inversions', url: 'https://www.youtube.com/watch?v=xFEAOzWLx8Y' },
-];
 
 // Weekend running. Saturday is the easy one, Sunday runs the interval protocol
 // that already advances by itself each challenge month (SPRINT_PROGRESSION at
@@ -1121,10 +1116,6 @@ export const WORKOUT_DAYS = [
       ...HANDSTAND_INTERMEDIATE,
       H('🤍 Stretching', 'Long, slow holds — running tightens hips and calves, this is where you give it back.'),
       REST_STRETCH,
-      H('🪷 Optional · Gentle Yoga', 'Only if you want more. Never mandatory on a weekend.', 'core'),
-      ...YOGA_BEGINNER,
-      H('🧘 Optional · Full Body · Move With Nicole', 'Only if you feel like moving — five short 30-minute classes.', 'core'),
-      ...NICOLE_FULLBODY,
     ],
     noteAfter: { type: 'rose', text: '💡 Order matters: run or walk first, then the Jessica Diem video, then skill, then stretch. The run and the walk are alternatives — do one, not both. Meals do not change at the weekend: 8 AM fruit, 11 AM apple and Greek yogurt, 2 PM the big meal, nothing after.' },
     meals: DAILY_MEALS,
@@ -1150,10 +1141,6 @@ export const WORKOUT_DAYS = [
       ...HANDSTAND_INTERMEDIATE,
       H('🤍 Stretching', 'Long, slow holds — sprints tighten hamstrings and calves hard, this is where you give it back.'),
       REST_STRETCH,
-      H('🪷 Optional · Gentle Yoga', 'Only if you want more. Never mandatory on a weekend.', 'core'),
-      ...YOGA_BEGINNER,
-      H('🧘 Optional · Full Body · Move With Nicole', 'Only if you feel like moving — five short 30-minute classes.', 'core'),
-      ...NICOLE_FULLBODY,
     ],
     noteAfter: { type: 'rose', text: '💡 Hold dolphin longer every week — that is how the forearm stand arrives. If your legs still feel Wednesday and Friday, run the sprints easier or walk them; never sprint on sore hamstrings. Tomorrow is hip thrust day, so make today’s 2 PM plate a big one.' },
     meals: DAILY_MEALS,

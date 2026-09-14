@@ -78,7 +78,7 @@ const SEARCH_INDEX = [
   { label: 'Jessica Diễm — weekend videos', hint: 'Workouts → Saturday & Sunday · one video each day', section: 'workout', scrollTo: 'day-saturday' },
   { label: 'Abs Videos — Pilates by Izzy', hint: 'Workouts → Tuesday & Thursday · optional extra', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Forearm Stand Training',  hint: 'Workouts → Saturday & Sunday',  section: 'workout', scrollTo: 'day-saturday'  },
-  { label: 'Full Body Pilates — Move With Nicole', hint: 'Workouts → weekend & optional extras', section: 'workout', scrollTo: 'day-saturday' },
+  { label: 'Full Body Pilates — Move With Nicole', hint: 'Workouts → Tuesday & Thursday · optional extra', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Overnight Yogurt Bowl',   hint: 'Nutrition → Recipes · yogurt, protein, psyllium, blueberries', section: 'nutrition', tab: 'recipes' },
   { label: 'Meal Times — the daily clock',     hint: 'Nutrition → Daily Clock · 8 AM fruit, 11 AM apple & yogurt, 2 PM the big meal', section: 'nutrition', tab: 'daily' },
   { label: 'Zone 2 Run — 20 min before training', hint: 'Workouts → every weekday, before the main workout', section: 'workout', scrollTo: 'day-monday' },
