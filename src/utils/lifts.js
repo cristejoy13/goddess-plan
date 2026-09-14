@@ -40,8 +40,10 @@ export function isTrackable(ex) {
 export function stepFor(name) {
   const n = name.toLowerCase();
   if (/(y raise|t & w|external rotation|scaption|pull-apart|serratus|face pull)/.test(n)) return 0.5;
+  // The one-hand-each lifts move in pairs of dumbbells, so they step by 2 even
+  // when the word "squat" is in the name — this line has to come first.
+  if (/(split squat|step-up|sumo squat|goblet|dumbbell|row|pullover)/.test(n)) return 2;
   if (/(barbell|squat|deadlift|rdl|hip thrust|hyperextension)/.test(n)) return 2.5;
-  if (/(dumbbell|split squat|step-up|row|pullover)/.test(n)) return 2;
   return 1;
 }
 

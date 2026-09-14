@@ -8299,6 +8299,54 @@ body {
 .meal-pill-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .meal-pill-cal { font-size: 10.5px; font-weight: 700; color: var(--text-mid, #c090b8); flex: none; }
 .meal-pill-check { color: #7fe3a8; font-weight: 800; flex: none; }
+.meal-pill-pro {
+  font-size: 10.5px; font-weight: 800; flex: none;
+  color: var(--rose, #ff5c9d);
+  background: rgba(255,92,157,0.13);
+  border-radius: 999px; padding: 1px 6px;
+}
+
+/* The protein meter — the only number in the plan worth watching. It counts
+   only the meals actually chosen, so an untouched day honestly reads 0 g. */
+.protein-meter {
+  border: 1px solid rgba(255,92,157,0.30);
+  background: rgba(255,92,157,0.07);
+  border-radius: 14px; padding: 11px 13px; margin-bottom: 14px;
+}
+.protein-meter.hit {
+  border-color: rgba(120,220,160,0.55);
+  background: rgba(120,220,160,0.10);
+}
+.protein-meter-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; margin-bottom: 7px;
+}
+.protein-meter-lbl { font-size: 12.5px; font-weight: 700; color: var(--text, #f5e6ef); }
+.protein-meter-num { font-size: 16px; font-weight: 800; color: var(--rose, #ff5c9d); white-space: nowrap; }
+.protein-meter.hit .protein-meter-num { color: #7fe3a8; }
+.protein-meter-num em { font-style: normal; font-size: 12px; font-weight: 600; opacity: 0.65; }
+.protein-meter-bar {
+  height: 7px; border-radius: 999px; overflow: hidden;
+  background: rgba(255,255,255,0.10);
+}
+.protein-meter-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--rose-deep, #e8347a), var(--rose, #ff5c9d));
+  transition: width 260ms ease;
+}
+.protein-meter.hit .protein-meter-fill { background: linear-gradient(90deg, #3fa46d, #7fe3a8); }
+.protein-meter-note {
+  margin-top: 7px; font-size: 11.5px; line-height: 1.45;
+  color: var(--text-mid, #c090b8);
+}
+
+/* On a phone the pill has room for one number, and protein is the one that
+   matters — the calorie is what gets dropped, not the protein. */
+@media (max-width: 420px) {
+  .protein-meter { padding: 10px 11px; }
+  .protein-meter-num { font-size: 15px; }
+  .meal-pill-cal { display: none; }
+}
 
 /* ── Meal times: the day as a clock — glute days run three, core days two ── */
 .meal-times { display: flex; flex-direction: column; gap: 10px; }

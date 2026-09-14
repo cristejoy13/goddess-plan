@@ -3,7 +3,7 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · Every Day', desc: 'The same four meals every single day. Coffee & banana before you train, protein & kimchi after, smoothie & granola bowl at 3 PM, apple sticks & yogurt at 5 PM.' },
+  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · Every Day', desc: 'The same four meals every single day, built to clear 50 g of protein. Coffee & banana before you train, protein & kimchi after, protein smoothie bowl at 3 PM, apple sticks & Greek yogurt at 5 PM.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -11,7 +11,7 @@ export const TABS = [
 /* ─── RECIPE CATEGORIES shown in the Recipes tab ─── */
 const RECIPE_CATEGORIES = [
   {
-    title: 'Protein (fish on glute days · eggs & tofu any day)',
+    title: 'Protein (fish, eggs & tofu — any of them, any day)',
     items: [
       { key: 'egg',     label: 'Eggs' },
       { key: 'fish',    label: 'Fish' },
@@ -53,6 +53,9 @@ export function DailyClock() {
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
         🍽️ <strong>One clock, every day.</strong> Glute days, back &amp; core days, the weekend — all the same. Four meals, always in the same order. There is nothing to remember and nothing to switch between.
       </div>
+      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
+        💪 <strong>50 grams of protein is the floor, every day.</strong> Not a target to aim at — a line to stay above. Below it, the muscle you just built in the gym gets burned for fuel and the glute work goes nowhere. Two things carry it: a scoop of protein powder in the 3 PM bowl, and Greek yogurt instead of plain at 5 PM. Open any day in Movement to see today’s number count itself up.
+      </div>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
         🍌 <strong>A banana on both sides of the session.</strong> One before, so you have fuel for the run and the lifts. One straight after, so you put back what you burned. This is the part that never moves.
       </div>
@@ -75,21 +78,21 @@ export function DailyClock() {
           <div className="hyd-row">
             <div className="hyd-time">3:00 PM</div>
             <div>
-              <div className="hyd-d">Smoothie &amp; granola bowl</div>
-              <div className="hyd-n">Blend two or three frozen fruits — never more than three. Stir granola and chia seeds through, then berries and banana on top, or whatever fruit is in the house. This is a meal, not a snack.</div>
+              <div className="hyd-d">Protein smoothie bowl</div>
+              <div className="hyd-n">Blend two or three frozen fruits — never more than three — with one scoop of protein powder. Stir granola and chia seeds through, then berries and banana on top, or whatever fruit is in the house. That single scoop is about a third of your day’s protein, so it goes in every time.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Apple sticks with yogurt for the sauce</div>
-              <div className="hyd-n">Apple cut into sticks, skin on, dipped in plain yogurt. Craving something warmer? Sweet potato or a boiled saba banana instead — 5 PM is the slot for it. Nothing after but tea.</div>
+              <div className="hyd-d">Apple sticks with Greek yogurt for the sauce</div>
+              <div className="hyd-n">Apple cut into sticks, skin on, dipped in Greek yogurt. Greek is strained, so the same small bowl carries about twice the protein of plain — that swap alone is 7 grams. Craving something warmer? Sweet potato or a boiled saba banana instead. Nothing after but tea.</div>
             </div>
           </div>
         </div>
       </div>
       <div className="note-box note-rose">
-        🐟 <strong>Protein:</strong> fish, eggs or tofu — any of them, any day. <strong>No chicken, beef or pork, ever.</strong> Eat the protein and the kimchi first, then your veggies and fruit.
+        🐟 <strong>Protein:</strong> fish, eggs or tofu — any of them, any day. <strong>No chicken, beef or pork, ever.</strong> Eat the protein and the kimchi first, then your veggies and fruit. On a day the number looks short, put two proteins on one plate — fish and an egg together is the fastest 15 grams there is.<br /><br />📊 <strong>No calorie counting.</strong> The calorie on each meal is there to look at, not to add up. Protein is the only number in this plan you watch.
       </div>
     </>
   );

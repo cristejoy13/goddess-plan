@@ -6,21 +6,25 @@ const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 const jsDay    = new Date().getDay();
-const dayIndex = jsDay === 0 ? 6 : jsDay - 1;
+// The week runs Thursday → Wednesday, so index 0 is Thursday. JavaScript
+// numbers Sunday as 0 and Thursday as 4; shifting by 4 lines the two up.
+const dayIndex = (jsDay - 4 + 7) % 7;
 
 function todayLabel() {
   const d = new Date();
   return `${DAYS_LONG[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
+// The week starts on Thursday, because that is the day the plan started. The
+// day ids never moved, so every meal already saved against a day stays put.
 const WEEK_PILLS = [
-  { label: 'Mon', emoji: '🍑', dayId: 'day-monday'    },
-  { label: 'Tue', emoji: '💪', dayId: 'day-tuesday'   },
-  { label: 'Wed', emoji: '🔥', dayId: 'day-wednesday' },
-  { label: 'Thu', emoji: '⚡', dayId: 'day-thursday'  },
-  { label: 'Fri', emoji: '✨', dayId: 'day-friday'    },
+  { label: 'Thu', emoji: '🍑', dayId: 'day-thursday'  },
+  { label: 'Fri', emoji: '🎯', dayId: 'day-friday'    },
   { label: 'Sat', emoji: '🏃', dayId: 'day-saturday'  },
   { label: 'Sun', emoji: '⚡', dayId: 'day-sunday'    },
+  { label: 'Mon', emoji: '🔥', dayId: 'day-monday'    },
+  { label: 'Tue', emoji: '💪', dayId: 'day-tuesday'   },
+  { label: 'Wed', emoji: '✨', dayId: 'day-wednesday' },
 ];
 
 const RULE_BOARDS = [
@@ -994,7 +998,7 @@ function RuleBoard() {
 
 export default function Hero({ onNavigate }) {
   const today = WORKOUT_DAYS[dayIndex];
-  const todayDayId = `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`;
+  const todayDayId = `day-${['thursday','friday','saturday','sunday','monday','tuesday','wednesday'][dayIndex]}`;
 
   return (
     <div className="hero hero-dashboard">

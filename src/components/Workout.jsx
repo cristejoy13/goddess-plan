@@ -1,26 +1,31 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORKOUT_DAYS, MEAL_SLOTS, mealSlots, slotMeals, suggestMeals } from '../data/workouts';
+import { WORKOUT_DAYS, MEAL_SLOTS, mealSlots, slotMeals, suggestMeals, proteinTotal, PROTEIN_TARGET } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { loadLifts, isTrackable } from '../utils/lifts';
 import { DailyClock, RecipesPanel, FoodGuide } from './Nutrition';
 
+// The week starts on Thursday, because that is the day the plan started, and
+// runs Thursday → Wednesday. Index 0 is Thursday, so today's slot is counted
+// from Thursday rather than from Monday.
 const DAY_IDS = [
-  'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
-  'day-friday', 'day-saturday', 'day-sunday',
+  'day-thursday', 'day-friday', 'day-saturday', 'day-sunday',
+  'day-monday', 'day-tuesday', 'day-wednesday',
 ];
 
+// JavaScript numbers Sunday as 0 and Thursday as 4; shifting by 4 puts
+// Thursday at index 0 and keeps the real calendar day landing on the right card.
 const jsDay      = new Date().getDay();
-const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
+const todayIndex = (jsDay - 4 + 7) % 7;
 
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glutes & Quads', focus: 'Run · Squat · Bulgarian · RDL',  color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Back & Core',    focus: 'Run · Pull-Apart · Row · Core',  color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute Isolation', focus: 'Run · Kickback · Abduction · Sumo', color: 'pr' },
-  { lbl: 'Thu', emoji: '⚡', name: 'Back & Core',    focus: 'Run · Pull-Apart · Row · Core',  color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glutes & Hams',  focus: 'Run · Hip Thrust · RDL · Squat', color: 'pr' },
-  { lbl: 'Sat', emoji: '🏃', name: 'Run & Skill', focus: 'Easy Run · Forearm Stand · Stretch', color: 'py' },
-  { lbl: 'Sun', emoji: '⚡', name: 'Sprints',    focus: 'Sprints · Forearm Stand · Stretch', color: 'py' },
+  { lbl: 'Thu', emoji: '🍑', name: 'Glute Power',   focus: 'Run · Hip Thrust · RDL · Step-Up', color: 'pr' },
+  { lbl: 'Fri', emoji: '🎯', name: 'Abs & Upper',   focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
+  { lbl: 'Sat', emoji: '🏃', name: 'Run & Jessica', focus: 'Easy Run · Jessica Diem · Stretch', color: 'py' },
+  { lbl: 'Sun', emoji: '⚡', name: 'Sprints & Jessica', focus: 'Sprints · Jessica Diem · Stretch', color: 'py' },
+  { lbl: 'Mon', emoji: '🔥', name: 'Glute Strength', focus: 'Run · Squat · Bulgarian · RDL', color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Abs & Upper',   focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
+  { lbl: 'Wed', emoji: '✨', name: 'Glute Shape',   focus: 'Run · Abduction · Kickback · Sumo', color: 'pr' },
 ];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
@@ -82,6 +87,8 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
   const [showAll, setShowAll]   = useState({});
   const [detail, setDetail]     = useState(null);
   const slots = mealSlots();
+  const pro   = proteinTotal(chosen);
+  const hitTarget = pro >= PROTEIN_TARGET;
 
   function toggleChosen(name) {
     saveChosen(chosen.includes(name) ? chosen.filter(n => n !== name) : [...chosen, name]);
@@ -93,6 +100,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <button className={`meal-pill${isChosen ? ' chosen' : ''}`} onClick={() => setDetail(m)}>
         <span className="meal-pill-em">{m.emoji}</span>
         <span className="meal-pill-name">{m.name}</span>
+        <span className="meal-pill-pro">{m.pro}g protein</span>
         <span className="meal-pill-cal">{m.cal}</span>
         {isChosen && <span className="meal-pill-check">✓</span>}
       </button>
@@ -104,7 +112,24 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
         <div className="meal-plan-hint">
-          The same four meals every day. A banana on both sides of the session, the smoothie bowl at 3 PM, and apple sticks with yogurt to close. Any protein you like — never chicken, beef or pork.
+          The same four meals every day. A banana on both sides of the session, the protein smoothie bowl at 3 PM, and apple sticks with Greek yogurt to close. Any protein you like — never chicken, beef or pork.
+        </div>
+      </div>
+
+      <div className={`protein-meter${hitTarget ? ' hit' : ''}`}>
+        <div className="protein-meter-top">
+          <span className="protein-meter-lbl">💪 Protein today</span>
+          <span className="protein-meter-num">{pro} g <em>/ {PROTEIN_TARGET} g</em></span>
+        </div>
+        <div className="protein-meter-bar">
+          <div className="protein-meter-fill" style={{ width: `${Math.min(100, (pro / PROTEIN_TARGET) * 100)}%` }} />
+        </div>
+        <div className="protein-meter-note">
+          {chosen.length === 0
+            ? 'Pick your meals below and this counts them up. 50 g is the floor, every day.'
+            : hitTarget
+              ? `You are past the 50 g floor. Nothing else to count — no calories, nothing.`
+              : `${PROTEIN_TARGET - pro} g to go. The quickest fix is a scoop of protein powder in the 3 PM bowl, or Greek yogurt instead of plain at 5 PM.`}
         </div>
       </div>
 
@@ -170,7 +195,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 
       {chosen.length > 0 && (
         <div className="meal-chosen-summary">
-          <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')}</span>
+          <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')} — <strong>{pro} g protein</strong></span>
           <button className="meal-chosen-clear" onClick={() => saveChosen([])}>Clear</button>
         </div>
       )}
@@ -183,7 +208,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
               <div className="meal-detail-meta">
                 <div className="meal-detail-name">{detail.name}</div>
                 <div className="meal-detail-cal">
-                  ~{detail.cal} cal · {MEAL_SLOTS.find(sl => sl.id === detail.slot)?.time}
+                  <strong>{detail.pro} g protein</strong> · ~{detail.cal} cal · {MEAL_SLOTS.find(sl => sl.id === detail.slot)?.time}
                 </div>
               </div>
             </div>
@@ -477,8 +502,24 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         ))}
       </div>
 
-      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8 }}>
-        <strong>Progressive overload:</strong> Weeks 1–2 learn form. Weeks 3–4 add 0.5–2 kg or 1–2 reps. If form breaks, add reps first.
+      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
+        <strong>Your week:</strong> 3 glute days (Thu · Mon · Wed), 2 abs &amp; upper-body days (Fri · Tue), and one Jessica Diem video each weekend day. Never two glute days in a row — glutes grow on the rest day, not on the gym day.
+      </div>
+
+      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
+        <strong>🍑 Round comes from three muscles, not one:</strong><br />
+        <strong>Gluteus maximus</strong> — the size and the push-out at the back. Hip thrust, squat, RDL, step-up, Bulgarian.<br />
+        <strong>Gluteus medius</strong> — the upper-side shelf that makes the shape look round instead of flat. Hip abduction, band walks, step-up, Bulgarian.<br />
+        <strong>Gluteus minimus</strong> — underneath the medius, holds the hip steady. Hip abduction, clamshells, anything on one leg.<br />
+        Train only the first one and you get bigger but still flat. All three is what makes it round.
+      </div>
+
+      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
+        <strong>Progressive overload:</strong> weeks 1–2 you only learn the form. From week 3, when all three sets of a lift felt controlled, add one step: 2.5 kg on the barbell lifts, 2 kg on the dumbbell ones, 0.5 kg on the band work. If your form breaks, add a rep instead of a kilo. Tap any lift inside a day to write the number down — the app remembers it and offers you the next one.
+      </div>
+
+      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
+        <strong>Why the waist stays small:</strong> the only ab move here that ever gets heavier is the weighted crunch. Everything else grows by reps or seconds. Heavy side bends and weighted twists build the obliques out sideways, which is exactly what thickens a waist — so they are not in this plan. The stomach vacuum does the opposite job: it pulls the waist in.
       </div>
 
       <div className="workout-nutrition-row splash-item">
