@@ -3,7 +3,7 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 8 AM to 2 PM', desc: 'Fruit at 8, the egg plate at 11, beef or chicken at 2, nothing after. Under 1,000 calories, over 50 g of protein.' },
+  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 8 AM to 2 PM', desc: 'Fruit at 8, apple & yogurt or a smoothie at 11, Meal A or Meal B at 2, nothing after. Under 1,000 calories, over 50 g of protein.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, seared dry. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -53,11 +53,11 @@ export function DailyClock() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🕒 <strong>One window: 8 AM to 2 PM.</strong> Fruit, then two real meals, the same two every day. After 2 PM, nothing but water, tea and black coffee. The closing is what makes the window work.
+        🕒 <strong>One window: 8 AM to 2 PM.</strong> Fruit at 8, something small at 11, and the meal the day is built around at 2. After that, nothing but water, tea and black coffee. The closing is what makes the window work.
       </div>
 
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        ⚖️ <strong>Two numbers, and they pull against each other.</strong> <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> Your two plates at full size, with fruit, come to about <strong>1,290</strong> — which is 290 over. Two cuts fix it: <strong>one whole egg instead of two</strong>, and <strong>Greek yogurt in one meal instead of both</strong>. That lands the day at about 980 with 71 g of protein, and nothing else is dropped.
+        ⚖️ <strong>Two numbers, and they pull against each other.</strong> <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> A normal day comes out at <strong>902 calories and 67 g</strong> with Meal A, or <strong>837 and 73 g</strong> with Meal B. Both sit under the ceiling and well over the floor, so nothing has to be cut. Only one combination goes over: a granola bowl at 11 plus the full egg plate at 2.
       </div>
 
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
@@ -76,15 +76,15 @@ export function DailyClock() {
           <div className="hyd-row">
             <div className="hyd-time">11:00 AM</div>
             <div>
-              <div className="hyd-d">Meal 1 · the egg plate</div>
-              <div className="hyd-n">1 or 2 whole eggs and 3 egg whites, fried with spinach in <strong>one teaspoon of olive oil</strong>. Kimchi, a sweet potato and papaya on the side. Chia and a spoon of pumpkin or sesame seeds over the top, Greek yogurt alongside. About 670 calories and 50 g of protein at full size — your whole daily protein floor in one meal.</div>
+              <div className="hyd-d">Apple slices &amp; yogurt, or a smoothie</div>
+              <div className="hyd-n">Either apple cut into slices with yogurt to dip them in, or a smoothie — two or three fruits blended with chia seeds and granola over the top. Around 215–250 calories. Greek yogurt rather than plain if you have it: strained, so the same small bowl carries twice the protein.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">2:00 PM</div>
             <div>
-              <div className="hyd-d">Meal 2 · beef or chicken</div>
-              <div className="hyd-n">100 g of lean beef or chicken breast, seared in a hot dry pan. Sweet potato, spinach, bell pepper, tomato, cucumber and kimchi. Greek yogurt and a spoon of seeds. About 565 calories and 56 g of protein. Beef when you want the iron, chicken when you want the calories back.</div>
+              <div className="hyd-d">MEAL A or MEAL B — one of the two</div>
+              <div className="hyd-n"><strong>A, the egg plate:</strong> 1 or 2 whole eggs and 3 egg whites folded with spinach in a dry pan, kimchi, sweet potato, papaya, chia, pumpkin or sesame seeds, Greek yogurt. About 630 calories and 50 g of protein.<br /><br /><strong>B, the meat plate:</strong> 100 g of lean beef or chicken breast seared in a hot dry pan, with sweet potato, spinach, bell pepper, tomato, cucumber, kimchi, Greek yogurt and a spoon of seeds. About 565 calories and 56 g. Beef when you want the iron, chicken when you want the calories back.</div>
             </div>
           </div>
           <div className="hyd-row">
@@ -98,11 +98,11 @@ export function DailyClock() {
       </div>
 
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🔁 <strong>Swap them round whenever you like.</strong> Both plates are offered at 11 AM and at 2 PM. If you would rather have the meat first and the eggs second, just pick them that way — the numbers come out the same.
+        🍽️ <strong>Meal A or Meal B — one of the two, never both.</strong> They are your 2 PM meal and nothing else. Pick whichever you feel like; the eggs give you a touch more food, the meat a touch more protein.
       </div>
 
       <div className="note-box note-gold">
-        ✅ <strong>Two rules changed, because you asked.</strong> <strong>Beef and chicken are in the plan now</strong> — the old no-meat rule is gone, and pork is the only one still out. <strong>One teaspoon of olive oil a day</strong> is allowed, for frying the egg plate. That is the whole allowance: measure it rather than pouring, because a teaspoon is 40 calories and a splash is 120.
+        ✅ <strong>One rule changed, because you asked.</strong> <strong>Beef and chicken are in the plan now</strong> — the old no-meat rule is gone, and pork is the only one still out. <strong>Oil is still out.</strong> The eggs are folded in a dry non-stick pan and the meat is seared in a hot dry one: a properly hot pan needs nothing, and oil is 40 calories a teaspoon you do not have to spend.
       </div>
     </>
   );
@@ -162,7 +162,7 @@ export function RecipesPanel({ onSelectRecipe }) {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        🥘 Tap any food for prep options. Steamed, boiled, baked or seared in a hot dry pan — <strong>one teaspoon of olive oil a day</strong>, for the egg plate, and no more. Eat fruit fresh and alone.
+        🥘 Tap any food for prep options. Steamed, boiled, baked or seared in a hot dry pan — <strong>no oil, no dairy beyond the yogurt, no gluten</strong>. Eat fruit fresh and alone.
       </div>
       {RECIPE_CATEGORIES.map(cat => (
         <div key={cat.title}>
@@ -206,7 +206,7 @@ export function FoodGuide() {
   ];
   const avoid = [
     { food: 'Gluten — bread, pasta, pandesal, flour', note: 'The G in GODSSSS. Causes bloating and water retention.' },
-    { food: 'Oil beyond 1 teaspoon a day', note: 'The O, relaxed. ONE teaspoon of olive oil a day, for frying the egg plate — that is the whole allowance. Everything else is steamed, boiled, baked or seared in a hot dry pan. Oil is 40 calories a teaspoon, which is why it is measured and not poured.' },
+    { food: 'Oils — fried food, cooking oil', note: 'The O. Steam, boil, bake, or sear in a hot dry pan. Whole-food fats (avocado, seeds) are fine; added oils are not. At 1,000 calories a day a tablespoon of oil is 120 calories that buys you nothing.' },
     { food: 'Dairy — milk, cheese, cream', note: 'The D. Triggers bloating and hormonal breakouts. The one exception is plain Greek yogurt, unsweetened, in your meals.' },
     { food: 'Added sugar & sweets', note: 'The first S. Ages skin (glycation), feeds bad gut bacteria. Get sweetness from fruit only.' },
     { food: 'Salty / processed food', note: 'The second S. Salt = water retention = puffiness. Season lightly.' },
@@ -216,7 +216,7 @@ export function FoodGuide() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        📊 Follow <strong>PFBS</strong> (Protein, Fruits, Bland, Small) and avoid <strong>GODSSSS</strong> (Gluten, Oils, Dairy, too Sweet, too Salty, Stress — plus good Sleep). <strong>Beef and chicken are in the plan now</strong>, and so is one teaspoon of olive oil a day.
+        📊 Follow <strong>PFBS</strong> (Protein, Fruits, Bland, Small) and avoid <strong>GODSSSS</strong> (Gluten, Oils, Dairy, too Sweet, too Salty, Stress — plus good Sleep). <strong>Beef and chicken are in the plan now.</strong> Oil is not.
       </div>
       <div className="divider splash-item">✓ Eat Freely</div>
       <div className="g-card splash-item" style={{ overflowX: 'auto', marginBottom: 18 }}>
@@ -340,7 +340,7 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
       <div className="s-header">
         <div className="s-tag">Fuel Protocol · one window, 8 AM to 2 PM</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">One window, 8 AM to 2 PM. Fruit and black coffee at 8, the egg plate at 11, beef or chicken at 2, nothing after. Under 1,000 calories, over 50 g of protein.</p>
+        <p className="s-desc">One window, 8 AM to 2 PM. Fruit and black coffee at 8, apple &amp; yogurt or a smoothie at 11, Meal A or Meal B at 2, nothing after. Under 1,000 calories, over 50 g of protein.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (

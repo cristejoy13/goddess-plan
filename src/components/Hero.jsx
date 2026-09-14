@@ -30,7 +30,7 @@ const RULE_BOARDS = [
     tone: 'no',
     items: [
       ['G', 'Gluten', 'skip bread, pasta, flour'],
-      ['O', 'Oils', 'steam, boil, sear dry — 1 tsp olive oil a day, for the egg plate only'],
+      ['O', 'Oils', 'steam, boil, bake, or sear in a hot dry pan'],
       ['D', 'Dairy', 'no milk or cheese — Greek yogurt is the one exception'],
       ['S', 'Sweet', 'fruit first, no added sugar'],
       ['S', 'Salty', 'keep seasoning light'],
@@ -1033,7 +1033,7 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🍌</span><span>Every day, 8 AM to 2 PM: fruit &amp; black coffee at 8 · the egg plate at 11 · beef or chicken at 2 · nothing after but tea</span></div>
+          <div className="hero-rule"><span>🍌</span><span>Every day, 8 AM to 2 PM: fruit &amp; black coffee at 8 · apple &amp; yogurt or a smoothie at 11 · Meal A or Meal B at 2 · nothing after but tea</span></div>
           <div className="hero-rule"><span>🏃</span><span>Mon–Fri: stretch → 20-min zone 2 run → the main workout → rope or walk. The run always goes first, never after.</span></div>
           <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · 2 abs &amp; upper-body days (Tue · Thu) — abs never land on a glute day · weekend running, Jessica Diễm &amp; forearm stand</span></div>
           <div className="hero-rule"><span>🤍</span><span>Back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>

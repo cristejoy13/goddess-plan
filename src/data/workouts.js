@@ -152,40 +152,42 @@ const UPPER_BODY = [
 //    8:00 AM   fruit: banana, berries or papaya. Black coffee alongside, and
 //              especially on a glute day. This is also the fuel for training,
 //              so it goes in before the run.
-//   11:00 AM   MEAL 1 — the egg plate. Whole eggs and whites fried in one
-//              teaspoon of olive oil with spinach, then kimchi, sweet potato,
-//              papaya, chia, pumpkin or sesame seeds, and Greek yogurt.
-//    2:00 PM   MEAL 2 — beef or chicken, with sweet potato, spinach, bell
-//              pepper, tomato, cucumber, kimchi, Greek yogurt and seeds.
+//   11:00 AM   apple slices with yogurt, OR a smoothie — two or three fruits
+//              blended with chia seeds, granola over the top.
+//    2:00 PM   MEAL A or MEAL B. One of the two, never both:
+//                A — the egg plate: whole eggs and whites folded with spinach
+//                    in a dry pan, kimchi, sweet potato, papaya, chia, pumpkin
+//                    or sesame seeds, Greek yogurt.
+//                B — beef or chicken with sweet potato, spinach, bell pepper,
+//                    tomato, cucumber, kimchi, Greek yogurt and seeds.
 //
 //   After 2 PM — nothing but water, tea and black coffee. That is the window
 //   closing, and the closing is what makes the window work.
 //
-// Both meals are offered at both times, so the eggs can go second and the meat
-// first on any day she would rather have it that way round.
+// Beef and chicken are in the plan; pork is not. No oil: the eggs are folded in
+// a dry non-stick pan and the meat is seared in a hot dry one.
 
 // ─── THE TWO NUMBERS ───────────────────────────────────────────────────────
-// Only two, and they pull against each other, which is the whole difficulty:
+// Only two, and they pull against each other:
 //
 //   1,000 calories a day  — the ceiling.
 //   50 grams of protein   — the floor.
 //
-// Her two plates at FULL size, with fruit, come to about 1,290 calories. That
-// is 290 over the ceiling, so both plates have a lighter version and the way
-// under 1,000 is this:
+// With 11 AM back to an apple and yogurt, both 2 PM plates now fit at full
+// size. The two standard days:
 //
 //    8:00 AM   papaya & black coffee ...........   57 cal ·  1 g
-//   11:00 AM   egg plate, lighter ..............  480 cal · 29 g
-//    2:00 PM   beef plate, lighter .............  445 cal · 41 g
+//   11:00 AM   apple slices & Greek yogurt .....  215 cal · 16 g
+//    2:00 PM   MEAL A, the egg plate ...........  630 cal · 50 g
 //                                                 ————————   ————
-//                                                   982 cal · 71 g
+//                                                   902 cal · 67 g
 //
-// Two cuts do all of that work: ONE whole egg instead of two, and Greek yogurt
-// in ONE meal instead of both. Nothing else is dropped — the spinach, kimchi,
-// sweet potato, papaya, seeds and chia all stay exactly as she asked.
+//    2:00 PM   MEAL B, the beef plate .......... (565 cal · 56 g) → 837 · 73 g
 //
-// Both meters in the app count only the meals actually chosen, so an untouched
-// day honestly reads zero.
+// A smoothie at 11 instead of the apple costs about 30 more calories; a granola
+// bowl costs about 160 more, which is the one combination that can push a day
+// over 1,000. Both meters in the app count only the meals actually chosen, so
+// an untouched day honestly reads zero.
 export const PROTEIN_TARGET = 50;
 export const CALORIE_TARGET = 1000;
 
@@ -208,16 +210,15 @@ const SLOT_DEFS = {
 export function mealSlots() {
   return [
     { ...SLOT_DEFS.wake, label: 'Fruit & Coffee',      hint: 'Banana, berries or papaya · black coffee on glute days · eat it before you run' },
-    { ...SLOT_DEFS.noon, label: 'Meal 1 · Egg Plate',  hint: 'Eggs and whites fried in 1 tsp olive oil · spinach, kimchi, sweet potato, papaya, seeds, yogurt' },
-    { ...SLOT_DEFS.post, label: 'Meal 2 · Beef or Chicken', hint: 'Beef or chicken · sweet potato, spinach, bell pepper, tomato, cucumber, kimchi, yogurt, seeds' },
+    { ...SLOT_DEFS.noon, label: 'Apple & Yogurt or Smoothie', hint: 'Apple slices with yogurt · or a smoothie: 2–3 fruits with chia, granola on top' },
+    { ...SLOT_DEFS.post, label: 'Meal A or Meal B',        hint: 'ONE of the two · A is the egg plate, B is beef or chicken · this is the meal the day is built around' },
   ];
 }
 
 // Flat list, only for looking a meal's clock time up by its slot id.
 export const MEAL_SLOTS = [SLOT_DEFS.wake, SLOT_DEFS.noon, SLOT_DEFS.post];
 
-// Every meal you can pick, grouped by slot. Salt-free by default, and oil-free
-// apart from the one teaspoon of olive oil in the egg plate.
+// Every meal you can pick, grouped by slot. Oil-free and salt-free by default.
 export const RECOMMENDED_MEALS = [
   // ══ JOY'S TWO PLATES ═══════════════════════════════════════════════════
   // The two meals she actually wants, written exactly as she asked for them.
@@ -228,35 +229,35 @@ export const RECOMMENDED_MEALS = [
   // asked, not by accident:
   //   • Beef and chicken are back. The old "no chicken, beef or pork, ever"
   //     rule is gone. Pork is still not in the plan.
-  //   • One teaspoon of olive oil is allowed, for frying the egg plate. That
-  //     is the whole allowance — one teaspoon, one meal, once a day.
+  //   • No oil, still. The egg plate is folded in a dry non-stick pan and the
+  //     meat is seared in a hot dry one — a properly hot pan needs nothing.
   //
   // Both plates at full size, plus fruit, come to about 1,290 calories. That
   // is over the 1,000 ceiling, so the lighter versions below exist: keep the
   // Greek yogurt in ONE meal instead of both, and take one whole egg instead
   // of two. That lands the day near 980 with about 81 g of protein.
 
-  { emoji: '🍳', slot: 'noon', slots: ['noon', 'post'], main: true, protein: 'egg', name: 'Meal 1 · Egg Plate', cal: 670, pro: 50,
-    ingredients: '2 whole eggs · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · a small bowl of Greek yogurt · 1 tsp olive oil',
+  { emoji: '🍳', slot: 'post', main: true, protein: 'egg', name: 'Meal A · Egg Plate', cal: 630, pro: 50,
+    ingredients: '2 whole eggs · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · a small bowl of Greek yogurt',
     steps: [
       'Boil or bake the sweet potato first — 20 min boiled, 40 min at 200°C baked, which makes it far sweeter.',
-      'Heat the teaspoon of olive oil in a pan on medium. One teaspoon is the whole allowance for the day, so measure it rather than pouring.',
-      'Wilt the spinach in the oil for a minute, then pour the 2 whole eggs and 3 egg whites over it and fold slowly on low heat.',
+      'Wilt the spinach in a dry non-stick pan for a minute — it lets out its own water, which is all you need.',
+      'Pour the 2 whole eggs and 3 egg whites over it and fold slowly on low heat. No oil: low and slow in a non-stick pan is what keeps eggs soft.',
       'Plate the eggs with the split sweet potato, the kimchi and the papaya alongside.',
       'Scatter the chia and the pumpkin or sesame seeds over the top, and put the Greek yogurt in its own small bowl.',
       'This plate on its own is 50 g of protein — your whole daily floor in one meal.',
     ] },
-  { emoji: '🍳', slot: 'noon', slots: ['noon', 'post'], main: true, protein: 'egg', name: 'Meal 1 · Egg Plate — lighter', cal: 480, pro: 29,
-    ingredients: '1 whole egg · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · 1 tsp olive oil',
+  { emoji: '🍳', slot: 'post', main: true, protein: 'egg', name: 'Meal A · Egg Plate — lighter', cal: 440, pro: 29,
+    ingredients: '1 whole egg · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds',
     steps: [
       'The same plate with one whole egg instead of two, and no yogurt — the yogurt goes in your other meal instead.',
       'Boil or bake the sweet potato.',
-      'Wilt the spinach in the teaspoon of olive oil, then pour the egg and whites over and fold slowly.',
+      'Wilt the spinach in a dry non-stick pan, then pour the egg and whites over and fold slowly.',
       'Plate with the kimchi and papaya, and scatter the chia and seeds over.',
-      'Take this version on the days you want to stay under 1,000 calories. It saves you 190 calories and costs you 21 g of protein — which the meat plate puts straight back.',
+      'Take this version on the days you want more room at 11 AM. It saves you 190 calories and costs you 21 g of protein.',
     ] },
 
-  { emoji: '🥩', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'beef', name: 'Meal 2 · Beef Plate', cal: 565, pro: 56,
+  { emoji: '🥩', slot: 'post', main: true, protein: 'beef', name: 'Meal B · Beef Plate', cal: 565, pro: 56,
     ingredients: '100 g lean beef · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · a small bowl of Greek yogurt · 1 tbsp pumpkin seeds or chia',
     steps: [
       'Boil or bake the sweet potato while you get everything else ready.',
@@ -266,7 +267,7 @@ export const RECOMMENDED_MEALS = [
       'Plate with the chopped tomato, cucumber and kimchi on the side, the yogurt in its own bowl, and the seeds scattered over.',
       'Lean beef is where your iron and zinc come from, which a 1,000-calorie day otherwise runs short on.',
     ] },
-  { emoji: '🍗', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'chicken', name: 'Meal 2 · Chicken Plate', cal: 550, pro: 57,
+  { emoji: '🍗', slot: 'post', main: true, protein: 'chicken', name: 'Meal B · Chicken Plate', cal: 550, pro: 57,
     ingredients: '100 g chicken breast · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · a small bowl of Greek yogurt · 1 tbsp pumpkin seeds or chia',
     steps: [
       'Boil or bake the sweet potato first.',
@@ -276,7 +277,7 @@ export const RECOMMENDED_MEALS = [
       'Plate with the tomato, cucumber and kimchi, the yogurt in its own bowl, and the seeds over the top.',
       'Slightly leaner than the beef and almost the same protein — take the beef when you want the iron, the chicken when you want the calories back.',
     ] },
-  { emoji: '🥩', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'beef', name: 'Meal 2 · Beef Plate — lighter', cal: 445, pro: 41,
+  { emoji: '🥩', slot: 'post', main: true, protein: 'beef', name: 'Meal B · Beef Plate — lighter', cal: 445, pro: 41,
     ingredients: '100 g lean beef · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · 1 tbsp pumpkin seeds or chia',
     steps: [
       'The same plate without the Greek yogurt, because the yogurt is already in your egg plate.',
@@ -285,7 +286,7 @@ export const RECOMMENDED_MEALS = [
       'Plate with the sweet potato, the chopped veg and the kimchi, seeds over the top.',
       'Yogurt in one meal, not two — that single change is 120 calories, and it is the easiest cut in the plan.',
     ] },
-  { emoji: '🍗', slot: 'post', slots: ['post', 'noon'], main: true, protein: 'chicken', name: 'Meal 2 · Chicken Plate — lighter', cal: 430, pro: 42,
+  { emoji: '🍗', slot: 'post', main: true, protein: 'chicken', name: 'Meal B · Chicken Plate — lighter', cal: 430, pro: 42,
     ingredients: '100 g chicken breast · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · 1 tbsp pumpkin seeds or chia',
     steps: [
       'The same plate without the Greek yogurt — keep the yogurt for your egg plate.',
@@ -638,7 +639,7 @@ export const RECOMMENDED_MEALS = [
   // A bowl this size is not a small 8 AM meal — it is 8 AM and 11 AM together.
   // Take one and skip the apple and yogurt, or the day runs over 1,000. Good on
   // a morning you would rather eat once and get on with it.
-  { emoji: '💪', slot: 'wake', name: 'Protein Bowl · Berries & Banana', cal: 470, pro: 32,
+  { emoji: '💪', slot: 'noon', name: 'Protein Bowl · Berries & Banana', cal: 470, pro: 32,
     ingredients: '1 cup frozen mixed berries · 1 frozen banana · 1 scoop protein powder · 3 tbsp granola · 1 tbsp chia · banana to top',
     steps: [
       'Frozen berries and frozen banana in the blender with the scoop of protein powder and a splash of water.',
@@ -646,7 +647,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl and stir the chia through while it is still soft.',
       'Granola over the top and sliced banana across it. This one bowl is about a third of your whole day’s protein.',
     ] },
-  { emoji: '💪', slot: 'wake', name: 'Protein Bowl · Mango & Banana', cal: 480, pro: 32,
+  { emoji: '💪', slot: 'noon', name: 'Protein Bowl · Mango & Banana', cal: 480, pro: 32,
     ingredients: '1 cup frozen mango · 1 frozen banana · 1 scoop protein powder · 3 tbsp granola · 1 tbsp chia · berries to top',
     steps: [
       'Mango and banana frozen, protein powder in with them, only a splash of water.',
@@ -654,7 +655,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl and stir the chia through.',
       'Granola on top, then the berries. Sweeter than the berry one — good on a heavy training day.',
     ] },
-  { emoji: '🥛', slot: 'wake', name: 'Protein Bowl · Yogurt & Fruit', cal: 430, pro: 38,
+  { emoji: '🥛', slot: 'noon', name: 'Protein Bowl · Yogurt & Fruit', cal: 430, pro: 38,
     ingredients: 'a bowl of Greek yogurt · 1 scoop protein powder · 1 frozen banana · ½ cup berries · 3 tbsp granola · 1 tbsp chia',
     steps: [
       'Stir the protein powder into the Greek yogurt first, until there are no dry pockets left.',
@@ -667,7 +668,7 @@ export const RECOMMENDED_MEALS = [
   // Two or three frozen fruits, never more. Granola and chia stirred through.
   // Same rule as the protein bowls above: one of these replaces BOTH small
   // meals, it does not sit on top of the 11 AM one.
-  { emoji: '🥣', slot: 'wake', name: 'Granola Bowl · Mango & Banana', cal: 380, pro: 8,
+  { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Mango & Banana', cal: 380, pro: 8,
     ingredients: '1 cup frozen mango · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries & banana to top',
     steps: [
       'Two or three frozen fruits in the blender, never more — that is what keeps it thick instead of runny, and keeps the sugar sensible.',
@@ -675,7 +676,7 @@ export const RECOMMENDED_MEALS = [
       'Pour into a bowl and stir the chia through while it is still soft.',
       'Granola over the top, then berries and sliced banana — or whatever fruit is in the house.',
     ] },
-  { emoji: '🥣', slot: 'wake', name: 'Granola Bowl · Berries & Banana', cal: 370, pro: 8,
+  { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Berries & Banana', cal: 370, pro: 8,
     ingredients: '1 cup frozen mixed berries · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · banana to top',
     steps: [
       'Frozen berries and frozen banana only — two fruits is enough for this one.',
@@ -683,7 +684,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl and stir the chia through.',
       'Granola over the top and sliced banana across it.',
     ] },
-  { emoji: '🥣', slot: 'wake', name: 'Granola Bowl · Papaya, Mango & Banana', cal: 390, pro: 8,
+  { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Papaya, Mango & Banana', cal: 390, pro: 8,
     ingredients: '1 cup papaya · ½ cup frozen mango · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries to top',
     steps: [
       'Three fruits — the ceiling. Freeze the mango and banana the night before; the papaya goes in fresh because it is wet enough.',
@@ -691,7 +692,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl and stir the chia through.',
       'Granola over the top, berries scattered on. The easiest one on the stomach.',
     ] },
-  { emoji: '🥣', slot: 'wake', name: 'Granola Bowl · Dragon Fruit & Banana', cal: 360, pro: 8,
+  { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Dragon Fruit & Banana', cal: 360, pro: 8,
     ingredients: '1 cup frozen dragon fruit · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries & banana to top',
     steps: [
       'Freeze the dragon fruit cubes and the banana the night before.',
@@ -699,7 +700,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl and stir the chia through.',
       'Granola, then berries and banana on top.',
     ] },
-  { emoji: '🥣', slot: 'wake', name: 'Papaya · Banana · Mango', cal: 250, pro: 4,
+  { emoji: '🥣', slot: 'noon', main: true, name: 'Papaya · Banana · Mango', cal: 250, pro: 4,
     ingredients: '1 cup papaya · 1 frozen banana · ½ cup mango · 1 tbsp chia · splash of water',
     steps: [
       'Freeze the banana and mango the night before — frozen fruit is what makes it thick instead of runny.',
@@ -707,7 +708,7 @@ export const RECOMMENDED_MEALS = [
       'Stop and push the fruit down with a spoon rather than adding more water.',
       'Pour into a bowl and top with chia. No milk, no sugar.',
     ] },
-  { emoji: '🥭', slot: 'wake', name: 'Mango · Banana · Berries', cal: 260, pro: 4,
+  { emoji: '🥭', slot: 'noon', main: true, name: 'Mango · Banana · Berries', cal: 260, pro: 4,
     ingredients: '1 cup mango · 1 frozen banana · ½ cup berries · 1 tbsp chia',
     steps: [
       'Use frozen mango and banana straight from the freezer.',
@@ -715,7 +716,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl.',
       'Top with chia and a few whole berries.',
     ] },
-  { emoji: '🍈', slot: 'wake', name: 'Papaya · Pineapple · Banana', cal: 240, pro: 4,
+  { emoji: '🍈', slot: 'noon', name: 'Papaya · Pineapple · Banana', cal: 240, pro: 4,
     ingredients: '1 cup papaya · ½ cup pineapple · 1 frozen banana · 1 tbsp chia',
     steps: [
       'Scoop the papaya, discarding the seeds.',
@@ -723,7 +724,7 @@ export const RECOMMENDED_MEALS = [
       'Pour into a bowl.',
       'Top with chia. This is the best one for digestion — papaya and pineapple both carry natural enzymes.',
     ] },
-  { emoji: '🍓', slot: 'wake', name: 'Berries · Banana · Kiwi', cal: 230, pro: 4,
+  { emoji: '🍓', slot: 'noon', main: true, name: 'Berries · Banana · Kiwi', cal: 230, pro: 4,
     ingredients: '1 cup mixed berries · 1 frozen banana · 1 kiwi · 1 tbsp chia',
     steps: [
       'Blend the frozen berries and banana with a splash of water.',
@@ -731,7 +732,7 @@ export const RECOMMENDED_MEALS = [
       'Pour the purple base into a bowl.',
       'Lay the kiwi over it and finish with chia.',
     ] },
-  { emoji: '🌴', slot: 'wake', name: 'Mango · Papaya · Pineapple', cal: 250, pro: 4,
+  { emoji: '🌴', slot: 'noon', name: 'Mango · Papaya · Pineapple', cal: 250, pro: 4,
     ingredients: '1 cup mango · 1 cup papaya · ½ cup pineapple · 1 tbsp chia',
     steps: [
       'Freeze the mango and pineapple beforehand.',
@@ -739,7 +740,7 @@ export const RECOMMENDED_MEALS = [
       'Add water only a teaspoon at a time if the blender sticks.',
       'Top with chia. Pure tropical, no banana needed.',
     ] },
-  { emoji: '🐉', slot: 'wake', name: 'Dragon Fruit · Banana · Berries', cal: 220, pro: 4,
+  { emoji: '🐉', slot: 'noon', name: 'Dragon Fruit · Banana · Berries', cal: 220, pro: 4,
     ingredients: '1 cup dragon fruit · 1 frozen banana · ½ cup berries · 1 tbsp chia',
     steps: [
       'Freeze the dragon fruit cubes and the banana.',
@@ -747,7 +748,7 @@ export const RECOMMENDED_MEALS = [
       'Fold the berries through by hand so they stay whole.',
       'Top with chia.',
     ] },
-  { emoji: '🍉', slot: 'wake', name: 'Watermelon · Kiwi · Banana', cal: 200, pro: 4,
+  { emoji: '🍉', slot: 'noon', name: 'Watermelon · Kiwi · Banana', cal: 200, pro: 4,
     ingredients: '1 cup frozen watermelon · 1 kiwi · 1 frozen banana · 1 tbsp chia',
     steps: [
       'Freeze the watermelon cubes — fresh watermelon makes this too watery to be a bowl.',
@@ -755,7 +756,7 @@ export const RECOMMENDED_MEALS = [
       'Add the kiwi last and pulse twice only.',
       'Top with chia. The most hydrating one — good on a hot day.',
     ] },
-  { emoji: '🍎', slot: 'wake', name: 'Apple · Banana · Berries', cal: 240, pro: 4,
+  { emoji: '🍎', slot: 'noon', name: 'Apple · Banana · Berries', cal: 240, pro: 4,
     ingredients: '1 apple · 1 frozen banana · ½ cup berries · 1 tbsp chia · cinnamon',
     steps: [
       'Core and chop the apple — leave the skin on for the fibre.',
@@ -763,7 +764,7 @@ export const RECOMMENDED_MEALS = [
       'Pour into a bowl.',
       'Top with chia and a pinch of cinnamon.',
     ] },
-  { emoji: '🍍', slot: 'wake', name: 'Pineapple · Mango · Kiwi', cal: 235, pro: 4,
+  { emoji: '🍍', slot: 'noon', name: 'Pineapple · Mango · Kiwi', cal: 235, pro: 4,
     ingredients: '1 cup pineapple · 1 cup mango · 1 kiwi · 1 tbsp chia',
     steps: [
       'Use frozen pineapple and mango.',
@@ -771,7 +772,7 @@ export const RECOMMENDED_MEALS = [
       'Slice the kiwi for the top.',
       'Finish with chia. Sharp and sweet — the most refreshing bowl of the set.',
     ] },
-  { emoji: '🥥', slot: 'wake', name: 'Papaya · Berries · Banana', cal: 230, pro: 4,
+  { emoji: '🥥', slot: 'noon', name: 'Papaya · Berries · Banana', cal: 230, pro: 4,
     ingredients: '1 cup papaya · ½ cup berries · 1 frozen banana · 1 tbsp chia',
     steps: [
       'Blend the papaya and frozen banana first until creamy.',
@@ -779,7 +780,7 @@ export const RECOMMENDED_MEALS = [
       'Spoon into a bowl.',
       'Top with chia. Gentle on the stomach — the easiest bowl to digest.',
     ] },
-  { emoji: '🥑', slot: 'wake', name: 'Avocado · Banana · Berries', cal: 300, pro: 5,
+  { emoji: '🥑', slot: 'noon', name: 'Avocado · Banana · Berries', cal: 300, pro: 5,
     ingredients: '¼ avocado · 1 frozen banana · ½ cup berries · 1 tbsp chia',
     steps: [
       'Blend the avocado and frozen banana until it goes thick like ice cream.',
@@ -809,7 +810,7 @@ export const RECOMMENDED_MEALS = [
   // Greek yogurt is strained, so the same small bowl carries roughly twice the
   // protein of plain. That swap alone is 7 grams for 30 calories, which is the
   // best trade in the whole plan. This is the default 11 AM meal.
-  { emoji: '🍏', slot: 'noon', name: 'Apple Sticks & Greek Yogurt', cal: 215, pro: 16,
+  { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks & Greek Yogurt', cal: 215, pro: 16,
     ingredients: '1 apple · a small bowl of plain Greek yogurt',
     steps: [
       'Core the apple and cut it into thick sticks, skin on — that is where the fibre is.',
@@ -830,7 +831,7 @@ export const RECOMMENDED_MEALS = [
   // Plain yogurt instead of Greek, and the two warm options. The sweet potato
   // and the boiled saba are here for a day you want something warm at 11 —
   // take them instead of the apple sticks, not as well as them.
-  { emoji: '🍏', slot: 'noon', name: 'Apple Sticks & Yogurt', cal: 180, pro: 9,
+  { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks & Yogurt', cal: 180, pro: 9,
     ingredients: '1 apple · a small bowl of plain yogurt',
     steps: [
       'Core the apple and cut it into thick sticks — skin on, that is where the fibre is.',
@@ -846,7 +847,7 @@ export const RECOMMENDED_MEALS = [
       'Cinnamon is what makes this taste sweet without a grain of sugar in it.',
       'Dip and eat slowly. Nothing after but tea.',
     ] },
-  { emoji: '🍏', slot: 'noon', name: 'Apple Sticks, Yogurt & Chia', cal: 210, pro: 11,
+  { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks, Yogurt & Chia', cal: 210, pro: 11,
     ingredients: '1 apple · a small bowl of plain yogurt · 1 tsp chia',
     steps: [
       'Stir the chia into the yogurt and leave it five minutes — it thickens the sauce so it clings to the apple.',
@@ -917,23 +918,23 @@ export const DAILY_MEALS = {
   clock: '8 AM Â· 11 AM Â· 2 PM â then the window shuts',
   label: '🍽️ The same three meals every day · fruit at 8 AM · apple & Greek yogurt at 11 AM · THE BIG MEAL at 2 PM · nothing after · under 1,000 calories, over 50 g of protein',
   rows: [
-    { time: '8:00 AM — Fruit, and not much of it', icon: '🍌', ingredients: [
+    { time: '8:00 AM — Fruit & black coffee', icon: '🍌', ingredients: [
       { name: 'Banana, berries or papaya — those three, pick one', key: 'banana' },
       { name: 'Black coffee alongside, especially on a glute day', key: null },
       { name: 'This is your fuel for training, so eat it before you run', key: null },
     ]},
-    { time: '11:00 AM — Meal 1 · the egg plate', icon: '🍳', ingredients: [
-      { name: '2 whole eggs and 3 egg whites, fried in 1 tsp olive oil', key: 'egg' },
-      { name: 'Spinach wilted in with them, kimchi and papaya on the side', key: null },
-      { name: 'A sweet potato, boiled or baked', key: null },
-      { name: 'Chia and pumpkin or sesame seeds over the top, Greek yogurt alongside', key: 'chia' },
+    { time: '11:00 AM — Apple & yogurt, or a smoothie', icon: '🍏', ingredients: [
+      { name: 'Apple cut into slices, skin on, with yogurt to dip them in', key: 'apple' },
+      { name: 'OR a smoothie — two or three fruits blended with chia seeds', key: null, pick: 'fruit', slot: 'lunch' },
+      { name: 'Granola over the top of the smoothie', key: 'chia' },
+      { name: 'Greek yogurt rather than plain if you have it — twice the protein, same bowl', key: 'yogurtbowl' },
     ]},
-    { time: '2:00 PM — Meal 2 · beef or chicken', icon: '🥩', ingredients: [
-      { name: 'Beef or chicken — 100 g, seared in a hot dry pan', key: null, pick: 'protein', slot: 'morning' },
-      { name: 'A sweet potato, boiled or baked', key: null },
-      { name: 'Spinach, bell pepper, tomato and cucumber', key: null },
-      { name: 'Kimchi on the side', key: null },
-      { name: 'Greek yogurt and a spoon of pumpkin seeds or chia', key: 'yogurtbowl' },
+    { time: '2:00 PM — MEAL A or MEAL B', icon: '🍽️', ingredients: [
+      { name: 'ONE of the two, never both. This is the meal the day is built around', key: null },
+      { name: 'A — eggs & whites folded with spinach, kimchi, sweet potato, papaya, seeds, yogurt', key: 'egg' },
+      { name: 'B — beef or chicken, sweet potato, spinach, bell pepper, tomato, cucumber, kimchi', key: null, pick: 'protein', slot: 'morning' },
+      { name: 'Greek yogurt and a spoon of pumpkin seeds or chia with either one', key: 'yogurtbowl' },
+      { name: 'No oil — fold the eggs in a dry non-stick pan, sear the meat in a hot dry one', key: null },
     ]},
     { time: 'After 2:00 PM — the window shuts', icon: '🍵', ingredients: [
       { name: 'Water, tea and black coffee — as much as you like', key: null },
