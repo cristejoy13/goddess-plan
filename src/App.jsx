@@ -48,8 +48,8 @@ const SEARCH_INDEX = [
   { label: 'Wednesday — Glute Strength', hint: 'Workouts · Zone 2 Run · Squat · Bulgarian · RDL', section: 'workout', scrollTo: 'day-wednesday' },
   { label: 'Thursday — Abs & Upper Body', hint: 'Workouts · Zone 2 Run · 5 ab moves · Shoulders · Back', section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Friday — Glute Shape', hint: 'Workouts · Zone 2 Run · Abduction · Kickback · Sumo', section: 'workout', scrollTo: 'day-friday'    },
-  { label: 'Saturday — Run & Jessica Diễm', hint: 'Workouts · Easy Run · one Jessica Diễm video · Forearm Stand', section: 'workout', scrollTo: 'day-saturday'  },
-  { label: 'Sunday — Sprints & Jessica Diễm', hint: 'Workouts · Sprint Intervals · one Jessica Diễm video · Forearm Stand', section: 'workout', scrollTo: 'day-sunday'  },
+  { label: 'Saturday — Run & Jessica Diễm', hint: 'Workouts · Easy Run · one Jessica Diễm video · long stretch', section: 'workout', scrollTo: 'day-saturday'  },
+  { label: 'Sunday — Sprints & Jessica Diễm', hint: 'Workouts · Sprint Intervals · one Jessica Diễm video · long stretch', section: 'workout', scrollTo: 'day-sunday'  },
 
   // The six glute lifts everything is built on.
   { label: 'Barbell Hip Thrust',      hint: 'Workouts → Monday Glute Power · the best glute builder', section: 'workout', scrollTo: 'day-monday' },
@@ -77,7 +77,6 @@ const SEARCH_INDEX = [
 
   { label: 'Jessica Diễm — weekend videos', hint: 'Workouts → Saturday & Sunday · one video each day', section: 'workout', scrollTo: 'day-saturday' },
   { label: 'Abs Videos — Pilates by Izzy', hint: 'Workouts → Tuesday & Thursday · optional extra', section: 'workout', scrollTo: 'day-tuesday' },
-  { label: 'Forearm Stand Training',  hint: 'Workouts → Saturday & Sunday',  section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Full Body Pilates — Move With Nicole', hint: 'Workouts → Tuesday & Thursday · optional extra', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Overnight Yogurt Bowl',   hint: 'Nutrition → Recipes · yogurt, protein, psyllium, blueberries', section: 'nutrition', tab: 'recipes' },
   { label: 'Meal Times — the daily clock',     hint: 'Nutrition → Daily Clock · 8 AM fruit, 11 AM apple & yogurt, 2 PM the big meal', section: 'nutrition', tab: 'daily' },

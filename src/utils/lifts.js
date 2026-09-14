@@ -24,8 +24,8 @@ export function parsePlanned(detail = '') {
 // Anything prescribed as sets × reps gets a log — every training day, not just
 // the glute days. That means the main lifts, the finisher, all the back and
 // shoulder work, and the loaded mobility drills. Held stretches, timed holds,
-// and the forearm-stand drills are prescribed in seconds, walks, or hops, so
-// they fall out naturally: there is no weight to record on a 45-second hold.
+// are prescribed in seconds or walks, so they fall out naturally: there is no
+// weight to record on a 45-second hold.
 // Videos and the walk are excluded outright.
 const REP_SCHEME = /\d+\s*×\s*\d+(\s*[–-]\s*\d+)?\s*reps/i;
 

@@ -35,8 +35,8 @@ export function getCurrentSprintProtocol() {
 //     then ONE shoulder move, ONE back move, ONE core video.
 // Weekend (Sat · Sun): NO zone 2 run — the run IS the session. Saturday is an
 // easy run, Sunday is the sprint-interval protocol that advances each
-// challenge month. Then forearm-stand training and a long stretch. No lifting
-// either day.
+// challenge month. Then one Jessica Diễm video and a long stretch. No lifting
+// either day, and no forearm-stand block — her videos already cover that.
 
 // Shared warm-up, shared run, shared finisher. Every weekday now runs all
 // three; the weekend keeps its own run and its own walk alternative.
@@ -73,23 +73,7 @@ const NICOLE_FULLBODY = [
 // rose so the video sections stand apart from the lifting sections.
 const H = (heading, hint, tone) => ({ heading, hint, tone });
 
-// Forearm-stand (elbow stand / Pincha Mayurasana) training — the weekend goal.
-// Drills first, then pick one video to follow.
-const FOREARM_STAND_DRILLS = [
-  { name: 'Dolphin Pose Hold', detail: '4 × 30–45 sec · forearms flat, elbows shoulder-width, walk feet toward your elbows · builds the exact shoulder position of a forearm stand' },
-  { name: 'Forearm Plank', detail: '3 × 45–60 sec · elbows under shoulders, ribs down, glutes on · the straight line you need upside down' },
-  { name: 'Hollow Body Hold', detail: '3 × 20–30 sec · low back pressed flat, legs and shoulders off the floor · stops the banana back that tips you over' },
-  { name: 'Dolphin Wall Walk', detail: '3 × 3–5 walks · from dolphin, walk your feet up the wall until hips stack over shoulders · hold 10–20 sec, walk down slowly' },
-  { name: 'Dolphin Pike Hops', detail: '4 × 5–8 hops · from dolphin, hop hips over shoulders and land soft · learn to find balance without kicking hard' },
-];
 
-const HANDSTAND_INTERMEDIATE = [
-  { name: 'Elbow Stand — Forearm Stand (Calisthenics)',  detail: 'School of Calisthenics · elbow/forearm stand · the "brakes", kick-up, and balance', url: 'https://www.youtube.com/watch?v=6abRwGwQ704' },
-  { name: 'Elbow Stand — Pincha Mayurasana Tips',        detail: 'Blessed Yoga · forearm-stand tips & tricks · shoulder alignment and a controlled kick-up', url: 'https://www.youtube.com/watch?v=emCch6a0DV4' },
-  { name: 'Elbow Stand — Float into Forearm Stand',      detail: 'Shambhala Yoga · follow-along · float up with control instead of kicking', url: 'https://www.youtube.com/watch?v=DtvzGQj5C6I' },
-  { name: 'Handstand — Complete Handstand Guide',        detail: 'Tom Merrick · beginner to intermediate · wall drills, hollow body, and balance', url: 'https://www.youtube.com/watch?v=2-3wv5kLNnw' },
-  { name: 'Handstand — Master the Handstand & Press',    detail: 'Bert Wang · step-by-step handstand + press handstand · intermediate control', url: 'https://www.youtube.com/watch?v=KknM6GXJJIs' },
-];
 
 
 // Weekend running. Saturday is the easy one, Sunday runs the interval protocol
@@ -1096,13 +1080,13 @@ export const WORKOUT_DAYS = [
     trackLifts: true,
     meals: DAILY_MEALS,
   },
-  // ══ SATURDAY ══ Easy run · Jessica Diem · forearm stand
+  // ══ SATURDAY ══ Easy run · Jessica Diem · stretch
   {
     emoji: '🏃', emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Saturday · Run & Jessica Diem', title: 'Easy Run · Jessica Diem · Skill',
-    sub: 'Run OR walk → one Jessica Diem video → forearm stand → long stretch',
+    day: 'Saturday · Run & Jessica Diem', title: 'Easy Run · Jessica Diem · Stretch',
+    sub: 'Run OR walk → one Jessica Diem video → long stretch',
     cardio: { icon: '🏃', title: 'Easy run OR the 20-minute walk', note: 'pick one — 20–30 min conversational run, or the walk' },
-    noteBefore: { type: 'gold', text: '🏃 No lifting today, and no separate zone 2 run — the run IS the session. Run easy, then one Jessica Diem video, then the forearm stand and a long stretch. The video is an extra on top of your strength week, not a swap for it: your glutes are still built on Monday, Wednesday and Friday. Keep the run conversational so your legs are fresh for Monday.' },
+    noteBefore: { type: 'gold', text: '🏃 No lifting today, and no separate zone 2 run — the run IS the session. Run easy, then one Jessica Diem video, then a long stretch. Three things, and that is the whole day. The video is an extra on top of your strength week, not a swap for it: your glutes are still built on Monday, Wednesday and Friday. Keep the run conversational so your legs are fresh for Monday.' },
     exercises: [
       H('🏃 Run OR Walk — pick one', 'First, while you are fresh. If you run, warm up properly — a cold start is how ankles and shins get hurt. If you would rather walk today, take the walk and skip the run entirely.'),
       RUN_WARMUP,
@@ -1110,24 +1094,20 @@ export const WORKOUT_DAYS = [
       REST_WALK,
       H('💗 Jessica Diem — pick ONE video', 'Your weekend workout. One video, whichever one you feel like. This runs alongside the lifting week, it never replaces it.', 'core'),
       ...JESSICA_DIEM,
-      H('🤸 Forearm Stand — Drills', 'Skill work next. Running does not tire your arms, so this is still sharp.'),
-      ...FOREARM_STAND_DRILLS,
-      H('▶ Forearm Stand — Videos', 'Then pick ONE to follow along with.', 'core'),
-      ...HANDSTAND_INTERMEDIATE,
       H('🤍 Stretching', 'Long, slow holds — running tightens hips and calves, this is where you give it back.'),
       REST_STRETCH,
     ],
-    noteAfter: { type: 'rose', text: '💡 Order matters: run or walk first, then the Jessica Diem video, then skill, then stretch. The run and the walk are alternatives — do one, not both. Meals do not change at the weekend: 8 AM fruit, 11 AM apple and Greek yogurt, 2 PM the big meal, nothing after.' },
+    noteAfter: { type: 'rose', text: '💡 Order matters: run or walk first, then the Jessica Diem video, then the stretch. The run and the walk are alternatives — do one, not both. Meals do not change at the weekend: 8 AM fruit, 11 AM apple and Greek yogurt, 2 PM the big meal, nothing after.' },
     meals: DAILY_MEALS,
   },
-  // ══ SUNDAY ══ Sprints · Jessica Diem · forearm stand
+  // ══ SUNDAY ══ Sprints · Jessica Diem · stretch
   {
     emoji: '⚡', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Sprints & Jessica Diem', title: 'Sprints · Jessica Diem · Skill',
-    sub: 'Sprints OR walk → one Jessica Diem video → forearm stand → long stretch',
+    day: 'Sunday · Sprints & Jessica Diem', title: 'Sprints · Jessica Diem · Stretch',
+    sub: 'Sprints OR walk → one Jessica Diem video → long stretch',
     cardio: { icon: '⚡', title: 'Sprint intervals OR the 20-minute walk', note: 'pick one — the sprints step up every challenge month' },
     sprintDay: true,
-    noteBefore: { type: 'gold', text: '⚡ Sprint day — the one hard run of the week, and the only running you do today. Full effort on the hard rounds, full walk on the rest; the moment your form falls apart, that round was your last. Then one Jessica Diem video, the forearm stand, and a long stretch. Still no lifting. Sprints are the single best cardio for keeping glutes while fat comes off.' },
+    noteBefore: { type: 'gold', text: '⚡ Sprint day — the one hard run of the week, and the only running you do today. Full effort on the hard rounds, full walk on the rest; the moment your form falls apart, that round was your last. Then one Jessica Diem video and a long stretch. Still no lifting. Sprints are the single best cardio for keeping glutes while fat comes off.' },
     exercises: [
       H('⚡ Sprints OR Walk — pick one', 'First, while you are fresh. If you sprint, warm up properly — sprinting cold is the fastest way to pull a hamstring. On a heavy-legged week, take the walk instead and skip the sprints entirely.'),
       RUN_WARMUP,
@@ -1135,14 +1115,10 @@ export const WORKOUT_DAYS = [
       REST_WALK,
       H('💗 Jessica Diem — pick ONE video', 'Your weekend workout. One video, whichever one you feel like. This runs alongside the lifting week, it never replaces it.', 'core'),
       ...JESSICA_DIEM,
-      H('🤸 Forearm Stand — Drills', 'Skill work next. Running does not tire your arms, so this is still sharp.'),
-      ...FOREARM_STAND_DRILLS,
-      H('▶ Forearm Stand — Videos', 'Then pick ONE to follow along with.', 'core'),
-      ...HANDSTAND_INTERMEDIATE,
       H('🤍 Stretching', 'Long, slow holds — sprints tighten hamstrings and calves hard, this is where you give it back.'),
       REST_STRETCH,
     ],
-    noteAfter: { type: 'rose', text: '💡 Hold dolphin longer every week — that is how the forearm stand arrives. If your legs still feel Wednesday and Friday, run the sprints easier or walk them; never sprint on sore hamstrings. Tomorrow is hip thrust day, so make today’s 2 PM plate a big one.' },
+    noteAfter: { type: 'rose', text: '💡 If your legs still feel Wednesday and Friday, run the sprints easier or walk them; never sprint on sore hamstrings. Tomorrow is hip thrust day, so make today’s 2 PM plate a big one.' },
     meals: DAILY_MEALS,
   },
 ];
