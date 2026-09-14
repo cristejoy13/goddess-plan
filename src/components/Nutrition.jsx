@@ -3,7 +3,7 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · Every Day', desc: 'The same four meals every single day, built to clear 50 g of protein. Coffee & banana before you train, protein & kimchi after, protein smoothie bowl at 3 PM, apple sticks & Greek yogurt at 5 PM.' },
+  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 8 AM to 2 PM', desc: 'Three meals inside one window, the same every day. Fruit at 8, apple & Greek yogurt at 11, the big meal at 2, nothing after. Under 1,000 calories, over 50 g of protein.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, oil-free. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -51,48 +51,56 @@ export function DailyClock() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍽️ <strong>One clock, every day.</strong> Glute days, back &amp; core days, the weekend — all the same. Four meals, always in the same order. There is nothing to remember and nothing to switch between.
+        🕒 <strong>One window: 8 AM to 2 PM.</strong> Three meals inside it, the same three every day — glute days, abs days, the weekend, all the same. After 2 PM, nothing but water, tea and black coffee. The closing is what makes the window work.
       </div>
+
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        💪 <strong>50 grams of protein is the floor, every day.</strong> Not a target to aim at — a line to stay above. Below it, the muscle you just built in the gym gets burned for fuel and the glute work goes nowhere. Two things carry it: a scoop of protein powder in the 3 PM bowl, and Greek yogurt instead of plain at 5 PM. Open any day in Movement to see today’s number count itself up.
+        ⚖️ <strong>Two numbers, and they pull against each other.</strong> <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> A thousand calories is a small budget, so nearly all of it has to do real work — which rules out oil, sugar and big piles of rice, and rules in white fish, eggs, Greek yogurt and tofu. Open any day in Movement and both numbers count themselves up as you pick.
       </div>
+
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        🍌 <strong>A banana on both sides of the session.</strong> One before, so you have fuel for the run and the lifts. One straight after, so you put back what you burned. This is the part that never moves.
+        🍌 <strong>8 AM is also your fuel.</strong> You train in the morning, so the fruit goes in before the run, not after it. Never start the run on an empty stomach.
       </div>
+
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">Before workout</div>
+            <div className="hyd-time">8:00 AM</div>
             <div>
-              <div className="hyd-d">Coffee &amp; banana</div>
-              <div className="hyd-n">Banana first, coffee second — caffeine on a truly empty stomach is what makes you shaky by set three. Give it 20–30 minutes before you start the zone 2 run.</div>
+              <div className="hyd-d">Fruit — and not much of it</div>
+              <div className="hyd-n">A banana, a few berries if you want them, black coffee alongside. About 140 calories. Small on purpose: the 2 PM plate needs the room. Eat it 20–30 minutes before you warm up.</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">After workout</div>
+            <div className="hyd-time">11:00 AM</div>
             <div>
-              <div className="hyd-d">Protein &amp; kimchi, then cucumber &amp; banana</div>
-              <div className="hyd-n">Any protein you like — fish, eggs or tofu — with a small bowl of kimchi on the side. Then the cucumber, and the banana last. Oil-free, no added salt; the kimchi is salty enough on its own.</div>
+              <div className="hyd-d">Apple sticks &amp; Greek yogurt</div>
+              <div className="hyd-n">Apple cut into sticks, skin on, dipped in Greek yogurt. About 215 calories and 16 g of protein. Greek is strained, so the same small bowl carries twice the protein of plain — that swap alone is 7 g for 30 calories, the best trade in the whole plan.</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">3:00 PM</div>
+            <div className="hyd-time">2:00 PM</div>
             <div>
-              <div className="hyd-d">Protein smoothie bowl</div>
-              <div className="hyd-n">Blend two or three frozen fruits — never more than three — with one scoop of protein powder. Stir granola and chia seeds through, then berries and banana on top, or whatever fruit is in the house. That single scoop is about a third of your day’s protein, so it goes in every time.</div>
+              <div className="hyd-d">THE BIG MEAL</div>
+              <div className="hyd-n">Your protein — fish, eggs or tofu — with a sweet potato, two boiled eggs, kimchi, cucumber and tomato, and a banana last. About 645 calories and 59 g of protein. This one plate is most of your food and nearly all of your protein, which is exactly how a 1,000-calorie day clears the 50 g floor instead of falling short of it.</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">5:00 PM</div>
+            <div className="hyd-time">After 2 PM</div>
             <div>
-              <div className="hyd-d">Apple sticks with Greek yogurt for the sauce</div>
-              <div className="hyd-n">Apple cut into sticks, skin on, dipped in Greek yogurt. Greek is strained, so the same small bowl carries about twice the protein of plain — that swap alone is 7 grams. Craving something warmer? Sweet potato or a boiled saba banana instead. Nothing after but tea.</div>
+              <div className="hyd-d">The window shuts</div>
+              <div className="hyd-n">Water, tea and black coffee, as much as you like. No food. If you are hungry at night, the answer is a bigger plate at 2 PM tomorrow — not a snack tonight.</div>
             </div>
           </div>
         </div>
       </div>
-      <div className="note-box note-rose">
-        🐟 <strong>Protein:</strong> fish, eggs or tofu — any of them, any day. <strong>No chicken, beef or pork, ever.</strong> Eat the protein and the kimchi first, then your veggies and fruit. On a day the number looks short, put two proteins on one plate — fish and an egg together is the fastest 15 grams there is.<br /><br />📊 <strong>No calorie counting.</strong> The calorie on each meal is there to look at, not to add up. Protein is the only number in this plan you watch.
+
+      <div className="note-box note-rose" style={{ marginBottom: 14 }}>
+        🐟 <strong>Protein:</strong> fish, eggs or tofu — any of them, any day. <strong>No chicken, beef or pork, ever.</strong> Eat the protein first, then the sweet potato, then the fruit. On a day the number looks short, put two proteins on one plate — fish and an egg together is the fastest 15 grams there is.
+      </div>
+
+      <div className="note-box note-gold">
+        🛒 <strong>What to keep in the house.</strong> <strong>White fish</strong> (tilapia or cream dory) — the most protein for the fewest calories there is, and the single most useful thing on this list. <strong>Eggs</strong> and <strong>Greek yogurt</strong> — your everyday protein. <strong>Sweet potato</strong> and <strong>bananas</strong> — your energy for lifting. <strong>Kimchi</strong> — almost no calories, good for the gut, and it makes plain food taste like a meal. <strong>Cucumber, tomato and spinach</strong> — they fill the plate for nearly nothing. <strong>Chia seeds</strong> — they keep you full through the long gap from 2 PM to morning. <strong>Protein powder</strong> — only if you fall short; one scoop is 24 g for 120 calories.
       </div>
     </>
   );

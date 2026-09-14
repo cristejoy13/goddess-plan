@@ -8340,6 +8340,28 @@ body {
   color: var(--text-mid, #c090b8);
 }
 
+/* Two meters side by side on a wide screen, stacked on a phone. Protein is a
+   floor to climb above; calories are a ceiling to stay under, so the calorie
+   one only turns warm when it is EXCEEDED. */
+.two-meters { display: flex; gap: 10px; margin-bottom: 14px; }
+.two-meters > * { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+.calorie-meter {
+  border-color: rgba(240,204,96,0.32);
+  background: rgba(240,204,96,0.07);
+}
+.calorie-meter .protein-meter-num { color: var(--gold, #f0cc60); }
+.calorie-meter .protein-meter-fill {
+  background: linear-gradient(90deg, #c79a2a, var(--gold, #f0cc60));
+}
+.calorie-meter.over { border-color: rgba(255,92,157,0.55); background: rgba(255,92,157,0.10); }
+.calorie-meter.over .protein-meter-num { color: var(--rose, #ff5c9d); }
+.calorie-meter.over .protein-meter-fill {
+  background: linear-gradient(90deg, var(--rose-deep, #e8347a), var(--rose, #ff5c9d));
+}
+@media (max-width: 560px) {
+  .two-meters { flex-direction: column; gap: 8px; }
+}
+
 /* On a phone the pill has room for one number, and protein is the one that
    matters — the calorie is what gets dropped, not the protein. */
 @media (max-width: 420px) {

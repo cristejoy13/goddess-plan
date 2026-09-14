@@ -1,31 +1,27 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORKOUT_DAYS, MEAL_SLOTS, mealSlots, slotMeals, suggestMeals, proteinTotal, PROTEIN_TARGET } from '../data/workouts';
+import { WORKOUT_DAYS, MEAL_SLOTS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { loadLifts, isTrackable } from '../utils/lifts';
 import { DailyClock, RecipesPanel, FoodGuide } from './Nutrition';
 
-// The week starts on Thursday, because that is the day the plan started, and
-// runs Thursday → Wednesday. Index 0 is Thursday, so today's slot is counted
-// from Thursday rather than from Monday.
 const DAY_IDS = [
-  'day-thursday', 'day-friday', 'day-saturday', 'day-sunday',
-  'day-monday', 'day-tuesday', 'day-wednesday',
+  'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
+  'day-friday', 'day-saturday', 'day-sunday',
 ];
 
-// JavaScript numbers Sunday as 0 and Thursday as 4; shifting by 4 puts
-// Thursday at index 0 and keeps the real calendar day landing on the right card.
+// JavaScript numbers Sunday as 0, so Monday-first is a shift of one.
 const jsDay      = new Date().getDay();
-const todayIndex = (jsDay - 4 + 7) % 7;
+const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
 const GRID_DAYS = [
-  { lbl: 'Thu', emoji: '🍑', name: 'Glute Power',   focus: 'Run · Hip Thrust · RDL · Step-Up', color: 'pr' },
-  { lbl: 'Fri', emoji: '🎯', name: 'Abs & Upper',   focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
-  { lbl: 'Sat', emoji: '🏃', name: 'Run & Jessica', focus: 'Easy Run · Jessica Diem · Stretch', color: 'py' },
-  { lbl: 'Sun', emoji: '⚡', name: 'Sprints & Jessica', focus: 'Sprints · Jessica Diem · Stretch', color: 'py' },
-  { lbl: 'Mon', emoji: '🔥', name: 'Glute Strength', focus: 'Run · Squat · Bulgarian · RDL', color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Abs & Upper',   focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
-  { lbl: 'Wed', emoji: '✨', name: 'Glute Shape',   focus: 'Run · Abduction · Kickback · Sumo', color: 'pr' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glute Power',    focus: 'Run · Hip Thrust · RDL · Step-Up', color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Abs & Upper',    focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute Strength', focus: 'Run · Squat · Bulgarian · RDL', color: 'pr' },
+  { lbl: 'Thu', emoji: '🎯', name: 'Abs & Upper',    focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glute Shape',    focus: 'Run · Abduction · Kickback · Sumo', color: 'pr' },
+  { lbl: 'Sat', emoji: '🏃', name: 'Run & Jessica',  focus: 'Easy Run · Jessica Diễm · Stretch', color: 'py' },
+  { lbl: 'Sun', emoji: '⚡', name: 'Sprints & Jessica', focus: 'Sprints · Jessica Diễm · Stretch', color: 'py' },
 ];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
@@ -88,7 +84,10 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
   const [detail, setDetail]     = useState(null);
   const slots = mealSlots();
   const pro   = proteinTotal(chosen);
-  const hitTarget = pro >= PROTEIN_TARGET;
+  const cal   = calorieTotal(chosen);
+  // Protein is a floor to get above; calories are a ceiling to stay under.
+  const hitTarget  = pro >= PROTEIN_TARGET;
+  const overBudget = cal > CALORIE_TARGET;
 
   function toggleChosen(name) {
     saveChosen(chosen.includes(name) ? chosen.filter(n => n !== name) : [...chosen, name]);
@@ -112,24 +111,43 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
         <div className="meal-plan-hint">
-          The same four meals every day. A banana on both sides of the session, the protein smoothie bowl at 3 PM, and apple sticks with Greek yogurt to close. Any protein you like — never chicken, beef or pork.
+          Three meals, 8 AM to 2 PM, then the window shuts. Fruit first, apple and Greek yogurt at 11, and the big plate at 2. Any protein you like — never chicken, beef or pork.
         </div>
       </div>
 
-      <div className={`protein-meter${hitTarget ? ' hit' : ''}`}>
-        <div className="protein-meter-top">
-          <span className="protein-meter-lbl">💪 Protein today</span>
-          <span className="protein-meter-num">{pro} g <em>/ {PROTEIN_TARGET} g</em></span>
+      <div className="two-meters">
+        <div className={`protein-meter${hitTarget ? ' hit' : ''}`}>
+          <div className="protein-meter-top">
+            <span className="protein-meter-lbl">💪 Protein — the floor</span>
+            <span className="protein-meter-num">{pro} g <em>/ {PROTEIN_TARGET} g</em></span>
+          </div>
+          <div className="protein-meter-bar">
+            <div className="protein-meter-fill" style={{ width: `${Math.min(100, (pro / PROTEIN_TARGET) * 100)}%` }} />
+          </div>
+          <div className="protein-meter-note">
+            {chosen.length === 0
+              ? 'Get above 50 g. Pick your meals below and this counts them up.'
+              : hitTarget
+                ? 'Above the floor. This is the number that protects your glutes.'
+                : `${PROTEIN_TARGET - pro} g short. Add an egg, or swap plain yogurt for Greek.`}
+          </div>
         </div>
-        <div className="protein-meter-bar">
-          <div className="protein-meter-fill" style={{ width: `${Math.min(100, (pro / PROTEIN_TARGET) * 100)}%` }} />
-        </div>
-        <div className="protein-meter-note">
-          {chosen.length === 0
-            ? 'Pick your meals below and this counts them up. 50 g is the floor, every day.'
-            : hitTarget
-              ? `You are past the 50 g floor. Nothing else to count — no calories, nothing.`
-              : `${PROTEIN_TARGET - pro} g to go. The quickest fix is a scoop of protein powder in the 3 PM bowl, or Greek yogurt instead of plain at 5 PM.`}
+
+        <div className={`protein-meter calorie-meter${overBudget ? ' over' : ''}`}>
+          <div className="protein-meter-top">
+            <span className="protein-meter-lbl">🔥 Calories — the ceiling</span>
+            <span className="protein-meter-num">{cal} <em>/ {CALORIE_TARGET}</em></span>
+          </div>
+          <div className="protein-meter-bar">
+            <div className="protein-meter-fill" style={{ width: `${Math.min(100, (cal / CALORIE_TARGET) * 100)}%` }} />
+          </div>
+          <div className="protein-meter-note">
+            {chosen.length === 0
+              ? 'Stay under 1,000. Most of it belongs to the 2 PM plate.'
+              : overBudget
+                ? `${cal - CALORIE_TARGET} over. Fine on a lifting day; drop the avocado or the second banana on a rest day.`
+                : `${CALORIE_TARGET - cal} left. Room for a bigger 2 PM plate if you are still hungry.`}
+          </div>
         </div>
       </div>
 
@@ -195,7 +213,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 
       {chosen.length > 0 && (
         <div className="meal-chosen-summary">
-          <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')} — <strong>{pro} g protein</strong></span>
+          <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')} — <strong>{pro} g protein · {cal} cal</strong></span>
           <button className="meal-chosen-clear" onClick={() => saveChosen([])}>Clear</button>
         </div>
       )}
@@ -503,7 +521,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       </div>
 
       <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
-        <strong>Your week:</strong> 3 glute days (Thu · Mon · Wed), 2 abs &amp; upper-body days (Fri · Tue), and one Jessica Diem video each weekend day. Never two glute days in a row — glutes grow on the rest day, not on the gym day.
+        <strong>Your week:</strong> 3 glute days (Mon · Wed · Fri), 2 abs and upper-body days (Tue · Thu), and one Jessica Diễm video each weekend day. Never two glute days in a row — glutes grow on the rest day, not on the gym day. <strong>Abs never land on a glute day.</strong>
       </div>
 
       <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
@@ -520,6 +538,10 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
 
       <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
         <strong>Why the waist stays small:</strong> the only ab move here that ever gets heavier is the weighted crunch. Everything else grows by reps or seconds. Heavy side bends and weighted twists build the obliques out sideways, which is exactly what thickens a waist — so they are not in this plan. The stomach vacuum does the opposite job: it pulls the waist in.
+      </div>
+
+      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
+        <strong>⚠️ Honest warning about 1,000 calories:</strong> at that number the fat will come off, and you will keep the glutes you already have because the protein is high. But building <em>bigger</em> glutes needs more food than you are burning, and 1,000 calories with this much training is the opposite of that. Expect the shape to get tighter and more defined for now, and real growth to be slow. If after a month the lifts stop climbing, that is the sign to eat more, not to train harder.
       </div>
 
       <div className="workout-nutrition-row splash-item">
