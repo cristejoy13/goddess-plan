@@ -27,11 +27,21 @@ export function parsePlanned(detail = '') {
 // are prescribed in seconds or walks, so they fall out naturally: there is no
 // weight to record on a 45-second hold.
 // Videos and the walk are excluded outright.
-const REP_SCHEME = /\d+\s*×\s*\d+(\s*[–-]\s*\d+)?\s*reps/i;
+// Anything prescribed as sets x reps gets a log. The plan now writes "3 x 10"
+// rather than "3 x 10 reps", so the word is no longer what identifies a lift —
+// what identifies it is a sets x reps pair that is NOT measured in seconds,
+// minutes or metres. A 30-60 second plank, a 20-second vacuum and a 20-metre
+// build-up are holds and drills: real work, but nothing to write a weight
+// against. Videos and the walk are excluded outright.
+const SETS_REPS = /(\d+)\s*×\s*(\d+(?:\s*[–-]\s*\d+)?)\s*([a-z]*)/gi;
+const TIME_UNIT = /^(?:sec|secs|min|mins|m|s)$/i;
 
 export function isTrackable(ex) {
   if (!ex || ex.heading || ex.url) return false;
-  return REP_SCHEME.test(ex.detail || '');
+  for (const m of String(ex.detail || '').matchAll(SETS_REPS)) {
+    if (!TIME_UNIT.test(m[3])) return true;
+  }
+  return false;
 }
 
 // How much to add when a lift starts feeling easy. Barbell lifts move in plate

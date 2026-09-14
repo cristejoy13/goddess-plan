@@ -411,6 +411,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [selectedDayIdx, setSelectedDayIdx]         = useState(null);
   const [showNutrPanel, setShowNutrPanel]           = useState(false);
+  // Closed by default: this screen should be a week you look at, not read.
+  const [showWhy, setShowWhy]                       = useState(false);
   const userId        = user?.uid || null;
   const todayDay = WORKOUT_DAYS[todayIndex];
 
@@ -520,29 +522,40 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         ))}
       </div>
 
-      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
-        <strong>Your week:</strong> 3 glute days (Mon · Wed · Fri), 2 abs and upper-body days (Tue · Thu), and one Jessica Diễm video each weekend day. Never two glute days in a row — glutes grow on the rest day, not on the gym day. <strong>Abs never land on a glute day.</strong>
-      </div>
+      {/* The five explainers used to sit open on this screen, which is the first
+          thing she sees. She asked for fewer words and more to look at, so they
+          fold into one pill she can open when she actually wants the reasoning. */}
+      <button
+        className="why-pill splash-item"
+        onClick={() => setShowWhy(v => !v)}
+        aria-expanded={showWhy}
+      >
+        <span>📖 Why this plan works</span>
+        <span className="why-pill-caret">{showWhy ? '▲' : '▼'}</span>
+      </button>
 
-      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
-        <strong>🍑 Round comes from three muscles, not one:</strong><br />
-        <strong>Gluteus maximus</strong> — the size and the push-out at the back. Hip thrust, squat, RDL, step-up, Bulgarian.<br />
-        <strong>Gluteus medius</strong> — the upper-side shelf that makes the shape look round instead of flat. Hip abduction, band walks, step-up, Bulgarian.<br />
-        <strong>Gluteus minimus</strong> — underneath the medius, holds the hip steady. Hip abduction, clamshells, anything on one leg.<br />
-        Train only the first one and you get bigger but still flat. All three is what makes it round.
-      </div>
-
-      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
-        <strong>Progressive overload:</strong> weeks 1–2 you only learn the form. From week 3, when all three sets of a lift felt controlled, add one step: 2.5 kg on the barbell lifts, 2 kg on the dumbbell ones, 0.5 kg on the band work. If your form breaks, add a rep instead of a kilo. Tap any lift inside a day to write the number down — the app remembers it and offers you the next one.
-      </div>
-
-      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
-        <strong>Why the waist stays small:</strong> the only ab move here that ever gets heavier is the weighted crunch. Everything else grows by reps or seconds. Heavy side bends and weighted twists build the obliques out sideways, which is exactly what thickens a waist — so they are not in this plan. The stomach vacuum does the opposite job: it pulls the waist in.
-      </div>
-
-      <div className="g-card splash-item" style={{ fontSize: 13, color: 'var(--text-mid)', marginTop: 8, lineHeight: 1.55 }}>
-        <strong>⚠️ Honest warning about 1,000 calories:</strong> at that number the fat will come off, and you will keep the glutes you already have because the protein is high. But building <em>bigger</em> glutes needs more food than you are burning, and 1,000 calories with this much training is the opposite of that. Expect the shape to get tighter and more defined for now, and real growth to be slow. If after a month the lifts stop climbing, that is the sign to eat more, not to train harder.
-      </div>
+      {showWhy && (
+        <>
+          <div className="g-card splash-item why-card">
+            <strong>Your week:</strong> 3 glute days (Mon · Wed · Fri), 2 abs and upper-body days (Tue · Thu), one Jessica Diễm video each weekend day. Never two glute days in a row — glutes grow on the rest day. Abs never land on a glute day.
+          </div>
+          <div className="g-card splash-item why-card">
+            <strong>🍑 Round comes from three muscles:</strong><br />
+            <strong>Maximus</strong> — the size at the back. Hip thrust, squat, RDL, step-up, Bulgarian.<br />
+            <strong>Medius</strong> — the upper-side shelf that makes it round, not flat. Abduction, band walks, step-up.<br />
+            <strong>Minimus</strong> — holds the hip steady. Abduction, clamshells, anything on one leg.
+          </div>
+          <div className="g-card splash-item why-card">
+            <strong>Getting stronger:</strong> weeks 1–2 learn the form. From week 3, when all three sets felt controlled, add 2.5 kg on the barbell, 2 kg on the dumbbells, 0.5 kg on the band. Form breaks? Add a rep instead.
+          </div>
+          <div className="g-card splash-item why-card">
+            <strong>Why the waist stays small:</strong> only the weighted crunch gets heavier. Everything else grows by reps or seconds. Heavy twisting builds the waist outward, so there is none here.
+          </div>
+          <div className="g-card splash-item why-card">
+            <strong>⚠️ About 1,000 calories:</strong> the fat comes off and you keep the glutes you have. But growing <em>bigger</em> glutes needs more food than you burn. Expect tighter and more defined for now. If your lifts stop climbing after a month, eat more.
+          </div>
+        </>
+      )}
 
       <div className="workout-nutrition-row splash-item">
         <button className="workout-nutrition-pill" onClick={() => {
