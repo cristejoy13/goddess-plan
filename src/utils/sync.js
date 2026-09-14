@@ -4,6 +4,8 @@
 // respond to a single tap — which showed up as a long "loading" stretch where
 // the top-bar controls did nothing. Sync is not needed for the first paint, so
 // it now arrives after the UI is already interactive.
+import { mergeNotebookBlobs } from './mergeNotebook.js';
+
 let fb = null;
 
 async function loadFirebase() {
@@ -40,6 +42,12 @@ const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_yea
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key
 // here once nothing reads it any more — this deletes real data.
 const RETIRED_KEYS = ['gp_challenges_custom', 'gp_daily', 'gp_done'];
+// Keys that must be MERGED rather than overwritten. Everything else is a
+// single small value where newest-wins is right; the notebook is a whole
+// collection under one key, so newest-wins silently deleted whichever gadget
+// wrote second. See mergeNotebook.js for why and how.
+const MERGERS = { gp_daily_notebook: mergeNotebookBlobs };
+
 const PURGE_DONE_KEY = 'gp_purged_v1';
 const SYNC_CODE_KEY = 'gp_sync_code';
 const SYNC_META_KEY = 'gp_sync_meta';
@@ -209,10 +217,14 @@ function refreshSizeHealth() {
 function schedulePush() {
   if (!dbRef) return;
   if (pushTimer) clearTimeout(pushTimer);
+  // The notebook already waits for a pause in typing before it writes to
+  // storage, so this second delay was stacked on top of that one and was most
+  // of the wait between typing on one gadget and seeing it on another. Writes
+  // stay rate-limited by the save upstream, so shortening it costs nothing.
   pushTimer = setTimeout(() => {
     pushTimer = null;
     pushDirtyKeys();
-  }, 600);
+  }, 250);
 }
 
 // Push any pending changes immediately, without waiting for the debounce.
@@ -344,9 +356,9 @@ export function seedDefault(key, value) {
 // fully-synced state produces no writes — no loops.
 function reconcileWithRemote(remoteData, remoteMeta, adopting) {
   const localMeta = readMeta();
+  const metaUpdates = {};
   let applied = false;
   let needPush = false;
-  let metaChanged = false;
 
   SYNC_KEYS.forEach(key => {
     const remoteHas = Object.prototype.hasOwnProperty.call(remoteData, key);
@@ -362,6 +374,30 @@ function reconcileWithRemote(remoteData, remoteMeta, adopting) {
       return;
     }
 
+    // A mergeable key is reconciled by CONTENT, not by timestamp. Comparing
+    // stamps is exactly what lost notes: two gadgets writing in the same
+    // moment each believed they were newest, so neither ever accepted the
+    // other and they stayed split forever. Merging both copies always lands
+    // on the same answer on both sides, so they converge instead.
+    const merger = MERGERS[key];
+    if (merger && remoteHas && localValue !== null) {
+      const merged = merger(localValue, remoteData[key]);
+      const stamp = Math.max(remoteTime, localTime) || Date.now();
+      if (merged !== localValue) {
+        applyRemoteValue(key, merged, stamp);
+        applied = true;
+      }
+      if (merged !== remoteData[key]) {
+        // The cloud is missing something this gadget had. Send the union up.
+        // Both gadgets compute the identical merge, so this settles after one
+        // round rather than bouncing edits back and forth.
+        metaUpdates[key] = stamp;
+        dirtyKeys.add(key);
+        needPush = true;
+      }
+      return;
+    }
+
     if (remoteHas && remoteTime > localTime) {
       applyRemoteValue(key, remoteData[key], remoteTime);
       applied = true;
@@ -369,16 +405,16 @@ function reconcileWithRemote(remoteData, remoteMeta, adopting) {
       // This device is ahead of the cloud (newer edit — including a deletion,
       // where the local value is null and pushes as null to delete remotely),
       // or the cloud is missing a key this device has. Send it up.
-      if (!localMeta[key]) {
-        localMeta[key] = Date.now();
-        metaChanged = true;
-      }
+      if (!localMeta[key]) metaUpdates[key] = Date.now();
       dirtyKeys.add(key);
       needPush = true;
     }
   });
 
-  if (metaChanged) writeMeta(localMeta);
+  // Re-read rather than writing the snapshot from the top of the pass:
+  // applyRemoteValue stamps meta as it goes, and writing the stale copy back
+  // would silently undo those stamps and make the same values sync again.
+  if (Object.keys(metaUpdates).length) writeMeta({ ...readMeta(), ...metaUpdates });
   if (needPush) schedulePush();
   return applied;
 }

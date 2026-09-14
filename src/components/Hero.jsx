@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WORKOUT_DAYS } from '../data/workouts';
+import { mergeNotebookBlobs } from '../utils/mergeNotebook';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -158,6 +159,7 @@ function createEmptyNotebook() {
     activePageId: '',
     checklists: [],
     activeChecklistId: '',
+    deleted: {},
     updatedAt: '',
   };
 }
@@ -210,12 +212,23 @@ function normalizeNotebookData(raw = {}) {
     activePageId,
     checklists,
     activeChecklistId,
+    deleted: (raw.deleted && typeof raw.deleted === 'object') ? raw.deleted : {},
     updatedAt: raw.updatedAt || '',
   };
 }
 
 function stampNotebookUpdate(patch) {
   return { ...patch, updatedAt: new Date().toISOString() };
+}
+
+// Record that something was deleted, so merging with another gadget's copy
+// does not resurrect it. See mergeNotebook.js — the tombstones expire on their
+// own after two months.
+function tombstone(prev, ...ids) {
+  const at = new Date().toISOString();
+  const deleted = { ...(prev.deleted || {}) };
+  ids.filter(Boolean).forEach(id => { deleted[id] = at; });
+  return deleted;
 }
 
 function formatNotebookSavedAt(value) {
@@ -306,18 +319,70 @@ function DailyNotebook() {
   const [armedListId, setArmedListId] = useState(null);
   const [armedItemId, setArmedItemId] = useState(null);
 
+  // Writing on every keystroke meant serializing the whole notebook — every
+  // page, every list, every photo — between one letter and the next, which is
+  // what made typing feel slow. Waiting until she pauses writes once instead
+  // of once per character. The pending write is flushed if the component goes
+  // away or the app is backgrounded, so nothing is ever left unsaved.
+  const saveTimerRef = useRef(null);
+  const pendingRef = useRef(null);
+
+  const flushSave = useCallback(() => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    if (pendingRef.current) {
+      const ok = saveNotebook(pendingRef.current);
+      pendingRef.current = null;
+      setStorageState(ok ? 'saved' : 'error');
+    }
+  }, []);
+
   useEffect(() => {
-    // Skip the initial mount: `data` was just loaded from storage (or freshly
-    // applied by a remote sync, since a sync remounts this component). Saving it
-    // back here would stamp a new timestamp and push an empty/stale blob that
-    // wins last-write-wins and wipes the other device's notes. Only persist
-    // once the user actually edits something.
+    // Skip the initial mount: `data` was just loaded from storage. Saving it
+    // back here would stamp a new timestamp on an unchanged blob and push it
+    // for nothing. Only persist once she actually edits something.
     if (!didMountRef.current) {
       didMountRef.current = true;
       return;
     }
-    setStorageState(saveNotebook(data) ? 'saved' : 'error');
-  }, [data]);
+    pendingRef.current = data;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(flushSave, 400);
+  }, [data, flushSave]);
+
+  useEffect(() => {
+    window.addEventListener('pagehide', flushSave);
+    document.addEventListener('visibilitychange', flushSave);
+    return () => {
+      window.removeEventListener('pagehide', flushSave);
+      document.removeEventListener('visibilitychange', flushSave);
+      flushSave();
+    };
+  }, [flushSave]);
+
+  // A note arriving from another gadget used to reset this whole screen: the
+  // panel snapped shut, the page she was reading changed, and a half-typed
+  // checklist item vanished. Now the incoming copy is merged into what is
+  // already on screen, so her notes simply appear alongside her own and
+  // nothing she is in the middle of is disturbed.
+  useEffect(() => {
+    const onRemote = () => {
+      const stored = localStorage.getItem('gp_daily_notebook');
+      if (!stored) return;
+      setData(prev => {
+        const merged = mergeNotebookBlobs(JSON.stringify(prev), stored);
+        try {
+          return normalizeNotebookData(JSON.parse(merged));
+        } catch {
+          return prev;
+        }
+      });
+    };
+    window.addEventListener('gp-remote-sync', onRemote);
+    return () => window.removeEventListener('gp-remote-sync', onRemote);
+  }, []);
 
   useEffect(() => {
     setData(prev => {
@@ -396,6 +461,7 @@ function DailyNotebook() {
       return stampNotebookUpdate({
         ...prev,
         pages,
+        deleted: tombstone(prev, prev.activePageId),
         activePageId: pages[0]?.id || '',
       });
     });
@@ -448,6 +514,7 @@ function DailyNotebook() {
       return stampNotebookUpdate({
         ...prev,
         checklists,
+        deleted: tombstone(prev, id),
         activeChecklistId: prev.activeChecklistId === id ? (checklists[0]?.id || '') : prev.activeChecklistId,
       });
     });
@@ -543,6 +610,7 @@ function DailyNotebook() {
       clearTimeout(removeTimersRef.current[id]);
       delete removeTimersRef.current[id];
     }
+    setData(prev => stampNotebookUpdate({ ...prev, deleted: tombstone(prev, id) }));
     updateActiveChecklist(items => items.filter(item => item.id !== id));
   }
 
@@ -856,6 +924,14 @@ function DailyNotebook() {
 
 function TodayDashboard({ today, todayDayId, onNavigate }) {
   const [checked, setChecked] = useState(loadChecks);
+
+  // Refresh from storage when another gadget ticks something off, instead of
+  // relying on the whole screen being rebuilt.
+  useEffect(() => {
+    const onRemote = () => setChecked(loadChecks());
+    window.addEventListener('gp-remote-sync', onRemote);
+    return () => window.removeEventListener('gp-remote-sync', onRemote);
+  }, []);
 
   function toggle(id) {
     setChecked(prev => {

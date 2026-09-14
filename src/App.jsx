@@ -455,7 +455,11 @@ export default function App() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {active === 'home'       && <Hero key={syncEpoch} onNavigate={navigate} />}
+        {/* Home is NOT keyed on syncEpoch: remounting it every time a sync
+            landed slammed the notes panel shut and threw away whatever was
+            half-typed. Its two stateful pieces listen for gp-remote-sync and
+            refresh themselves in place instead. */}
+        {active === 'home'       && <Hero onNavigate={navigate} />}
         {active === 'workout'    && <Workout key={`${navMeta.key}-${syncEpoch}`} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
         {active === 'purpose'    && <Purpose key={syncEpoch} />}
         {active === 'nutrition'  && <Nutrition key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
