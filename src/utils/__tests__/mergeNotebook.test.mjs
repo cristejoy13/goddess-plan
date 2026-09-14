@@ -46,5 +46,30 @@ ok('handles a missing remote', mergeNotebookBlobs(A, null) === A);
 ok('handles corrupt remote', mergeNotebookBlobs(A, '{oops') === A);
 ok('handles a missing local', mergeNotebookBlobs(null, B) === B);
 
+// ── Older saves ── A gadget not opened in a while still holds one of the two
+// earlier layouts. Merging must migrate it, not drop it.
+const legacyDiary = JSON.stringify({ date: '2026-08-01', note: 'my old diary entry', mood: '🙂', images: [], createdAt: '2026-08-01T09:00:00.000Z', updatedAt: '2026-08-01T09:00:00.000Z' });
+const modern = nb({ pages: [page('p9','new note','2026-09-14T10:00:00.000Z')], updatedAt: '2026-09-14T10:00:00.000Z' });
+const lm = mergeNotebookBlobs(legacyDiary, modern);
+ok('an old diary entry is kept, not dropped', JSON.stringify(P(lm).pages).includes('my old diary entry'));
+ok('the new note is kept too', P(lm).pages.some(p => p.note === 'new note'));
+ok('old-format merge is commutative', lm === mergeNotebookBlobs(modern, legacyDiary));
+
+const legacyList = JSON.stringify({ date: '2026-08-01', checklist: [{ text: 'buy eggs', done: false }, { text: 'buy fish', done: true }], updatedAt: '2026-08-01T09:00:00.000Z' });
+const lm2 = mergeNotebookBlobs(legacyList, modern);
+ok('an old checklist is kept', JSON.stringify(P(lm2).checklists).includes('buy eggs'));
+ok('every old checklist item is kept', P(lm2).checklists[0].items.length === 2);
+ok('old checklist merge is commutative', lm2 === mergeNotebookBlobs(modern, legacyList));
+
+// The same old save seen by two gadgets must produce the SAME ids, or the
+// merge would show every old item twice.
+ok('old items get identical ids on both gadgets', mergeNotebookBlobs(legacyList, legacyList) === mergeNotebookBlobs(legacyList, JSON.parse(JSON.stringify(legacyList)) && legacyList));
+const twice = mergeNotebookBlobs(lm2, legacyList);
+ok('re-merging an old save adds no duplicates', P(twice).checklists[0].items.length === 2);
+
+// Nothing at all on one side must never wipe the other.
+ok('an empty gadget cannot wipe a full one', P(mergeNotebookBlobs(nb({}), modern)).pages.length === 1);
+ok('and the other way round', P(mergeNotebookBlobs(modern, nb({}))).pages.length === 1);
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

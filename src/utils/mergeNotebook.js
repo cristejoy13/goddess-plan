@@ -38,6 +38,66 @@ function parse(raw) {
 
 const str = v => (typeof v === 'string' ? v : '');
 
+// A stable id derived from an item's own content. Older saves predate ids, and
+// the two gadgets must derive the SAME id for the same item or the merge would
+// keep both copies as duplicates. Deliberately not random.
+function stableId(prefix, seed) {
+  let h = 5381;
+  const text = JSON.stringify(seed);
+  for (let i = 0; i < text.length; i += 1) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
+  return `${prefix}-${h.toString(36)}`;
+}
+
+// Bring an older save up to the current shape BEFORE merging. The app has
+// carried two earlier layouts: a single diary entry kept as top-level
+// note/mood/images with no `pages` array at all, and a single `checklist`
+// array before lists could be named. A gadget that has not been opened in a
+// while still holds one of these, and reading only `pages`/`checklists` would
+// quietly drop everything in it. This mirrors normalizeNotebookData in
+// Hero.jsx, which does the same migration for display.
+function adoptLegacy(raw) {
+  if (!raw) return raw;
+  const out = { ...raw };
+
+  const hasPages = Array.isArray(out.pages) && out.pages.length > 0;
+  const legacyEntry = str(raw.note).trim() || str(raw.mood) ||
+    (Array.isArray(raw.images) && raw.images.length > 0);
+  if (!hasPages && legacyEntry) {
+    out.pages = [{
+      id: 'legacy-page',
+      title: 'Today',
+      note: str(raw.note),
+      images: Array.isArray(raw.images) ? raw.images : [],
+      mood: str(raw.mood),
+      userCreated: true,
+      createdAt: str(raw.createdAt) || str(raw.updatedAt),
+      updatedAt: str(raw.updatedAt) || str(raw.createdAt),
+    }];
+  }
+
+  const hasLists = Array.isArray(out.checklists) && out.checklists.length > 0;
+  if (!hasLists && Array.isArray(raw.checklist) && raw.checklist.length > 0) {
+    out.checklists = [{
+      id: 'legacy-list',
+      title: '',
+      items: raw.checklist,
+      createdAt: str(raw.updatedAt),
+      updatedAt: str(raw.updatedAt),
+    }];
+  }
+
+  return out;
+}
+
+// Give anything that arrived without an id a stable one, so it merges instead
+// of being skipped. Never invent an id for something that already has one.
+function withIds(list, prefix) {
+  if (!Array.isArray(list)) return [];
+  return list.map(x => (
+    (x && typeof x === 'object' && !x.id) ? { ...x, id: stableId(prefix, x) } : x
+  ));
+}
+
 // ISO dates sort correctly as plain strings, so no Date parsing is needed.
 // When two edits carry the same stamp, the JSON itself breaks the tie: it is
 // arbitrary, but it is the SAME arbitrary answer on both gadgets.
@@ -79,7 +139,7 @@ function combineChecklists(deleted) {
     const winner = pickNewer(a, b, pageStamp);
     return {
       ...winner,
-      items: mergeLists(a.items, b.items, deleted, itemStamp),
+      items: mergeLists(withIds(a.items, 'item'), withIds(b.items, 'item'), deleted, itemStamp),
     };
   };
 }
@@ -106,15 +166,18 @@ function mergeTombstones(a = {}, b = {}) {
  * Either side may be missing or unreadable; whatever is left is returned.
  */
 export function mergeNotebookBlobs(localRaw, remoteRaw) {
-  const local = parse(localRaw);
-  const remote = parse(remoteRaw);
+  const local = adoptLegacy(parse(localRaw));
+  const remote = adoptLegacy(parse(remoteRaw));
   if (!local) return typeof remoteRaw === 'string' ? remoteRaw : localRaw;
   if (!remote) return localRaw;
 
   const deleted = mergeTombstones(local.deleted, remote.deleted);
-  const pages = mergeLists(local.pages, remote.pages, deleted, pageStamp);
+  const pages = mergeLists(
+    withIds(local.pages, 'page'), withIds(remote.pages, 'page'), deleted, pageStamp,
+  );
   const checklists = mergeLists(
-    local.checklists, remote.checklists, deleted, pageStamp, combineChecklists(deleted),
+    withIds(local.checklists, 'list'), withIds(remote.checklists, 'list'),
+    deleted, pageStamp, combineChecklists(deleted),
   );
 
   // The scalars — which page is open, the date stamp — come as a set from
