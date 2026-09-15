@@ -46,7 +46,7 @@ export const MONTHS = [
     tasks: [
       'Week 1 — Log your current weights on hip thrust, RDL, and sumo squat.',
       'Week 2 — Add 1–2 kg to each main lift when all sets feel controlled.',
-      'Week 3 — Add one more working set to your heaviest lift on each glute day. Keep the zone 2 run easy on those days so the extra set still has something behind it.',
+      'Week 3 — Add one more working set to your heaviest lift on each glute day. Keep the hour walk easy on those days so the extra set still has something behind it.',
       'Week 4 — Compare lifts + glute measurements to March.',
     ],
   },
@@ -71,7 +71,7 @@ export const MONTHS = [
       'Week 1 — Do all three glute days. Focus on feeling the squeeze at the top of every rep.',
       'Week 2 — Add glute activation (bridges + clamshells) before every glute session.',
       'Week 3 — Nail your form on hip thrust, RDL, and Bulgarian split squat — go lighter if needed.',
-      'Week 4 — Finish all three glute days weekly, each opened with the 20-min zone 2 run and closed with rope or a walk. Journal which moves hit glutes most.',
+      'Week 4 — Finish all three glute days weekly, each opened with the full-body warm-up and glute activation and closed with the hour walk or the rope. Journal which moves hit glutes most.',
     ],
   },
   // July — Journey month 2
@@ -106,7 +106,7 @@ export const MONTHS = [
     tasks: [
       'Week 1 — Walk 15 min after your 5 PM meal, every day.',
       'Week 2 — Lock in the finisher on every weekday: rope or a walk, one or the other, never both.',
-      'Week 3 — Add the full-body stretch and the 20-min zone 2 run before every weekday session, and the stomach vacuum on both core days.',
+      'Week 3 — Add the full-body stretch before every weekday session, the hour walk after it, and the stomach vacuum on both core days.',
       'Week 4 — Make post-meal walks automatic. Notice digestion and energy.',
     ],
   },
@@ -138,9 +138,9 @@ export const MONTHS = [
   {
     name: 'December',
     ch: 'Gut Healing — Meal Rhythm Mastery',
-    why: "Tie the rhythm together: the same four meals every day, and the same weekday shape every day — stretch, zone 2 run, main workout, rope or walk.",
+    why: "Tie the rhythm together: the same two meals every day, and the same weekday shape every day — warm-up, main workout, one hour of walking.",
     tasks: [
-      'Week 1 — Run the window without thinking about it: fruit at 8 AM, apple & yogurt or a smoothie at 11, Meal A or Meal B at 2, nothing after.',
+      'Week 1 — Run the window without thinking about it: black coffee until noon, Meal A or Meal B at 12, apple & yogurt or a smoothie at 5, nothing after.',
       'Week 2 — Steam, boil, bake or sear in a hot dry pan — no oils, no gluten, and no dairy beyond the Greek yogurt (GODSSSS out).',
       'Week 3 — Notice your trigger foods; drop anything that bloats you even a little.',
       'Week 4 — Gut calm, stomach flat. Journal bloating, skin, and mood vs. June.',

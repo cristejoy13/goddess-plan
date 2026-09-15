@@ -21,34 +21,32 @@ export function getCurrentSprintProtocol() {
 }
 
 // ─── WEEKLY ROUTINE ────────────────────────────────────────────────────────
-// Monday to Friday every training day is the same four-part shape, in this
-// order and no other:
-//     full-body stretch  →  20-min zone 2 run  →  the main workout  →  rope OR walk
-// The run goes BEFORE the main workout, every weekday. The finisher is one of
-// two things, never both: jump rope if you want to sweat, the walk if you want
-// to come down quietly.
-//   • Glute days (3×) — three lifts each, no filler:
-//       Mon  Back Squat · Bulgarian Split Squat · RDL
-//       Wed  Cable Kickback · Hip Abduction · Sumo Squat
-//       Fri  Hip Thrust · RDL · Back Squat
-//   • Back, shoulder & core days (2×: Tue · Thu) — stretch and vacuum, run,
-//     then ONE shoulder move, ONE back move, ONE core video.
-// Weekend (Sat · Sun): NO zone 2 run — the run IS the session. Saturday is an
-// easy run, Sunday is the sprint-interval protocol that advances each
-// challenge month. Then one Jessica Diễm video and a long stretch. No lifting
-// either day, and no forearm-stand block — her videos already cover that.
+// Monday to Friday every training day is the same shape, in this order and no
+// other:
+//     full-body warm-up  →  (glute activation)  →  the main workout  →  one hour walking OR rope
+// There is no run on a weekday. The running lives at the weekend, where it IS
+// the session. The hour of walking is how a training day ends; the rope can
+// stand in for it on a day you would rather sweat. One or the other, never
+// both.
+//   • Glute days (3×) — warm-up, glute activation, then three lifts:
+//       Mon  Hip Thrust · RDL · Step-Up
+//       Wed  Back Squat · Bulgarian Split Squat · RDL
+//       Fri  Hip Abduction · Cable Kickback · Sumo Squat
+//   • Abs, shoulder & back days (2×: Tue · Thu) — warm-up and vacuum, then
+//     straight into the main workout. No glute activation: it is not a glute
+//     day.
+// Weekend (Sat · Sun): the run comes first and the run is the session. Saturday
+// is an easy run, Sunday the sprint-interval protocol that advances each
+// challenge month. Then one Jessica Diễm video, then the long stretch — always
+// that order. Saturday adds swimming around 5 PM and Sunday adds biking, both
+// hours after the session rather than bolted onto the end of it.
 
-// Shared warm-up, shared run, shared finisher. Every weekday now runs all
-// three; the weekend keeps its own run and its own walk alternative.
+// Shared warm-up and shared finisher.
 const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves · loosen every major muscle before you train · dynamic swings then gentle holds' };
-// The zone 2 run — Monday to Friday, always before the main workout, never at
-// the weekend (Saturday and Sunday already run). Zone 2 is the easy gear: if
-// you cannot hold a conversation you have left it, and it stops counting.
-const ZONE2_RUN = { name: 'Zone 2 Run — 20 min', detail: '20 min · BEFORE the main workout, Monday to Friday · easy conversational pace, roughly 60–70% of your max heart rate · if you are gasping, slow to a jog until you can talk again' };
-// Every weekday finishes with ONE of these two — rope if you want to sweat,
-// the walk if you want to come down quietly. Not both; pick one.
-const JUMP_ROPE = { name: 'Jump Rope', detail: '10–20 min · steady, light on the balls of your feet · pick this OR the walk to finish, not both' };
-const ALT_WALK = { name: '20-Minute Walk — instead of the rope', detail: '20 min · the alternative to the rope, not an extra lap after it · flat easy pace, relaxed breathing · take this on the days you want to come down quietly rather than sweat' };
+// Every training day finishes with ONE of these two — the hour walk to come
+// down quietly, the rope if you want to sweat. Not both; pick one.
+const WALK_HOUR = { name: 'One-Hour Walk', detail: '60 min · how every training day ends · flat easy pace, relaxed breathing, podcast if you like · pick this OR the rope, never both · an hour of easy walking burns fat without touching your recovery, which is the whole reason it is an hour and not a run' };
+const JUMP_ROPE = { name: 'Jump Rope — instead of the walk', detail: '10–20 min · steady, light on the balls of your feet · the alternative to the hour walk, not an extra round after it · take this on the days you want to sweat rather than come down quietly' };
 
 // ── VIDEOS ── Two channels only.
 // PILATES BY IZZY — 4 core workouts + her full CORE WORKOUTS playlist.
@@ -90,6 +88,8 @@ const RUN_INTERVALS = (() => {
 })();
 const REST_STRETCH = { name: 'Long Full-Body Stretch', detail: '15–25 min · hold each stretch 45–60 sec · hamstrings, hips, chest, shoulders, wrists, calves · this is the work on a rest day' };
 const REST_WALK = { name: '20-Minute Walk — instead of the run', detail: '20 min · the alternative to running today, not an extra lap after it · no pace target, sunshine, podcast, whatever you like · take this on any weekend your legs still feel Friday' };
+const SWIM = { name: 'Swimming — around 5 PM', detail: '30–45 min · Saturday only, hours after the run · easy laps, no racing the clock · water carries your weight, so this adds work without adding anything for your legs to recover from' };
+const BIKE = { name: 'Biking — later in the day', detail: '45–60 min · Sunday only, hours after the sprints · steady easy pace, flat route · gentle on legs that sprinted this morning, and it keeps Monday fresh' };
 const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · do this FIRST before your core video' };
 
 // ─── ABS ───────────────────────────────────────────────────────────────────
@@ -125,23 +125,25 @@ const UPPER_BODY = [
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
-// One eating window, 8 AM to 2 PM, and it is the same every single day — glute
-// day, abs day, weekend, all of it. Three meals, always in this order:
+// Two meals a day, and it is the same two every single day — glute day, abs
+// day, weekend, all of it. She gets hungry at night, so the food has been moved
+// later: nothing in the morning, the big plate in the middle of the day, and
+// something small at five.
 //
-//    8:00 AM   fruit: banana, berries or papaya. Black coffee alongside, and
-//              especially on a glute day. This is also the fuel for training,
-//              so it goes in before the run.
-//   11:00 AM   apple slices with yogurt, OR a smoothie — two or three fruits
-//              blended with chia seeds, granola over the top.
-//    2:00 PM   MEAL A or MEAL B. One of the two, never both:
+//   12:00 PM   BRUNCH — the big meal, and the meal the whole day is built
+//              around. MEAL A or MEAL B, one of the two, never both:
 //                A — the egg plate: whole eggs and whites folded with spinach
 //                    in a dry pan, kimchi, sweet potato, papaya, chia, pumpkin
 //                    or sesame seeds, Greek yogurt.
 //                B — beef or chicken with sweet potato, spinach, bell pepper,
 //                    tomato, cucumber, kimchi, Greek yogurt and seeds.
+//    5:00 PM   Apple slices with yogurt, OR a smoothie — two or three fruits
+//              blended with chia seeds, granola over the top. That is it.
 //
-//   After 2 PM — nothing but water, tea and black coffee. That is the window
-//   closing, and the closing is what makes the window work.
+//   Before 12 PM — water, tea and black coffee. Train on that; a glute session
+//   runs perfectly well on coffee, and it is what keeps the day under 1,000.
+//   After 5 PM — water and tea only. The five o'clock plate is deliberately the
+//   later one, because the hunger she actually has is at night, not at dawn.
 //
 // Beef and chicken are in the plan; pork is not. No oil: the eggs are folded in
 // a dry non-stick pan and the meat is seared in a hot dry one.
@@ -152,57 +154,55 @@ const UPPER_BODY = [
 //   1,000 calories a day  — the ceiling.
 //   50 grams of protein   — the floor.
 //
-// With 11 AM back to an apple and yogurt, both 2 PM plates now fit at full
-// size. The two standard days:
+// With only two meals there is far more room than before, so both 12 PM plates
+// fit at full size with the yogurt kept in each. The two standard days:
 //
-//    8:00 AM   papaya & black coffee ...........   57 cal ·  1 g
-//   11:00 AM   apple slices & Greek yogurt .....  215 cal · 16 g
-//    2:00 PM   MEAL A, the egg plate ...........  630 cal · 50 g
+//   12:00 PM   MEAL A, the egg plate ...........  630 cal · 50 g
+//    5:00 PM   apple slices & Greek yogurt .....  215 cal · 16 g
 //                                                 ————————   ————
-//                                                   902 cal · 67 g
+//                                                   845 cal · 66 g
 //
-//    2:00 PM   MEAL B, the beef plate .......... (565 cal · 56 g) → 837 · 73 g
+//   12:00 PM   MEAL B, the beef plate .......... (565 cal · 56 g) → 780 · 72 g
 //
-// A smoothie at 11 instead of the apple costs about 30 more calories; a granola
-// bowl costs about 160 more, which is the one combination that can push a day
-// over 1,000. Both meters in the app count only the meals actually chosen, so
-// an untouched day honestly reads zero.
+// A smoothie at 5 instead of the apple costs about 30 more calories; a granola
+// bowl costs about 160 more, which still lands under 1,000. Both meters in the
+// app count only the meals actually chosen, so an untouched day honestly reads
+// zero.
 export const PROTEIN_TARGET = 50;
 export const CALORIE_TARGET = 1000;
 
 // The meal times. Tap one in the app to see every meal you can choose for that
-// slot, with the ingredients and the step-by-step method. The slot ids have
+// slot, with the ingredients and the step-by-step method. The two slot ids have
 // not changed, so every meal already saved against a day stays put — only the
-// clock times and the sizes moved.
+// clock times moved: `post` is now the 12 PM brunch and `noon` is the 5 PM
+// plate.
 //
-// `sunset` is gone: the window now closes at 2 PM, so there is no evening
-// meal to choose. Everything that used to live there — the apple sticks, the
-// yogurt, the boiled sweet potato and saba — moved to 11 AM, which is where
-// those meals belong now. Nothing was thrown away.
+// `wake` is gone: there is no morning meal any more, so there is nothing to
+// choose at 8 AM. Every fruit plate that used to live there moved to 5 PM,
+// where a small plate belongs now. Nothing was thrown away — the coffee in
+// those plates became tea, because coffee at five is a bad trade against sleep.
 const SLOT_DEFS = {
-  wake: { id: 'wake', time: '8:00 AM',  emoji: '🍌' },
-  noon: { id: 'noon', time: '11:00 AM', emoji: '🍳' },
-  post: { id: 'post', time: '2:00 PM',  emoji: '🥩' },
+  post: { id: 'post', time: '12:00 PM', emoji: '🍽️' },
+  noon: { id: 'noon', time: '5:00 PM',  emoji: '🍏' },
 };
 
-// The same three slots every day, in clock order.
+// The same two slots every day, in clock order.
 export function mealSlots() {
   return [
-    { ...SLOT_DEFS.wake, label: 'Fruit & Coffee',      hint: 'Banana, berries or papaya · black coffee on glute days · eat it before you run' },
+    { ...SLOT_DEFS.post, label: 'Brunch · Meal A or Meal B', hint: 'ONE of the two · A is the egg plate, B is beef or chicken · this is the meal the day is built around' },
     { ...SLOT_DEFS.noon, label: 'Apple & Yogurt or Smoothie', hint: 'Apple slices with yogurt · or a smoothie: 2–3 fruits with chia, granola on top' },
-    { ...SLOT_DEFS.post, label: 'Meal A or Meal B',        hint: 'ONE of the two · A is the egg plate, B is beef or chicken · this is the meal the day is built around' },
   ];
 }
 
 // Flat list, only for looking a meal's clock time up by its slot id.
-export const MEAL_SLOTS = [SLOT_DEFS.wake, SLOT_DEFS.noon, SLOT_DEFS.post];
+export const MEAL_SLOTS = [SLOT_DEFS.post, SLOT_DEFS.noon];
 
 // Every meal you can pick, grouped by slot. Oil-free and salt-free by default.
 export const RECOMMENDED_MEALS = [
   // ══ JOY'S TWO PLATES ═══════════════════════════════════════════════════
   // The two meals she actually wants, written exactly as she asked for them.
-  // Both are offered at 11 AM and at 2 PM, so she can take the eggs first and
-  // the meat second or the other way round, whichever suits the day.
+  // Both are brunch plates. One or the other at 12 PM, never both — the eggs
+  // on the day you want more food, the meat on the day you want more protein.
   //
   // Two rules changed to make these possible, and they changed because she
   // asked, not by accident:
@@ -233,7 +233,7 @@ export const RECOMMENDED_MEALS = [
       'Boil or bake the sweet potato.',
       'Wilt the spinach in a dry non-stick pan, then pour the egg and whites over and fold slowly.',
       'Plate with the kimchi and papaya, and scatter the chia and seeds over.',
-      'Take this version on the days you want more room at 11 AM. It saves you 190 calories and costs you 21 g of protein.',
+      'Take this version on the days you want more room at 5 PM. It saves you 190 calories and costs you 21 g of protein.',
     ] },
 
   { emoji: '🥩', slot: 'post', main: true, protein: 'beef', name: 'Meal B · Beef Plate', cal: 565, pro: 56,
@@ -275,14 +275,14 @@ export const RECOMMENDED_MEALS = [
       'The lightest of the four meat plates, and still 42 g of protein.',
     ] },
 
-  // ══ THE BIG MEAL · 2:00 PM · every day ═════════════════════════════════
+  // ══ THE BRUNCH · 12:00 PM · every day ══════════════════════════════════
   // The meal the whole day is built around, and the last one before the
   // window shuts. Every plate here is built the same way: a protein, a sweet
   // potato, eggs, something green or fermented, and a banana to finish. They
   // run 530–725 calories and 36–60 g of protein, which is what makes a
   // 1,000-calorie day clear the 50 g floor instead of falling short of it.
   //
-  // These are the plates that show first when you open 2 PM. Everything below
+  // These are the plates that show first when you open 12 PM. Everything below
   // them is smaller and still there — the meter will show you what it costs.
   { emoji: '🍠', slot: 'post', main: true, protein: 'fish', name: 'Fish, Sweet Potato, Eggs & Yogurt', cal: 645, pro: 59,
     ingredients: '150 g white fish · 1 medium sweet potato · 2 eggs · a small bowl of Greek yogurt · kimchi · ½ cucumber · 1 banana',
@@ -336,7 +336,7 @@ export const RECOMMENDED_MEALS = [
       'Take this on Monday, Wednesday and Friday — the days you lift. It puts your day nearer 1,080 calories than 1,000, and on a lifting day that is the right trade.',
     ] },
 
-  // ── SMALLER 2 PM PLATES ────────────────────────────────────────────────
+  // ── SMALLER BRUNCH PLATES ──────────────────────────────────────────────
   // The original plates, all still here. They are lighter than the six above,
   // so on a day you pick one the meter will read well under 1,000 — which is
   // fine on a rest day and not enough on a lifting day.
@@ -521,7 +521,7 @@ export const RECOMMENDED_MEALS = [
       'Cinnamon on top. Nothing after sunset but tea.',
     ] },
 
-  // ── DOUBLE PROTEIN · 2:00 PM ───────────────────────────────────────────
+  // ── DOUBLE PROTEIN · 12:00 PM ──────────────────────────────────────────
   // The plate to reach for on a glute day, or any day the number looks short.
   // Two proteins on one plate is the simplest way there is to add 15 grams.
   { emoji: '🐟', slot: 'post', protein: 'fish', name: 'Fish, Egg & Kimchi', cal: 425, pro: 38,
@@ -541,53 +541,54 @@ export const RECOMMENDED_MEALS = [
       'The no-fish version of the double-protein plate.',
     ] },
 
-  // ── 8:00 AM · her three fruits ─────────────────────────────────────────
-  // Banana, berries or papaya — those three, nothing else needed. Black coffee
-  // alongside on a glute day, when you want the lift before you lift.
-  { emoji: '🫐', slot: 'wake', main: true, name: 'Berries & Coffee', cal: 72, pro: 1,
-    ingredients: '1 cup berries · black coffee',
+  // ── 5:00 PM · her three fruits ─────────────────────────────────────────
+  // Banana, berries or papaya — those three, nothing else needed. These used to
+  // be the 8 AM plates; there is no 8 AM meal any more, so they live here, at
+  // the end of the day, where a small plate belongs now. Tea rather than
+  // coffee: caffeine at five is a bad trade against sleep.
+  { emoji: '🫐', slot: 'noon', name: 'Berries & Tea', cal: 72, pro: 1,
+    ingredients: '1 cup berries · tea',
     steps: [
       'A cup of berries, fresh or thawed from frozen.',
-      'Black coffee alongside — no milk, no sugar. Take the coffee on glute days especially; it is the cheapest lift you will get before a hip thrust.',
-      'The lightest of your three fruit mornings, at about 70 calories.',
-      'Eat it 20–30 minutes before you warm up.',
+      'Tea alongside — no milk, no sugar. Keep coffee for the morning; at five it will still be in you at bedtime.',
+      'The lightest plate on the whole list, at about 70 calories.',
+      'The smallest way to close the day. Nothing after it but water.',
     ] },
-  { emoji: '🍈', slot: 'wake', main: true, name: 'Papaya & Coffee', cal: 57, pro: 1,
-    ingredients: '1 cup papaya · black coffee',
+  { emoji: '🍈', slot: 'noon', name: 'Papaya & Tea', cal: 57, pro: 1,
+    ingredients: '1 cup papaya · tea',
     steps: [
       'Scoop the papaya, discarding the seeds.',
-      'Black coffee alongside, especially on a glute day.',
+      'Tea alongside.',
       'The gentlest one on your stomach, and the cheapest in calories — about 55.',
-      'Eat it 20–30 minutes before you warm up.',
+      'Good on an evening your brunch was a big one and you only want something in your hands.',
     ] },
-  { emoji: '🍌', slot: 'wake', main: true, name: 'Banana, Berries & Papaya', cal: 230, pro: 3,
-    ingredients: '1 banana · ½ cup berries · ½ cup papaya · black coffee',
+  { emoji: '🍌', slot: 'noon', name: 'Banana, Berries & Papaya', cal: 230, pro: 3,
+    ingredients: '1 banana · ½ cup berries · ½ cup papaya · tea',
     steps: [
       'All three of your fruits on one plate — nothing blended, nothing added.',
-      'Black coffee alongside.',
-      'The biggest fruit morning at about 230 calories. Take this before a heavy Monday or Wednesday, and one of the smaller ones on an abs day.',
-      'Eat it 20–30 minutes before you warm up.',
+      'Tea alongside.',
+      'The biggest fruit plate at about 230 calories. Take this on an evening you are genuinely hungry rather than just bored.',
+      'Eat it slowly. It should take twenty minutes, not five.',
     ] },
 
-  // ── 8:00 AM · fruit, and not much of it ────────────────────────────────
-  // Small on purpose, and it is also your fuel for training, so it goes in
-  // before the run rather than after it. A banana is genuinely enough. Nothing
-  // here costs more than 260 calories, because the 2 PM plate needs the room.
-  { emoji: '🍌', slot: 'wake', main: true, name: 'Banana & Coffee', cal: 100, pro: 1,
-    ingredients: '1 banana · black coffee',
+  // ── 5:00 PM · fruit, and not much of it ────────────────────────────────
+  // Small on purpose. A banana is genuinely enough to close a day. Nothing here
+  // costs more than 260 calories, because the 12 PM plate takes most of them.
+  { emoji: '🍌', slot: 'noon', name: 'Banana & Tea', cal: 100, pro: 1,
+    ingredients: '1 banana · tea',
     steps: [
-      'Eat the banana first, coffee second — caffeine on a truly empty stomach is what makes you shaky by set three.',
-      'Ripe and spotted is better: the starch has turned to sugar, so it reaches your legs faster.',
-      'Black, no milk, no sugar.',
-      'Give it 20–30 minutes before you start warming up.',
+      'Ripe and spotted is better — the starch has turned to sugar, so it tastes sweeter for the same calories.',
+      'Tea alongside, no milk, no sugar.',
+      'About 100 calories, which leaves plenty of room under the ceiling.',
+      'The simplest close there is.',
     ] },
-  { emoji: '🍌', slot: 'wake', name: 'Two Bananas & Coffee', cal: 190, pro: 3,
-    ingredients: '2 bananas · black coffee',
+  { emoji: '🍌', slot: 'noon', name: 'Two Bananas & Tea', cal: 190, pro: 3,
+    ingredients: '2 bananas · tea',
     steps: [
-      'For heavy Monday and Friday sessions, or any morning you wake up hungry.',
-      'Eat both bananas, then the coffee.',
-      'Still nothing else — you eat properly straight after training.',
-      'If two feels heavy in the squat, drop back to one.',
+      'For the evenings after a heavy Monday or Friday, or any day you are truly hungry.',
+      'Eat both bananas, then the tea.',
+      'Still nothing else after — the closing is what makes the window work.',
+      'If two feels heavy before bed, drop back to one.',
     ] },
   { emoji: '🥣', slot: 'noon', name: 'Overnight Yogurt Bowl', cal: 320, pro: 33,
     ingredients: 'yogurt · 1 scoop protein powder · 1 tsp psyllium husk · 10 blueberries',
@@ -595,29 +596,29 @@ export const RECOMMENDED_MEALS = [
       'The night before: stir the protein powder into the yogurt until there are no dry pockets left.',
       'Add the psyllium husk and mix straight away — it thickens fast, so it has to go in moving.',
       'Drop the 10 blueberries on top, cover, and leave it in the fridge overnight.',
-      'Eat it cold, either the moment you wake on a glute day or at 12 PM on a core day. Drink a full glass of water with it — psyllium needs the water to work.',
+      'Eat it cold at 5 PM. Drink a full glass of water with it — psyllium needs the water to work.',
     ] },
-  { emoji: '🍠', slot: 'wake', name: 'Sweet Potato & Coffee', cal: 180, pro: 2,
-    ingredients: '1 small sweet potato (cooked the night before) · black coffee',
+  { emoji: '🍠', slot: 'noon', name: 'Sweet Potato & Tea', cal: 180, pro: 2,
+    ingredients: '1 small sweet potato (cooked earlier) · tea',
     steps: [
-      'Boil or steam it the night before and leave it in the fridge.',
+      'Boil or steam it while you cook your brunch and leave it in the fridge.',
       'Eat it cold or warmed — cold sweet potato is actually gentler on your gut.',
-      'Slower carbs than a banana, so give it 45 minutes before you lift.',
-      'Good on the mornings a banana leaves you hungry by the second lift.',
+      'Slower carbs than a banana, so it holds you through the evening better than fruit does.',
+      'Good on the days a banana leaves you hunting the kitchen at nine.',
     ] },
-  { emoji: '🥭', slot: 'wake', name: 'Mango & Banana Plate', cal: 190, pro: 2,
+  { emoji: '🥭', slot: 'noon', name: 'Mango & Banana Plate', cal: 190, pro: 2,
     ingredients: '1 banana · ½ cup mango',
     steps: [
       'Slice both onto a plate — nothing blended, nothing added.',
-      'Fast sugar, straight to your legs.',
-      'Coffee alongside if you want it.',
-      'Eat it 20 minutes before you warm up.',
+      'The sweetest plate on the list, which is why it works as the last one.',
+      'Tea alongside if you want it.',
+      'Eat it slowly and let that be the end of the day.',
     ] },
 
-  // ── THE BIG BOWLS · 8:00 AM · instead of BOTH small meals ──────────────
-  // A bowl this size is not a small 8 AM meal — it is 8 AM and 11 AM together.
-  // Take one and skip the apple and yogurt, or the day runs over 1,000. Good on
-  // a morning you would rather eat once and get on with it.
+  // ── THE BIG BOWLS · 5:00 PM · the filling end of the day ───────────────
+  // These are the biggest 5 PM choices, 360–480 calories. With a full brunch at
+  // 12 they will put you close to the ceiling, so take one on an evening you
+  // are genuinely hungry and a smaller brunch on the day you plan it.
   { emoji: '💪', slot: 'noon', name: 'Protein Bowl · Berries & Banana', cal: 470, pro: 32,
     ingredients: '1 cup frozen mixed berries · 1 frozen banana · 1 scoop protein powder · 3 tbsp granola · 1 tbsp chia · banana to top',
     steps: [
@@ -643,10 +644,10 @@ export const RECOMMENDED_MEALS = [
       'Granola last so it stays crunchy. The highest-protein bowl on the list — this one alone is most of your 50 grams.',
     ] },
 
-  // ── SMOOTHIE BOWLS · 8:00 AM · instead of BOTH small meals ─────────────
+  // ── SMOOTHIE BOWLS · 5:00 PM ───────────────────────────────────────────
   // Two or three frozen fruits, never more. Granola and chia stirred through.
-  // Same rule as the protein bowls above: one of these replaces BOTH small
-  // meals, it does not sit on top of the 11 AM one.
+  // These are the biggest 5 PM choices, so pair one with the lighter brunch
+  // rather than the full egg plate if you want to stay well under 1,000.
   { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Mango & Banana', cal: 380, pro: 8,
     ingredients: '1 cup frozen mango · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries & banana to top',
     steps: [
@@ -768,15 +769,15 @@ export const RECOMMENDED_MEALS = [
       'Finish with chia. The most filling bowl — the avocado adds your fats.',
     ] },
 
-  { emoji: '🍉', slot: 'wake', name: 'Big Fruit Plate', cal: 260, pro: 4,
+  { emoji: '🍉', slot: 'noon', name: 'Big Fruit Plate', cal: 260, pro: 4,
     ingredients: 'papaya · watermelon · 1 banana · a handful of berries',
     steps: [
       'Nothing blended — just cut it all onto one large plate.',
       'Start with the watermelon while it is coldest; it digests fastest.',
-      'This is the whole 12 PM meal on a core day. Eat until you are full.',
+      'The biggest of the evening plates. Eat until you are full — it is still only 260 calories.',
       'Water or green tea alongside, nothing sweetened.',
     ] },
-  { emoji: '🥝', slot: 'wake', name: 'Papaya, Mango & Kiwi Plate', cal: 230, pro: 2,
+  { emoji: '🥝', slot: 'noon', name: 'Papaya, Mango & Kiwi Plate', cal: 230, pro: 2,
     ingredients: '1 cup papaya · ½ cup mango · 1 kiwi',
     steps: [
       'Scoop the papaya, discarding the seeds.',
@@ -785,17 +786,17 @@ export const RECOMMENDED_MEALS = [
       'Eat it fresh and alone, no yogurt, no toppings.',
     ] },
 
-  // ── 11:00 AM · apple & Greek yogurt ────────────────────────────────────
+  // ── 5:00 PM · apple & Greek yogurt ─────────────────────────────────────
   // Greek yogurt is strained, so the same small bowl carries roughly twice the
   // protein of plain. That swap alone is 7 grams for 30 calories, which is the
-  // best trade in the whole plan. This is the default 11 AM meal.
+  // best trade in the whole plan. This is the default 5 PM meal.
   { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks & Greek Yogurt', cal: 215, pro: 16,
     ingredients: '1 apple · a small bowl of plain Greek yogurt',
     steps: [
       'Core the apple and cut it into thick sticks, skin on — that is where the fibre is.',
       'Spoon the Greek yogurt into a small bowl. It is thicker than plain, so it clings to the apple better as a sauce.',
       'Dip and eat slowly. It should take you twenty minutes, not five.',
-      'The default version of this meal now. Nothing after but tea.',
+      'The default 5 PM meal. Nothing after it but water and tea.',
     ] },
   { emoji: '🥛', slot: 'noon', name: 'Greek Yogurt, Berries & Chia', cal: 230, pro: 18,
     ingredients: 'a bowl of plain Greek yogurt · ½ cup berries · 1 tsp chia · cinnamon',
@@ -806,9 +807,9 @@ export const RECOMMENDED_MEALS = [
       'The lightest high-protein close to the day. Nothing after but tea.',
     ] },
 
-  // ── 11:00 AM · the other small options ─────────────────────────────────
+  // ── 5:00 PM · the other small options ──────────────────────────────────
   // Plain yogurt instead of Greek, and the two warm options. The sweet potato
-  // and the boiled saba are here for a day you want something warm at 11 —
+  // and the boiled saba are here for an evening you want something warm —
   // take them instead of the apple sticks, not as well as them.
   { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks & Yogurt', cal: 180, pro: 9,
     ingredients: '1 apple · a small bowl of plain yogurt',
@@ -879,11 +880,9 @@ export function suggestMeals(slotId, dayIndex = 0, n = 3) {
   const list = slotMeals(slotId);
   if (list.length <= n) return list;
   // A slot with featured plates shows those, rotated among themselves, rather
-  // than rotating through everything — the 2 PM slot is the only one that has
+  // than rotating through everything — the 12 PM slot is the only one that has
   // them, and burying the big plates under a small one is how a day ends up
   // hundreds of calories and twenty grams of protein short.
-  // A meal offered at two times is shown first at its home time, so 11 AM
-  // leads with the egg plate and 2 PM leads with the meat one.
   const featured = list.filter(m => m.main);
   const homeFirst = [...featured].sort((a, b) => (a.slot === slotId ? 0 : 1) - (b.slot === slotId ? 0 : 1));
   const pool = homeFirst.length >= n ? homeFirst : list;
@@ -891,34 +890,34 @@ export function suggestMeals(slotId, dayIndex = 0, n = 3) {
   return Array.from({ length: n }, (_, i) => pool[(start + i) % pool.length]);
 }
 
-// One clock, shared by all seven days. Every day eats the same four meals in
+// One clock, shared by all seven days. Every day eats the same two meals in
 // the same order, so there is nothing per-day left to compute.
 export const DAILY_MEALS = {
-  clock: '8 AM Â· 11 AM Â· 2 PM â then the window shuts',
-  label: '🍽️ The same three meals every day · fruit at 8 AM · apple & Greek yogurt at 11 AM · THE BIG MEAL at 2 PM · nothing after · under 1,000 calories, over 50 g of protein',
+  clock: '12 PM · 5 PM — two meals, and that is all',
+  label: '🍽️ The same two meals every day · THE BRUNCH at 12 PM · apple & yogurt or a smoothie at 5 PM · nothing after · under 1,000 calories, over 50 g of protein',
   rows: [
-    { time: '8:00 AM — Fruit & black coffee', icon: '🍌', ingredients: [
-      { name: 'Banana, berries or papaya — those three, pick one', key: 'banana' },
-      { name: 'Black coffee alongside, especially on a glute day', key: null },
-      { name: 'This is your fuel for training, so eat it before you run', key: null },
+    { time: 'Before 12:00 PM — water, tea & black coffee', icon: '☕', ingredients: [
+      { name: 'No food before noon. Train on black coffee — it works, and it is free', key: null },
+      { name: 'Water, tea and black coffee, as much as you like', key: null },
+      { name: 'This is the half of the day that keeps you under 1,000 calories', key: null },
     ]},
-    { time: '11:00 AM — Apple & yogurt, or a smoothie', icon: '🍏', ingredients: [
-      { name: 'Apple cut into slices, skin on, with yogurt to dip them in', key: 'apple' },
-      { name: 'OR a smoothie — two or three fruits blended with chia seeds', key: null, pick: 'fruit', slot: 'lunch' },
-      { name: 'Granola over the top of the smoothie', key: 'chia' },
-      { name: 'Greek yogurt rather than plain if you have it — twice the protein, same bowl', key: 'yogurtbowl' },
-    ]},
-    { time: '2:00 PM — MEAL A or MEAL B', icon: '🍽️', ingredients: [
-      { name: 'ONE of the two, never both. This is the meal the day is built around', key: null },
+    { time: '12:00 PM — BRUNCH · MEAL A or MEAL B', icon: '🍽️', ingredients: [
+      { name: 'ONE of the two, never both. This is the big meal the day is built around', key: null },
       { name: 'A — eggs & whites folded with spinach, kimchi, sweet potato, papaya, seeds, yogurt', key: 'egg' },
       { name: 'B — beef or chicken, sweet potato, spinach, bell pepper, tomato, cucumber, kimchi', key: null, pick: 'protein', slot: 'morning' },
       { name: 'Greek yogurt and a spoon of pumpkin seeds or chia with either one', key: 'yogurtbowl' },
       { name: 'No oil — fold the eggs in a dry non-stick pan, sear the meat in a hot dry one', key: null },
     ]},
-    { time: 'After 2:00 PM — the window shuts', icon: '🍵', ingredients: [
-      { name: 'Water, tea and black coffee — as much as you like', key: null },
+    { time: '5:00 PM — Apple & yogurt, or a smoothie', icon: '🍏', ingredients: [
+      { name: 'Apple cut into slices, skin on, with yogurt to dip them in', key: 'apple' },
+      { name: 'OR a smoothie — two or three fruits blended with chia seeds', key: null, pick: 'fruit', slot: 'lunch' },
+      { name: 'Granola over the top of the smoothie', key: 'chia' },
+      { name: 'Greek yogurt rather than plain if you have it — twice the protein, same bowl', key: 'yogurtbowl' },
+    ]},
+    { time: 'After 5:00 PM — the window shuts', icon: '🍵', ingredients: [
+      { name: 'Water and tea — as much as you like', key: null },
       { name: 'No food. The closing is what makes the window work', key: null },
-      { name: 'Hungry at night? Tomorrow’s 2 PM plate needs to be bigger, not tonight', key: null },
+      { name: 'Still hungry? Tomorrow’s 12 PM brunch needs to be bigger, not tonight', key: null },
     ]},
   ],
 };
@@ -929,7 +928,8 @@ export const DAILY_MEALS = {
 //                    glutes grow on the day off, not on the day you train them.
 //   2 abs & upper  — Tuesday, Thursday. Abs NEVER land on a glute day: a glute
 //                    day is a glute day and nothing else.
-//   2 weekend days — Saturday, Sunday. Run, one Jessica Diễm video, stretch.
+//   2 weekend days — Saturday, Sunday. Run, one Jessica Diễm video, stretch —
+//                    in that order. Then swimming Saturday, biking Sunday.
 //
 // The six glute lifts everything is built on, and where each one lives:
 //   Hip Thrust ............ Monday        (glute max — size and projection)
@@ -943,24 +943,21 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Monday · Glute Power', title: 'Hip Thrust · RDL · Step-Up',
-    sub: '~85 min total · stretch → zone 2 run 20 min → main workout → rope or walk',
-    cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
-    cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
+    sub: '~115 min total · warm-up → glute activation → main workout → 1-hour walk or rope',
+    cardio: { icon: '🚶', title: 'One-hour walk to finish — or the rope', note: 'pick one — 60 min walking, or 10–20 min rope' },
     noteBefore: { type: 'rose', text: '🍑 Hip thrust first, while you are freshest.' },
     exercises: [
-      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, before you run a step.'),
+      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      H('🏃 Zone 2 Run · 20 min', 'Easy enough to talk the whole way.'),
-      ZONE2_RUN,
-      H('🍑 Glute Activation', 'Straight off the run, before the bar.'),
+      H('🍑 Glute Activation', 'Straight after the warm-up, before the bar.'),
       { name: 'Glute & Hamstring Activation', detail: '5 min · banded glute bridges × 20 → lateral band walks × 15 each → donkey kicks × 15 each' },
       H('🍑 Main Workout', '3 lifts · 3 × 10 · in this order.'),
       { name: '1. Barbell Hip Thrust', detail: 'MAIN 1 of 3 · 3 × 10 · shoulders on a bench, chin tucked, drive the hips up to parallel, pause 2 sec at the top, lower for 3 sec · GLUTEUS MAXIMUS' },
       { name: '2. Romanian Deadlift (RDL)', detail: 'MAIN 2 of 3 · 3 × 10 · soft knees, hinge from the hips, lower for 3 sec until the hamstrings stretch, drive the hips forward to stand · GLUTEUS MAXIMUS + HAMSTRINGS' },
       { name: '3. Dumbbell Step-Up', detail: 'MAIN 3 of 3 · 3 × 10 each leg · a dumbbell in each hand, step onto a knee-high bench, drive through the whole front foot, lower for 3 sec · GLUTEUS MAXIMUS + MEDIUS · do not push off the back foot' },
-      H('🪢 Cool-Down · Rope OR Walk', 'One or the other, never both.'),
+      H('🚶 Finish · One-Hour Walk OR Rope', 'One or the other, never both.'),
+      WALK_HOUR,
       JUMP_ROPE,
-      ALT_WALK,
     ],
     noteAfter: { type: 'gold', text: '📋 Write your weights in. Add 2.5 kg when three sets feel easy.' },
     trackLifts: true,
@@ -970,16 +967,13 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Tuesday · Abs & Upper Body', title: 'Abs · Shoulders · Back',
-    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → abs → upper body → rope or walk',
-    cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
-    cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
+    sub: '~110 min total · warm-up & vacuum → abs → upper body → 1-hour walk or rope',
+    cardio: { icon: '🚶', title: 'One-hour walk to finish — or the rope', note: 'pick one — 60 min walking, or 10–20 min rope' },
     noteBefore: { type: 'gold', text: '🎯 Abs first, then three light upper-body moves.' },
     exercises: [
-      H('🔥 Warm-Up', 'Both, in this order, before you run.'),
+      H('🔥 Warm-Up', 'Both, in this order, first thing.'),
       WARMUP,
       VACUUM,
-      H('🏃 Zone 2 Run · 20 min', 'Easy enough to talk the whole way.'),
-      ZONE2_RUN,
       H('🎯 Main Workout · Abs', 'All five, in order.'),
       ...ABS_MAIN,
       H('💪 Main Workout · Upper Body', 'Three light moves. Keep them light.'),
@@ -988,9 +982,9 @@ export const WORKOUT_DAYS = [
       ...IZZY_ABS,
       H('🧘 Optional · Full Body — Nicole', 'Or one of these instead.', 'core'),
       ...NICOLE_FULLBODY,
-      H('🪢 Finish · Rope OR Walk', 'One or the other, never both.'),
+      H('🚶 Finish · One-Hour Walk OR Rope', 'One or the other, never both.'),
+      WALK_HOUR,
       JUMP_ROPE,
-      ALT_WALK,
     ],
     noteAfter: { type: 'rose', text: '📋 Only the weighted crunch gets heavier. The rest grow by reps.' },
     trackLifts: true,
@@ -1000,24 +994,21 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🔥', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Wednesday · Glute Strength', title: 'Squat · Split Squat · RDL',
-    sub: '~85 min total · stretch → zone 2 run 20 min → main workout → rope or walk',
-    cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
-    cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
+    sub: '~115 min total · warm-up → glute activation → main workout → 1-hour walk or rope',
+    cardio: { icon: '🚶', title: 'One-hour walk to finish — or the rope', note: 'pick one — 60 min walking, or 10–20 min rope' },
     noteBefore: { type: 'rose', text: '🔥 The heaviest day. Go below parallel, or go lighter.' },
     exercises: [
-      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, before you run a step.'),
+      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      H('🏃 Zone 2 Run · 20 min', 'Easy enough to talk the whole way.'),
-      ZONE2_RUN,
-      H('🍑 Glute Activation', 'Straight off the run, before the bar.'),
+      H('🍑 Glute Activation', 'Straight after the warm-up, before the bar.'),
       { name: 'Glute & Quad Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → bodyweight squats × 15 → hip circles × 10 each' },
       H('🍑 Main Workout', '3 lifts · 3 × 10 · in this order.'),
       { name: '1. Barbell Back Squat', detail: 'MAIN 1 of 3 · 3 × 10 · bar on your upper back, chest tall, sit to below parallel, drive up through the whole foot · GLUTEUS MAXIMUS + QUADS · go below parallel or go lighter' },
       { name: '2. Bulgarian Split Squat', detail: 'MAIN 2 of 3 · 3 × 10 each leg · rear foot on a bench, lower the front thigh to parallel · GLUTEUS MAXIMUS + MEDIUS · lean 10–15° forward for the glute, stay upright for the quad' },
       { name: '3. Romanian Deadlift (RDL)', detail: 'MAIN 3 of 3 · 3 × 10 · soft knees, hinge from the hips, lower for 3 sec until the hamstrings stretch, drive the hips forward to stand · GLUTEUS MAXIMUS + HAMSTRINGS · lighter than Monday' },
-      H('🪢 Cool-Down · Rope OR Walk', 'One or the other, never both.'),
+      H('🚶 Finish · One-Hour Walk OR Rope', 'One or the other, never both.'),
+      WALK_HOUR,
       JUMP_ROPE,
-      ALT_WALK,
     ],
     noteAfter: { type: 'gold', text: '📋 Write your weights in. Stuck two weeks is normal — add a rep.' },
     trackLifts: true,
@@ -1027,16 +1018,13 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🎯', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Thursday · Abs & Upper Body', title: 'Abs · Shoulders · Back',
-    sub: '~70 min total · stretch & vacuum → zone 2 run 20 min → abs → upper body → rope or walk',
-    cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
-    cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
+    sub: '~110 min total · warm-up & vacuum → abs → upper body → 1-hour walk or rope',
+    cardio: { icon: '🚶', title: 'One-hour walk to finish — or the rope', note: 'pick one — 60 min walking, or 10–20 min rope' },
     noteBefore: { type: 'gold', text: '🎯 Same as Tuesday. Vacuum first — it pulls the waist in.' },
     exercises: [
-      H('🔥 Warm-Up', 'Both, in this order, before you run.'),
+      H('🔥 Warm-Up', 'Both, in this order, first thing.'),
       WARMUP,
       VACUUM,
-      H('🏃 Zone 2 Run · 20 min', 'Easy enough to talk the whole way.'),
-      ZONE2_RUN,
       H('🎯 Main Workout · Abs', 'All five, in order.'),
       ...ABS_MAIN,
       H('💪 Main Workout · Upper Body', 'Three light moves. Keep them light.'),
@@ -1045,9 +1033,9 @@ export const WORKOUT_DAYS = [
       ...IZZY_ABS,
       H('🧘 Optional · Full Body — Nicole', 'Or one of these instead.', 'core'),
       ...NICOLE_FULLBODY,
-      H('🪢 Finish · Rope OR Walk', 'One or the other, never both.'),
+      H('🚶 Finish · One-Hour Walk OR Rope', 'One or the other, never both.'),
+      WALK_HOUR,
       JUMP_ROPE,
-      ALT_WALK,
     ],
     noteAfter: { type: 'rose', text: '⚠️ Stop any move that hurts past 2 out of 10.' },
     trackLifts: true,
@@ -1057,24 +1045,21 @@ export const WORKOUT_DAYS = [
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Friday · Glute Shape', title: 'Abduction · Kickback · Sumo',
-    sub: '~75 min total · stretch → zone 2 run 20 min → main workout → rope or walk',
-    cardioBefore: { icon: '🏃', title: 'Zone 2 run · 20 min before training', note: 'easy conversational pace — before the main workout' },
-    cardio: { icon: '🪢', title: 'Rope or walk to finish', note: 'pick one — 10–20 min rope, or the 20-min walk' },
+    sub: '~110 min total · warm-up → glute activation → main workout → 1-hour walk or rope',
+    cardio: { icon: '🚶', title: 'One-hour walk to finish — or the rope', note: 'pick one — 60 min walking, or 10–20 min rope' },
     noteBefore: { type: 'rose', text: '✨ Lighter weight, slower reps. Hold every squeeze 2 seconds.' },
     exercises: [
-      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, before you run a step.'),
+      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      H('🏃 Zone 2 Run · 20 min', 'Easy enough to talk the whole way.'),
-      ZONE2_RUN,
-      H('🍑 Glute Activation', 'Straight off the run, before the work.'),
+      H('🍑 Glute Activation', 'Straight after the warm-up, before the work.'),
       { name: 'Glute Medius Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each → fire hydrants × 15 each' },
       H('🍑 Main Workout', '3 lifts · 3 × 10 · in this order.'),
       { name: '1. Hip Abduction (machine or band)', detail: 'MAIN 1 of 3 · 3 × 10 · push the knees apart, hold 2 sec at the widest point, release slow · GLUTEUS MEDIUS + MINIMUS · lean forward for the upper glute, sit upright for the side' },
       { name: '2. Cable Kickback', detail: 'MAIN 2 of 3 · 3 × 10 each leg · hinge forward slightly, drive the heel back and up, hold 2 sec, lower slow · GLUTEUS MAXIMUS, upper fibres · a band round your ankle works at home' },
       { name: '3. Sumo Squat', detail: 'MAIN 3 of 3 · 3 × 10 · feet wide, toes out 45°, weight held between your legs, sit straight down and drive the knees out · GLUTEUS MAXIMUS + INNER THIGH' },
-      H('🪢 Cool-Down · Rope OR Walk', 'One or the other, never both.'),
+      H('🚶 Finish · One-Hour Walk OR Rope', 'One or the other, never both.'),
+      WALK_HOUR,
       JUMP_ROPE,
-      ALT_WALK,
     ],
     noteAfter: { type: 'gold', text: '📋 Add resistance only when you can still hold the squeeze.' },
     trackLifts: true,
@@ -1083,42 +1068,46 @@ export const WORKOUT_DAYS = [
   // ══ SATURDAY ══ Easy run · Jessica Diem · stretch
   {
     emoji: '🏃', emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Saturday · Run & Jessica Diem', title: 'Easy Run · Jessica Diem · Stretch',
-    sub: 'Run OR walk → one Jessica Diem video → long stretch',
-    cardio: { icon: '🏃', title: 'Easy run OR the 20-minute walk', note: 'pick one — 20–30 min conversational run, or the walk' },
-    noteBefore: { type: 'gold', text: '🏃 Run easy. Keep your legs fresh for Monday.' },
+    day: 'Saturday · Run, Jessica Diem & Swim', title: 'Easy Run · Jessica Diem · Stretch',
+    sub: 'Run → one Jessica Diem video → long stretch · then swimming around 5 PM',
+    cardio: { icon: '🏊', title: 'Swimming · around 5 PM', note: '30–45 min easy laps, hours after the morning session' },
+    noteBefore: { type: 'gold', text: '🏃 Run first, then the video, then the stretch. In that order.' },
     exercises: [
-      H('🏃 Run OR Walk — pick one', 'Warm up first. Or take the walk instead.'),
+      H('🏃 1 · Run OR Walk — pick one', 'Warm up first. Or take the walk instead.'),
       RUN_WARMUP,
       RUN_EASY,
       REST_WALK,
-      H('💗 Jessica Diem — pick ONE video', 'One video, whichever you feel like.', 'core'),
+      H('💗 2 · Jessica Diem — pick ONE video', 'After the run, never before it.', 'core'),
       ...JESSICA_DIEM,
-      H('🤍 Stretching', 'Long, slow holds.'),
+      H('🤍 3 · Stretching', 'Last. Long, slow holds.'),
       REST_STRETCH,
+      H('🏊 Later · Swimming', 'Around 5 PM, hours after the morning.'),
+      SWIM,
     ],
-    noteAfter: { type: 'rose', text: '💡 Run or walk — one, not both.' },
+    noteAfter: { type: 'rose', text: '💡 Run or walk — one, not both. Swimming is separate, in the afternoon.' },
     meals: DAILY_MEALS,
   },
   // ══ SUNDAY ══ Sprints · Jessica Diem · stretch
   {
     emoji: '⚡', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Sprints & Jessica Diem', title: 'Sprints · Jessica Diem · Stretch',
-    sub: 'Sprints OR walk → one Jessica Diem video → long stretch',
-    cardio: { icon: '⚡', title: 'Sprint intervals OR the 20-minute walk', note: 'pick one — the sprints step up every challenge month' },
+    day: 'Sunday · Sprints, Jessica Diem & Bike', title: 'Sprints · Jessica Diem · Stretch',
+    sub: 'Sprint run → one Jessica Diem video → long stretch · then biking later',
+    cardio: { icon: '🚲', title: 'Biking · later in the day', note: '45–60 min steady, hours after the sprints' },
     sprintDay: true,
-    noteBefore: { type: 'gold', text: '⚡ Full effort on the hard rounds. Form breaks, you stop.' },
+    noteBefore: { type: 'gold', text: '⚡ Sprints first, then the video, then the stretch. In that order.' },
     exercises: [
-      H('⚡ Sprints OR Walk — pick one', 'Warm up first. Heavy legs? Take the walk instead.'),
+      H('⚡ 1 · Sprints OR Walk — pick one', 'Warm up first. Heavy legs? Take the walk instead.'),
       RUN_WARMUP,
       RUN_INTERVALS,
       REST_WALK,
-      H('💗 Jessica Diem — pick ONE video', 'One video, whichever you feel like.', 'core'),
+      H('💗 2 · Jessica Diem — pick ONE video', 'After the sprints, never before them.', 'core'),
       ...JESSICA_DIEM,
-      H('🤍 Stretching', 'Long, slow holds.'),
+      H('🤍 3 · Stretching', 'Last. Long, slow holds.'),
       REST_STRETCH,
+      H('🚲 Later · Biking', 'Hours after the sprints, not straight after.'),
+      BIKE,
     ],
-    noteAfter: { type: 'rose', text: '💡 Sore hamstrings? Walk it instead.' },
+    noteAfter: { type: 'rose', text: '💡 Sore hamstrings? Walk it instead. Biking still stands, easy pace.' },
     meals: DAILY_MEALS,
   },
 ];

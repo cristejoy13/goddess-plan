@@ -44,7 +44,7 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['P', 'Protein', 'beef, chicken, fish, eggs or tofu — any of them, any day'],
-      ['F', 'Fruit', 'banana, berries or papaya · 8 AM, before you run'],
+      ['F', 'Fruit', 'banana, berries or papaya · 5 PM, to close the day'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -55,9 +55,9 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['S', 'Small bites', 'put the fork down'],
-      ['L', 'Last meal', '2 PM — beef or chicken. Nothing after'],
+      ['L', 'Last meal', '5 PM — apple & yogurt. Nothing after'],
       ['O', 'Only 80%', 'light, not stuffed'],
-      ['W', 'Walk', '15 min after meals · rope or walk after training'],
+      ['W', 'Walk', 'one hour after training · or the rope instead'],
     ],
   },
 ];
@@ -945,9 +945,9 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
     });
   }
 
-  // Four meals a day, the same four every day — but the icons still ride on
-  // the row itself rather than a fixed list, so the timeline cannot drift out
-  // of step with the plan.
+  // Two meals a day, the same two every day — but the icons still ride on the
+  // row itself rather than a fixed list, so the timeline cannot drift out of
+  // step with the plan.
   const mealRows = today.meals.rows.map((row, i) => {
     const [time, name] = row.time.split(' — ');
     return {
@@ -964,13 +964,14 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
   const rows = [
     { id: 'sec-morning', divider: true, label: '☀️ Morning' },
     { id: 'am-skin', icon: '☀️', title: 'Morning routine · AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
-    // The zone 2 run comes BEFORE the main workout Monday to Friday, so it sits
-    // above it here. The weekend has no `cardioBefore` — the run is the session.
+    // Nothing comes before the main workout any more — the warm-up is part of
+    // the session itself, and the running moved to the weekend. `cardioBefore`
+    // stays supported so a future day can put something ahead of the workout.
     ...(today.cardioBefore
       ? [{ id: 'cardio-pre', icon: today.cardioBefore.icon, title: today.cardioBefore.title, note: today.cardioBefore.note }]
       : []),
     { id: 'workout', icon: today.emoji, title: today.title, note: today.sub, nav: ['workout', null, todayDayId] },
-    { id: 'cardio', icon: today.cardio?.icon || '🚶', title: today.cardio?.title || 'Walk after training', note: today.cardio?.note },
+    { id: 'cardio', icon: today.cardio?.icon || '🚶', title: today.cardio?.title || 'One-hour walk after training', note: today.cardio?.note },
     { id: 'sec-day', divider: true, label: `🌤️ Meals · ${today.meals.clock}` },
     ...mealRows,
     { id: 'sec-night', divider: true, label: '🌙 Night' },
@@ -1109,9 +1110,9 @@ export default function Hero({ onNavigate }) {
       <div className="hero-pfbs hero-baby-steps splash-item">
         <div className="hero-rules-title">Gentle reminders 🌙</div>
         <div className="hero-rules">
-          <div className="hero-rule"><span>🍌</span><span>Every day, 8 AM to 2 PM: fruit &amp; black coffee at 8 · apple &amp; yogurt or a smoothie at 11 · Meal A or Meal B at 2 · nothing after but tea</span></div>
-          <div className="hero-rule"><span>🏃</span><span>Mon–Fri: stretch → 20-min zone 2 run → the main workout → rope or walk. The run always goes first, never after.</span></div>
-          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · 2 abs &amp; upper-body days (Tue · Thu) — abs never land on a glute day · weekend running, Jessica Diễm &amp; a long stretch</span></div>
+          <div className="hero-rule"><span>🍽️</span><span>Every day, two meals: black coffee until noon · THE BRUNCH at 12 · apple &amp; yogurt or a smoothie at 5 · nothing after but water and tea</span></div>
+          <div className="hero-rule"><span>🚶</span><span>Mon–Fri: warm-up → glute activation on lifting days → the main workout → one hour of walking, or the rope instead. No run on a weekday.</span></div>
+          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · 2 abs &amp; upper-body days (Tue · Thu) — abs never land on a glute day · weekend: run, then Jessica Diễm, then the long stretch · swim Saturday, bike Sunday</span></div>
           <div className="hero-rule"><span>🤍</span><span>Back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>

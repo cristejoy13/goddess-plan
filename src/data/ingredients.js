@@ -910,7 +910,7 @@ export const INGREDIENT_RECIPES = {
           'Add 1 scoop of protein powder and stir until there are no dry pockets left. Do this before the psyllium goes in, or it will never mix smoothly.',
           'Add 1 tsp psyllium husk and keep stirring straight away — it starts thickening within seconds.',
           'Drop 10 blueberries on top, cover, and leave it in the fridge overnight.',
-          'Eat it cold: on waking before a glute session, or at 12 PM on a back, shoulder and core day.',
+          'Eat it cold at 5 PM, with a full glass of water.',
         ],
         tip: 'Always drink a full glass of water with it. Psyllium husk pulls water in to do its job — without enough, it does the opposite of what you want.',
       },
@@ -1143,7 +1143,7 @@ export const INGREDIENT_RECIPES = {
           'Roll into 8–10 balls using wet hands.',
           'Freeze 30 min until firm. Store in the freezer.',
         ],
-        tip: 'Make a batch on Sunday. They keep in the freezer for 2 weeks — grab one at 2 PM without thinking.',
+        tip: 'Make a batch on Sunday. They keep in the freezer for 2 weeks — grab one at 12 PM without thinking.',
       },
       {
         name: 'Coconut Cacao Bites',

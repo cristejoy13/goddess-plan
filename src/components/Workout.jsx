@@ -71,9 +71,9 @@ function useDayMeals(dayId) {
   return [items, save];
 }
 
-// The meal plan reads as a clock, and it is the same clock every day: fruit and
-// black coffee at 8 AM, apple and yogurt or a smoothie at 11, Meal A or Meal B
-// at 2, and then the window shuts. Each time opens with a short list of
+// The meal plan reads as a clock, and it is the same clock every day: black
+// coffee until noon, the big brunch at 12, apple and yogurt or a smoothie at 5,
+// and then the window shuts. Each time opens with a short list of
 // picks rotated by the day of the week, and "more choices" reveals the rest of
 // the slot if none of them appeal. Tap a meal for the ingredients, the
 // step-by-step method, and to add it to today.
@@ -111,7 +111,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
         <div className="meal-plan-hint">
-          Three meals, 8 AM to 2 PM, then the window shuts. Fruit at 8, apple and yogurt or a smoothie at 11, and Meal A or Meal B at 2 — one of the two, never both.
+          Two meals, then the window shuts. The big brunch at 12 — Meal A or Meal B, one of the two, never both — and apple and yogurt or a smoothie at 5. Nothing before noon but black coffee.
         </div>
       </div>
 
@@ -143,10 +143,10 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
           </div>
           <div className="protein-meter-note">
             {chosen.length === 0
-              ? 'Stay under 1,000. Most of it belongs to the 2 PM plate.'
+              ? 'Stay under 1,000. Most of it belongs to the 12 PM brunch.'
               : overBudget
                 ? `${cal - CALORIE_TARGET} over. Fine on a lifting day; drop the avocado or the second banana on a rest day.`
-                : `${CALORIE_TARGET - cal} left. Room for a bigger 2 PM plate if you are still hungry.`}
+                : `${CALORIE_TARGET - cal} left. Room for a bigger 5 PM plate if you are still hungry.`}
           </div>
         </div>
       </div>
@@ -275,7 +275,7 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
   const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('back') || day.title?.toLowerCase().includes('core');
   const hasSprint  = day.title?.toLowerCase().includes('sprint') || day.sprintDay;
-  const hasZone2   = day.sub?.toLowerCase().includes('zone 2');
+  const hasWalk    = day.sub?.toLowerCase().includes('1-hour walk');
   const isRest     = day.day?.toLowerCase().includes('rest');
   const isMobility = isRest || day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility') || day.title?.toLowerCase().includes('recovery') || day.title?.toLowerCase().includes('stretch');
 
@@ -300,7 +300,7 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
         {duration   && <div className="dd-stat dd-stat-time"><span>⏱</span>{duration}</div>}
         {hasSprint  && <div className="dd-stat dd-stat-sprint"><span>⚡</span>Sprint</div>}
         {isStrength && <div className="dd-stat dd-stat-strength"><span>💪</span>Strength</div>}
-        {hasZone2   && <div className="dd-stat dd-stat-zone"><span>🫀</span>Zone 2</div>}
+        {hasWalk    && <div className="dd-stat dd-stat-zone"><span>🚶</span>1-hr walk</div>}
         {isMobility && <div className="dd-stat dd-stat-mobility"><span>🌿</span>Mobility</div>}
         <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.filter(e => !e.heading).length} exercises</div>
       </div>

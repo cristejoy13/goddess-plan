@@ -3,7 +3,7 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 8 AM to 2 PM', desc: 'Fruit at 8, apple & yogurt or a smoothie at 11, Meal A or Meal B at 2, nothing after. Under 1,000 calories, over 50 g of protein.' },
+  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 12 PM & 5 PM', desc: 'Nothing until noon. Brunch at 12, apple & yogurt or a smoothie at 5, nothing after. Under 1,000 calories, over 50 g of protein.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, seared dry. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat/avoid rules for a flat stomach and calm gut.' },
 ];
@@ -48,57 +48,57 @@ const RECIPE_CATEGORIES = [
   },
 ];
 
-/* ─── THE DAILY CLOCK — fruit at 8, two plates at 11 and 2, then shut ─── */
+/* ─── THE DAILY CLOCK — brunch at 12, something small at 5, then shut ─── */
 export function DailyClock() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🕒 <strong>One window: 8 AM to 2 PM.</strong> Fruit at 8, something small at 11, and the meal the day is built around at 2. After that, nothing but water, tea and black coffee. The closing is what makes the window work.
+        🕒 <strong>Two meals: 12 PM and 5 PM.</strong> The big brunch at noon, something small at five, and nothing after. Before noon it is water, tea and black coffee only. The closing is what makes the window work.
       </div>
 
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        ⚖️ <strong>Two numbers, and they pull against each other.</strong> <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> A normal day comes out at <strong>902 calories and 67 g</strong> with Meal A, or <strong>837 and 73 g</strong> with Meal B. Both sit under the ceiling and well over the floor, so nothing has to be cut. Only one combination goes over: a granola bowl at 11 plus the full egg plate at 2.
+        ⚖️ <strong>Two numbers, and they pull against each other.</strong> <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> A normal day comes out at <strong>845 calories and 66 g</strong> with Meal A, or <strong>780 and 72 g</strong> with Meal B. Two meals instead of three left real room under the ceiling, so both plates now fit at full size with the yogurt kept in each.
       </div>
 
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        🍌 <strong>8 AM is also your fuel.</strong> You train in the morning, so the fruit goes in before the run, not after it. Take the black coffee with it on glute days.
+        🌙 <strong>The food moved later, because the hunger is at night.</strong> There is no morning meal now. You train on black coffee, eat the big plate at noon, and keep something small for five — which is the hour you actually want it.
       </div>
 
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
         <div className="hyd-timeline">
           <div className="hyd-row">
-            <div className="hyd-time">8:00 AM</div>
+            <div className="hyd-time">Before 12 PM</div>
             <div>
-              <div className="hyd-d">Fruit &amp; black coffee</div>
-              <div className="hyd-n">Banana, berries or papaya — those three, pick one. Papaya is the lightest at about 55 calories, the banana the biggest at 105. Black coffee alongside, especially on a glute day. Eat it 20–30 minutes before you warm up.</div>
+              <div className="hyd-d">Water, tea &amp; black coffee</div>
+              <div className="hyd-n">No food before noon. You train on black coffee, and it works — caffeine is the cheapest lift you will get before a hip thrust. This empty half of the day is what leaves room for a proper plate at 12.</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">11:00 AM</div>
+            <div className="hyd-time">12:00 PM</div>
+            <div>
+              <div className="hyd-d">BRUNCH — MEAL A or MEAL B, one of the two</div>
+              <div className="hyd-n"><strong>A, the egg plate:</strong> 2 whole eggs and 3 egg whites folded with spinach in a dry pan, kimchi, sweet potato, papaya, chia, pumpkin or sesame seeds, Greek yogurt. About 630 calories and 50 g of protein.<br /><br /><strong>B, the meat plate:</strong> 100 g of lean beef or chicken breast seared in a hot dry pan, with sweet potato, spinach, bell pepper, tomato, cucumber, kimchi, Greek yogurt and a spoon of seeds. About 565 calories and 56 g. Beef when you want the iron, chicken when you want the calories back.</div>
+            </div>
+          </div>
+          <div className="hyd-row">
+            <div className="hyd-time">5:00 PM</div>
             <div>
               <div className="hyd-d">Apple slices &amp; yogurt, or a smoothie</div>
               <div className="hyd-n">Either apple cut into slices with yogurt to dip them in, or a smoothie — two or three fruits blended with chia seeds and granola over the top. Around 215–250 calories. Greek yogurt rather than plain if you have it: strained, so the same small bowl carries twice the protein.</div>
             </div>
           </div>
           <div className="hyd-row">
-            <div className="hyd-time">2:00 PM</div>
-            <div>
-              <div className="hyd-d">MEAL A or MEAL B — one of the two</div>
-              <div className="hyd-n"><strong>A, the egg plate:</strong> 1 or 2 whole eggs and 3 egg whites folded with spinach in a dry pan, kimchi, sweet potato, papaya, chia, pumpkin or sesame seeds, Greek yogurt. About 630 calories and 50 g of protein.<br /><br /><strong>B, the meat plate:</strong> 100 g of lean beef or chicken breast seared in a hot dry pan, with sweet potato, spinach, bell pepper, tomato, cucumber, kimchi, Greek yogurt and a spoon of seeds. About 565 calories and 56 g. Beef when you want the iron, chicken when you want the calories back.</div>
-            </div>
-          </div>
-          <div className="hyd-row">
-            <div className="hyd-time">After 2 PM</div>
+            <div className="hyd-time">After 5 PM</div>
             <div>
               <div className="hyd-d">The window shuts</div>
-              <div className="hyd-n">Water, tea and black coffee, as much as you like. No food. If you are hungry at night, the answer is a bigger plate tomorrow — not a snack tonight.</div>
+              <div className="hyd-n">Water and tea, as much as you like. No food. If you are hungry at night, the answer is a bigger brunch tomorrow — not a snack tonight.</div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍽️ <strong>Meal A or Meal B — one of the two, never both.</strong> They are your 2 PM meal and nothing else. Pick whichever you feel like; the eggs give you a touch more food, the meat a touch more protein.
+        🍽️ <strong>Meal A or Meal B — one of the two, never both.</strong> They are your 12 PM brunch and nothing else. Pick whichever you feel like; the eggs give you a touch more food, the meat a touch more protein.
       </div>
 
       <div className="note-box note-gold">
@@ -187,8 +187,8 @@ export function FoodGuide() {
     { food: 'Kiwi', note: 'Actinidin + high Vitamin C for collagen support. Low-bloat.' },
     { food: 'Watermelon', note: 'Hydrating, low calorie. Eat alone; it digests fast.' },
     { food: 'Berries', note: 'Lowest-sugar fruit, high fibre and antioxidants. Gentle on the gut, great any day.' },
-    { food: 'Banana', note: 'One of your three fruits. The glute-day fuel — eat it at 8 AM before you run. Potassium also reduces water retention.' },
-    { food: 'Black coffee', note: 'No milk, no sugar. Take it at 8 AM and especially on a glute day — it is the cheapest lift you will get before a hip thrust.' },
+    { food: 'Banana', note: 'One of your three fruits. A 5 PM plate on its own, or the thing that thickens a smoothie. Potassium also reduces water retention.' },
+    { food: 'Black coffee', note: 'No milk, no sugar. This is your morning — it carries you to noon, and on a glute day it is the cheapest lift you will get before a hip thrust. Keep it before 12; coffee at five costs you sleep.' },
     { food: 'Papaya', note: 'One of your three fruits, and it is also in Meal 1. The gentlest thing on your stomach and the cheapest in calories.' },
     { food: 'Lean beef', note: 'Meal 2, any day. Where your iron and zinc come from — a 1,000-calorie day runs short on both. Slice thin across the grain, sear in a hot dry pan.' },
     { food: 'Chicken breast', note: 'Meal 2, any day. Slightly leaner than beef and almost the same protein. Pat it dry before it hits the pan.' },
@@ -198,7 +198,7 @@ export function FoodGuide() {
     { food: 'Bell pepper & tomato', note: 'Meal 2. They fill the plate for about 50 calories between them.' },
     { food: 'Kimchi', note: 'Both meals. Almost no calories, good for the gut, and it makes plain food taste like a real meal. A small bowl — it is salty.' },
     { food: 'Pumpkin or sesame seeds', note: 'One tablespoon, both meals. Zinc and magnesium. Measure it — a tablespoon is 55 calories and a handful is 200.' },
-    { food: 'Chia seeds', note: 'They keep you full through the long gap from 2 PM to morning. Drink water with them.' },
+    { food: 'Chia seeds', note: 'They keep you full through the long gap from 5 PM to noon. Drink water with them.' },
     { food: 'Sweet potato', note: 'Both meals. Your energy for lifting. Baked is sweeter than boiled.' },
     { food: 'Greek yogurt', note: 'Strained, so the same small bowl carries twice the protein of plain. Keep it in ONE meal, not both — that is 120 calories saved.' },
     { food: 'Cucumber', note: 'Eat freely, raw. 95% water, naturally anti-bloating.' },
@@ -338,9 +338,9 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
   return (
     <div className="section">
       <div className="s-header">
-        <div className="s-tag">Fuel Protocol · one window, 8 AM to 2 PM</div>
+        <div className="s-tag">Fuel Protocol · two meals, 12 PM &amp; 5 PM</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">One window, 8 AM to 2 PM. Fruit and black coffee at 8, apple &amp; yogurt or a smoothie at 11, Meal A or Meal B at 2, nothing after. Under 1,000 calories, over 50 g of protein.</p>
+        <p className="s-desc">Two meals a day. Black coffee until noon, the big brunch at 12, apple &amp; yogurt or a smoothie at 5, nothing after. Under 1,000 calories, over 50 g of protein.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (
