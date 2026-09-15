@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORKOUT_DAYS, MEAL_SLOTS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
+import { WORKOUT_DAYS, MEAL_SLOTS, RECOMMENDED_MEALS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { loadLifts, isTrackable } from '../utils/lifts';
+import {
+  dateKeyOf, loadLog, saveLog, addPlannedMeal, removePlannedMeal,
+} from '../utils/mealLog';
 import { DailyClock, RecipesPanel, FoodGuide } from './Nutrition';
 
 const DAY_IDS = [
@@ -77,8 +80,19 @@ function useDayMeals(dayId) {
 // picks rotated by the day of the week, and "more choices" reveals the rest of
 // the slot if none of them appeal. Tap a meal for the ingredients, the
 // step-by-step method, and to add it to today.
+// Choosing a meal here files it in the Meal record too — its time, its name
+// and its calories — so the same meal is never typed twice.
+//
+// It is filed ONLY when the day being looked at is today. Writing a meal into
+// last Monday because its plan was opened on a Friday would be a claim she
+// never made, and writing one into next Friday would be a prediction dressed as
+// a record. Either would break the one promise this record makes: that
+// everything in it is true. On any other day the plan still works exactly as
+// before, and the day simply says so.
 function MealBuilder({ dayId, dayIndex, baseMeals }) {
   const [chosen, saveChosen] = useDayMeals(dayId);
+  const isToday = dayIndex === todayIndex;
+  const slotTime = (m) => MEAL_SLOTS.find(sl => sl.id === m.slot)?.t24 || '12:00';
   const [openSlot, setOpenSlot] = useState(null);
   const [showAll, setShowAll]   = useState({});
   const [detail, setDetail]     = useState(null);
@@ -90,7 +104,31 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
   const overBudget = cal > CALORIE_TARGET;
 
   function toggleChosen(name) {
-    saveChosen(chosen.includes(name) ? chosen.filter(n => n !== name) : [...chosen, name]);
+    const removing = chosen.includes(name);
+    saveChosen(removing ? chosen.filter(n => n !== name) : [...chosen, name]);
+    if (!isToday) return;
+    const meal = RECOMMENDED_MEALS.find(m => m.name === name);
+    if (!meal) return;
+    // Read the log fresh rather than holding it in state: this screen is not
+    // the one that owns it, and it may have been written to on the Meal page
+    // or by a sync since this page was opened.
+    const key = dateKeyOf();
+    const log = loadLog();
+    const next = removing
+      ? removePlannedMeal(log, key, name)
+      : addPlannedMeal(log, key, { name, time: slotTime(meal), cal: meal.cal });
+    if (next !== log) saveLog(next);
+  }
+
+  function clearChosen() {
+    if (isToday && chosen.length) {
+      const key = dateKeyOf();
+      let log = loadLog();
+      const before = log;
+      chosen.forEach(name => { log = removePlannedMeal(log, key, name); });
+      if (log !== before) saveLog(log);
+    }
+    saveChosen([]);
   }
 
   function Pill({ m }) {
@@ -214,9 +252,15 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       {chosen.length > 0 && (
         <div className="meal-chosen-summary">
           <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')} — <strong>{pro} g protein · {cal} cal</strong></span>
-          <button className="meal-chosen-clear" onClick={() => saveChosen([])}>Clear</button>
+          <button className="meal-chosen-clear" onClick={() => clearChosen()}>Clear</button>
         </div>
       )}
+
+      <div className="meal-auto-note">
+        {isToday
+          ? '📓 Everything you add here is written into Meal for today, with its time and calories. Take it back off and the line goes with it — unless you have edited that line yourself, and then it stays.'
+          : '📓 This is not today, so nothing here is written into your Meal record. Open today to have your choices filed for you.'}
+      </div>
 
       {detail && (
         <div className="ingr-menu-backdrop" onClick={() => setDetail(null)}>

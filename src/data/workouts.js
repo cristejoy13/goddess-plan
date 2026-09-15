@@ -182,8 +182,8 @@ export const CALORIE_TARGET = 1000;
 // where a small plate belongs now. Nothing was thrown away — the coffee in
 // those plates became tea, because coffee at five is a bad trade against sleep.
 const SLOT_DEFS = {
-  post: { id: 'post', time: '12:00 PM', emoji: '🍽️' },
-  noon: { id: 'noon', time: '5:00 PM',  emoji: '🍏' },
+  post: { id: 'post', time: '12:00 PM', t24: '12:00', emoji: '🍽️' },
+  noon: { id: 'noon', time: '5:00 PM',  t24: '17:00', emoji: '🍏' },
 };
 
 // The same two slots every day, in clock order.

@@ -1,4 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
+import {
+  dateKey, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
+} from '../utils/mealLog';
 
 // ─── MEAL ──────────────────────────────────────────────────────────────────
 // The record of what she actually ate, day by day, as against the plan of what
@@ -14,8 +17,6 @@ import { useState, useCallback, useMemo } from 'react';
 // that; a grid with gaps in it answers it at a glance. The year and month both
 // step backwards and forwards, so an old month is always reachable.
 
-const STORE_KEY = 'gp_meal_log';
-
 const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -24,10 +25,10 @@ const MONTH_NAMES = [
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 // ─── dates ─────────────────────────────────────────────────────────────────
-// Everything is keyed on the LOCAL date, never on a UTC ISO string: toISOString
-// would file an 11 PM meal in Cebu under the following day.
+// dateKey and the rest of the log's shape live in utils/mealLog.js now, shared
+// with the meal plan in Workouts, which files a chosen meal straight into this
+// record rather than making her type it twice.
 const pad = n => String(n).padStart(2, '0');
-const dateKey = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
 
 function todayParts() {
   const n = new Date();
@@ -66,58 +67,6 @@ function prettyTime(hhmm) {
 function nowTime() {
   const n = new Date();
   return `${pad(n.getHours())}:${pad(n.getMinutes())}`;
-}
-
-function newId() {
-  return `ml_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
-}
-
-// ─── calories ──────────────────────────────────────────────────────────────
-// Optional on purpose. She will not always know the number, and a box that
-// must be filled would either stop her writing the meal down at all or push
-// her into guessing — and a guessed calorie count is exactly the invented data
-// this page exists to avoid. Blank stays blank, and says so.
-function parseCal(v) {
-  const n = Number(String(v).trim());
-  return Number.isFinite(n) && n > 0 ? Math.round(n) : null;
-}
-
-// Only the meals that actually carry a number are counted. A day where two of
-// four meals have calories reports the total of those two AND says two are
-// missing, rather than presenting a partial figure as the whole day.
-function calTotals(entries = []) {
-  const withCal = entries.filter(e => typeof e.cal === 'number' && e.cal > 0);
-  return {
-    total: withCal.reduce((sum, e) => sum + e.cal, 0),
-    counted: withCal.length,
-    missing: entries.length - withCal.length,
-  };
-}
-
-// ─── storage ───────────────────────────────────────────────────────────────
-// An unreadable or missing log starts empty. It is NEVER seeded with example
-// meals: an invented line here would be indistinguishable from something she
-// really ate, which would poison the one thing this page is for.
-function load() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
-    if (raw && typeof raw === 'object' && raw.days && typeof raw.days === 'object') {
-      return { days: raw.days, deleted: raw.deleted || {}, updatedAt: raw.updatedAt || '' };
-    }
-  } catch { /* fall through to an empty log */ }
-  return { days: {}, deleted: {}, updatedAt: '' };
-}
-
-// Returns whether the write actually landed. A meal she typed and watched
-// disappear is the one failure this page cannot afford, so a full or blocked
-// storage has to reach her as a visible line rather than being swallowed.
-function save(state) {
-  try {
-    localStorage.setItem(STORE_KEY, JSON.stringify(state));
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 // ─── the add form ──────────────────────────────────────────────────────────
@@ -207,7 +156,10 @@ function EntryRow({ entry, onEdit, onDelete }) {
   return (
     <li className="ml-entry">
       <span className="ml-entry-time">{prettyTime(entry.time)}</span>
-      <span className="ml-entry-text">{entry.text}</span>
+      <span className="ml-entry-text">
+        {entry.text}
+        {entry.fromPlan && <span className="ml-from-plan" title="Filed by your meal plan">· from your plan</span>}
+      </span>
       <span className={`ml-entry-cal${entry.cal == null ? ' ml-entry-cal-none' : ''}`}>
         {entry.cal == null ? '—' : `${entry.cal.toLocaleString()} cal`}
       </span>
@@ -278,7 +230,7 @@ function DayPanel({ year, monthIdx, day, entries, onAdd, onEdit, onDelete, onClo
 }
 
 export default function Meal() {
-  const [state, setState] = useState(load);
+  const [state, setState] = useState(loadLog);
   // Read once and hold it: "today" must not shift under her while the page is
   // open, or the ring would jump to a different square at midnight mid-edit.
   const today = useMemo(() => todayParts(), []);
@@ -292,7 +244,7 @@ export default function Meal() {
   const commit = useCallback((updater) => {
     setState(prev => {
       const next = { ...updater(prev), updatedAt: new Date().toISOString() };
-      setSaveFailed(!save(next));
+      setSaveFailed(!saveLog(next));
       return next;
     });
   }, []);
@@ -306,8 +258,8 @@ export default function Meal() {
         ...prev.days,
         [key]: [
           ...(prev.days[key] || []),
-          { id: newId(), ...fields, createdAt: now, updatedAt: now },
-        ].sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0)),
+          { id: newEntryId(), ...fields, createdAt: now, updatedAt: now },
+        ].sort(byTime),
       },
     }));
   };
@@ -320,9 +272,9 @@ export default function Meal() {
         ...prev.days,
         [key]: (prev.days[key] || [])
           .map(e => (e.id === entry.id
-            ? { ...e, ...fields, updatedAt: new Date().toISOString() }
+            ? { ...e, ...fields, fromPlan: undefined, updatedAt: new Date().toISOString() }
             : e))
-          .sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0)),
+          .sort(byTime),
       },
     }));
   };
@@ -379,9 +331,10 @@ export default function Meal() {
         <h2 className="s-title">My <em>Meals</em></h2>
         <p className="s-desc">
           Tap a day and write down what you ate. The time fills itself in — tap it to change it.
-          Calories are optional — leave the box empty when you do not know, and the day's
-          total counts only what you filled in. Use ✏️ to change a line and 🗑 to remove one.
-          Everything you write stays for good, on every device, until you delete it yourself.
+          Meals you choose in your plan land here on their own, with their time and calories.
+          Anything else you type yourself. Calories are optional — leave the box empty when you
+          do not know, and the total counts only what is filled in. ✏️ changes a line, 🗑 removes
+          one, and everything stays for good, on every device, until you delete it yourself.
         </p>
       </div>
 

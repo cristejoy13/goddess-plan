@@ -8435,6 +8435,12 @@ body {
    one: did I eat well THIS month? A list cannot answer that; a grid with gaps
    in it answers it at a glance. Month and year step separately, each on its
    own small row, so both controls stay finger-sized on a phone. */
+.meal-auto-note {
+  margin-top: 14px; padding: 11px 14px; border-radius: 12px;
+  background: rgba(240,204,96,0.09); border: 1px solid rgba(240,204,96,0.24);
+  color: var(--text-mid, #d4a0b8); font-size: 12px; line-height: 1.55;
+}
+
 .ml-nav {
   display: flex; flex-direction: column; align-items: center;
   gap: 14px; margin-bottom: 20px;
@@ -8595,7 +8601,7 @@ body {
 /* A row being edited gives its whole width to the form. */
 .ml-entry-editing { display: block; padding: 14px; }
 .ml-entry-editing .ml-add { margin-top: 0; }
-.ml-form-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.ml-form-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .ml-form-btns .ml-add-btn { flex: 1 1 auto; }
 .ml-cancel-btn {
   flex: 0 0 auto;
@@ -8609,6 +8615,13 @@ body {
   color: #ff8080; font-size: 12.5px; line-height: 1.5;
 }
 .ml-entry-empty { font-size: 13px; color: var(--text-soft, #c090b8); padding: 6px 2px; }
+/* Quiet on purpose: it explains where a line came from without competing with
+   the meal itself. */
+.ml-from-plan {
+  display: inline-block; margin-left: 8px;
+  font-size: 10.5px; font-weight: 600; color: var(--gold); opacity: 0.75;
+  white-space: nowrap;
+}
 
 .ml-add { margin-top: 24px; display: flex; flex-direction: column; gap: 22px; }
 /* A GRID, not a flex row, and this is the fix for the two boxes meeting on an
@@ -8628,7 +8641,13 @@ body {
 .ml-time-wrap, .ml-text-wrap, .ml-cal-wrap {
   display: flex; flex-direction: column; gap: 9px; min-width: 0;
 }
-.ml-time-lbl { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); letter-spacing: 0.2px; }
+.ml-time-lbl {
+  font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8);
+  letter-spacing: 0.2px;
+  /* Centred over its own box. A left-aligned caption above a centred value is
+     the other half of what read as uneven. */
+  text-align: center;
+}
 .ml-time-input, .ml-text-input, .ml-cal-input {
   background: rgba(255,255,255,0.09);
   /* A stronger edge than the rest of the card. When the border is faint, two
@@ -8643,9 +8662,13 @@ body {
   font-size: 16px;
   width: 100%; min-width: 0;
 }
-.ml-time-input { cursor: pointer; text-align: center; font-weight: 700; }
+.ml-time-input { cursor: pointer; font-weight: 700; }
+/* All three values centre in their box, so the row reads as one line of
+   centred cards rather than three differently-anchored ones. */
+.ml-time-input, .ml-text-input, .ml-cal-input { text-align: center; }
+.ml-text-input::placeholder, .ml-cal-input::placeholder { text-align: center; }
 .ml-time-input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
-.ml-cal-input { text-align: center; font-weight: 700; }
+.ml-cal-input { font-weight: 700; }
 /* The spinner arrows are the width of a finger and do nothing a number pad
    cannot, so they are taken off and the field left as plain digits. */
 .ml-cal-input::-webkit-outer-spin-button,
@@ -8671,7 +8694,8 @@ body {
   .ml-entry-cal { font-size: 11.5px; }
   .ml-icon-btn { width: 30px; height: 30px; }
   .ml-day-panel { padding: 15px; }
-  /* Time and calories side by side, the meal box across both. */
+  /* The meal box across the top, then Time and Calories as equal halves
+     beneath it — the same matched pair as on a tablet, just stacked. */
   .ml-add-row { grid-template-columns: 1fr 1fr; gap: 22px 20px; }
   .ml-text-wrap { grid-column: 1 / -1; order: -1; }
 }
@@ -8692,12 +8716,12 @@ body {
   .ml-today-btn { flex-basis: 100%; margin: 0 auto; }
   .ml-day { min-height: 56px; font-size: 14px; }
   .ml-dh { font-size: 11px; padding: 9px 2px; }
-  /* A short time column, the meal taking whatever is left, and a narrower
-     calories column — each in its own grid track, so the gutters belong to the
-     grid and neither the native time control nor a long meal name can reach
-     into them. Fixed widths rather than minmax: the meal box should be visibly
-     the largest of the three, which is also the order of how much you type. */
-  .ml-add-row { grid-template-columns: 132px 1fr 96px; gap: 32px; }
+  /* Symmetrical on purpose. Time and Calories are both short values, so they
+     take the SAME width and sit as a matched pair either side of the meal box.
+     Two different side widths read as lopsided no matter how even the gutters
+     are, which is what "uneven" meant. Fixed rather than minmax so the
+     symmetry cannot drift as the panel resizes. */
+  .ml-add-row { grid-template-columns: 124px 1fr 124px; gap: 32px; }
   .ml-day-panel { padding: 26px; }
 }
 
@@ -8782,6 +8806,8 @@ body {
 [data-mode="light"] .ml-cancel-btn { background: rgba(255,255,255,0.8); border-color: rgba(120,60,100,0.22); color: #3a1030; }
 [data-mode="light"] .ml-save-warn { background: rgba(255,92,92,0.14); border-color: rgba(200,40,40,0.35); color: #a81028; }
 [data-mode="light"] .ml-entry-cal { color: #6b4a00; }
+[data-mode="light"] .ml-from-plan { color: #6b4a00; opacity: 0.9; }
+[data-mode="light"] .meal-auto-note { color: #4a2440; background: rgba(240,204,96,0.18); border-color: rgba(154,104,0,0.30); }
 [data-mode="light"] .ml-entry-cal-none { color: #6a3a5c; }
 [data-mode="light"] .ml-total { background: rgba(240,204,96,0.20); border-color: rgba(154,104,0,0.35); }
 [data-mode="light"] .ml-total-lbl { color: #4a2440; }
