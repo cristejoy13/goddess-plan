@@ -8436,8 +8436,8 @@ body {
    in it answers it at a glance. Month and year step separately, each on its
    own small row, so both controls stay finger-sized on a phone. */
 .ml-nav {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 8px 18px; margin-bottom: 12px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; margin-bottom: 14px;
 }
 .ml-nav-row {
   display: flex; align-items: center; gap: 6px;
@@ -8462,12 +8462,10 @@ body {
 .ml-nav-year .ml-nav-btn { width: 32px; height: 32px; font-size: 16px; }
 .ml-nav-year .ml-nav-label { font-size: 17px; min-width: 66px; color: var(--text-mid, #d4a0b8); }
 .ml-today-btn {
-  flex-basis: 100%;
   background: rgba(255,92,157,0.14); color: #ffc3da;
   border: 1px solid rgba(255,92,157,0.34); border-radius: 999px;
-  padding: 7px 16px; font-size: 12.5px; font-weight: 700; cursor: pointer;
-  align-self: center; margin: 0 auto;
-  width: max-content;
+  padding: 8px 18px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  width: max-content; max-width: 100%;
 }
 
 .ml-cal {
@@ -8475,6 +8473,8 @@ body {
   border: 1.5px solid var(--border-g);
   border-radius: 16px;
   overflow: hidden;
+  max-width: 560px;
+  margin: 0 auto;
 }
 .ml-cal-head, .ml-week { display: grid; grid-template-columns: repeat(7, 1fr); }
 .ml-cal-head {
@@ -8519,16 +8519,20 @@ body {
 .ml-day-open { background: rgba(255,92,157,0.20); color: var(--text); }
 
 .ml-summary {
-  display: inline-flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
   background: rgba(240,204,96,0.10); border: 1px solid rgba(240,204,96,0.28);
   color: #ffeab0; border-radius: 999px; padding: 7px 15px;
-  font-size: 12.5px; font-weight: 700; margin-top: 12px;
+  font-size: 12.5px; font-weight: 700;
+  width: max-content; max-width: 100%;
+  margin: 12px auto 0;
+  text-align: center;
 }
 
 .ml-day-panel {
-  margin-top: 14px; padding: 14px;
+  margin-top: 14px; padding: 16px;
   background: var(--card); border: 1.5px solid var(--border-r);
   border-radius: 16px;
+  max-width: 560px; margin-inline: auto;
 }
 .ml-day-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .ml-day-date { font-size: 15px; font-weight: 700; color: #f8eed4; line-height: 1.3; }
@@ -8550,12 +8554,35 @@ body {
   min-width: 62px; padding-top: 1px;
 }
 .ml-entry-text { flex: 1 1 auto; min-width: 0; font-size: 14px; color: #f8eed4; line-height: 1.4; word-break: break-word; }
-.ml-entry-del {
-  flex: none; width: 30px; height: 30px; border-radius: 9px;
+/* Pencil and bin, icons only. Words here would be longer than most of the
+   meals they sit beside, so the row would end up reading as its buttons. */
+.ml-entry-acts { flex: none; display: flex; gap: 4px; }
+.ml-icon-btn {
+  width: 30px; height: 30px; flex: none; border-radius: 9px;
   background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-  font-size: 13px; cursor: pointer;
+  font-size: 13px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation;
 }
-.ml-entry-del:hover { background: rgba(255,120,120,0.16); border-color: rgba(255,120,120,0.4); }
+.ml-icon-btn:hover { background: rgba(255,255,255,0.12); }
+.ml-icon-btn:active { transform: scale(0.92); }
+.ml-del:hover { background: rgba(255,120,120,0.16); border-color: rgba(255,120,120,0.4); }
+/* A row being edited gives its whole width to the form. */
+.ml-entry-editing { display: block; padding: 12px; }
+.ml-entry-editing .ml-add { margin-top: 0; }
+.ml-form-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.ml-form-btns .ml-add-btn { flex: 1 1 auto; }
+.ml-cancel-btn {
+  flex: 0 0 auto;
+  background: rgba(255,255,255,0.08); color: var(--text-mid, #e7d6e8);
+  border: 1px solid rgba(255,255,255,0.14); border-radius: 11px;
+  padding: 12px 18px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+}
+.ml-save-warn {
+  margin-top: 12px; padding: 10px 12px; border-radius: 11px;
+  background: rgba(255,92,92,0.12); border: 1px solid rgba(255,92,92,0.35);
+  color: #ff8080; font-size: 12.5px; line-height: 1.5;
+}
 .ml-entry-empty { font-size: 13px; color: var(--text-soft, #c090b8); padding: 4px 2px; }
 
 .ml-add { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
@@ -8581,10 +8608,33 @@ body {
 }
 .ml-add-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-@media (max-width: 380px) {
-  .ml-day { min-height: 36px; font-size: 12px; }
-  .ml-nav-label { font-size: 19px; min-width: 100px; }
-  .ml-entry-time { min-width: 56px; }
+/* Small phones. The two input boxes stack, because 120px of time box beside a
+   text box leaves the text box too narrow to see what you typed. */
+@media (max-width: 420px) {
+  .ml-day { min-height: 38px; font-size: 12px; }
+  .ml-day-dot { font-size: 8.5px; padding: 1px 4px; }
+  .ml-nav-label { font-size: 19px; min-width: 104px; }
+  .ml-nav-btn { width: 36px; height: 36px; }
+  .ml-entry { padding: 9px 10px; gap: 8px; }
+  .ml-entry-time { min-width: 54px; font-size: 11px; }
+  .ml-entry-text { font-size: 13.5px; }
+  .ml-icon-btn { width: 28px; height: 28px; }
+  .ml-time-wrap, .ml-text-wrap { flex: 1 1 100%; }
+  .ml-day-panel { padding: 13px; }
+}
+/* A short time box beside a long meal box reads better than two equal ones,
+   and there is room for it from a large phone upward. */
+@media (min-width: 421px) {
+  .ml-time-wrap { flex: 0 0 132px; }
+  .ml-text-wrap { flex: 1 1 200px; }
+}
+/* Tablets and laptops: the month and year controls sit on one line, with a
+   wide gap between them so they never read as one run of five buttons. */
+@media (min-width: 560px) {
+  .ml-nav { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 12px 34px; }
+  .ml-today-btn { flex-basis: 100%; margin: 0 auto; }
+  .ml-day { min-height: 56px; font-size: 14px; }
+  .ml-dh { font-size: 11px; padding: 9px 2px; }
 }
 
 /* Light theme: the calendar needs real contrast on white. */
@@ -8595,6 +8645,79 @@ body {
 [data-mode="light"] .ml-entry-text { color: #3a1030; }
 [data-mode="light"] .ml-time-input,
 [data-mode="light"] .ml-text-input { color: #3a1030; background: rgba(255,255,255,0.75); border-color: rgba(120,60,100,0.28); }
+
+/* ── LIGHT MODE · text that was still too pale to read ───────────────────
+   Every colour here was hardcoded light in the base styles, which is right on
+   the deep violet but leaves the word nearly invisible on the near-white page.
+   Each one is swapped for the same hue taken far darker, so the meaning the
+   colour carries survives — green still reads as good, red still reads as a
+   warning — while the word itself becomes readable. Every value below clears
+   4.5:1 against the light page, the WCAG AA line for normal text.
+
+   Deliberately NOT included: text sitting on a background that is dark in BOTH
+   modes. The motivation banner, the ingredient sheet, the meal detail sheet and
+   the nav tooltip all paint their own dark panel, and white text on them is
+   correct in light mode too. Darkening those would make them unreadable, which
+   is the very bug this block exists to fix. ── */
+
+/* Section headings, meal names and the words on the plan cards. */
+[data-mode="light"] .meal-plan-label,
+[data-mode="light"] .meal-card-name,
+[data-mode="light"] .meal-time-label,
+[data-mode="light"] .meal-pill,
+[data-mode="light"] .m-edit-field input,
+[data-mode="light"] .m-edit-field textarea { color: #2a0c22; }
+[data-mode="light"] .meal-card-steps { color: #4a2440; }
+[data-mode="light"] .meal-time-clock { color: #b01464; }
+[data-mode="light"] .meal-plan-hint  { color: #5a2a4a; }
+
+/* Greens mean "done" or "on target" — kept green, taken dark enough to read. */
+[data-mode="light"] .meal-pill-check,
+[data-mode="light"] .meal-card-pick.picked,
+[data-mode="light"] .protein-meter.hit .protein-meter-num,
+[data-mode="light"] .meal-chosen-text,
+[data-mode="light"] .m-reward,
+[data-mode="light"] .mtt-verdict.ok,
+[data-mode="light"] .cal-estimate-verdict.under,
+[data-mode="light"] .dd-stat-zone,
+[data-mode="light"] .ep-saved-banner,
+[data-mode="light"] .daily-note-save.is-flash { color: #14603c; }
+
+/* Reds and oranges mean "over" or "careful" — same job, darker ink. */
+[data-mode="light"] .mtt-verdict.over,
+[data-mode="light"] .cal-estimate-verdict.over,
+[data-mode="light"] .m-edit-reset,
+[data-mode="light"] .rem-delete-btn,
+[data-mode="light"] .lift-reset,
+[data-mode="light"] .sync-health-error { color: #a81028; }
+[data-mode="light"] .m-consequence { color: #8a3010; }
+[data-mode="light"] .tx-warn,
+[data-mode="light"] .ob-sleep-warn,
+[data-mode="light"] .sync-health-warning { color: #7a4400; }
+
+/* The remaining pastel accents: blue, violet, gold, and the faded greys. */
+[data-mode="light"] .dd-stat-mobility { color: #0f5a7a; }
+[data-mode="light"] .dd-stat-time     { color: #5b2a9a; }
+[data-mode="light"] .py               { color: #6b4a00; }
+[data-mode="light"] .ob-avatar-label  { color: #4a2440; }
+[data-mode="light"] .ingr-info-body   { color: #4a2440; }
+
+/* The Meal calendar's own pale bits. */
+[data-mode="light"] .ml-today-btn { color: #a00050; background: rgba(255,92,157,0.16); border-color: rgba(200,23,110,0.34); }
+[data-mode="light"] .ml-summary   { color: #5a3800; background: rgba(240,204,96,0.22); border-color: rgba(154,104,0,0.30); }
+[data-mode="light"] .ml-day-count { color: #5a2a4a; }
+[data-mode="light"] .ml-time-lbl  { color: #5a2a4a; }
+[data-mode="light"] .ml-entry     { background: rgba(255,255,255,0.75); border-color: rgba(120,60,100,0.20); }
+[data-mode="light"] .ml-entry-time { color: #6b4a00; }
+[data-mode="light"] .ml-entry-empty { color: #5a2a4a; }
+[data-mode="light"] .ml-cal-head  { background: rgba(240,204,96,0.16); }
+[data-mode="light"] .ml-dh        { color: #6b4a00; }
+[data-mode="light"] .ml-day-empty { background: rgba(0,0,0,0.05); }
+[data-mode="light"] .ml-day-open  { background: rgba(255,92,157,0.28); color: #2a0c22; }
+[data-mode="light"] .ml-icon-btn  { background: rgba(255,255,255,0.8); border-color: rgba(120,60,100,0.22); }
+[data-mode="light"] .ml-cancel-btn { background: rgba(255,255,255,0.8); border-color: rgba(120,60,100,0.22); color: #3a1030; }
+[data-mode="light"] .ml-save-warn { background: rgba(255,92,92,0.14); border-color: rgba(200,40,40,0.35); color: #a81028; }
+
 
 /* ── TOP BAR ──────────────────────────────────────────────────────────────
    One row of controls: the two big tap targets (settings + menu) on the left,

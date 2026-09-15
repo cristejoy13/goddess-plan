@@ -86,8 +86,16 @@ function load() {
   return { days: {}, deleted: {}, updatedAt: '' };
 }
 
+// Returns whether the write actually landed. A meal she typed and watched
+// disappear is the one failure this page cannot afford, so a full or blocked
+// storage has to reach her as a visible line rather than being swallowed.
 function save(state) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch { /* storage full or blocked */ }
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // ─── the add form ──────────────────────────────────────────────────────────
@@ -95,21 +103,21 @@ function save(state) {
 // writing down the meal you just ate — she types the food and nothing else.
 // It is still a real time box, so a meal written up later can be corrected by
 // tapping it and spinning the wheel.
-function AddMeal({ onAdd }) {
-  const [time, setTime] = useState(nowTime);
-  const [text, setText] = useState('');
+function MealForm({ initial, onSubmit, onCancel }) {
+  const [time, setTime] = useState(() => initial?.time || nowTime());
+  const [text, setText] = useState(initial?.text || '');
+  const editing = Boolean(initial);
 
   function submit(e) {
     e.preventDefault();
     const t = text.trim();
     if (!t) return;
-    onAdd({ time: time || nowTime(), text: t });
-    setText('');
-    setTime(nowTime());
+    onSubmit({ time: time || nowTime(), text: t });
+    if (!editing) { setText(''); setTime(nowTime()); }
   }
 
   return (
-    <form className="ml-add" onSubmit={submit}>
+    <form className={`ml-add${editing ? ' ml-add-editing' : ''}`} onSubmit={submit}>
       <div className="ml-add-row">
         <label className="ml-time-wrap">
           <span className="ml-time-lbl">Time</span>
@@ -128,16 +136,51 @@ function AddMeal({ onAdd }) {
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder="Type it here"
+            autoFocus={editing}
           />
         </label>
       </div>
-      <button type="submit" className="ml-add-btn" disabled={!text.trim()}>＋ Add this meal</button>
+      <div className="ml-form-btns">
+        <button type="submit" className="ml-add-btn" disabled={!text.trim()}>
+          {editing ? 'Save' : '＋ Add this meal'}
+        </button>
+        {editing && <button type="button" className="ml-cancel-btn" onClick={onCancel}>Cancel</button>}
+      </div>
     </form>
   );
 }
 
+// One written meal. The two actions are icons only — a pencil and a bin — so
+// the row stays the meal rather than the buttons around it.
+function EntryRow({ entry, onEdit, onDelete }) {
+  const [editing, setEditing] = useState(false);
+
+  if (editing) {
+    return (
+      <li className="ml-entry ml-entry-editing">
+        <MealForm
+          initial={entry}
+          onSubmit={(fields) => { onEdit(fields); setEditing(false); }}
+          onCancel={() => setEditing(false)}
+        />
+      </li>
+    );
+  }
+
+  return (
+    <li className="ml-entry">
+      <span className="ml-entry-time">{prettyTime(entry.time)}</span>
+      <span className="ml-entry-text">{entry.text}</span>
+      <span className="ml-entry-acts">
+        <button className="ml-icon-btn" onClick={() => setEditing(true)} aria-label={`Edit ${entry.text}`}>✏️</button>
+        <button className="ml-icon-btn ml-del" onClick={onDelete} aria-label={`Delete ${entry.text}`}>🗑</button>
+      </span>
+    </li>
+  );
+}
+
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, onAdd, onDelete, onClose }) {
+function DayPanel({ year, monthIdx, day, entries, onAdd, onEdit, onDelete, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   return (
     <div className="ml-day-panel splash-item">
@@ -155,22 +198,26 @@ function DayPanel({ year, monthIdx, day, entries, onAdd, onDelete, onClose }) {
 
       <ul className="ml-entries">
         {entries.map(en => (
-          <li key={en.id} className="ml-entry">
-            <span className="ml-entry-time">{prettyTime(en.time)}</span>
-            <span className="ml-entry-text">{en.text}</span>
-            <button
-              className="ml-entry-del"
-              onClick={() => onDelete(en)}
-              aria-label={`Delete ${en.text}`}
-            >🗑</button>
-          </li>
+          <EntryRow
+            key={en.id}
+            entry={en}
+            onEdit={(fields) => onEdit(en, fields)}
+            onDelete={() => onDelete(en)}
+          />
         ))}
         {entries.length === 0 && (
           <li className="ml-entry-empty">Write the first meal of this day below.</li>
         )}
       </ul>
 
-      <AddMeal onAdd={onAdd} />
+      {saveFailed && (
+        <div className="ml-save-warn">
+          ⚠️ This device would not save that. Its storage is full or blocked, so
+          what you just typed is not written down yet.
+        </div>
+      )}
+
+      <MealForm onSubmit={onAdd} />
     </div>
   );
 }
@@ -183,13 +230,14 @@ export default function Meal() {
   const [year, setYear] = useState(today.y);
   const [monthIdx, setMonthIdx] = useState(today.m);
   const [openDay, setOpenDay] = useState(null);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   const days = state.days || {};
 
   const commit = useCallback((updater) => {
     setState(prev => {
       const next = { ...updater(prev), updatedAt: new Date().toISOString() };
-      save(next);
+      setSaveFailed(!save(next));
       return next;
     });
   }, []);
@@ -205,6 +253,21 @@ export default function Meal() {
           ...(prev.days[key] || []),
           { id: newId(), ...fields, createdAt: now, updatedAt: now },
         ].sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0)),
+      },
+    }));
+  };
+
+  const editEntry = (dayNum, entry, fields) => {
+    const key = dateKey(year, monthIdx, dayNum);
+    commit(prev => ({
+      ...prev,
+      days: {
+        ...prev.days,
+        [key]: (prev.days[key] || [])
+          .map(e => (e.id === entry.id
+            ? { ...e, ...fields, updatedAt: new Date().toISOString() }
+            : e))
+          .sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0)),
       },
     }));
   };
@@ -261,7 +324,8 @@ export default function Meal() {
         <h2 className="s-title">My <em>Meals</em></h2>
         <p className="s-desc">
           Tap a day and write down what you ate. The time fills itself in — tap it to change it.
-          Nothing is ever written here but by you, so an empty day means an empty day.
+          Use ✏️ to change a line and 🗑 to remove one. Everything you write stays for good,
+          on every device, until you delete it yourself.
         </p>
       </div>
 
@@ -320,8 +384,10 @@ export default function Meal() {
           day={openDay}
           entries={days[openKey] || []}
           onAdd={(fields) => addEntry(openDay, fields)}
+          onEdit={(entry, fields) => editEntry(openDay, entry, fields)}
           onDelete={(entry) => deleteEntry(openDay, entry)}
           onClose={() => setOpenDay(null)}
+          saveFailed={saveFailed}
         />
       )}
     </div>
