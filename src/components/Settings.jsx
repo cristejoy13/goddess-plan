@@ -356,7 +356,7 @@ function AboutScreen({ onBack }) {
           ✦ Full skincare AM + PM + weekly routines<br />
           ✦ Hair oil rotation calendar (31-day)<br />
           ✦ Anti-aging protocol — sleep, cortisol, hormones<br />
-          ✦ My Purpose — the goals you are working toward
+          ✦ Meal — a calendar of what you actually ate, day by day
         </p>
       </div>
     </div>

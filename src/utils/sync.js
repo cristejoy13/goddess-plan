@@ -5,6 +5,7 @@
 // the top-bar controls did nothing. Sync is not needed for the first paint, so
 // it now arrives after the UI is already interactive.
 import { mergeNotebookBlobs } from './mergeNotebook.js';
+import { mergeMealLogBlobs } from './mergeMealLog.js';
 
 let fb = null;
 
@@ -36,19 +37,26 @@ const MEAL_KEYS = [
   'gp_meal_day-thursday', 'gp_meal_day-friday', 'gp_meal_day-saturday',
   'gp_meal_day-sunday',
 ];
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_purposes', 'gp_lifts', ...MEAL_KEYS];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', ...MEAL_KEYS];
 // Keys that USED to sync and no longer exist in the app. They are cleared from
 // this device and deleted from the shared cloud document once, so the doc does
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key
 // here once nothing reads it any more — this deletes real data.
-const RETIRED_KEYS = ['gp_challenges_custom', 'gp_daily', 'gp_done'];
+//
+// Adding a key here is only half the job: the remote half runs once per device
+// and then records PURGE_DONE_KEY, so a device that has already purged would
+// skip the new key and leave it sitting in the cloud forever. Bump the version
+// on PURGE_DONE_KEY whenever this list grows.
+const RETIRED_KEYS = ['gp_challenges_custom', 'gp_daily', 'gp_done', 'gp_purposes'];
 // Keys that must be MERGED rather than overwritten. Everything else is a
 // single small value where newest-wins is right; the notebook is a whole
 // collection under one key, so newest-wins silently deleted whichever gadget
 // wrote second. See mergeNotebook.js for why and how.
-const MERGERS = { gp_daily_notebook: mergeNotebookBlobs };
+const MERGERS = { gp_daily_notebook: mergeNotebookBlobs, gp_meal_log: mergeMealLogBlobs };
 
-const PURGE_DONE_KEY = 'gp_purged_v1';
+// v2: bumped when gp_purposes joined RETIRED_KEYS, so every device runs the
+// remote purge once more and the retired goals leave the shared document too.
+const PURGE_DONE_KEY = 'gp_purged_v2';
 const SYNC_CODE_KEY = 'gp_sync_code';
 const SYNC_META_KEY = 'gp_sync_meta';
 const SYNC_ADOPT_KEY = 'gp_sync_adopt';

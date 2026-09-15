@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, Component } from 'react';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
-import Purpose from './components/Purpose';
+import Meal from './components/Meal';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import Settings from './components/Settings';
@@ -36,7 +36,7 @@ function saveProfile(p) {
 const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🏠' },
   { id: 'workout',    label: 'Workouts',   icon: '💪' },
-  { id: 'purpose',    label: 'My Purpose', icon: '🎯' },
+  { id: 'meal',       label: 'Meal',       icon: '🍽️' },
   { id: 'skincare',   label: 'Body',       icon: '✨' },
   // Settings is reached via the flower/avatar button, not a separate nav item.
 ];
@@ -111,7 +111,7 @@ const SEARCH_INDEX = [
   { label: 'Hormone-Protective Eating',    hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Skin Longevity Nutrients',     hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Supplement Stack',             hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
-  { label: 'My Purpose',                   hint: 'The goals you are working toward', section: 'purpose' },
+  { label: 'Meal — what you actually ate',  hint: 'A calendar you fill in yourself, day by day', section: 'meal' },
   { label: 'Nutrition & Meals',            hint: 'Workouts → Nutrition',      section: 'workout' },
   { label: 'Recipes',                      hint: 'Workouts → Nutrition',      section: 'workout' },
   { label: 'Food Guide',                   hint: 'Workouts → Nutrition',      section: 'workout' },
@@ -461,7 +461,7 @@ export default function App() {
             refresh themselves in place instead. */}
         {active === 'home'       && <Hero onNavigate={navigate} />}
         {active === 'workout'    && <Workout key={`${navMeta.key}-${syncEpoch}`} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
-        {active === 'purpose'    && <Purpose key={syncEpoch} />}
+        {active === 'meal'       && <Meal key={syncEpoch} />}
         {active === 'nutrition'  && <Nutrition key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings

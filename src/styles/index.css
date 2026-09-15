@@ -8430,102 +8430,171 @@ body {
 }
 .meal-detail-add.added { background: rgba(120,220,160,0.20); color: #7fe3a8; border: 1px solid rgba(120,220,160,0.5); }
 
-/* ── MY PURPOSE ───────────────────────────────────────────────────────────
-   The goals list. Deliberately quiet: the title carries the weight, the date
-   stamp stays small, and edit/delete sit out of the way on the right. */
-.pp-summary {
+/* ── MEAL · the record of what she actually ate ───────────────────────────
+   A month grid, because the question she is really asking is a month-shaped
+   one: did I eat well THIS month? A list cannot answer that; a grid with gaps
+   in it answers it at a glance. Month and year step separately, each on its
+   own small row, so both controls stay finger-sized on a phone. */
+.ml-nav {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 8px 18px; margin-bottom: 12px;
+}
+.ml-nav-row {
+  display: flex; align-items: center; gap: 6px;
+}
+.ml-nav-btn {
+  width: 38px; height: 38px; flex: none;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,92,157,0.32);
+  background: rgba(20,6,18,0.55);
+  color: var(--text); font-size: 20px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; touch-action: manipulation;
+  transition: background 0.18s, border-color 0.18s;
+}
+.ml-nav-btn:hover { background: rgba(255,92,157,0.16); }
+.ml-nav-btn:active { transform: scale(0.92); }
+.ml-nav-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600; color: var(--gold);
+  min-width: 118px; text-align: center; letter-spacing: 0.4px;
+}
+.ml-nav-year .ml-nav-btn { width: 32px; height: 32px; font-size: 16px; }
+.ml-nav-year .ml-nav-label { font-size: 17px; min-width: 66px; color: var(--text-mid, #d4a0b8); }
+.ml-today-btn {
+  flex-basis: 100%;
+  background: rgba(255,92,157,0.14); color: #ffc3da;
+  border: 1px solid rgba(255,92,157,0.34); border-radius: 999px;
+  padding: 7px 16px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  align-self: center; margin: 0 auto;
+  width: max-content;
+}
+
+.ml-cal {
+  background: var(--card);
+  border: 1.5px solid var(--border-g);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.ml-cal-head, .ml-week { display: grid; grid-template-columns: repeat(7, 1fr); }
+.ml-cal-head {
+  background: rgba(240,204,96,0.07);
+  border-bottom: 1px solid rgba(240,204,96,0.12);
+}
+.ml-dh {
+  text-align: center; padding: 7px 2px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; color: var(--gold);
+}
+.ml-week { border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ml-week:last-child { border-bottom: none; }
+.ml-day {
+  aspect-ratio: 1; min-height: 42px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  background: none; border: none;
+  border-right: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-mid, #d4a0b8);
+  font-size: 13px; cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+.ml-day:last-child { border-right: none; }
+.ml-day-empty { cursor: default; pointer-events: none; background: rgba(0,0,0,0.10); }
+.ml-day:hover:not(.ml-day-empty) { background: rgba(255,92,157,0.08); color: var(--text); }
+.ml-day-num { line-height: 1; }
+/* A day with meals in it is gold and carries the count, so a month reads as a
+   pattern of filled and empty rather than a wall of identical numbers. */
+.ml-day-has {
+  background: linear-gradient(135deg, rgba(240,204,96,0.20), rgba(255,232,122,0.10));
+  color: var(--gold-light); font-weight: 700;
+}
+.ml-day-dot {
+  font-size: 9px; font-weight: 700; line-height: 1;
+  padding: 1px 5px; border-radius: 999px;
+  background: rgba(240,204,96,0.28); color: #fff4d0;
+}
+.ml-day-today { box-shadow: inset 0 0 0 1.5px rgba(255,92,157,0.55); color: var(--rose); font-weight: 700; }
+.ml-day-today.ml-day-has { box-shadow: inset 0 0 0 1.5px var(--gold); }
+.ml-day-open { background: rgba(255,92,157,0.20); color: var(--text); }
+
+.ml-summary {
   display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(255,92,157,0.10); border: 1px solid rgba(255,92,157,0.30);
-  color: #ffc3da; border-radius: 999px; padding: 7px 15px;
-  font-size: 12.5px; font-weight: 700; margin-bottom: 14px;
+  background: rgba(240,204,96,0.10); border: 1px solid rgba(240,204,96,0.28);
+  color: #ffeab0; border-radius: 999px; padding: 7px 15px;
+  font-size: 12.5px; font-weight: 700; margin-top: 12px;
 }
 
-.pp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-
-.pp-item {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 16px; padding: 14px;
-}
-.pp-item.done { background: rgba(120,220,160,0.08); border-color: rgba(120,220,160,0.35); }
-.pp-item-editing { display: block; }
-
-.pp-check {
-  flex: none; width: 26px; height: 26px; margin-top: 1px;
-  border-radius: 9px; border: 2px solid rgba(255,255,255,0.28);
-  background: transparent; color: #07040f; cursor: pointer;
-  font-size: 15px; font-weight: 900; line-height: 1;
-  display: flex; align-items: center; justify-content: center;
-}
-.pp-check.checked { background: #7fe3a8; border-color: #7fe3a8; }
-
-.pp-body { flex: 1 1 auto; min-width: 0; }
-.pp-title { font-size: 15px; font-weight: 700; color: #f8eed4; line-height: 1.35; word-break: break-word; }
-.pp-item.done .pp-title { color: #cfeede; text-decoration: line-through; text-decoration-color: rgba(207,238,222,0.45); }
-.pp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
-.pp-kind {
-  font-size: 10.5px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
-  color: #ffc3da; background: rgba(255,92,157,0.14); border-radius: 999px; padding: 2px 9px;
-}
-.pp-date  { font-size: 10.5px; color: var(--text-mid, #9d7f9c); }
-.pp-doneat { font-size: 10.5px; font-weight: 700; color: #7fe3a8; }
-
-.pp-actions { flex: none; display: flex; gap: 4px; }
-.pp-icon-btn {
-  width: 32px; height: 32px; border-radius: 10px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
-  font-size: 13px; cursor: pointer; line-height: 1;
-  display: flex; align-items: center; justify-content: center;
-}
-.pp-icon-btn:hover { background: rgba(255,255,255,0.10); }
-.pp-del:hover { background: rgba(255,120,120,0.16); border-color: rgba(255,120,120,0.4); }
-
-.pp-empty {
-  text-align: center; padding: 22px 14px; font-size: 13px;
-  color: var(--text-mid, #c090b8);
-  background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.14);
+.ml-day-panel {
+  margin-top: 14px; padding: 14px;
+  background: var(--card); border: 1.5px solid var(--border-r);
   border-radius: 16px;
 }
-
-.pp-add-wrap { margin-top: 14px; }
-.pp-add-btn {
-  width: 100%; background: rgba(255,92,157,0.12); border: 1px dashed rgba(255,92,157,0.45);
-  color: #ffc3da; border-radius: 14px; padding: 14px;
-  font-size: 14px; font-weight: 700; cursor: pointer;
-}
-.pp-add-btn:hover { background: rgba(255,92,157,0.20); }
-.pp-add-card {
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px; padding: 14px;
+.ml-day-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.ml-day-date { font-size: 15px; font-weight: 700; color: #f8eed4; line-height: 1.3; }
+.ml-day-count { font-size: 11.5px; color: var(--text-soft, #c090b8); margin-top: 3px; }
+.ml-close {
+  flex: none; width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text-mid, #e7d6e8); font-size: 14px; cursor: pointer;
 }
 
-.pp-form { display: flex; flex-direction: column; gap: 12px; }
-.pp-field { display: flex; flex-direction: column; gap: 5px; }
-.pp-field > span { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); }
-.pp-field > span em { font-style: normal; opacity: 0.7; }
-.pp-field input {
-  width: 100%; box-sizing: border-box;
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
-  color: #f8eed4; border-radius: 11px; padding: 11px 12px;
-  font-size: 15px; font-family: inherit;
+.ml-entries { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ml-entry {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px; padding: 10px 12px;
 }
-.pp-field input:focus { outline: none; border-color: #ff5c9d; }
-.pp-form-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-.pp-save {
+.ml-entry-time {
+  flex: none; font-size: 11.5px; font-weight: 700; color: var(--gold);
+  min-width: 62px; padding-top: 1px;
+}
+.ml-entry-text { flex: 1 1 auto; min-width: 0; font-size: 14px; color: #f8eed4; line-height: 1.4; word-break: break-word; }
+.ml-entry-del {
+  flex: none; width: 30px; height: 30px; border-radius: 9px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  font-size: 13px; cursor: pointer;
+}
+.ml-entry-del:hover { background: rgba(255,120,120,0.16); border-color: rgba(255,120,120,0.4); }
+.ml-entry-empty { font-size: 13px; color: var(--text-soft, #c090b8); padding: 4px 2px; }
+
+.ml-add { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+/* The time box sits beside the meal box on anything wider than a small phone,
+   and stacks under it below that, so neither ever gets squeezed narrow. */
+.ml-add-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.ml-time-wrap { flex: 0 0 120px; display: flex; flex-direction: column; gap: 5px; }
+.ml-text-wrap { flex: 1 1 180px; display: flex; flex-direction: column; gap: 5px; }
+.ml-time-lbl { font-size: 11.5px; font-weight: 600; color: var(--text-mid, #c090b8); }
+.ml-time-input, .ml-text-input {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.14);
+  border-radius: 11px; padding: 11px 12px;
+  color: #f8eed4; font-size: 15px; font-family: inherit;
+  width: 100%;
+}
+.ml-time-input { cursor: pointer; text-align: center; font-weight: 700; }
+.ml-time-input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
+.ml-time-input:focus, .ml-text-input:focus { outline: none; border-color: #ff5c9d; }
+.ml-add-btn {
   background: #ff5c9d; color: #fff; border: none; border-radius: 11px;
-  padding: 11px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
 }
-.pp-save:disabled { opacity: 0.45; cursor: not-allowed; }
-.pp-cancel {
-  background: rgba(255,255,255,0.08); color: var(--text-mid, #e7d6e8);
-  border: 1px solid rgba(255,255,255,0.14); border-radius: 11px;
-  padding: 11px 18px; font-size: 13.5px; font-weight: 600; cursor: pointer;
-}
+.ml-add-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 @media (max-width: 380px) {
-  .pp-item { padding: 12px; gap: 10px; }
-  .pp-icon-btn { width: 30px; height: 30px; }
+  .ml-day { min-height: 36px; font-size: 12px; }
+  .ml-nav-label { font-size: 19px; min-width: 100px; }
+  .ml-entry-time { min-width: 56px; }
 }
+
+/* Light theme: the calendar needs real contrast on white. */
+[data-mode="light"] .ml-day { color: #6a3a5c; }
+[data-mode="light"] .ml-day-has { color: #6b4a00; background: rgba(240,204,96,0.34); }
+[data-mode="light"] .ml-day-dot { background: rgba(200,160,40,0.34); color: #4a3200; }
+[data-mode="light"] .ml-day-date,
+[data-mode="light"] .ml-entry-text { color: #3a1030; }
+[data-mode="light"] .ml-time-input,
+[data-mode="light"] .ml-text-input { color: #3a1030; background: rgba(255,255,255,0.75); border-color: rgba(120,60,100,0.28); }
 
 /* ── TOP BAR ──────────────────────────────────────────────────────────────
    One row of controls: the two big tap targets (settings + menu) on the left,
@@ -8567,54 +8636,6 @@ body {
 
 .topbar-search-row { margin-top: 8px; }
 .topbar-search-row .search-wrap { margin: 0 auto; }
-
-/* ── MY PURPOSE · pastel cards ────────────────────────────────────────────
-   Each purpose takes the next pastel in the rotation, so the list reads lively
-   without any one card shouting. Tints stay low-alpha so they sit correctly on
-   both the deep violet dark theme and the light theme. */
-.pp-item.pp-c0 { background: rgba(255,183,213,0.11); border-color: rgba(255,183,213,0.38); }
-.pp-item.pp-c1 { background: rgba(255,214,178,0.11); border-color: rgba(255,214,178,0.38); }
-.pp-item.pp-c2 { background: rgba(255,240,179,0.10); border-color: rgba(255,240,179,0.36); }
-.pp-item.pp-c3 { background: rgba(183,240,208,0.10); border-color: rgba(183,240,208,0.36); }
-.pp-item.pp-c4 { background: rgba(180,219,255,0.11); border-color: rgba(180,219,255,0.38); }
-.pp-item.pp-c5 { background: rgba(214,196,255,0.11); border-color: rgba(214,196,255,0.38); }
-
-.pp-item.pp-c0 .pp-kind { color: #ffd3e5; background: rgba(255,183,213,0.20); }
-.pp-item.pp-c1 .pp-kind { color: #ffe3c9; background: rgba(255,214,178,0.20); }
-.pp-item.pp-c2 .pp-kind { color: #fff4c4; background: rgba(255,240,179,0.18); }
-.pp-item.pp-c3 .pp-kind { color: #ccf5de; background: rgba(183,240,208,0.18); }
-.pp-item.pp-c4 .pp-kind { color: #cfe7ff; background: rgba(180,219,255,0.20); }
-.pp-item.pp-c5 .pp-kind { color: #e3d7ff; background: rgba(214,196,255,0.20); }
-
-.pp-item.pp-c0 .pp-check { border-color: rgba(255,183,213,0.65); }
-.pp-item.pp-c1 .pp-check { border-color: rgba(255,214,178,0.65); }
-.pp-item.pp-c2 .pp-check { border-color: rgba(255,240,179,0.60); }
-.pp-item.pp-c3 .pp-check { border-color: rgba(183,240,208,0.60); }
-.pp-item.pp-c4 .pp-check { border-color: rgba(180,219,255,0.65); }
-.pp-item.pp-c5 .pp-check { border-color: rgba(214,196,255,0.65); }
-
-/* Reaching a purpose overrides its pastel with the same soft green everywhere,
-   so "done" is instantly readable no matter which colour the card started as. */
-.pp-item.done,
-.pp-item.done[class*="pp-c"] {
-  background: rgba(183,240,208,0.16);
-  border-color: rgba(183,240,208,0.55);
-}
-.pp-item.done .pp-check { background: #a9ebc4; border-color: #a9ebc4; }
-
-/* Light theme: pastels need more saturation to survive a white background. */
-[data-mode="light"] .pp-item.pp-c0 { background: rgba(255,183,213,0.30); border-color: rgba(240,140,185,0.45); }
-[data-mode="light"] .pp-item.pp-c1 { background: rgba(255,214,178,0.34); border-color: rgba(240,175,120,0.45); }
-[data-mode="light"] .pp-item.pp-c2 { background: rgba(255,240,179,0.38); border-color: rgba(230,200,110,0.45); }
-[data-mode="light"] .pp-item.pp-c3 { background: rgba(183,240,208,0.34); border-color: rgba(120,205,160,0.45); }
-[data-mode="light"] .pp-item.pp-c4 { background: rgba(180,219,255,0.34); border-color: rgba(120,175,235,0.45); }
-[data-mode="light"] .pp-item.pp-c5 { background: rgba(214,196,255,0.34); border-color: rgba(165,140,235,0.45); }
-[data-mode="light"] .pp-item .pp-title { color: #3a1030; }
-[data-mode="light"] .pp-item .pp-kind { color: #7a2358; background: rgba(255,255,255,0.55); }
-[data-mode="light"] .pp-item.done,
-[data-mode="light"] .pp-item.done[class*="pp-c"] {
-  background: rgba(150,230,185,0.38); border-color: rgba(90,190,140,0.55);
-}
 
 /* ── TOP BAR CONTROLS ─────────────────────────────────────────────────────
    Two sizes on purpose. The left pair — settings and the menu — are the ones
