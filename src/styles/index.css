@@ -8556,7 +8556,32 @@ body {
 .ml-entry-text { flex: 1 1 auto; min-width: 0; font-size: 14px; color: #f8eed4; line-height: 1.4; word-break: break-word; }
 /* Pencil and bin, icons only. Words here would be longer than most of the
    meals they sit beside, so the row would end up reading as its buttons. */
+/* The number sits right of the meal and left of the two icons, on its own
+   fixed width, so a column of them lines up down the day. */
+.ml-entry-cal {
+  flex: none; min-width: 66px; text-align: right;
+  font-size: 12.5px; font-weight: 700; color: var(--gold);
+  padding-top: 1px;
+}
+.ml-entry-cal-none { color: var(--text-soft, #c090b8); font-weight: 400; opacity: 0.6; }
 .ml-entry-acts { flex: none; display: flex; gap: 8px; }
+
+/* The day's total. Deliberately the loudest thing in the panel — it is the
+   number the whole page is being kept for. */
+.ml-total {
+  margin-top: 16px; padding: 14px 16px; border-radius: 13px;
+  background: rgba(240,204,96,0.10);
+  border: 1.5px solid rgba(240,204,96,0.30);
+}
+.ml-total-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.ml-total-lbl { font-size: 13px; font-weight: 600; color: var(--text-mid, #d4a0b8); }
+.ml-total-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700; color: var(--gold); line-height: 1;
+}
+/* Said plainly rather than hidden: a total that silently skipped meals would
+   read as the whole day and be wrong. */
+.ml-total-note { margin-top: 8px; font-size: 11.5px; line-height: 1.5; color: var(--text-soft, #c090b8); }
 .ml-icon-btn {
   width: 30px; height: 30px; flex: none; border-radius: 9px;
   background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
@@ -8595,11 +8620,11 @@ body {
    the track instead. The space between them is now guaranteed on every device.
    The boxes stack until there is genuine room for both, which is 560px. */
 .ml-add-row { display: grid; grid-template-columns: 1fr; gap: 18px; }
-.ml-time-wrap, .ml-text-wrap {
+.ml-time-wrap, .ml-text-wrap, .ml-cal-wrap {
   display: flex; flex-direction: column; gap: 8px; min-width: 0;
 }
 .ml-time-lbl { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); }
-.ml-time-input, .ml-text-input {
+.ml-time-input, .ml-text-input, .ml-cal-input {
   background: rgba(255,255,255,0.06);
   border: 1.5px solid rgba(255,255,255,0.14);
   border-radius: 12px; padding: 13px 14px;
@@ -8612,7 +8637,13 @@ body {
 }
 .ml-time-input { cursor: pointer; text-align: center; font-weight: 700; }
 .ml-time-input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
-.ml-time-input:focus, .ml-text-input:focus { outline: none; border-color: #ff5c9d; }
+.ml-cal-input { text-align: center; font-weight: 700; }
+/* The spinner arrows are the width of a finger and do nothing a number pad
+   cannot, so they are taken off and the field left as plain digits. */
+.ml-cal-input::-webkit-outer-spin-button,
+.ml-cal-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ml-cal-input { -moz-appearance: textfield; appearance: textfield; }
+.ml-time-input:focus, .ml-text-input:focus, .ml-cal-input:focus { outline: none; border-color: #ff5c9d; }
 .ml-add-btn {
   background: #ff5c9d; color: #fff; border: none; border-radius: 11px;
   padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -8626,11 +8657,25 @@ body {
   .ml-day-dot { font-size: 8.5px; padding: 1px 4px; }
   .ml-nav-label { font-size: 19px; min-width: 104px; }
   .ml-nav-btn { width: 36px; height: 36px; }
-  .ml-entry { padding: 11px 12px; gap: 11px; }
-  .ml-entry-time { min-width: 56px; font-size: 11px; }
+  .ml-entry { padding: 11px 12px; gap: 10px; }
+  .ml-entry-time { min-width: 54px; font-size: 11px; }
   .ml-entry-text { font-size: 13.5px; }
+  .ml-entry-cal { font-size: 11.5px; }
   .ml-icon-btn { width: 30px; height: 30px; }
   .ml-day-panel { padding: 15px; }
+  /* Time and calories side by side, the meal box across both. */
+  .ml-add-row { grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .ml-text-wrap { grid-column: 1 / -1; order: -1; }
+}
+
+/* Every width below a tablet: the time, the calories and the two icons share
+   the top line and the meal drops to a full-width line beneath them. Four
+   things abreast in a phone-width panel leaves the meal under a hundred
+   pixels, which is not a meal anyone can read. */
+@media (max-width: 559px) {
+  .ml-entry { flex-wrap: wrap; }
+  .ml-entry-text { flex-basis: 100%; order: 3; }
+  .ml-entry-cal { min-width: 0; margin-left: auto; text-align: right; }
 }
 /* Tablets and laptops: the month and year controls sit on one line, with a
    wide gap between them so they never read as one run of five buttons. */
@@ -8639,9 +8684,10 @@ body {
   .ml-today-btn { flex-basis: 100%; margin: 0 auto; }
   .ml-day { min-height: 56px; font-size: 14px; }
   .ml-dh { font-size: 11px; padding: 9px 2px; }
-  /* A short time column beside a long meal column, with a gutter the native
-     time control cannot reach into. */
-  .ml-add-row { grid-template-columns: minmax(150px, 200px) 1fr; gap: 22px; }
+  /* A short time column, the meal taking whatever is left, and a narrow
+     calories column — each in its own track, with gutters that neither the
+     native time control nor a long meal name can reach into. */
+  .ml-add-row { grid-template-columns: minmax(130px, 150px) 1fr minmax(88px, 104px); gap: 18px; }
   .ml-day-panel { padding: 24px; }
 }
 
@@ -8725,6 +8771,13 @@ body {
 [data-mode="light"] .ml-icon-btn  { background: rgba(255,255,255,0.8); border-color: rgba(120,60,100,0.22); }
 [data-mode="light"] .ml-cancel-btn { background: rgba(255,255,255,0.8); border-color: rgba(120,60,100,0.22); color: #3a1030; }
 [data-mode="light"] .ml-save-warn { background: rgba(255,92,92,0.14); border-color: rgba(200,40,40,0.35); color: #a81028; }
+[data-mode="light"] .ml-entry-cal { color: #6b4a00; }
+[data-mode="light"] .ml-entry-cal-none { color: #6a3a5c; }
+[data-mode="light"] .ml-total { background: rgba(240,204,96,0.20); border-color: rgba(154,104,0,0.35); }
+[data-mode="light"] .ml-total-lbl { color: #4a2440; }
+[data-mode="light"] .ml-total-num { color: #6b4a00; }
+[data-mode="light"] .ml-total-note { color: #5a2a4a; }
+[data-mode="light"] .ml-cal-input { color: #3a1030; background: rgba(255,255,255,0.75); border-color: rgba(120,60,100,0.28); }
 
 
 /* ── TOP BAR ──────────────────────────────────────────────────────────────

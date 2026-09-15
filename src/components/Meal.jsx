@@ -72,6 +72,28 @@ function newId() {
   return `ml_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 }
 
+// ─── calories ──────────────────────────────────────────────────────────────
+// Optional on purpose. She will not always know the number, and a box that
+// must be filled would either stop her writing the meal down at all or push
+// her into guessing — and a guessed calorie count is exactly the invented data
+// this page exists to avoid. Blank stays blank, and says so.
+function parseCal(v) {
+  const n = Number(String(v).trim());
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : null;
+}
+
+// Only the meals that actually carry a number are counted. A day where two of
+// four meals have calories reports the total of those two AND says two are
+// missing, rather than presenting a partial figure as the whole day.
+function calTotals(entries = []) {
+  const withCal = entries.filter(e => typeof e.cal === 'number' && e.cal > 0);
+  return {
+    total: withCal.reduce((sum, e) => sum + e.cal, 0),
+    counted: withCal.length,
+    missing: entries.length - withCal.length,
+  };
+}
+
 // ─── storage ───────────────────────────────────────────────────────────────
 // An unreadable or missing log starts empty. It is NEVER seeded with example
 // meals: an invented line here would be indistinguishable from something she
@@ -106,14 +128,15 @@ function save(state) {
 function MealForm({ initial, onSubmit, onCancel }) {
   const [time, setTime] = useState(() => initial?.time || nowTime());
   const [text, setText] = useState(initial?.text || '');
+  const [cal,  setCal]  = useState(() => (initial?.cal != null ? String(initial.cal) : ''));
   const editing = Boolean(initial);
 
   function submit(e) {
     e.preventDefault();
     const t = text.trim();
     if (!t) return;
-    onSubmit({ time: time || nowTime(), text: t });
-    if (!editing) { setText(''); setTime(nowTime()); }
+    onSubmit({ time: time || nowTime(), text: t, cal: parseCal(cal) });
+    if (!editing) { setText(''); setCal(''); setTime(nowTime()); }
   }
 
   return (
@@ -137,6 +160,20 @@ function MealForm({ initial, onSubmit, onCancel }) {
             onChange={e => setText(e.target.value)}
             placeholder="Type it here"
             autoFocus={editing}
+          />
+        </label>
+        <label className="ml-cal-wrap">
+          <span className="ml-time-lbl">Calories</span>
+          <input
+            className="ml-cal-input"
+            type="number"
+            inputMode="numeric"
+            min="0"
+            step="1"
+            value={cal}
+            onChange={e => setCal(e.target.value)}
+            placeholder="—"
+            aria-label="Calories, leave empty if you do not know"
           />
         </label>
       </div>
@@ -171,6 +208,9 @@ function EntryRow({ entry, onEdit, onDelete }) {
     <li className="ml-entry">
       <span className="ml-entry-time">{prettyTime(entry.time)}</span>
       <span className="ml-entry-text">{entry.text}</span>
+      <span className={`ml-entry-cal${entry.cal == null ? ' ml-entry-cal-none' : ''}`}>
+        {entry.cal == null ? '—' : `${entry.cal.toLocaleString()} cal`}
+      </span>
       <span className="ml-entry-acts">
         <button className="ml-icon-btn" onClick={() => setEditing(true)} aria-label={`Edit ${entry.text}`}>✏️</button>
         <button className="ml-icon-btn ml-del" onClick={onDelete} aria-label={`Delete ${entry.text}`}>🗑</button>
@@ -182,6 +222,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 // ─── the open day ──────────────────────────────────────────────────────────
 function DayPanel({ year, monthIdx, day, entries, onAdd, onEdit, onDelete, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
+  const { total, missing } = calTotals(entries);
   return (
     <div className="ml-day-panel splash-item">
       <div className="ml-day-head">
@@ -209,6 +250,20 @@ function DayPanel({ year, monthIdx, day, entries, onAdd, onEdit, onDelete, onClo
           <li className="ml-entry-empty">Write the first meal of this day below.</li>
         )}
       </ul>
+
+      {entries.length > 0 && (
+        <div className="ml-total">
+          <div className="ml-total-row">
+            <span className="ml-total-lbl">Total for this day</span>
+            <span className="ml-total-num">{total.toLocaleString()} cal</span>
+          </div>
+          {missing > 0 && (
+            <div className="ml-total-note">
+              {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories yet, so {missing === 1 ? 'it is' : 'they are'} not in this total.
+            </div>
+          )}
+        </div>
+      )}
 
       {saveFailed && (
         <div className="ml-save-warn">
@@ -324,8 +379,9 @@ export default function Meal() {
         <h2 className="s-title">My <em>Meals</em></h2>
         <p className="s-desc">
           Tap a day and write down what you ate. The time fills itself in — tap it to change it.
-          Use ✏️ to change a line and 🗑 to remove one. Everything you write stays for good,
-          on every device, until you delete it yourself.
+          Calories are optional — leave the box empty when you do not know, and the day's
+          total counts only what you filled in. Use ✏️ to change a line and 🗑 to remove one.
+          Everything you write stays for good, on every device, until you delete it yourself.
         </p>
       </div>
 
