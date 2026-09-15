@@ -8610,7 +8610,7 @@ body {
 }
 .ml-entry-empty { font-size: 13px; color: var(--text-soft, #c090b8); padding: 6px 2px; }
 
-.ml-add { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+.ml-add { margin-top: 24px; display: flex; flex-direction: column; gap: 22px; }
 /* A GRID, not a flex row, and this is the fix for the two boxes meeting on an
    iPad. Safari gives <input type="time"> its own native control whose minimum
    width is wider than the slot it was handed, and a flex item will not shrink
@@ -8619,15 +8619,23 @@ body {
    the grid, not to either column, and min-width:0 stops a long value widening
    the track instead. The space between them is now guaranteed on every device.
    The boxes stack until there is genuine room for both, which is 560px. */
-.ml-add-row { display: grid; grid-template-columns: 1fr; gap: 18px; }
+/* The gutter is deliberately wide. Two bordered boxes eighteen pixels apart
+   are not overlapping, but at this size they still read as one cramped block
+   rather than two separate things to fill in — which is the complaint, and it
+   is a fair one. Thirty-two pixels is the distance at which they stop arguing
+   with each other. */
+.ml-add-row { display: grid; grid-template-columns: 1fr; gap: 26px; }
 .ml-time-wrap, .ml-text-wrap, .ml-cal-wrap {
-  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  display: flex; flex-direction: column; gap: 9px; min-width: 0;
 }
-.ml-time-lbl { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); }
+.ml-time-lbl { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); letter-spacing: 0.2px; }
 .ml-time-input, .ml-text-input, .ml-cal-input {
-  background: rgba(255,255,255,0.06);
-  border: 1.5px solid rgba(255,255,255,0.14);
-  border-radius: 12px; padding: 13px 14px;
+  background: rgba(255,255,255,0.09);
+  /* A stronger edge than the rest of the card. When the border is faint, two
+     neighbouring fields blur into a single grey slab no matter how much air is
+     between them. */
+  border: 1.5px solid rgba(255,255,255,0.28);
+  border-radius: 12px; padding: 14px 15px;
   color: #f8eed4; font-family: inherit;
   /* 16px exactly: Safari on iPhone and iPad zooms the whole page in when a
      field smaller than this takes focus, which throws the layout sideways
@@ -8657,14 +8665,14 @@ body {
   .ml-day-dot { font-size: 8.5px; padding: 1px 4px; }
   .ml-nav-label { font-size: 19px; min-width: 104px; }
   .ml-nav-btn { width: 36px; height: 36px; }
-  .ml-entry { padding: 11px 12px; gap: 10px; }
+  .ml-entry { padding: 11px 12px; gap: 13px; }
   .ml-entry-time { min-width: 54px; font-size: 11px; }
   .ml-entry-text { font-size: 13.5px; }
   .ml-entry-cal { font-size: 11.5px; }
   .ml-icon-btn { width: 30px; height: 30px; }
   .ml-day-panel { padding: 15px; }
   /* Time and calories side by side, the meal box across both. */
-  .ml-add-row { grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .ml-add-row { grid-template-columns: 1fr 1fr; gap: 22px 20px; }
   .ml-text-wrap { grid-column: 1 / -1; order: -1; }
 }
 
@@ -8684,11 +8692,13 @@ body {
   .ml-today-btn { flex-basis: 100%; margin: 0 auto; }
   .ml-day { min-height: 56px; font-size: 14px; }
   .ml-dh { font-size: 11px; padding: 9px 2px; }
-  /* A short time column, the meal taking whatever is left, and a narrow
-     calories column — each in its own track, with gutters that neither the
-     native time control nor a long meal name can reach into. */
-  .ml-add-row { grid-template-columns: minmax(130px, 150px) 1fr minmax(88px, 104px); gap: 18px; }
-  .ml-day-panel { padding: 24px; }
+  /* A short time column, the meal taking whatever is left, and a narrower
+     calories column — each in its own grid track, so the gutters belong to the
+     grid and neither the native time control nor a long meal name can reach
+     into them. Fixed widths rather than minmax: the meal box should be visibly
+     the largest of the three, which is also the order of how much you type. */
+  .ml-add-row { grid-template-columns: 132px 1fr 96px; gap: 32px; }
+  .ml-day-panel { padding: 26px; }
 }
 
 /* Light theme: the calendar needs real contrast on white. */
