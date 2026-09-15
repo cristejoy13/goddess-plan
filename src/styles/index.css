@@ -8437,7 +8437,7 @@ body {
    own small row, so both controls stay finger-sized on a phone. */
 .ml-nav {
   display: flex; flex-direction: column; align-items: center;
-  gap: 10px; margin-bottom: 14px;
+  gap: 14px; margin-bottom: 20px;
 }
 .ml-nav-row {
   display: flex; align-items: center; gap: 6px;
@@ -8524,30 +8524,30 @@ body {
   color: #ffeab0; border-radius: 999px; padding: 7px 15px;
   font-size: 12.5px; font-weight: 700;
   width: max-content; max-width: 100%;
-  margin: 12px auto 0;
+  margin: 18px auto 0;
   text-align: center;
 }
 
 .ml-day-panel {
-  margin-top: 14px; padding: 16px;
+  margin-top: 18px; padding: 20px;
   background: var(--card); border: 1.5px solid var(--border-r);
   border-radius: 16px;
   max-width: 560px; margin-inline: auto;
 }
-.ml-day-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.ml-day-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
 .ml-day-date { font-size: 15px; font-weight: 700; color: #f8eed4; line-height: 1.3; }
-.ml-day-count { font-size: 11.5px; color: var(--text-soft, #c090b8); margin-top: 3px; }
+.ml-day-count { font-size: 12px; color: var(--text-soft, #c090b8); margin-top: 5px; }
 .ml-close {
   flex: none; width: 32px; height: 32px; border-radius: 50%;
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
   color: var(--text-mid, #e7d6e8); font-size: 14px; cursor: pointer;
 }
 
-.ml-entries { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ml-entries { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .ml-entry {
-  display: flex; align-items: flex-start; gap: 10px;
+  display: flex; align-items: flex-start; gap: 14px;
   background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px; padding: 10px 12px;
+  border-radius: 12px; padding: 12px 14px;
 }
 .ml-entry-time {
   flex: none; font-size: 11.5px; font-weight: 700; color: var(--gold);
@@ -8556,7 +8556,7 @@ body {
 .ml-entry-text { flex: 1 1 auto; min-width: 0; font-size: 14px; color: #f8eed4; line-height: 1.4; word-break: break-word; }
 /* Pencil and bin, icons only. Words here would be longer than most of the
    meals they sit beside, so the row would end up reading as its buttons. */
-.ml-entry-acts { flex: none; display: flex; gap: 4px; }
+.ml-entry-acts { flex: none; display: flex; gap: 8px; }
 .ml-icon-btn {
   width: 30px; height: 30px; flex: none; border-radius: 9px;
   background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
@@ -8568,9 +8568,9 @@ body {
 .ml-icon-btn:active { transform: scale(0.92); }
 .ml-del:hover { background: rgba(255,120,120,0.16); border-color: rgba(255,120,120,0.4); }
 /* A row being edited gives its whole width to the form. */
-.ml-entry-editing { display: block; padding: 12px; }
+.ml-entry-editing { display: block; padding: 14px; }
 .ml-entry-editing .ml-add { margin-top: 0; }
-.ml-form-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.ml-form-btns { display: flex; flex-wrap: wrap; gap: 12px; }
 .ml-form-btns .ml-add-btn { flex: 1 1 auto; }
 .ml-cancel-btn {
   flex: 0 0 auto;
@@ -8579,25 +8579,36 @@ body {
   padding: 12px 18px; font-size: 13.5px; font-weight: 600; cursor: pointer;
 }
 .ml-save-warn {
-  margin-top: 12px; padding: 10px 12px; border-radius: 11px;
+  margin-top: 16px; padding: 12px 14px; border-radius: 11px;
   background: rgba(255,92,92,0.12); border: 1px solid rgba(255,92,92,0.35);
   color: #ff8080; font-size: 12.5px; line-height: 1.5;
 }
-.ml-entry-empty { font-size: 13px; color: var(--text-soft, #c090b8); padding: 4px 2px; }
+.ml-entry-empty { font-size: 13px; color: var(--text-soft, #c090b8); padding: 6px 2px; }
 
-.ml-add { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
-/* The time box sits beside the meal box on anything wider than a small phone,
-   and stacks under it below that, so neither ever gets squeezed narrow. */
-.ml-add-row { display: flex; flex-wrap: wrap; gap: 10px; }
-.ml-time-wrap { flex: 0 0 120px; display: flex; flex-direction: column; gap: 5px; }
-.ml-text-wrap { flex: 1 1 180px; display: flex; flex-direction: column; gap: 5px; }
-.ml-time-lbl { font-size: 11.5px; font-weight: 600; color: var(--text-mid, #c090b8); }
+.ml-add { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+/* A GRID, not a flex row, and this is the fix for the two boxes meeting on an
+   iPad. Safari gives <input type="time"> its own native control whose minimum
+   width is wider than the slot it was handed, and a flex item will not shrink
+   below its own content — so the time box grew straight across the gutter until
+   it touched the meal box. A grid track cannot do that: the gutter belongs to
+   the grid, not to either column, and min-width:0 stops a long value widening
+   the track instead. The space between them is now guaranteed on every device.
+   The boxes stack until there is genuine room for both, which is 560px. */
+.ml-add-row { display: grid; grid-template-columns: 1fr; gap: 18px; }
+.ml-time-wrap, .ml-text-wrap {
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+}
+.ml-time-lbl { font-size: 12px; font-weight: 600; color: var(--text-mid, #c090b8); }
 .ml-time-input, .ml-text-input {
   background: rgba(255,255,255,0.06);
   border: 1.5px solid rgba(255,255,255,0.14);
-  border-radius: 11px; padding: 11px 12px;
-  color: #f8eed4; font-size: 15px; font-family: inherit;
-  width: 100%;
+  border-radius: 12px; padding: 13px 14px;
+  color: #f8eed4; font-family: inherit;
+  /* 16px exactly: Safari on iPhone and iPad zooms the whole page in when a
+     field smaller than this takes focus, which throws the layout sideways
+     mid-typing. */
+  font-size: 16px;
+  width: 100%; min-width: 0;
 }
 .ml-time-input { cursor: pointer; text-align: center; font-weight: 700; }
 .ml-time-input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
@@ -8615,26 +8626,23 @@ body {
   .ml-day-dot { font-size: 8.5px; padding: 1px 4px; }
   .ml-nav-label { font-size: 19px; min-width: 104px; }
   .ml-nav-btn { width: 36px; height: 36px; }
-  .ml-entry { padding: 9px 10px; gap: 8px; }
-  .ml-entry-time { min-width: 54px; font-size: 11px; }
+  .ml-entry { padding: 11px 12px; gap: 11px; }
+  .ml-entry-time { min-width: 56px; font-size: 11px; }
   .ml-entry-text { font-size: 13.5px; }
-  .ml-icon-btn { width: 28px; height: 28px; }
-  .ml-time-wrap, .ml-text-wrap { flex: 1 1 100%; }
-  .ml-day-panel { padding: 13px; }
-}
-/* A short time box beside a long meal box reads better than two equal ones,
-   and there is room for it from a large phone upward. */
-@media (min-width: 421px) {
-  .ml-time-wrap { flex: 0 0 132px; }
-  .ml-text-wrap { flex: 1 1 200px; }
+  .ml-icon-btn { width: 30px; height: 30px; }
+  .ml-day-panel { padding: 15px; }
 }
 /* Tablets and laptops: the month and year controls sit on one line, with a
    wide gap between them so they never read as one run of five buttons. */
 @media (min-width: 560px) {
-  .ml-nav { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 12px 34px; }
+  .ml-nav { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 14px 40px; }
   .ml-today-btn { flex-basis: 100%; margin: 0 auto; }
   .ml-day { min-height: 56px; font-size: 14px; }
   .ml-dh { font-size: 11px; padding: 9px 2px; }
+  /* A short time column beside a long meal column, with a gutter the native
+     time control cannot reach into. */
+  .ml-add-row { grid-template-columns: minmax(150px, 200px) 1fr; gap: 22px; }
+  .ml-day-panel { padding: 24px; }
 }
 
 /* Light theme: the calendar needs real contrast on white. */
