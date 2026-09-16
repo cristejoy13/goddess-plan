@@ -1052,6 +1052,77 @@ body {
 }
 .petal-acc.is-open .petal-inner { padding: 0 22px 22px; }
 
+/* ── Compact pill ──────────────────────────────────────────────────────────
+   For a screen that is a LIST of pills rather than a few big cards. Tighter
+   row, small sans title in place of the serif, and a plain square emoji, so
+   eight of them fit a phone without scrolling. */
+.petal-acc.is-sm { margin-bottom: 6px; border-radius: 13px; box-shadow: none; }
+.petal-acc.is-sm:hover { box-shadow: 0 2px 14px rgba(0,0,0,0.3); }
+.petal-acc.is-sm.is-open { box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+.petal-acc.is-sm .acc-trigger { padding: 10px 13px; gap: 10px; }
+.petal-acc.is-sm .acc-emoji { width: 30px; height: 30px; border-radius: 9px; font-size: 15px; }
+.petal-acc.is-sm .acc-day { font-size: 8.5px; letter-spacing: 1.4px; }
+.petal-acc.is-sm .acc-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.petal-acc.is-sm .acc-sub { font-size: 10.5px; margin-top: 1px; }
+.petal-acc.is-sm .acc-chevron { width: 24px; height: 24px; font-size: 11px; }
+.petal-acc.is-sm .petal-inner { padding: 0 13px; }
+.petal-acc.is-sm.is-open .petal-inner { padding: 0 13px 13px; }
+
+/* ── The one oil a routine actually asks for ──────────────────────────────
+   Named at the top of the pill rather than buried in a step, because "which
+   bottle" is the question that stops the routine happening at all. */
+.hair-oil-pick {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 10px 0 4px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: rgba(240,204,96,0.08);
+  border: 1px solid rgba(240,204,96,0.2);
+}
+.hop-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.hop-main { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.hop-alt { font-size: 11px; color: var(--text-soft); }
+
+/* ── Hair · everything on the centre line ─────────────────────────────────
+   The pill list reads as one column down the middle of the phone rather than
+   as text ragged against the left edge. Scoped to this wrapper so no other
+   routine screen is affected. */
+.hair-pills .acc-text { text-align: center; }
+.hair-pills .acc-day { letter-spacing: 1.6px; }
+.hair-pills .hair-oil-pick { justify-content: center; text-align: center; }
+.hair-pills .rs-wrap { text-align: center; }
+.hair-pills .rs-trigger { gap: 10px; padding: 12px 14px; }
+/* The step name drops the serif and a few points, to sit under a compact pill
+   heading rather than compete with it. */
+.hair-pills .rs-name { font-family: 'Outfit', sans-serif; font-size: 13.5px; font-weight: 600; }
+.hair-pills .rs-num { width: 26px; height: 26px; font-size: 11px; }
+.hair-pills .rs-cat { font-size: 8.5px; letter-spacing: 1.4px; }
+/* The bullets lose their markers, since a centred line with a bullet hanging
+   off its left is worse than either choice on its own. */
+.hair-pills .ag-detail-list { list-style: none; padding-left: 0; text-align: center; }
+.hair-pills .ag-detail-list li { padding-left: 0; text-align: center; }
+.hair-pills .ag-detail-list li::before { content: none; }
+.hair-pills .note-box { text-align: center; }
+.hair-pills .tool-card { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.hair-pills .product-card .pc-body { text-align: center; }
+.hair-pills .pc-badges { justify-content: center; }
+.hair-pills .oil-rot-summary-label,
+.hair-pills .oil-rot-month-label { text-align: center; }
+
 /* body content */
 .workout-list { list-style: none; margin: 12px 0; }
 .workout-list li {
@@ -2026,15 +2097,18 @@ body {
 }
 
 /* ── Skincare Top-Level Pills (Face / Body) ── */
+/* Two columns, each stacked. The everyday four sit on the left, the
+   occasional four on the right, and the split holds at every width so the
+   thumb learns one place per tab. */
 .sk-top-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-bottom: 24px;
-  justify-content: center;
 }
+.sk-top-col { display: flex; flex-direction: column; gap: 10px; }
 .sk-top-tab {
-  flex: 0 1 auto;
+  width: 100%;
   min-width: 0;
   padding: 14px 18px;
   border-radius: 18px;
@@ -2065,11 +2139,11 @@ body {
 }
 
 @media (max-width: 768px) {
-  .sk-top-tabs { gap: 8px; justify-content: flex-start; }
+  .sk-top-tabs { gap: 8px; }
+  .sk-top-col { gap: 8px; }
   .sk-top-tab {
-    flex: 0 1 calc(50% - 4px);
-    font-size: 13px;
-    padding: 13px 10px;
+    font-size: 12.5px;
+    padding: 12px 8px;
     border-radius: 14px;
   }
 }
@@ -6301,53 +6375,6 @@ body {
   opacity: 0.55;
   margin-top: 8px;
   letter-spacing: 0.2px;
-}
-
-/* ─── HAIR · the four-week rotation key ───────────────────────────────────
-   The calendar above shows WHEN. This shows WHAT, one line per week, so the
-   loop can be read without tapping four separate dates to work it out. */
-.oil-rot-weeks {
-  margin-top: 14px;
-  border: 1px solid rgba(240,204,96,0.16);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.oil-rot-week-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  font-size: 11.5px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.oil-rot-week-row:last-child { border-bottom: none; }
-.oil-rot-week-num {
-  flex: none;
-  min-width: 52px;
-  font-weight: 700;
-  color: var(--gold);
-  font-size: 10.5px;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-.oil-rot-week-name { flex: 1 1 auto; color: var(--text); font-weight: 600; }
-/* The emoji run is the row's quick read, so it stays on one line and lets the
-   name beside it wrap instead. */
-.oil-rot-week-ems { flex: none; letter-spacing: 1px; white-space: nowrap; }
-
-.oil-modal-week-name {
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  color: var(--gold-light);
-  background: rgba(240,204,96,0.12);
-  border: 1px solid rgba(240,204,96,0.22);
-  border-radius: 999px;
-  padding: 6px 12px;
-  margin: 0 auto 10px;
-  width: max-content;
-  max-width: 100%;
 }
 
 /* ─── HAIR · tools ────────────────────────────────────────────────────────

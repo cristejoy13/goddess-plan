@@ -3,6 +3,9 @@ import { useState } from 'react';
 export default function PetalAccordion({
   id, emoji, emojiBg, day, title, sub, children,
   defaultOpen = false, isToday = false,
+  // Tighter row, small type, no serif heading — for lists of many short pills
+  // where the full-size card would turn the screen into a scroll.
+  compact = false,
   // controlled mode: pass both to opt in
   open: controlledOpen, onToggle,
 }) {
@@ -19,7 +22,7 @@ export default function PetalAccordion({
   }
 
   return (
-    <div id={id} className={`petal-acc splash-item${open ? ' is-open' : ''}${isToday ? ' is-today' : ''}`}>
+    <div id={id} className={`petal-acc splash-item${compact ? ' is-sm' : ''}${open ? ' is-open' : ''}${isToday ? ' is-today' : ''}`}>
       <button className="acc-trigger" onClick={handleToggle}>
         <div className="acc-emoji" style={{ background: emojiBg }}>{emoji}</div>
         <div className="acc-text">

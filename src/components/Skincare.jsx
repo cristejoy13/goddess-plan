@@ -56,6 +56,7 @@ const BRAND_COLOR = {
   'Batiste':          '#c8102e',
   'OGX':              '#6b4f3a',
   'Alpecin':          '#1f6fb2',
+  'Grande Cosmetics': '#b0446e',
 };
 
 function ProductCard({ brand, name, badges = [], why, primary = false }) {
@@ -469,56 +470,44 @@ const DAY_LETTERS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAY_NAMES   = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-// Mon–Sun. The long soak lands on Sunday: you are already showering after the
-// sprints, and it sets you up for Monday.
+// Mon–Sun. The long soak is Saturday — the day there is time for it.
 //
-// Rosemary is in every single session — it is the one oil here with a human
-// trial behind it, so it is the constant. What changes is the oil it is
-// stirred into, on a four-week loop, so the scalp is not sitting on the same
-// blend month after month and each week has a different job. Coconut appears
-// once in the four, which keeps it inside the once-a-fortnight-at-most rule
-// that fine hair needs.
-const WEEK_BLENDS = [
-  {
-    name: 'Growth week',
-    sub: 'Rosemary in jojoba · camellia over the lengths',
-    oils: [{ e: '🌼', n: 'Jojoba' }, { e: '🌿', n: 'Rosemary' }, { e: '🌸', n: 'Camellia' }],
-  },
-  {
-    name: 'Softness week',
-    sub: 'Rosemary in camellia · argan over the lengths',
-    oils: [{ e: '🌸', n: 'Camellia' }, { e: '🌿', n: 'Rosemary' }, { e: '✨', n: 'Argan' }],
-  },
-  {
-    name: 'Circulation week',
-    sub: 'Rosemary + one drop of peppermint in jojoba',
-    oils: [{ e: '🌼', n: 'Jojoba' }, { e: '🌿', n: 'Rosemary' }, { e: '🌱', n: 'Peppermint' }, { e: '🌸', n: 'Camellia' }],
-  },
-  {
-    name: 'Strength week',
-    sub: 'Rosemary in jojoba · coconut on the very ends, last 20 min',
-    oils: [{ e: '🌼', n: 'Jojoba' }, { e: '🌿', n: 'Rosemary' }, { e: '🥥', n: 'Coconut' }],
-  },
+// Two oils, never more. Rosemary is in every one of them because it is the
+// only oil here with a human trial behind it; the second oil is the one that
+// changes, so each Saturday brings a different partner and nothing sits on the
+// scalp week after week. Four pairs, and the loop starts over.
+const SAT_PAIRS = [
+  [{ e: '🌿', n: 'Rosemary' }, { e: '🌼', n: 'Jojoba' }],
+  [{ e: '🌿', n: 'Rosemary' }, { e: '🌸', n: 'Camellia' }],
+  [{ e: '🌿', n: 'Rosemary' }, { e: '💧', n: 'Squalane' }],
+  [{ e: '🌿', n: 'Rosemary' }, { e: '🥥', n: 'Coconut' }],
 ];
 
-// Sunday only. Six empty weekdays, then the blend for that week of the month.
-const OIL_SCHEDULE = WEEK_BLENDS.map(w => [[], [], [], [], [], [], w.oils]);
+// Index 5 is Saturday — the week runs Mo, Tu, We, Th, Fr, Sa, Su.
+const OIL_SCHEDULE = SAT_PAIRS.map(pair => [[], [], [], [], [], pair, []]);
+
+// Every oil she owns, tappable for its own page. Peppermint is not on the
+// calendar — it cannot carry rosemary on its own — but it stays here so the
+// page is still reachable when she wants to add a drop.
+const ALL_OILS = [
+  { e: '🌿', n: 'Rosemary' }, { e: '🌼', n: 'Jojoba' }, { e: '🌸', n: 'Camellia' },
+  { e: '💧', n: 'Squalane' }, { e: '🥥', n: 'Coconut' }, { e: '🌱', n: 'Peppermint' },
+  { e: '✨', n: 'Argan' },
+];
 
 // Nightly, and deliberately not on the calendar — a thing you do every night is
-// not an appointment. Two parts, and they go on different places: a light oil
-// on the SCALP for the hairline, and a drop of argan on the ENDS for the pillow.
+// not an appointment. Two parts, on different places: a light oil on the SCALP
+// for the hairline, and a drop of argan on the ENDS for the pillow.
 const NIGHTLY_SCALP = {
-  e: '🌿',
-  n: 'Lightweight scalp oil',
-  how: '3–4 drops of a light biotin-and-rosemary oil, straight onto the parting lines. Scalp only — not the lengths. Massage it in for 3–5 minutes with your fingertips or the scalp brush. On a night you are washing, put it on first and shower 20–30 minutes later. On a night you are not, leave it in and sleep in the bonnet.',
-  why: 'The hairline answers to little and often, not to one big soak. The massage brings blood to the follicle and the rosemary is the part with a real trial behind it. Keeping the amount small and the oil light is what stops it flattening fine hair.',
+  n: 'Rosemary mint oil',
+  how: '3–4 drops on the parting lines. Scalp only. Massage 3 minutes.',
+  why: 'The hairline answers to little and often, not one long soak. Keep it light or fine hair goes flat.',
 };
 
 const NIGHTLY_ENDS = {
-  e: '🌙',
-  n: 'Argan',
-  how: '1–2 drops warmed between your palms, stroked through the bottom third of your hair only — never the scalp, never the roots. Do it on dry hair right before bed, then plait loosely or wrap in silk.',
-  why: 'Argan sits on the cuticle instead of soaking into it, so it seals the ends against overnight friction without softening fine hair into limpness. It is also the least likely of your oils to build up night after night.',
+  n: 'Camellia oil',
+  how: '1–2 drops on the bottom third, dry hair, right before bed. Never the scalp.',
+  why: 'It gets into the shaft and holds the moisture there overnight, without the weight.',
 };
 
 const OIL_COLORS = {
@@ -528,38 +517,44 @@ const OIL_COLORS = {
   Jojoba:     'rgba(240,204,96,0.10)',
   Coconut:    'rgba(255,255,255,0.08)',
   Peppermint: 'rgba(120,220,180,0.12)',
+  Squalane:   'rgba(180,220,255,0.12)',
 };
 
 const OIL_GUIDE = {
-  Camellia: {
-    emoji: '🌸',
-    how: 'STEP 3 of the Sunday session. Warm 3–5 drops and work them through mid-lengths and ends, over the top of the jojoba-rosemary blend already on your scalp. Massage 5 min, leave the whole thing 45–60 min, then shampoo out — shampoo dry hair first, before any water touches it.',
-    tip: 'Your hero oil, and the one doing the actual conditioning. It penetrates the shaft without weighing fine strands down.',
-  },
   Rosemary: {
     emoji: '🌿',
-    how: 'STEP 2 of the Sunday session. Never neat — 3–5 drops stirred into the jojoba already in your palm. Apply along scalp parting lines only, massage 5 min. It stays on for the same 45–60 min as everything else, then shampoo twice.',
-    tip: 'Always diluted. Once a week is enough — the 6-month trial that matched minoxidil used consistency, not frequency.',
-  },
-  Argan: {
-    emoji: '✨',
-    how: 'Mostly your nightly one: 1–2 drops warmed between your palms, stroked through the bottom third only, on dry hair right before bed. Never the scalp. Also 1–2 drops on damp hair after every wash. In Softness week it does one more job — it goes over the lengths in the long Sunday soak, in place of camellia.',
-    tip: 'The best oil you own for overnight ends: it seals the cuticle instead of soaking in, so it protects against pillow friction without going limp on fine hair.',
+    how: 'In every Saturday soak, never on its own. 3 drops stirred into the partner oil already in your palm, then along the parting lines. Massage 5 min.',
+    tip: 'Always diluted. Once a week is enough — the trial that matched minoxidil ran on consistency, not frequency.',
   },
   Jojoba: {
     emoji: '🌼',
-    how: 'STEP 1 of the Sunday session. Pour 3–4 drops into your palm — this is the carrier the rosemary goes into next. Apply the blend along scalp parting lines and massage 3–5 min.',
-    tip: "Closest match to your scalp's own sebum, which is why it carries the rosemary without clogging follicles. It always goes on first.",
+    how: 'Saturday partner oil. 4 drops in your palm, rosemary stirred in, onto the scalp. Also the base for your nightly scalp oil if you mix your own.',
+    tip: "Closest match to your scalp's own sebum, so it carries the rosemary without clogging.",
   },
-  Peppermint: {
-    emoji: '🌱',
-    how: 'Circulation week only, and ONE drop — stirred into the jojoba in your palm alongside the rosemary, never on its own and never straight onto skin. Apply along the parting lines, massage 5 min. It will feel cold and tingly; that is the oil working, not a problem. If it stings or burns, rinse it off.',
-    tip: 'One drop in a full palm of carrier is the whole dose. Peppermint is stronger than rosemary, so it visits once a month rather than living in the routine.',
+  Camellia: {
+    emoji: '🌸',
+    how: 'Saturday partner oil. 4 drops in your palm with the rosemary, scalp first, then whatever is left through the lengths.',
+    tip: 'The one that actually conditions. It gets into the shaft without weighing fine hair down.',
+  },
+  Argan: {
+    emoji: '✨',
+    how: 'Not in any of your routines any more — camellia took the night and the after-shower job, squalane took the daytime one. If you ever want it back, it goes 1–2 drops on the bottom third, dry hair, never the scalp.',
+    tip: 'Kept here because you own it and it still works. Nothing is asking you to use it.',
   },
   Coconut: {
     emoji: '🥥',
-    how: 'STEP 4, and only on Strength week. 1–2 drops on the very ends — not scalp, not mid-shaft. Add it 20 min before you wash, not at the start, so it never sits longer than that. Always shampoo out completely.',
-    tip: 'Once a month, and never as the nightly ends oil — that job belongs to argan. Coconut on fine hair every night is how protein overload starts.',
+    how: 'Saturday partner oil, one week in four. On the ends for the last 20 min only, then shampoo out completely.',
+    tip: 'Never the nightly ends oil — that is argan. Coconut every night on fine hair is how protein overload starts.',
+  },
+  Squalane: {
+    emoji: '💧',
+    how: 'Saturday partner oil, one week in four: 4 drops in your palm with the rosemary. Also the daytime ends oil — half a drop on dry ends before you go out.',
+    tip: 'The lightest thing you can put on hair. It disappears into the ends and leaves nothing sitting on top.',
+  },
+  Peppermint: {
+    emoji: '🌱',
+    how: 'Optional extra, not scheduled. ONE drop stirred into the Saturday palm alongside the rosemary. Never neat, never on its own.',
+    tip: 'It will feel cold. If it stings or burns, rinse it off.',
   },
 };
 
@@ -578,7 +573,7 @@ const OIL_BENEFITS = {
       { icon: '🌸', title: 'Wavy hair-safe', body: 'Does not cause protein overload on fine or wavy hair.' },
     ],
     bestFor: 'Fine, wavy, or colour-treated hair',
-    frequency: '1× per week — Sunday session, step 3',
+    frequency: 'One Saturday in four — the partner oil',
   },
   Rosemary: {
     emoji: '🌿',
@@ -594,7 +589,7 @@ const OIL_BENEFITS = {
       { icon: '⚠️', title: 'Must always be diluted', body: 'Rosemary essential oil is potent. Never apply neat to skin. Always dilute in a carrier oil (jojoba or camellia) before applying.' },
     ],
     bestFor: 'Hair density support and seasonal shedding',
-    frequency: '1× per week — Sunday session, step 2 (always diluted)',
+    frequency: 'Every Saturday — always diluted',
   },
   Argan: {
     emoji: '✨',
@@ -610,7 +605,7 @@ const OIL_BENEFITS = {
       { icon: '🌿', title: 'Scalp-free application', body: 'Use only mid-lengths and ends to avoid greasiness.' },
     ],
     bestFor: 'Post-wash finishing on all hair types, especially wavy and frizz-prone',
-    frequency: 'Every night on the ends, plus after every wash',
+    frequency: 'Not scheduled — kept as an option',
   },
   Jojoba: {
     emoji: '🌼',
@@ -626,7 +621,7 @@ const OIL_BENEFITS = {
       { icon: '💧', title: 'Lightweight hydration', body: 'Moisturises scalp without heaviness.' },
     ],
     bestFor: 'Scalp treatments, rosemary dilution, all hair types',
-    frequency: '1× per week — Sunday session, step 1 (the carrier)',
+    frequency: 'One Saturday in four — the partner oil',
   },
   Peppermint: {
     emoji: '🌱',
@@ -642,7 +637,23 @@ const OIL_BENEFITS = {
       { icon: '🚫', title: 'Keep it away from the eyes', body: 'Wash your hands after applying. Menthol in the eye is extremely painful.' },
     ],
     bestFor: 'A scalp that feels sluggish, flaky, or itchy — one week in four',
-    frequency: 'Once a month — Circulation week only, one drop',
+    frequency: 'Optional extra — one drop, never on its own',
+  },
+  Squalane: {
+    emoji: '💧',
+    tagline: 'Weightless. The one that never looks greasy',
+    color: 'rgba(180,220,255,0.10)',
+    borderColor: 'rgba(180,220,255,0.28)',
+    science: 'Squalane is a stable form of squalene, which your own skin already makes. The plant-derived kind is a very small, very light molecule — it absorbs almost instantly and leaves no film, which is why it is the one oil that works on dry hair in daylight.',
+    benefits: [
+      { icon: '🪶', title: 'Lightest oil you can buy', body: 'Sinks in at once. Nothing sits on the surface to catch the light.' },
+      { icon: '👜', title: 'Safe for daytime', body: 'The only oil here you can use on dry hair before going out without looking oily.' },
+      { icon: '🌡️', title: 'Does not go rancid', body: 'Very stable, so a bottle lasts and never smells off.' },
+      { icon: '🧴', title: 'No smell, no residue', body: 'Fragrance-free and colourless — it will not fight your perfume.' },
+      { icon: '⚖️', title: 'Ends only, still', body: 'Light is not the same as invisible. Keep it below the ears.' },
+    ],
+    bestFor: 'Going out, and anyone who finds every other oil too heavy',
+    frequency: 'Daytime ends, and one Saturday in four',
   },
   Coconut: {
     emoji: '🥥',
@@ -655,10 +666,10 @@ const OIL_BENEFITS = {
       { icon: '💧', title: 'Deep end conditioning', body: 'A small amount softens dry, split ends temporarily.' },
       { icon: '⚠️', title: 'Fine hair caution', body: 'Fine and wavy hair is prone to protein overload. Signs: hair feels straw-like, loses elasticity, snaps instead of stretches. Use 1–2 drops, ends only.' },
       { icon: '⏱️', title: '20-minute maximum', body: 'Long exposure can cause buildup on fine hair. Set a timer and shampoo fully.' },
-      { icon: '📅', title: 'Once a month maximum', body: 'Only on the Strength week Sunday soak. Argan is the nightly ends oil, not this.' },
+      { icon: '📅', title: 'One Saturday in four', body: 'Its own week in the rotation. Argan is the nightly ends oil, not this.' },
     ],
     bestFor: 'Dry, porous, or thick hair. Use with strict frequency limits on fine/wavy hair.',
-    frequency: 'Once a month — Strength week only, ends only',
+    frequency: 'One Saturday in four — ends only',
   },
 };
 
@@ -678,7 +689,7 @@ function getMonthWeeks(year, monthIdx) {
   return weeks;
 }
 
-function OilDayModal({ day, monthIdx, oils, dayName, blend, onClose }) {
+function OilDayModal({ day, monthIdx, oils, dayName, onClose }) {
   const dateLabel = `${DAY_NAMES[dayName]}, ${MONTH_NAMES[monthIdx]} ${day}`;
   const isRest = oils.length === 0;
   return (
@@ -689,8 +700,8 @@ function OilDayModal({ day, monthIdx, oils, dayName, blend, onClose }) {
         {isRest ? (
           <div className="oil-modal-rest">
             <div className="oil-modal-rest-icon">🌙</div>
-            <p className="oil-modal-rest-text">No long soak today.</p>
-            <p className="oil-modal-rest-sub">The 45-minute soak is Sunday only. Tonight is just the light oil and the massage. 🌸</p>
+            <p className="oil-modal-rest-text">No soak today.</p>
+            <p className="oil-modal-rest-sub">Saturdays only. Tonight is just the light oil and the massage. 🌸</p>
           </div>
         ) : (
           <>
@@ -699,9 +710,8 @@ function OilDayModal({ day, monthIdx, oils, dayName, blend, onClose }) {
                 <span key={o.n} className="oil-modal-chip">{o.e} {o.n}</span>
               ))}
             </div>
-            {blend && <div className="oil-modal-week-name">{blend.name} — {blend.sub}</div>}
             <p className="oil-modal-card-tip" style={{ marginBottom: 10 }}>
-              💡 One long soak, in this order. The first two go on the scalp, the next over the lengths, and it all comes off together after 45–60 min.
+              💡 Mix both in your palm. Scalp first, then the lengths. Leave 45 min, then shampoo twice.
             </p>
             {oils.map(o => {
               const g = OIL_GUIDE[o.n];
@@ -719,12 +729,12 @@ function OilDayModal({ day, monthIdx, oils, dayName, blend, onClose }) {
 
         {/* Both nightly oils happen every night, soak day included. */}
         <div className="oil-modal-card">
-          <div className="oil-modal-card-title">🌿 Tonight · light oil on the scalp</div>
+          <div className="oil-modal-card-title">🌿 Tonight · scalp</div>
           <p className="oil-modal-card-how">{NIGHTLY_SCALP.how}</p>
           <p className="oil-modal-card-tip">💡 {NIGHTLY_SCALP.why}</p>
         </div>
         <div className="oil-modal-card">
-          <div className="oil-modal-card-title">🌙 Tonight · {NIGHTLY_ENDS.n} on the ends</div>
+          <div className="oil-modal-card-title">🌙 Tonight · ends</div>
           <p className="oil-modal-card-how">{NIGHTLY_ENDS.how}</p>
           <p className="oil-modal-card-tip">💡 {NIGHTLY_ENDS.why}</p>
         </div>
@@ -788,22 +798,6 @@ function OilRotationCalendar({ onSelectOil }) {
   const weeks = getMonthWeeks(year, monthIdx);
   const [selected, setSelected] = useState(null);
 
-  // Counted off the rotation itself rather than written down by hand, so the
-  // tally cannot drift out of step with the calendar above it when the blends
-  // change. An oil that does not appear this month is simply absent, not a zero.
-  const counts = {};
-  const emojiOf = {};
-  weeks.forEach((week, wi) => {
-    const wType = wi % WEEK_BLENDS.length;
-    week.forEach((day, di) => {
-      if (!day) return;
-      OIL_SCHEDULE[wType][di].forEach(o => {
-        counts[o.n] = (counts[o.n] || 0) + 1;
-        emojiOf[o.n] = o.e;
-      });
-    });
-  });
-
   return (
     <div className="oil-rotation splash-item">
       {selected && (
@@ -812,21 +806,19 @@ function OilRotationCalendar({ onSelectOil }) {
           monthIdx={monthIdx}
           oils={selected.oils}
           dayName={selected.dayName}
-          blend={selected.blend}
           onClose={() => setSelected(null)}
         />
       )}
       <div className="oil-rot-month-label">
         {MONTH_NAMES[monthIdx]} {year}
-        <span className="oil-rot-cal-hint"> · Sundays are soak days · tap any date</span>
+        <span className="oil-rot-cal-hint"> · Saturdays · tap a date</span>
       </div>
       <div className="oil-rot-cal">
         <div className="oil-rot-cal-header">
           {DAY_LETTERS.map(d => <div key={d} className="oil-rot-dh">{d}</div>)}
         </div>
         {weeks.map((week, wi) => {
-          const wType = wi % WEEK_BLENDS.length;
-          const blend = WEEK_BLENDS[wType];
+          const wType = wi % SAT_PAIRS.length;
           return (
             <div key={wi} className="oil-rot-cal-week">
               {week.map((day, di) => {
@@ -839,8 +831,8 @@ function OilRotationCalendar({ onSelectOil }) {
                     key={di}
                     className={`oil-rot-day oil-rot-day-btn${oils.length === 0 ? ' oil-rot-day-rest' : ''}${isToday ? ' oil-rot-day-today' : ''}`}
                     style={{ background: isToday ? undefined : bg }}
-                    onClick={() => setSelected({ day, oils, dayName: di, blend })}
-                    aria-label={`${MONTH_NAMES[monthIdx]} ${day}${oils.length ? `, ${blend.name}` : ''}`}
+                    onClick={() => setSelected({ day, oils, dayName: di })}
+                    aria-label={`${MONTH_NAMES[monthIdx]} ${day}${oils.length ? `, ${oils.map(o => o.n).join(' and ')}` : ''}`}
                   >
                     <span className="oil-rot-day-num">{day}</span>
                     <div className="oil-rot-day-oils">
@@ -855,62 +847,53 @@ function OilRotationCalendar({ onSelectOil }) {
           );
         })}
       </div>
-      <div className="oil-rot-weeks">
-        {WEEK_BLENDS.map((w, i) => (
-          <div key={w.name} className="oil-rot-week-row">
-            <span className="oil-rot-week-num">Week {i + 1}</span>
-            <span className="oil-rot-week-name">{w.name}</span>
-            <span className="oil-rot-week-ems">{w.oils.map(o => o.e).join(' ')}</span>
-          </div>
-        ))}
-      </div>
-
       <div className="oil-rot-summary">
-        <div className="oil-rot-summary-label">Your {MONTH_NAMES[monthIdx]} soaks — the nightly oils are not counted here</div>
+        <div className="oil-rot-summary-label">Tap an oil to read what it does</div>
         <div className="oil-rot-summary-grid">
-          {Object.entries(counts).map(([name, n]) => (
-            <button key={name} className="oil-rot-summary-item oil-rot-summary-btn" onClick={() => onSelectOil(name)}>
-              <span className="oil-rot-summary-em">{emojiOf[name]}</span>
-              <span className="oil-rot-summary-name">{name}</span>
-              <span className="oil-rot-summary-count">{n}×</span>
+          {ALL_OILS.map(o => (
+            <button key={o.n} className="oil-rot-summary-item oil-rot-summary-btn" onClick={() => onSelectOil(o.n)}>
+              <span className="oil-rot-summary-em">{o.e}</span>
+              <span className="oil-rot-summary-name">{o.n}</span>
             </button>
           ))}
         </div>
-        <p className="oil-rot-summary-tap-hint">Tap an oil for benefits →</p>
       </div>
     </div>
   );
 }
 
-/* ─── The four hair routines ───────────────────────────────────────────────
-   Four moments in a day, each one a closed pill you open when you are in it,
-   and inside each one the steps in the order you actually do them. The order
-   is the whole point: comb, then massage, then serum, then oil, then cover.
-   Doing it in a different order is what makes hair either greasy or dry.
+/* ─── The hair routines ────────────────────────────────────────────────────
+   Six moments, each a pill, each holding its steps in the order they are done.
+   The order is the substance: comb, massage, serum, oil, cover. The same steps
+   in another order give greasy roots or dry ends.
 
-   The steps are data rather than hand-written markup because all four pills
-   are the same shape, and four copies of the same markup is four places for
-   them to drift apart. */
+   Every step that involves an oil NAMES the oil in its own title, and every
+   pill states its oils before the first step. "Oil" on its own is not an
+   instruction — it is a trip to a shelf of bottles at the moment you are
+   trying to get out of the door. */
 const HAIR_ROUTINES = [
   {
     id: 'hr-pre',
     emoji: '🚿',
     emojiBg: 'rgba(120,200,220,0.18)',
-    when: 'Evening · the nights you wash',
-    title: 'Before the shower',
-    sub: 'Comb → massage → oil → wait → wash',
-    intro: 'Oil goes on BEFORE water, never after. Twenty minutes is enough on a normal night.',
+    when: 'Wash nights',
+    title: 'Before shower',
+    sub: 'Comb · massage · oil · wash',
+    oils: [
+      { part: 'Scalp', main: '🌼 Jojoba + 3 drops rosemary', alt: '🌿 Mielle Rosemary Mint' },
+      { part: 'Ends', main: '🌸 Camellia', alt: '💧 Squalane' },
+    ],
     steps: [
       {
-        id: 'pre1', cat: '2 minutes', name: 'Comb it out — wooden, wide tooth',
+        id: 'pre1', cat: '2 minutes', name: 'Comb it out',
         list: [
-          'Start at the very ends and work upward in short sections',
+          'Wooden wide-tooth comb, dry hair only',
+          'Start at the very ends, work upward in short sections',
           'Never drag from the roots down — that is how strands snap',
-          'Dry hair only. Wet hair stretches and breaks',
           'Finish with slow strokes over the scalp to wake it up',
         ],
         tools: [
-          { icon: '🪵', name: 'Wooden wide-tooth comb', why: 'Sandalwood or neem. Wood does not build static, and wide teeth slide past a tangle instead of tearing it. Under ₱200 on Shopee — search "wooden wide tooth comb sandalwood".' },
+          { icon: '🪵', name: 'Wooden wide-tooth comb', why: 'Sandalwood or neem. Wood makes no static, wide teeth slide past a tangle instead of tearing it. Under ₱200 — search "wooden wide tooth comb sandalwood" on Shopee.' },
         ],
       },
       {
@@ -918,40 +901,44 @@ const HAIR_ROUTINES = [
         list: [
           'Fingertips flat, never nails',
           'Small firm circles — move the skin, do not slide over it',
-          'Work the hairline and the temples longest, that is where you want growth',
+          'Hairline and temples longest. That is where you want growth',
           'Five minutes. Set a timer, it is longer than it feels',
         ],
         tools: [
-          { icon: '🫧', name: 'Silicone scalp massager brush', why: 'Soft rubber fingers, the kind sold for shampooing. Easier on the arms than doing five minutes by hand. Around ₱100–₱250.' },
+          { icon: '🫧', name: 'Silicone scalp massager', why: 'The soft rubber brush sold for shampooing. Saves your arms over five minutes. ₱100–₱250.' },
         ],
       },
       {
-        id: 'pre3', cat: 'Scalp only', name: 'Lightweight oil on the parting lines',
+        id: 'pre3', cat: 'Scalp only', name: '🌼 Jojoba + rosemary on the scalp',
         list: [
-          '3–4 drops, straight onto the scalp along the partings',
-          'Scalp only — the lengths do not need this one',
-          'Massage it in for another 2 minutes',
-          'On the Sunday soak this is where the weekly blend goes instead',
+          '4 drops jojoba + 3 drops rosemary, mixed in your palm',
+          'Onto the parting lines only — scalp, never the lengths',
+          'Massage it in for 2 more minutes',
+          'Rosemary is never used neat. Jojoba is what carries it',
         ],
         products: [
-          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'Biotin and rosemary already blended and light enough for fine hair — this is the one oil that does the nightly job on its own. Widely stocked on Shopee and Lazada PH.' },
-          { brand: 'The Ordinary', name: '100% Cold-Pressed Virgin Jojoba + your rosemary drops', badges: ['Cheapest', 'You own it'], why: 'The oils you already have. 4 drops jojoba, 2 drops rosemary, mixed in your palm. Same job, no new purchase.' },
+          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil — ready-mixed scalp oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'Rosemary and biotin already blended, so there is nothing to measure. ₱500–₱800 on Shopee and Lazada.' },
+          { brand: 'The Ordinary', name: '100% Cold-Pressed Virgin Jojoba Oil — the carrier', badges: ['Carrier oil', 'Mix it yourself'], why: 'Use with your own rosemary drops. Cheaper per use and you control the strength. About ₱600.' },
         ],
       },
       {
-        id: 'pre4', cat: 'Ends only', name: 'One drop of argan on the bottom third',
+        id: 'pre4', cat: 'Ends only', name: '🌸 Camellia on the ends',
         list: [
-          '1 drop, warmed between the palms',
-          'Bottom third only — the ends are the oldest hair and the driest',
-          'This protects the ends from the shampoo that is coming',
+          '1–2 drops on the bottom third',
+          'This is the shield against the shampoo that is coming',
+          'Camellia, not argan — it gets into the shaft instead of sitting on it',
+        ],
+        tools: [
+          { icon: '🌸', name: '100% Camellia (Tsubaki) oil', why: 'Japanese hair oil, about 80% oleic acid. Search "camellia oil tsubaki 100%" on Shopee. ₱300–₱700.' },
+          { icon: '💧', name: 'Squalane — if camellia feels heavy', why: 'Lighter again, absorbs instantly. The Ordinary 100% Plant-Derived Squalane, about ₱600.' },
         ],
       },
       {
-        id: 'pre5', cat: '20–30 minutes', name: 'Let it sit, then shower',
+        id: 'pre5', cat: '20–30 min later', name: 'Wash it out',
         list: [
           '20–30 minutes is plenty on a normal night',
-          'Shampoo the SCALP first, before you wet the lengths',
-          'Two washes on an oiled night — one lifts the oil, the second cleans',
+          'Shampoo the SCALP first, before the lengths get wet',
+          'Two washes on an oiled night — one lifts, one cleans',
           'Conditioner on the lengths only, never the scalp',
         ],
       },
@@ -962,76 +949,79 @@ const HAIR_ROUTINES = [
     emoji: '💧',
     emojiBg: 'rgba(255,232,122,0.18)',
     when: 'Straight out of the shower',
-    title: 'After the shower',
-    sub: 'Squeeze → growth serum → hydrating serum → oil → heat guard',
-    intro: 'Damp hair takes things in. This is the best moment of the day for the growth serum.',
+    title: 'After shower',
+    sub: 'Growth serum · leave-in · oil · heat guard',
+    oils: [
+      { part: 'Ends', main: '🌸 Camellia — 1 drop, damp', alt: '💧 Squalane' },
+    ],
     steps: [
       {
-        id: 'post1', cat: 'First 30 seconds', name: 'Squeeze, never rub',
+        id: 'po1', cat: 'First 30 seconds', name: 'Squeeze, never rub',
         list: [
           'Press the water out in your hands, section by section',
           'Microfibre towel or an old cotton shirt — not a terry bath towel',
-          'Never wrap it tight and never rub. That is where frizz is made',
+          'Never wrap tight, never rub. That is where frizz is made',
         ],
         tools: [
-          { icon: '🧻', name: 'Microfibre hair towel', why: 'Drinks water without roughing up the cuticle. Around ₱150–₱300. A plain cotton t-shirt works just as well if you have one spare.' },
+          { icon: '🧻', name: 'Microfibre hair towel', why: 'Drinks water without roughing the cuticle. ₱150–₱300, or use a spare cotton t-shirt.' },
         ],
       },
       {
-        id: 'post2', cat: 'Scalp · damp', name: 'Growth serum — hairline first',
+        id: 'po2', cat: 'Scalp · damp', name: 'Scalp growth serum — caffeine',
         list: [
-          'Onto the scalp while it is still damp, not the hair',
-          'Hairline and temples first, then the partings',
-          'Massage 1 minute and leave it in. It does not get rinsed',
-          'Every wash. This is the one that moves the hairline',
+          'A watery leave-in liquid, NOT an oil. Onto the scalp, not the hair',
+          'Hairline and temples first, then down the partings',
+          'Massage 1 minute. It stays in — it is never rinsed',
+          'Every wash. This is the one that moves the hairline forward',
         ],
         products: [
-          { brand: 'The Ordinary', primary: true, name: 'Multi-Peptide Serum for Hair Density', badges: ['Caffeine', 'Peptides', 'Leave-in'], why: 'Caffeine plus a peptide complex, aimed straight at density and the hairline. Around ₱900 and the best value of anything in this class.' },
-          { brand: 'Alpecin', name: 'Caffeine Liquid Hair Energizer', badges: ['Caffeine', 'Leave-in'], why: 'Stronger caffeine dose, drugstore price, easy to find in Watsons PH. Smells of the tonic it is — it fades in an hour.' },
+          { brand: 'The Ordinary', primary: true, name: 'Multi-Peptide Serum for Hair Density — scalp growth serum', badges: ['Caffeine', 'Peptides', 'Leave-in'], why: 'Caffeine plus a peptide complex, aimed straight at density and the hairline. About ₱900 and the best value in its class.' },
+          { brand: 'Alpecin', name: 'Caffeine Liquid Hair Energizer — scalp tonic', badges: ['Caffeine', 'Leave-in'], why: 'Stronger caffeine, drugstore price, easy to find in Watsons PH. The tonic smell fades within the hour.' },
         ],
-        note: 'Biotin works from the inside, not the outside. Take it as a tablet with your other supplements and let the caffeine do the topical job.',
+        note: 'Biotin works swallowed, not applied. Take it as a tablet and let the caffeine do the outside job.',
       },
       {
-        id: 'post3', cat: 'Mid-length to ends', name: 'Hydrating serum — never the scalp',
+        id: 'po3', cat: 'Mid-length to ends', name: 'Leave-in hair serum',
         list: [
+          'A smoothing cream-serum, not an oil and not the scalp serum above',
           'One pump, or half a pump if your hair is short',
           'Start at the mid-length and pull down to the ends',
-          'Nothing above the ears. Serum near the roots is what makes hair look greasy',
+          'Nothing above the ears. Serum near the roots is what looks greasy',
         ],
         products: [
-          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original (gold bottle)', badges: ['Argan', 'Camellia', 'Lightweight'], why: 'Seven oils, still light enough for fine hair, and the Korean bestseller for exactly this step. Around ₱400–₱600 on Shopee.' },
-          { brand: 'Olaplex', name: 'No.9 Bond Protector Nourishing Hair Serum', badges: ['Bond repair', 'Heat protect', 'Pricey'], why: 'Does this step AND the heat protectant step in one. Worth it if you want one bottle instead of two.' },
+          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original, gold bottle — leave-in hair serum', badges: ['Lightweight', 'Damp or dry hair'], why: 'The Korean bestseller for exactly this step, and light enough for fine hair. ₱400–₱600 on Shopee.' },
+          { brand: 'Olaplex', name: 'No.9 Bond Protector Nourishing Hair Serum — leave-in + heat guard', badges: ['Bond repair', 'Protects to 230°C'], why: 'Does this step and the heat guard step in one bottle. Costs more, saves a purchase.' },
         ],
       },
       {
-        id: 'post4', cat: 'Ends only', name: 'One drop of argan on damp ends',
+        id: 'po4', cat: 'Ends · damp', name: '🌸 Camellia on damp ends',
         list: [
           '1 drop, ends only, while the hair is still damp',
-          'Scrunch it upward if you want the waves to clump',
+          'Scrunch upward if you want the waves to clump',
+          'Swap to squalane if camellia ever feels like too much',
         ],
-        products: [
-          { brand: 'OGX', primary: true, name: 'Argan Oil of Morocco Penetrating Oil', badges: ['Argan', 'Drugstore'], why: 'The affordable argan, in Watsons PH everywhere. Any pure argan oil does the same job.' },
+        tools: [
+          { icon: '🌸', name: '100% Camellia (Tsubaki) oil', why: 'Your main ends oil, morning and night. Search "camellia oil tsubaki 100%".' },
         ],
       },
       {
-        id: 'post5', cat: 'Only if you use heat', name: 'Heat protectant before the dryer or iron',
+        id: 'po5', cat: 'Only if you use heat', name: 'Heat protectant spray',
         list: [
-          'Mist the mid-lengths and ends, never the scalp',
-          'Let it dry for 30 seconds before the heat touches it',
-          'No heat protectant, no heat. There is no version of this that is fine',
-          'Dryer on the cool or warm setting, held 15 cm away',
+          'A water-light mist, not an oil. Mid-lengths and ends, never the scalp',
+          'Let it dry 30 seconds before the heat touches it',
+          'No heat protectant, no heat. There is no safe version of skipping it',
+          'Dryer on cool or warm, held 15 cm away',
         ],
         products: [
-          { brand: 'TRESemmé', primary: true, name: 'Thermal Creations Heat Tamer Spray', badges: ['Up to 230°C', 'Cheap', 'Light'], why: 'Under ₱400, in every Watsons, and light enough that it does not weigh fine hair down. The sensible default.' },
-          { brand: 'Olaplex', name: 'No.9 Bond Protector Nourishing Hair Serum', badges: ['Up to 230°C', 'Also a serum'], why: 'If you bought this for the serum step, you do not need a separate heat spray.' },
+          { brand: 'TRESemmé', primary: true, name: 'Thermal Creations Heat Tamer Spray — heat protectant', badges: ['Protects to 230°C', 'Light'], why: 'Under ₱400, in every Watsons, light enough for fine hair. The sensible default.' },
         ],
       },
       {
-        id: 'post6', cat: 'Last', name: 'Comb and air dry',
+        id: 'po6', cat: 'Last', name: 'Comb and air dry',
         list: [
           'Wooden wide-tooth comb only, ends upward',
           'Air dry as far as you can before reaching for the dryer',
-          'Never sleep on soaking wet hair — it is at its weakest',
+          'Never sleep on soaking wet hair — that is when it is weakest',
         ],
       },
     ],
@@ -1040,40 +1030,42 @@ const HAIR_ROUTINES = [
     id: 'hr-night',
     emoji: '🌙',
     emojiBg: 'rgba(255,92,157,0.18)',
-    when: 'Every night · in bed by 10',
-    title: 'Before sleep & during sleep',
-    sub: 'Comb → massage → scalp oil → ends → lashes → bonnet',
-    intro: 'Eight hours of doing nothing is the longest treatment you get. The bonnet is what makes it count.',
+    when: 'Every night',
+    title: 'Night',
+    sub: 'Scalp oil · ends · plait · bonnet',
+    oils: [
+      { part: 'Scalp', main: '🌿 Mielle Rosemary Mint', alt: '🌼 Jojoba + rosemary' },
+      { part: 'Ends', main: '🌸 Camellia', alt: '💧 Squalane' },
+    ],
     steps: [
       {
         id: 'n1', cat: '2 minutes', name: 'Comb it out',
         list: [
           'Ends upward, in sections, gently',
-          'Takes out the day and stops a knot becoming a tear in the morning',
+          'Takes out the day, so a knot does not become a tear in the morning',
         ],
       },
       {
         id: 'n2', cat: '3–5 minutes', name: 'Scalp massage',
         list: [
           'Fingertips, small firm circles, no nails',
-          'Hairline and temples get the most attention',
-          'Do it in front of the mirror or lying down — it does not matter, only that it happens',
+          'Hairline and temples get the most',
+          'Sitting up or lying down, it does not matter — only that it happens',
         ],
       },
       {
-        id: 'n3', cat: 'Scalp only', name: 'Lightweight oil on the scalp',
+        id: 'n3', cat: 'Scalp only', name: '🌿 Rosemary mint oil on the scalp',
         list: [
           '3–4 drops on the parting lines, massaged in',
-          'On a wash night, this happened before the shower — skip it now',
-          'On a no-wash night, this is the step. Leave it in overnight',
-          'If your roots start feeling flat or coated, drop to every other night',
+          'Skip this on a wash night — you already did it before the shower',
+          'If your roots start feeling flat or coated, go every other night',
         ],
         products: [
-          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'Same bottle as the pre-shower step. One oil, two moments — nothing extra to buy.' },
+          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil — nightly scalp oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'The same bottle as the pre-shower step. One oil, two moments, nothing extra to buy.' },
         ],
       },
       {
-        id: 'n4', cat: 'Ends only', name: 'Argan on the bottom third',
+        id: 'n4', cat: 'Ends only', name: '🌸 Camellia on the ends',
         list: [
           '1–2 drops warmed between the palms',
           'Bottom third only — never the scalp, never the roots',
@@ -1081,30 +1073,62 @@ const HAIR_ROUTINES = [
         ],
       },
       {
-        id: 'n5', cat: 'Eyes · 60 seconds', name: 'Lash serum — the blue bottle',
-        list: [
-          'Face fully washed and completely dry first',
-          'One stroke along the upper lash line, like a thin eyeliner',
-          'Upper lid only. Nothing on the lower lash line, nothing in the eye',
-          'Let it dry 2 minutes before your face cream, or the cream carries it where it should not go',
-          'Every single night. Lashes turn over slowly — first change shows around week 6, the real result at week 12',
-        ],
-        note: 'Keep using the bottle you already have. If a lash serum ever makes the lid itchy, red or darker, stop it — that is the ingredient class doing something you did not ask for.',
-        products: [
-          { brand: 'The Ordinary', name: 'Multi-Peptide Lash and Brow Serum', badges: ['Peptides', 'No prostaglandin', 'Affordable'], why: 'Only if you run out and want a replacement. Peptide-based, so it does not carry the lid-darkening risk the prescription kind does. Around ₱700.' },
-        ],
-      },
-      {
-        id: 'n6', cat: 'Last thing', name: 'Loose plait, then the bonnet',
+        id: 'n5', cat: 'Last thing', name: 'Loose plait, then the bonnet',
         list: [
           'One loose plait, or a loose bun on the very top of your head',
-          'Never a tight elastic — traction is the one kind of hair loss you cause yourself',
-          'Satin or silk bonnet over the top, every night',
-          'The bonnet keeps the oil in your hair instead of on the pillow, and stops eight hours of friction',
+          'Never a tight elastic — traction is the one hair loss you cause yourself',
+          'Satin bonnet over the top, every night',
+          'It keeps the oil in your hair instead of on the pillow',
         ],
         tools: [
           { icon: '👑', name: 'Satin sleep bonnet', why: 'Wide soft band, not a tight elastic one. ₱150–₱350 on Shopee. Buy two so one is always clean.' },
-          { icon: '🛏️', name: 'Silk or satin pillowcase', why: 'Backup for the nights the bonnet comes off in your sleep. Also kinder to your face.' },
+          { icon: '🛏️', name: 'Silk or satin pillowcase', why: 'Backup for the nights the bonnet slips off. Kinder to your face too.' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'hr-lash',
+    emoji: '👁️',
+    emojiBg: 'rgba(120,160,240,0.18)',
+    when: 'Every night',
+    title: 'Lashes',
+    sub: 'Peptide lash serum · 60 seconds',
+    steps: [
+      {
+        id: 'l1', cat: 'First', name: 'Clean, dry lids',
+        list: [
+          'Face washed and completely dry — no cream, no oil, no makeup',
+          'A wet or oily lid carries the serum where it should not go',
+        ],
+      },
+      {
+        id: 'l2', cat: '10 seconds', name: 'One stroke along the lash line',
+        list: [
+          'Along the UPPER lash line only, like a thin eyeliner',
+          'One stroke per eye. More is not faster',
+          'Nothing on the lower lashes, nothing inside the eye',
+        ],
+        products: [
+          { brand: 'Grande Cosmetics', primary: true, name: 'GrandeLASH-MD Lash Enhancing Serum — peptide lash serum', badges: ['Peptides', 'Amino acids', '3-month tube'], why: 'The best-known peptide lash serum and the one with the most real-world use behind it. Around ₱3,500 at Sephora PH and on Shopee. One tube lasts about 3 months.' },
+          { brand: 'The Ordinary', name: 'Multi-Peptide Lash and Brow Serum — budget peptide serum', badges: ['Peptides', 'Brows too'], why: 'A fifth of the price, same peptide idea, slower results. About ₱700. Works on brows as well.' },
+        ],
+        note: 'The blue bottle you already own is fine — keep finishing it. These two are what to buy when it runs out.',
+      },
+      {
+        id: 'l3', cat: '2 minutes', name: 'Wait before your face cream',
+        list: [
+          'Let it dry fully first',
+          'Cream on top too soon spreads it onto the lid and around the eye',
+        ],
+      },
+      {
+        id: 'l4', cat: 'Keep going', name: 'Every night, 12 weeks',
+        list: [
+          'Lashes turn over slowly. Nothing shows in week one',
+          'First change around week 6. The real result at week 12',
+          'Then keep using it — stop and they go back over a few months',
+          'Itchy, red, or a darkening lid? Stop. That is the ingredient, not you',
         ],
       },
     ],
@@ -1113,17 +1137,19 @@ const HAIR_ROUTINES = [
     id: 'hr-out',
     emoji: '👜',
     emojiBg: 'rgba(240,204,96,0.18)',
-    when: 'Morning · before you leave',
+    when: 'Morning',
     title: 'Going out',
-    sub: 'Not greasy, not dry — the balance',
-    intro: 'The rule is simple: nothing oily above the ears, nothing dry below them.',
+    sub: 'Not greasy, not dry',
+    oils: [
+      { part: 'Ends', main: '💧 Squalane — half a drop', alt: '🌸 Camellia — half a drop' },
+    ],
     steps: [
       {
-        id: 'o1', cat: 'The rule', name: 'Nothing on the scalp this morning',
+        id: 'o1', cat: 'The rule', name: 'Nothing on the scalp',
         list: [
           'No oil, no serum, no cream anywhere near the roots',
-          'Last night is already working. Adding more is what tips it into greasy',
-          'The only thing that ever goes on the scalp in daylight is dry shampoo',
+          'Last night is already working. More is what tips it into greasy',
+          'Dry shampoo is the only thing that touches the scalp in daylight',
         ],
       },
       {
@@ -1131,48 +1157,51 @@ const HAIR_ROUTINES = [
         list: [
           'Wooden comb, ends upward as always',
           'Brushing from the scalp down drags the night oil into the lengths',
-          'That single habit is the difference between shiny and flat',
+          'That one habit is the difference between shiny and flat',
         ],
       },
       {
-        id: 'o3', cat: 'Only on day two or three', name: 'Dry shampoo at the roots',
+        id: 'o3', cat: 'Day two or three only', name: 'Dry shampoo at the roots',
         list: [
           'Shake hard, hold 25–30 cm away',
           'Short bursts on the roots only, in partings',
-          'Wait 2 minutes, then massage it in with your fingertips',
-          'Comb through. Never leave a white cast sitting there',
-          'This is a rescue, not a routine. Three days running and the scalp clogs',
+          'Wait 2 minutes, massage in with your fingertips, comb through',
+          'A rescue, not a routine. Three days running and the scalp clogs',
         ],
         products: [
-          { brand: 'Batiste', primary: true, name: 'Dry Shampoo Original', badges: ['Absorbs oil', 'Everywhere in PH'], why: 'Under ₱350 in any Watsons. The classic for a reason. The tinted versions suit dark hair better if you see a white cast.' },
+          { brand: 'Batiste', primary: true, name: 'Dry Shampoo Original — root oil absorber', badges: ['Absorbs oil', 'Everywhere in PH'], why: 'Under ₱350 in any Watsons. Use a tinted version if you see white cast on dark hair.' },
         ],
       },
       {
-        id: 'o4', cat: 'Mid-length to ends', name: 'One pump of hydrating serum — dry hair',
+        id: 'o4', cat: 'Mid-length to ends', name: 'Leave-in serum on dry hair',
         list: [
-          'Half a pump if your hair is fine. You can always add, you cannot take it back',
-          'Rub it into both palms first, then smooth downward from the mid-length',
-          'Whatever is left on your hands, press onto the very ends',
+          'Half a pump for fine hair. You can add, you cannot take back',
+          'Rub into both palms first, then smooth downward from the mid-length',
+          'Press whatever is left onto the very ends',
           'Nothing above the ears. Ever',
         ],
         products: [
-          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original (gold bottle)', badges: ['Light', 'No grease', 'Shine'], why: 'Light enough to use on dry hair in the morning without turning the lengths oily. This is the going-out serum.' },
+          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original, gold bottle — leave-in hair serum', badges: ['Light', 'Dry hair safe'], why: 'Light enough to use on dry hair in the morning without turning the lengths oily.' },
         ],
       },
       {
-        id: 'o5', cat: 'If it is humid', name: 'Half a drop of argan on the very ends',
+        id: 'o5', cat: 'If it is humid', name: '💧 Squalane on the very ends',
         list: [
           'Half a drop, rubbed right down until your palms barely feel it',
-          'Press it onto the last two inches only',
+          'Press onto the last two inches only',
+          'Squalane, not camellia — it is the only oil light enough for daylight',
           'Frizz lives at the ends. Fixing it at the roots is the classic mistake',
+        ],
+        products: [
+          { brand: 'The Ordinary', primary: true, name: '100% Plant-Derived Squalane — weightless ends oil', badges: ['Weightless', 'No smell', 'No residue'], why: 'Absorbs instantly and leaves nothing on the surface, which is why it is the one oil that is safe before going out. About ₱600.' },
         ],
       },
       {
-        id: 'o6', cat: 'Only if you style', name: 'Heat protectant first, always',
+        id: 'o6', cat: 'Only if you style', name: 'Heat protectant first',
         list: [
           'Mist, wait 30 seconds, then the iron or the dryer',
           'Lowest heat that actually does the job',
-          'Skipping this once is fine. Skipping it as a habit is how ends split',
+          'Skipping once is fine. Skipping as a habit is how ends split',
         ],
       },
     ],
@@ -1193,13 +1222,13 @@ function ToolCard({ icon, name, why }) {
   );
 }
 
-// One routine, as a pill. Closed until she opens it, and only one step inside
-// it opens at a time — the screen is a phone held in one hand, so anything that
-// can be collapsed is.
+// One routine as a small pill. Only one step inside it opens at a time — this
+// is read on a phone, so anything that can be collapsed is.
 function HairRoutinePill({ r, open, onToggle }) {
   const [openStep, setOpenStep] = useState(null);
   return (
     <PetalAccordion
+      compact
       id={r.id}
       emoji={r.emoji}
       emojiBg={r.emojiBg}
@@ -1209,7 +1238,13 @@ function HairRoutinePill({ r, open, onToggle }) {
       open={open}
       onToggle={onToggle}
     >
-      {r.intro && <div className="note-box note-gold" style={{ marginBottom: 12 }}>{r.intro}</div>}
+      {r.oils?.map(o => (
+        <div key={o.part} className="hair-oil-pick">
+          <span className="hop-lbl">{o.part}</span>
+          <span className="hop-main">{o.main}</span>
+          <span className="hop-alt">or {o.alt}</span>
+        </div>
+      ))}
       {r.steps.map((st, i) => (
         <RoutineStep
           key={st.id}
@@ -1231,38 +1266,69 @@ function HairRoutinePill({ r, open, onToggle }) {
   );
 }
 
-// Two rituals of very different sizes — a few minutes most nights, one long
-// soak on Sunday — plus the four moments in a day when hair actually gets
-// touched. The day routines come first because they are the ones that have to
-// become automatic; the weekly soak is an appointment and can wait below them.
+// The day routines come first — those are the ones that have to become
+// automatic. The Saturday soak is an appointment and can sit below them.
 function HairTab({ onSelectOil }) {
   const [openPill, setOpenPill] = useState(null);
+  const tog = id => setOpenPill(p => (p === id ? null : id));
 
   return (
     <>
       <div className="s-header" style={{ paddingTop: 0 }}>
-        <div className="s-tag">Wavy · Thin strands · Growing the hairline</div>
-        <p className="s-desc">Four moments in a day. Open the one you are in.</p>
+        <div className="s-tag">Wavy · Thin strands</div>
+        <p className="s-desc">Open the one you are in.</p>
       </div>
 
+      <div className="hair-pills">
       {HAIR_ROUTINES.map(r => (
-        <HairRoutinePill
-          key={r.id}
-          r={r}
-          open={openPill === r.id}
-          onToggle={() => setOpenPill(p => (p === r.id ? null : r.id))}
-        />
+        <HairRoutinePill key={r.id} r={r} open={openPill === r.id} onToggle={() => tog(r.id)} />
       ))}
 
-      <div className="divider divider-center splash-item">🌸 Once a Week · The Long Soak</div>
-      <div className="note-box note-rose splash-item" style={{ marginBottom: 14 }}>
-        🌸 <strong>Sunday, 45–60 minutes.</strong> Rosemary is in every soak. The oil it is mixed into changes every week, so the scalp never gets used to one thing.
-      </div>
-      <OilRotationCalendar onSelectOil={onSelectOil} />
+      <PetalAccordion
+        compact
+        id="hr-sat"
+        emoji="🌸"
+        emojiBg="rgba(255,92,157,0.18)"
+        day="Once a week"
+        title="Saturday"
+        sub="Two oils · 45 minutes"
+        open={openPill === 'hr-sat'}
+        onToggle={() => tog('hr-sat')}
+      >
+        <div className="hair-oil-pick">
+          <span className="hop-lbl">Always</span>
+          <span className="hop-main">🌿 Rosemary — 3 drops</span>
+          <span className="hop-alt">never neat</span>
+        </div>
+        <div className="hair-oil-pick">
+          <span className="hop-lbl">Partner</span>
+          <span className="hop-main">🌼 Jojoba → 🌸 Camellia → 💧 Squalane → 🥥 Coconut</span>
+          <span className="hop-alt">one each Saturday, then round again</span>
+        </div>
+        <OilRotationCalendar onSelectOil={onSelectOil} />
+      </PetalAccordion>
 
-      <div className="divider divider-center splash-item">🚫 Never</div>
-      <div className="note-box note-rose splash-item">
-        🚫 <strong>Not on thin strands:</strong> castor oil, sweet almond oil, tight elastics, brushing wet hair, oil anywhere near the roots in daylight, coconut more than once a month, and heat without protectant. Sleep in the bonnet.
+      <PetalAccordion
+        compact
+        id="hr-never"
+        emoji="🚫"
+        emojiBg="rgba(255,92,157,0.12)"
+        day="Thin strands"
+        title="Never"
+        sub="The short list"
+        open={openPill === 'hr-never'}
+        onToggle={() => tog('hr-never')}
+      >
+        <ul className="ag-detail-list">
+          <li>Castor oil and sweet almond oil</li>
+          <li>Tight elastics</li>
+          <li>Brushing wet hair</li>
+          <li>Oil near the roots in daylight</li>
+          <li>Coconut more than once a month</li>
+          <li>Heat with no heat guard</li>
+          <li>Argan — you did not like it, so nothing asks for it</li>
+        </ul>
+      </PetalAccordion>
       </div>
     </>
   );
@@ -1741,14 +1807,20 @@ function resolveInitial(initialTab) {
   return { top: 'face', faceSub: 'morning', bodySub: 'morning' };
 }
 
-const TOP_TABS = [
+// Two columns, and the split is not alphabetical: the left column is the four
+// you open most days, the right column the ones you open when something needs
+// doing. Grouping them that way means the common four are always in the same
+// place under your thumb.
+const TOP_TABS_LEFT = [
   { id: 'face',      label: '💆 Face' },
+  { id: 'hair',      label: '💇 Hair' },
+  { id: 'teeth',     label: '🦷 Teeth' },
   { id: 'body',      label: '🫧 Body' },
+];
+const TOP_TABS_RIGHT = [
   { id: 'retinoid',  label: '✨ Retinoid' },
   { id: 'antiaging', label: '🌿 Anti-Aging' },
-  { id: 'hair',      label: '💇 Hair' },
   { id: 'underarm',  label: '🌟 Underarm' },
-  { id: 'teeth',     label: '🦷 Teeth' },
   { id: 'makeup',    label: '💄 Makeup' },
 ];
 
@@ -1788,10 +1860,14 @@ export default function Skincare({ initialTab }) {
       </div>
 
       <div className="sk-top-tabs splash-item">
-        {TOP_TABS.map(t => (
-          <button key={t.id} className={`sk-top-tab${topTab === t.id ? ' active' : ''}`} onClick={() => switchTop(t.id)}>
-            {t.label}
-          </button>
+        {[TOP_TABS_LEFT, TOP_TABS_RIGHT].map((col, ci) => (
+          <div key={ci} className="sk-top-col">
+            {col.map(t => (
+              <button key={t.id} className={`sk-top-tab${topTab === t.id ? ' active' : ''}`} onClick={() => switchTop(t.id)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
         ))}
       </div>
 
