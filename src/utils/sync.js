@@ -63,6 +63,15 @@ const SYNC_ADOPT_KEY = 'gp_sync_adopt';
 const DEVICE_ID_KEY = 'gp_device_id';
 const DEVICE_NAME_KEY = 'gp_device_name';
 const PRESENCE_INTERVAL_MS = 5 * 60 * 1000;
+// A safety net, not the normal path. Every local edit already pushes within a
+// quarter of a second and every remote edit arrives on a live subscription, so
+// this changes nothing on a healthy device. It exists for the case where that
+// machinery has quietly stalled — a write that failed while the app then sat
+// untouched for hours, a network that came back without firing an `online`
+// event, a tab that was asleep. On each tick the device re-checks itself
+// against the last thing it heard from the cloud and sends up anything the
+// cloud is missing.
+const AUTO_RESYNC_MS = 2 * 60 * 1000;
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^GP-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/;
 // A device that has not checked in for this long is dropped from the shared
@@ -88,6 +97,10 @@ let deviceCallbacks = new Set();
 let latestDevices = {};
 let presenceTimer = null;
 let pushTimer = null;
+let resyncTimer = null;
+// The last snapshot seen from the cloud, kept so the safety net can compare
+// against it without spending a read.
+let lastRemote = null;
 let dirtyKeys = new Set();
 let dbRef = null;
 let originalSetItem = null;
@@ -437,6 +450,7 @@ function handleRemoteSnapshot(snapshot) {
     }
 
     const remote = snapshot.data() || {};
+    lastRemote = { data: remote.data || {}, meta: remote.meta || {} };
     latestDevices = remote.devices || {};
     notifyDevices();
     const adopting = safeGetItem(SYNC_ADOPT_KEY) === '1';
@@ -597,6 +611,34 @@ async function pruneStaleDevices() {
     await fb.updateDoc(dbRef, patch);
   } catch {
     // Pruning is opportunistic; a failure just retries on the next heartbeat.
+  }
+}
+
+// Re-run the same reconcile the snapshot handler runs, against the last
+// snapshot we saw. It compares every synced key's local timestamp with the
+// cloud's and queues whatever is behind, so it repairs a stalled device
+// without needing anyone to press anything.
+function autoResync() {
+  try {
+    if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
+    if (dirtyKeys.size > 0) flushNow();
+    if (lastRemote) reconcileWithRemote(lastRemote.data, lastRemote.meta, false);
+  } catch {
+    // A failed sweep is harmless; the next tick tries again.
+  }
+}
+
+function startAutoResync() {
+  try {
+    if (resyncTimer) clearInterval(resyncTimer);
+    resyncTimer = setInterval(autoResync, AUTO_RESYNC_MS);
+    // Coming back to the app is the moment a stalled device is most likely to
+    // be noticed, so check then too rather than waiting out the interval.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') autoResync();
+    });
+  } catch {
+    // Optional wiring; the live path still works without it.
   }
 }
 
@@ -821,6 +863,7 @@ export async function initSync() {
       // Firestore snapshot errors are non-fatal for the local app.
     });
     startPresence();
+    startAutoResync();
     purgeRetiredLocal();
   } catch {
     // Sync failures must never break the app.
