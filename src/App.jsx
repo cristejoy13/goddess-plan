@@ -194,7 +194,6 @@ export default function App() {
   const [active, setActive] = useState('home');
   const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
   const [history, setHistory] = useState([]);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
   const [syncEpoch, setSyncEpoch] = useState(0);
@@ -228,6 +227,29 @@ export default function App() {
     localStorage.setItem('gp_color_mode', colorMode);
   }, [colorMode]);
 
+  /* The top bar is fixed, so the page has to be pushed down by exactly its
+     height. Two rows on a phone are not the same height as two rows on a
+     desktop, and the safe-area inset changes again on a notched screen, so it
+     is measured rather than guessed. The search row is skipped on purpose: it
+     drops over the page instead of shoving it down. */
+  const topbarRef = useRef(null);
+  useEffect(() => {
+    const el = topbarRef.current;
+    if (!el) return;
+    const apply = () => {
+      if (searchOpen) return;
+      document.documentElement.style.setProperty('--topbar-h', `${el.offsetHeight}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    window.addEventListener('orientationchange', apply);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('orientationchange', apply);
+    };
+  }, [searchOpen]);
+
   const historyRef = useRef([]);
   useEffect(() => { historyRef.current = history; }, [history]);
 
@@ -256,7 +278,6 @@ export default function App() {
     }
     setActive(id);
     setNavMeta(prev => ({ tab, scrollTo, key: prev.key + 1 }));
-    setMenuOpen(false);
     if (scrollTo) {
       window.scrollTo({ top: 0, behavior: 'instant' });
       setTimeout(() => {
@@ -284,7 +305,6 @@ export default function App() {
     setHistory(h.slice(0, -1));
     setActive(prev.section);
     setNavMeta(p => ({ tab: prev.tab, scrollTo: null, key: p.key + 1 }));
-    setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -365,16 +385,15 @@ export default function App() {
       {background}
       <InstallBanner />
 
-      <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`}>
+      <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`} ref={topbarRef}>
         <div className="topbar-row">
-          {/* Menu, then settings — the two big tap targets */}
+          {/* Back and settings — the two big tap targets */}
           <div className="mobile-controls">
-            <button className="mob-hamburger" onClick={() => setMenuOpen(o => !o)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
-              <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-              <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-              <span className={`hamburger-bar${menuOpen ? ' open' : ''}`} />
-            </button>
+            {history.length > 0 && (
+              <button className="topbar-icon-btn topbar-back-btn" onClick={goBack} aria-label="Go back">
+                ‹
+              </button>
+            )}
             {avatar && (
               <button className="mob-avatar-btn" onClick={() => navigate('settings')} aria-label="Settings">
                 <div className="mob-avatar-circle" style={{ background: avatar.bg }}>
@@ -404,62 +423,31 @@ export default function App() {
           </div>
         </div>
 
+        {/* The line that separates the tools above from the sections below */}
+        <div className="topbar-divider" />
+
+        {/* Sections, always on screen — this replaces the drawer, so every part
+            of the app is one tap away instead of two. */}
+        <nav className="topbar-sections" aria-label="Sections">
+          {NAV_ITEMS.map(item => (
+            <button
+              key={item.id}
+              className={`topbar-sec-btn${active === item.id ? ' active' : ''}`}
+              onClick={() => navigate(item.id)}
+              aria-current={active === item.id ? 'page' : undefined}
+            >
+              <span className="topbar-sec-icon">{item.icon}</span>
+              <span className="topbar-sec-label">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
         {searchOpen && (
           <div className="topbar-search-row">
             <SearchBar onNavigate={navigate} onClose={() => setSearchOpen(false)} />
           </div>
         )}
       </div>
-
-      {/* Backdrop — closes the drawer when tapping outside on mobile */}
-      {menuOpen && (
-        <div className="sidebar-backdrop" onClick={() => setMenuOpen(false)} />
-      )}
-
-      <nav className={`sidebar${menuOpen ? ' open' : ''}`}>
-        {/* Desktop: avatar at top of sidebar */}
-        {avatar && (
-          <button
-            className={`sidebar-avatar-btn${active === 'settings' ? ' active' : ''}`}
-            onClick={() => navigate('settings')}
-            aria-label="Open profile"
-          >
-            <div className="sidebar-avatar-circle" style={{ background: avatar.bg }}>
-              <span className="sidebar-avatar-emoji">{avatar.emoji}</span>
-            </div>
-            <span className="sidebar-avatar-label">
-              {profile?.username || 'Profile'}
-            </span>
-          </button>
-        )}
-
-        {history.length > 0 && (
-          <button className="nav-btn nav-back-btn" onClick={goBack} aria-label="Go back">
-            ‹ Back
-          </button>
-        )}
-        {NAV_ITEMS.map(item => (
-          <button
-            key={item.id}
-            className={`nav-btn${active === item.id ? ' active' : ''}`}
-            onClick={() => navigate(item.id)}
-            title={item.label}
-          >
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">
-              {item.label}
-            </span>
-          </button>
-        ))}
-        <button
-          className="nav-mode-toggle"
-          onClick={() => setColorMode(m => m === 'dark' ? 'light' : 'dark')}
-          title={colorMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          <span className="nav-icon">{colorMode === 'dark' ? '☀️' : '🌙'}</span>
-          <span className="nav-label">{colorMode === 'dark' ? 'Light' : 'Dark'}</span>
-        </button>
-      </nav>
 
       <div
         className="main"

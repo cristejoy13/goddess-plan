@@ -319,7 +319,7 @@ function NavigateScreen({ onBack }) {
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">🗂️ Finding Content</div>
         <GuideStep num="5" title="Search Bar" desc="Find workouts, recipes, oils, and skincare." />
-        <GuideStep num="6" title="Hamburger Menu (☰)" desc="Open full section navigation." />
+        <GuideStep num="6" title="Section Row" desc="Home, Workouts, Meal and Body sit under the top bar." />
         <GuideStep num="7" title="Detail Pages" desc="Tap cards or ingredient chips for details." />
       </div>
     </div>

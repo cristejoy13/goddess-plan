@@ -366,6 +366,16 @@ body {
   );
   pointer-events: none;   /* the sky behind stays scrollable; buttons re-enable it */
 }
+/* Light mode: the same fade, in the pale background's own colour. Without it
+   the dark gradient sat over a pink page as a grey band. */
+[data-mode="light"] .search-bar-fixed {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 245, 251, 0.88) 0%,
+    rgba(255, 245, 251, 0.62) 55%,
+    rgba(255, 245, 251, 0) 100%
+  );
+}
 .search-bar-fixed > * { pointer-events: auto; }
 .search-bar-fixed .search-wrap { margin: 0 auto; }
 
@@ -505,14 +515,11 @@ body {
 .main {
   position: relative;
   z-index: 1;
-  padding-top: calc(54px + env(safe-area-inset-top));
-  padding-left: 118px;
-  /* balance sidebar so sections center on the full viewport */
-  padding-right: 118px;
-}
-@media (max-width: 600px) {
-  /* On small phones the extra right padding would crush content */
-  .main { padding-right: 0; }
+  /* --topbar-h is measured from the real bar at runtime, so a notched phone, a
+     tablet and a desktop each get exactly the gap they need. */
+  padding-top: var(--topbar-h, 112px);
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* ─── HERO ─── */
@@ -9286,6 +9293,98 @@ body {
 
 .topbar-search-row { margin-top: 8px; }
 .topbar-search-row .search-wrap { margin: 0 auto; }
+/* The search box floats over the page. Translucent, the headline underneath
+   showed straight through what you typed, so it gets its own solid backing. */
+.topbar-search-row .search-input,
+.topbar-search-row .search-input:focus {
+  background: rgba(18, 5, 16, 0.97);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+[data-mode="light"] .topbar-search-row .search-input,
+[data-mode="light"] .topbar-search-row .search-input:focus {
+  background: rgba(255, 250, 253, 0.98);
+}
+
+/* ── TOP BAR: the divider and the section row ─────────────────────────────
+   The drawer is gone. Every section is a pill on a second row, under a line
+   that separates "tools" (back, settings, theme, search) from "where am I".
+   The pills shrink their padding before they ever wrap, so the row stays one
+   line from a 320px phone up to a desktop. */
+.topbar-divider {
+  height: 1px;
+  width: 100%;
+  max-width: 560px;
+  margin: 8px auto 0;
+  background: linear-gradient(90deg, transparent, rgba(255,92,157,0.42), transparent);
+}
+[data-mode="light"] .topbar-divider {
+  background: linear-gradient(90deg, transparent, rgba(200,23,110,0.38), transparent);
+}
+
+.topbar-sections {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.topbar-sec-btn {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 46px;
+  padding: 6px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,92,157,0.28);
+  background: rgba(20,6,18,0.55);
+  color: var(--text-soft);
+  font-family: 'Outfit', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
+}
+.topbar-sec-icon { font-size: 17px; line-height: 1; }
+.topbar-sec-label { line-height: 1; white-space: nowrap; }
+.topbar-sec-btn:hover { background: rgba(255,255,255,0.10); }
+.topbar-sec-btn:active { transform: scale(0.95); }
+.topbar-sec-btn.active {
+  background: linear-gradient(135deg, rgba(255,92,157,0.28), rgba(240,204,96,0.14));
+  border-color: rgba(255,92,157,0.65);
+  color: var(--text);
+}
+[data-mode="light"] .topbar-sec-btn {
+  background: rgba(255,255,255,0.75);
+  border-color: rgba(200,23,110,0.26);
+  color: #6a3a5c;
+}
+[data-mode="light"] .topbar-sec-btn.active {
+  background: linear-gradient(135deg, rgba(255,92,157,0.26), rgba(240,204,96,0.20));
+  border-color: rgba(200,23,110,0.60);
+  color: #7a1050;
+}
+
+/* Small phones: tighten the pills so four still fit on one line at 320px. */
+@media (max-width: 420px) {
+  .topbar-sections { gap: 6px; }
+  .topbar-sec-btn { padding: 6px 9px; font-size: 10.5px; }
+  .topbar-sec-icon { font-size: 16px; }
+}
+
+/* The back chevron needs to sit optically centred in its circle. */
+.topbar-back-btn {
+  font-size: 27px;
+  line-height: 1;
+  padding-bottom: 4px;
+}
 
 /* ── TOP BAR CONTROLS ─────────────────────────────────────────────────────
    Two sizes on purpose. The left pair — settings and the menu — are the ones
