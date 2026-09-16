@@ -8509,16 +8509,29 @@ body {
 .ml-day-empty { cursor: default; pointer-events: none; background: rgba(0,0,0,0.10); }
 .ml-day:hover:not(.ml-day-empty) { background: rgba(255,92,157,0.08); color: var(--text); }
 .ml-day-num { line-height: 1; }
-/* A day with meals in it is gold and carries the count, so a month reads as a
-   pattern of filled and empty rather than a wall of identical numbers. */
+/* A day with meals in it is gold and carries that day's calorie total, so a
+   month reads as a pattern of filled and empty rather than a wall of identical
+   numbers — and the one number on the square is the one she came to find. */
 .ml-day-has {
   background: linear-gradient(135deg, rgba(240,204,96,0.20), rgba(255,232,122,0.10));
   color: var(--gold-light); font-weight: 700;
 }
 .ml-day-dot {
   font-size: 9px; font-weight: 700; line-height: 1;
-  padding: 1px 5px; border-radius: 999px;
+  padding: 1px 4px; border-radius: 999px;
   background: rgba(240,204,96,0.28); color: #fff4d0;
+  /* Four digits have to fit a phone-width square without pushing the day
+     number sideways, so the pill sits on tabular figures and is allowed to
+     shrink its letter-spacing before it ever overflows. */
+  font-variant-numeric: tabular-nums;
+  max-width: 100%; letter-spacing: -0.2px;
+}
+/* Meals written down but no calories typed yet. A bare 0 would read as a day
+   of eating nothing, which is a different fact, so the square shows a mark
+   instead and the day panel still has the real lines in it. */
+.ml-day-dot-none {
+  background: rgba(240,204,96,0.16); color: rgba(255,244,208,0.6);
+  padding: 1px 6px;
 }
 .ml-day-today { box-shadow: inset 0 0 0 1.5px rgba(255,92,157,0.55); color: var(--rose); font-weight: 700; }
 .ml-day-today.ml-day-has { box-shadow: inset 0 0 0 1.5px var(--gold); }

@@ -363,7 +363,9 @@ export default function Meal() {
             {week.map((day, di) => {
               if (!day) return <div key={di} className="ml-day ml-day-empty" />;
               const key = dateKey(year, monthIdx, day);
-              const count = (days[key] || []).length;
+              const dayEntries = days[key] || [];
+              const count = dayEntries.length;
+              const { total, counted } = calTotals(dayEntries);
               const isToday = isThisMonth && day === today.d;
               const isOpen = openDay === day;
               return (
@@ -371,10 +373,20 @@ export default function Meal() {
                   key={di}
                   className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}`}
                   onClick={() => setOpenDay(isOpen ? null : day)}
-                  aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${count} ${count === 1 ? 'meal' : 'meals'} written down`}
+                  aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${
+                    count === 0
+                      ? 'nothing written down'
+                      : counted === 0
+                        ? `${count} ${count === 1 ? 'meal' : 'meals'} written down, no calories yet`
+                        : `${total} calories`
+                  }`}
                 >
                   <span className="ml-day-num">{day}</span>
-                  {count > 0 && <span className="ml-day-dot">{count}</span>}
+                  {count > 0 && (
+                    <span className={`ml-day-dot${counted === 0 ? ' ml-day-dot-none' : ''}`}>
+                      {counted === 0 ? '·' : total}
+                    </span>
+                  )}
                 </button>
               );
             })}
