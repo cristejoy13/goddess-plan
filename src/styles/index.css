@@ -1097,31 +1097,228 @@ body {
 .hop-main { font-size: 12.5px; font-weight: 600; color: var(--text); }
 .hop-alt { font-size: 11px; color: var(--text-soft); }
 
-/* ── Hair · everything on the centre line ─────────────────────────────────
-   The pill list reads as one column down the middle of the phone rather than
-   as text ragged against the left edge. Scoped to this wrapper so no other
-   routine screen is affected. */
-.hair-pills .acc-text { text-align: center; }
-.hair-pills .acc-day { letter-spacing: 1.6px; }
-.hair-pills .hair-oil-pick { justify-content: center; text-align: center; }
-.hair-pills .rs-wrap { text-align: center; }
-.hair-pills .rs-trigger { gap: 10px; padding: 12px 14px; }
-/* The step name drops the serif and a few points, to sit under a compact pill
-   heading rather than compete with it. */
-.hair-pills .rs-name { font-family: 'Outfit', sans-serif; font-size: 13.5px; font-weight: 600; }
-.hair-pills .rs-num { width: 26px; height: 26px; font-size: 11px; }
-.hair-pills .rs-cat { font-size: 8.5px; letter-spacing: 1.4px; }
-/* The bullets lose their markers, since a centred line with a bullet hanging
-   off its left is worse than either choice on its own. */
-.hair-pills .ag-detail-list { list-style: none; padding-left: 0; text-align: center; }
-.hair-pills .ag-detail-list li { padding-left: 0; text-align: center; }
-.hair-pills .ag-detail-list li::before { content: none; }
-.hair-pills .note-box { text-align: center; }
-.hair-pills .tool-card { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
-.hair-pills .product-card .pc-body { text-align: center; }
-.hair-pills .pc-badges { justify-content: center; }
-.hair-pills .oil-rot-summary-label,
-.hair-pills .oil-rot-month-label { text-align: center; }
+/* ── Routine card ─────────────────────────────────────────────────────────
+   Replaces the accordion pill. It does not open in place — it opens the
+   routine as its own page — so it is shaped like a link, with a chevron
+   rather than a chevron-down. */
+.routine-cards { display: flex; flex-direction: column; gap: 8px; }
+.routine-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-g);
+  background: var(--card);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+.routine-card:hover { border-color: var(--rose); transform: translateX(2px); }
+.routine-card:active { transform: scale(0.99); }
+.rc-emoji {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex: none;
+}
+.rc-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rc-when {
+  font-size: 8.5px; letter-spacing: 1.6px; text-transform: uppercase;
+  color: var(--text-soft); font-weight: 500;
+}
+.rc-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.2px; }
+.rc-sub { font-size: 11px; color: var(--text-soft); }
+.rc-go { flex: none; color: var(--gold); font-size: 20px; line-height: 1; }
+
+/* ── Floating page ────────────────────────────────────────────────────────
+   Full screen on a phone, a floating card from tablet up. The routine you
+   opened is the only thing on it. */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(4,2,8,0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: sheet-fade 0.2s ease;
+}
+@keyframes sheet-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-rise { from { transform: translateY(18px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #120a16;
+  border: 1.5px solid var(--border-g);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  /* The phone's home bar and notch: the sheet reaches the screen edges, so it
+     has to keep its own content clear of them. */
+  padding-top: env(safe-area-inset-top, 0px);
+  animation: sheet-rise 0.25s cubic-bezier(.2,.8,.3,1);
+  overflow: hidden;
+}
+.sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(240,204,96,0.14);
+  flex: none;
+}
+.sheet-emoji {
+  width: 38px; height: 38px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex: none;
+}
+.sheet-headtext { flex: 1; min-width: 0; }
+.sheet-kicker {
+  font-size: 8.5px; letter-spacing: 1.6px; text-transform: uppercase;
+  color: var(--text-soft); font-weight: 500;
+}
+.sheet-title { font-size: 17px; font-weight: 600; color: var(--text); }
+.sheet-sub { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+.sheet-close {
+  width: 32px; height: 32px; flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--border-g);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-mid);
+  font-size: 13px;
+  cursor: pointer;
+}
+.sheet-close:hover { border-color: var(--rose); color: var(--rose); }
+.sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 560px) {
+  .sheet-overlay { align-items: center; padding: 24px; }
+  .sheet-panel { border-radius: 20px; border-bottom: 1.5px solid var(--border-g); max-height: 88vh; }
+}
+
+/* ── Step flow ────────────────────────────────────────────────────────────
+   One step at a time. The rail is both a progress bar and a way back to a
+   step you have already passed, so nothing is more than one tap away. */
+.stepflow { display: flex; flex-direction: column; gap: 12px; }
+.sf-rail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.sf-dot {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-g);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  flex: none;
+  transition: all 0.2s;
+}
+.sf-dot.is-done { border-color: rgba(240,204,96,0.45); color: var(--gold); }
+.sf-dot.is-on {
+  background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+  border-color: var(--rose);
+  color: #fff;
+  transform: scale(1.12);
+}
+.sf-stage { min-height: 120px; }
+.sf-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 4px;
+}
+.sf-btn {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-g);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-mid);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sf-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--text); }
+.sf-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.sf-btn-next {
+  background: linear-gradient(135deg, rgba(255,92,157,0.9), rgba(200,60,120,0.9));
+  border-color: transparent;
+  color: #fff;
+}
+.sf-count { font-size: 11px; color: var(--text-soft); letter-spacing: 0.4px; }
+
+/* A step inside a flow has no trigger to press — it is simply the step you
+   are on — so the heading is a heading and the body is always there. */
+.rstep-flow { border: none; background: none; margin: 0; }
+.rstep-flow .rs-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 0 10px;
+}
+.rs-flow-body { padding: 0; }
+
+/* ── Everything in a routine reads down its centre line ───────────────────
+   One step on a phone screen, so the column is the screen. Scoped to the step
+   flow and the floating page — the two places a routine is actually read —
+   rather than set globally, where it would centre prose that should not be. */
+.sheet-body .hair-oil-pick { justify-content: center; text-align: center; }
+.stepflow .rs-head,
+.sheet-body .rs-head { justify-content: center; }
+.stepflow .rs-wrap,
+.sheet-body .rs-wrap { flex: 0 1 auto; text-align: center; }
+.stepflow .rs-name,
+.sheet-body .rs-name { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600; }
+.stepflow .rs-cat,
+.sheet-body .rs-cat { font-size: 8.5px; letter-spacing: 1.4px; }
+/* The bullets lose their markers where they are centred — a centred line with
+   a bullet hanging off to its left is worse than either choice on its own. */
+.stepflow .ag-detail-list,
+.sheet-body .ag-detail-list { list-style: none; padding-left: 0; text-align: center; }
+.stepflow .ag-detail-list li,
+.sheet-body .ag-detail-list li { padding-left: 0; text-align: center; }
+.stepflow .ag-detail-list li::before,
+.sheet-body .ag-detail-list li::before { content: none; }
+.stepflow .note-box,
+.sheet-body .note-box { text-align: center; }
+.stepflow .step-note,
+.sheet-body .step-note { text-align: center; }
+.stepflow .ag-detail-body,
+.sheet-body .ag-detail-body { text-align: center; }
+/* Product and tool cards stack their badge above the text instead of beside
+   it, because a centred paragraph next to a left-hand badge is not centred —
+   it is just narrower. */
+.stepflow .prod-item,
+.sheet-body .prod-item { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.stepflow .product-card .pc-body,
+.sheet-body .product-card .pc-body { text-align: center; }
+.stepflow .pc-badges,
+.sheet-body .pc-badges { justify-content: center; }
+.sheet-body .tool-card { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.sheet-body .oil-rot-summary-label,
+.sheet-body .oil-rot-month-label { text-align: center; }
 
 /* body content */
 .workout-list { list-style: none; margin: 12px 0; }
