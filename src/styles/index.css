@@ -9136,6 +9136,29 @@ body {
 [data-mode="light"] .ml-day { color: #6a3a5c; }
 [data-mode="light"] .ml-day-has { color: #6b4a00; background: rgba(240,204,96,0.34); }
 [data-mode="light"] .ml-day-dot { background: rgba(200,160,40,0.34); color: #4a3200; }
+/* The week total and the no-calories mark were written for a dark square and
+   had no daylight colour at all — pale pink on pale pink, and pale cream on
+   white. Both now go dark-on-tint, the same way the day badge does. */
+[data-mode="light"] .ml-day-week {
+  background: rgba(200,23,110,0.16);
+  border-color: rgba(200,23,110,0.55);
+  color: #8a0a48;
+}
+[data-mode="light"] .ml-day-dot-none { background: rgba(200,160,40,0.20); color: #6a4a10; }
+[data-mode="light"] .ml-legend { color: #5a2a4a; }
+/* The blue theme: the week badge is hard-coded rose, which is the wrong
+   family there. It follows the theme's own accent instead. */
+[data-theme="male"] .ml-day-week {
+  background: rgba(56,189,248,0.16);
+  border-color: rgba(56,189,248,0.5);
+  color: #bfe6ff;
+}
+[data-theme="male"][data-mode="light"] .ml-day-week,
+[data-mode="light"][data-theme="male"] .ml-day-week {
+  background: rgba(2,132,199,0.16);
+  border-color: rgba(2,132,199,0.55);
+  color: #0a4a72;
+}
 [data-mode="light"] .ml-day-date,
 [data-mode="light"] .ml-entry-text { color: #3a1030; }
 [data-mode="light"] .ml-time-input,
