@@ -1101,7 +1101,14 @@ body {
    Replaces the accordion pill. It does not open in place — it opens the
    routine as its own page — so it is shaped like a link, with a chevron
    rather than a chevron-down. */
-.routine-cards { display: flex; flex-direction: column; gap: 8px; }
+/* Capped and centred rather than stretched to the page. On a laptop the
+   section is 980px wide, and a 940px-wide card holding three centred words is
+   not a card — it is a stripe. The column stays the same comfortable width on
+   every screen, and only the space around it changes. */
+.routine-cards {
+  display: flex; flex-direction: column; gap: 8px;
+  max-width: 520px; margin: 0 auto;
+}
 .routine-card {
   display: flex;
   align-items: center;
@@ -1126,7 +1133,12 @@ body {
   font-size: 18px;
   flex: none;
 }
-.rc-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rc-text {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1px;
+  text-align: center;
+}
 .rc-when {
   font-size: 8.5px; letter-spacing: 1.6px; text-transform: uppercase;
   color: var(--text-soft); font-weight: 500;
@@ -1145,8 +1157,11 @@ body {
   background: rgba(4,2,8,0.78);
   backdrop-filter: blur(6px);
   display: flex;
-  align-items: flex-end;
+  /* Centred at every width. Anchored to the bottom it left a band of dead
+     space above the page, which read as the page being off-centre. */
+  align-items: center;
   justify-content: center;
+  padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px));
   animation: sheet-fade 0.2s ease;
 }
 @keyframes sheet-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -1155,47 +1170,51 @@ body {
   position: relative;
   width: 100%;
   max-width: 560px;
-  max-height: 100dvh;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   background: #120a16;
   border: 1.5px solid var(--border-g);
-  border-bottom: none;
-  border-radius: 20px 20px 0 0;
-  /* The phone's home bar and notch: the sheet reaches the screen edges, so it
-     has to keep its own content clear of them. */
-  padding-top: env(safe-area-inset-top, 0px);
+  border-radius: 20px;
   animation: sheet-rise 0.25s cubic-bezier(.2,.8,.3,1);
   overflow: hidden;
 }
+/* The heading stacks and centres, so the page reads down one line from its
+   title to its last step. The close button leaves the flow entirely rather
+   than pulling the title off centre. */
 .sheet-head {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 11px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 16px 48px 14px;
   border-bottom: 1px solid rgba(240,204,96,0.14);
   flex: none;
+  text-align: center;
 }
 .sheet-emoji {
-  width: 38px; height: 38px; border-radius: 11px;
+  width: 40px; height: 40px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex: none;
+  font-size: 19px; flex: none;
 }
-.sheet-headtext { flex: 1; min-width: 0; }
+.sheet-headtext { min-width: 0; }
 .sheet-kicker {
   font-size: 8.5px; letter-spacing: 1.6px; text-transform: uppercase;
   color: var(--text-soft); font-weight: 500;
 }
-.sheet-title { font-size: 17px; font-weight: 600; color: var(--text); }
-.sheet-sub { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+.sheet-title { font-size: 18px; font-weight: 600; color: var(--text); }
+.sheet-sub { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
 .sheet-close {
-  width: 32px; height: 32px; flex: none;
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   border: 1px solid var(--border-g);
   background: rgba(255,255,255,0.05);
   color: var(--text-mid);
   font-size: 13px;
   cursor: pointer;
+  z-index: 1;
 }
 .sheet-close:hover { border-color: var(--rose); color: var(--rose); }
 .sheet-body {
@@ -1206,14 +1225,28 @@ body {
 }
 
 @media (min-width: 560px) {
-  .sheet-overlay { align-items: center; padding: 24px; }
-  .sheet-panel { border-radius: 20px; border-bottom: 1.5px solid var(--border-g); max-height: 88vh; }
+  .sheet-overlay { padding: 24px; }
+}
+/* Small phones: the rail and the buttons shrink rather than wrap into a
+   second row that pushes the step off screen. */
+@media (max-width: 400px) {
+  .sf-dot { width: 24px; height: 24px; font-size: 10px; }
+  .sf-btn { padding: 9px 14px; font-size: 12px; }
+  .sheet-head { padding: 14px 44px 12px; }
+  .sheet-title { font-size: 16.5px; }
+  .sheet-body { padding: 12px 13px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .routine-card { padding: 11px 12px; }
+  .rc-title { font-size: 14px; }
 }
 
 /* ── Step flow ────────────────────────────────────────────────────────────
    One step at a time. The rail is both a progress bar and a way back to a
    step you have already passed, so nothing is more than one tap away. */
-.stepflow { display: flex; flex-direction: column; gap: 12px; }
+.stepflow {
+  display: flex; flex-direction: column; gap: 12px;
+  /* Same rule as the cards: one readable column, centred, at every width. */
+  max-width: 560px; margin: 0 auto; width: 100%;
+}
 .sf-rail {
   display: flex;
   flex-wrap: wrap;
@@ -1247,21 +1280,27 @@ body {
   justify-content: space-between;
   gap: 10px;
   padding-top: 4px;
+  /* Back and Next stay within reach of each other instead of drifting to
+     opposite edges of a wide screen. */
+  max-width: 420px; width: 100%; margin: 0 auto;
 }
+/* Back was a dark button on a dark panel — legible in theory, invisible in
+   practice. It is now a gold outline with gold text, which reads at a glance
+   without competing with Next for the press. */
 .sf-btn {
-  padding: 10px 16px;
+  padding: 10px 18px;
   border-radius: 999px;
-  border: 1.5px solid var(--border-g);
-  background: rgba(255,255,255,0.04);
-  color: var(--text-mid);
+  border: 1.5px solid var(--gold);
+  background: rgba(240,204,96,0.12);
+  color: var(--gold-light);
   font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
-.sf-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--text); }
-.sf-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.sf-btn:hover:not(:disabled) { background: rgba(240,204,96,0.22); color: #fff6dc; }
+.sf-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .sf-btn-next {
   background: linear-gradient(135deg, rgba(255,92,157,0.9), rgba(200,60,120,0.9));
   border-color: transparent;
@@ -9389,6 +9428,16 @@ body {
 [data-mode="light"] .lift-editor { background: rgba(255,240,248,0.9); border-color: rgba(200,23,110,0.28); }
 [data-mode="light"] .lift-field input { background: rgba(255,255,255,0.9); border-color: rgba(200,23,110,0.22); color: #3a1030; }
 [data-mode="light"] .lift-levelup { background: rgba(150,230,185,0.4); color: #14603c; border-color: rgba(90,190,140,0.55); }
+
+/* The floating page carries its own solid background rather than a token, so
+   light mode has to be told about it or the panel stays night-dark under
+   daylight text. */
+[data-mode="light"] .sheet-panel { background: #fff7fb; }
+[data-mode="light"] .sheet-overlay { background: rgba(60,20,50,0.42); }
+[data-mode="light"] .sf-dot { background: rgba(0,0,0,0.04); color: #6a3a5c; }
+[data-mode="light"] .sf-btn { background: rgba(154,104,0,0.12); color: #6b4a00; }
+[data-mode="light"] .sf-btn-next { color: #fff; }
+[data-mode="light"] .sf-count { color: #5a2a4a; }
 
 /* "Why this plan works" — the reasoning, folded away by default so the week
    screen reads as a week rather than an essay. Same pill shape as the
