@@ -1157,38 +1157,49 @@ body {
   background: rgba(4,2,8,0.78);
   backdrop-filter: blur(6px);
   display: flex;
-  /* Centred at every width. Anchored to the bottom it left a band of dead
-     space above the page, which read as the page being off-centre. */
-  align-items: center;
-  justify-content: center;
+  /* The whole overlay scrolls, and the panel is centred by auto margins rather
+     than by align-items. With align-items:center a panel taller than the screen
+     has its top cut off and cannot be scrolled back to; auto margins collapse
+     to zero in that case and leave it fully reachable. It also means she can
+     always scroll the page into a position she likes, whatever the screen. */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px));
   animation: sheet-fade 0.2s ease;
 }
 @keyframes sheet-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sheet-rise { from { transform: translateY(18px); opacity: 0; } to { transform: none; opacity: 1; } }
 .sheet-panel {
+  --sheet-bg: #120a16;
   position: relative;
   width: 100%;
   max-width: 560px;
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: #120a16;
+  /* Centred both ways, and never clipped when taller than the screen. */
+  margin: auto;
+  flex: none;
+  background: var(--sheet-bg);
   border: 1.5px solid var(--border-g);
   border-radius: 20px;
   animation: sheet-rise 0.25s cubic-bezier(.2,.8,.3,1);
-  overflow: hidden;
 }
 /* The heading stacks and centres, so the page reads down one line from its
    title to its last step. The close button leaves the flow entirely rather
    than pulling the title off centre. */
+/* Sticky, so a long step can scroll under it and the title and ✕ stay where
+   they are instead of disappearing off the top. */
 .sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   padding: 16px 48px 14px;
+  background: var(--sheet-bg);
   border-bottom: 1px solid rgba(240,204,96,0.14);
+  border-radius: 20px 20px 0 0;
   flex: none;
   text-align: center;
 }
@@ -1218,10 +1229,7 @@ body {
 }
 .sheet-close:hover { border-color: var(--rose); color: var(--rose); }
 .sheet-body {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+  padding: 14px 16px 18px;
 }
 
 @media (min-width: 560px) {
@@ -9432,7 +9440,7 @@ body {
 /* The floating page carries its own solid background rather than a token, so
    light mode has to be told about it or the panel stays night-dark under
    daylight text. */
-[data-mode="light"] .sheet-panel { background: #fff7fb; }
+[data-mode="light"] .sheet-panel { --sheet-bg: #fff7fb; }
 [data-mode="light"] .sheet-overlay { background: rgba(60,20,50,0.42); }
 [data-mode="light"] .sf-dot { background: rgba(0,0,0,0.04); color: #6a3a5c; }
 [data-mode="light"] .sf-btn { background: rgba(154,104,0,0.12); color: #6b4a00; }

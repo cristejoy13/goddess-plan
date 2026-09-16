@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 // A floating page.
 //
@@ -7,8 +8,16 @@ import { useEffect } from 'react';
 // are actually doing is a slot in a list rather than the thing in front of you.
 // This covers all of that. One routine, nothing else, and a close button.
 //
-// It is a page rather than a modal in feel: full screen on a phone, a floating
-// card on anything wider.
+// It is a page rather than a modal in feel: a floating card, centred on every
+// screen.
+//
+// It renders into document.body rather than where it sits in the tree. This is
+// not tidiness — it is the whole reason it works. `.section` runs a keyframe
+// animation with `both`, so it keeps a transform value forever, and an element
+// with a transform becomes the containing block for `position: fixed` inside
+// it. The overlay was therefore sized to the section — 980px wide and as tall
+// as the page — rather than to the screen, which is why it kept coming out
+// off-centre no matter what the centring rules said.
 export default function Sheet({ open, emoji, emojiBg, kicker, title, sub, onClose, children }) {
   // Escape closes it, and the page behind it stops scrolling — without this the
   // background slides under your finger while you are reading the sheet.
@@ -24,9 +33,10 @@ export default function Sheet({ open, emoji, emojiBg, kicker, title, sub, onClos
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
+    (
     <div className="sheet-overlay" onClick={onClose}>
       <div
         className="sheet-panel"
@@ -47,5 +57,7 @@ export default function Sheet({ open, emoji, emojiBg, kicker, title, sub, onClos
         <div className="sheet-body">{children}</div>
       </div>
     </div>
+    ),
+    document.body,
   );
 }
