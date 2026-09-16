@@ -496,21 +496,6 @@ const ALL_OILS = [
   { e: '✨', n: 'Argan' },
 ];
 
-// Nightly, and deliberately not on the calendar — a thing you do every night is
-// not an appointment. Two parts, on different places: a light oil on the SCALP
-// for the hairline, and a drop of argan on the ENDS for the pillow.
-const NIGHTLY_SCALP = {
-  n: 'Rosemary mint oil',
-  how: '3–4 drops on the parting lines. Scalp only. Massage 3 minutes.',
-  why: 'The hairline answers to little and often, not one long soak. Keep it light or fine hair goes flat.',
-};
-
-const NIGHTLY_ENDS = {
-  n: 'Camellia oil',
-  how: '1–2 drops on the bottom third, dry hair, right before bed. Never the scalp.',
-  why: 'It gets into the shaft and holds the moisture there overnight, without the weight.',
-};
-
 const OIL_COLORS = {
   Camellia:   'rgba(255,92,157,0.18)',
   Rosemary:   'rgba(240,204,96,0.14)',
@@ -728,17 +713,8 @@ function OilDayModal({ day, monthIdx, oils, dayName, onClose }) {
           </>
         )}
 
-        {/* Both nightly oils happen every night, soak day included. */}
-        <div className="oil-modal-card">
-          <div className="oil-modal-card-title">🌿 Tonight · scalp</div>
-          <p className="oil-modal-card-how">{NIGHTLY_SCALP.how}</p>
-          <p className="oil-modal-card-tip">💡 {NIGHTLY_SCALP.why}</p>
-        </div>
-        <div className="oil-modal-card">
-          <div className="oil-modal-card-title">🌙 Tonight · ends</div>
-          <p className="oil-modal-card-how">{NIGHTLY_ENDS.how}</p>
-          <p className="oil-modal-card-tip">💡 {NIGHTLY_ENDS.why}</p>
-        </div>
+        {/* The nightly oils used to be repeated here. They live in the Night
+            routine now, which is the only place that needs to state them. */}
       </div>
     </div>
   );
@@ -1247,9 +1223,16 @@ function RoutineCard({ r, onOpen }) {
 
 // The day routines come first — those are the ones that have to become
 // automatic. The Saturday soak and the never-list sit below them.
+// Written out rather than derived from the two arrays, because the order on
+// screen is a decision in its own right: the four everyday routines first, then
+// the weekly one, then lashes, and the never-list last because it is a
+// reference rather than something you do.
+const HAIR_ORDER = ['hr-pre', 'hr-post', 'hr-night', 'hr-out', 'hr-sat', 'hr-lash', 'hr-never'];
+
 function HairTab({ onSelectOil }) {
   const [openId, setOpenId] = useState(null);
-  const cards = [...HAIR_ROUTINES, ...HAIR_EXTRAS];
+  const all = [...HAIR_ROUTINES, ...HAIR_EXTRAS];
+  const cards = HAIR_ORDER.map(id => all.find(c => c.id === id)).filter(Boolean);
   const current = cards.find(c => c.id === openId) || null;
   const routine = HAIR_ROUTINES.find(r => r.id === openId) || null;
   const close = () => setOpenId(null);
