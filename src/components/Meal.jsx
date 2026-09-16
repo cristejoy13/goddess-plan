@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import {
-  dateKey, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
+  dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
 } from '../utils/mealLog';
 
 // ─── MEAL ──────────────────────────────────────────────────────────────────
@@ -50,6 +50,26 @@ function monthWeeks(year, monthIdx) {
     weeks.push([...week]);
   }
   return weeks;
+}
+
+// The seven days ending on a given Sunday, added up.
+//
+// Real dates, walked backwards with a Date — NOT the row of the grid. A grid
+// row can be a stub of three days at the start of a month, and a week total
+// that quietly dropped the four days sitting in the previous month would be
+// wrong in exactly the way a total must never be. This crosses the month edge
+// and, when the log holds those days, counts them.
+function weekTotalEnding(days, year, monthIdx, day) {
+  let total = 0;
+  let counted = 0;
+  // new Date(y, m, 0) and below rolls into the previous month on its own, so
+  // day - back needs no special case at the start of a month.
+  for (let back = 6; back >= 0; back--) {
+    const t = calTotals(days[dateKeyOf(new Date(year, monthIdx, day - back))] || []);
+    total += t.total;
+    counted += t.counted;
+  }
+  return { total, counted };
 }
 
 // "14:05" → "2:05 PM". She thinks in 12-hour clock, and the plan is written in
@@ -368,10 +388,15 @@ export default function Meal() {
               const { total, counted } = calTotals(dayEntries);
               const isToday = isThisMonth && day === today.d;
               const isOpen = openDay === day;
+              // Column 6 is Sunday — the grid runs Mo…Su — and Sunday is where
+              // the week closes, so that is where its total belongs.
+              const isSunday = di === 6;
+              const week = isSunday ? weekTotalEnding(days, year, monthIdx, day) : null;
+              const showWeek = Boolean(week && week.counted > 0);
               return (
                 <button
                   key={di}
-                  className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}`}
+                  className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}${showWeek ? ' ml-day-sun' : ''}`}
                   onClick={() => setOpenDay(isOpen ? null : day)}
                   aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${
                     count === 0
@@ -379,7 +404,7 @@ export default function Meal() {
                       : counted === 0
                         ? `${count} ${count === 1 ? 'meal' : 'meals'} written down, no calories yet`
                         : `${total} calories`
-                  }`}
+                  }${showWeek ? `, ${week.total} calories this week` : ''}`}
                 >
                   <span className="ml-day-num">{day}</span>
                   {count > 0 && (
@@ -387,6 +412,7 @@ export default function Meal() {
                       {counted === 0 ? '·' : total}
                     </span>
                   )}
+                  {showWeek && <span className="ml-day-week">{week.total}</span>}
                 </button>
               );
             })}
@@ -396,6 +422,12 @@ export default function Meal() {
 
       <div className="ml-summary splash-item">
         🍽️ {daysWritten} of {daysInMonth} days written down in {MONTH_NAMES[monthIdx]}
+      </div>
+      {/* Two bare numbers stacked in one square would be a guess without this
+          one line. It is the only words the grid gets. */}
+      <div className="ml-legend splash-item">
+        <span className="ml-legend-item"><span className="ml-day-dot">000</span> the day</span>
+        <span className="ml-legend-item"><span className="ml-day-week">000</span> the week</span>
       </div>
 
       {openDay && (
