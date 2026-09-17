@@ -24,11 +24,6 @@ const MONTH_NAMES = [
 ];
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-// She eats to a 7,000-calorie week — 1,000 a day — so Sunday also says how
-// much of that week is still unspent. A plain constant: it is a fact about her
-// plan, not something the calendar should work out or guess at.
-const WEEK_CALORIE_BUDGET = 7000;
-
 // ─── dates ─────────────────────────────────────────────────────────────────
 // dateKey and the rest of the log's shape live in utils/mealLog.js now, shared
 // with the meal plan in Workouts, which files a chosen meal straight into this
@@ -398,10 +393,6 @@ export default function Meal() {
               const isSunday = di === 6;
               const week = isSunday ? weekTotalEnding(days, year, monthIdx, day) : null;
               const showWeek = Boolean(week && week.counted > 0);
-              // Negative is not an error here: it is the week she went over,
-              // and hiding it would make the one number she needs the most
-              // disappear on exactly the weeks it matters.
-              const weekLeft = showWeek ? WEEK_CALORIE_BUDGET - week.total : 0;
               return (
                 <button
                   key={di}
@@ -413,11 +404,7 @@ export default function Meal() {
                       : counted === 0
                         ? `${count} ${count === 1 ? 'meal' : 'meals'} written down, no calories yet`
                         : `${total} calories`
-                  }${showWeek ? `, ${week.total} calories this week, ${
-                    weekLeft >= 0
-                      ? `${weekLeft} left of ${WEEK_CALORIE_BUDGET}`
-                      : `${-weekLeft} over ${WEEK_CALORIE_BUDGET}`
-                  }` : ''}`}
+                  }${showWeek ? `, ${week.total} calories this week` : ''}`}
                 >
                   <span className="ml-day-num">{day}</span>
                   {count > 0 && (
@@ -426,11 +413,6 @@ export default function Meal() {
                     </span>
                   )}
                   {showWeek && <span className="ml-day-week">{week.total}</span>}
-                  {showWeek && (
-                    <span className={`ml-day-left${weekLeft < 0 ? ' ml-day-left-over' : ''}`}>
-                      {weekLeft < 0 ? `−${-weekLeft}` : weekLeft}
-                    </span>
-                  )}
                 </button>
               );
             })}
@@ -446,7 +428,6 @@ export default function Meal() {
       <div className="ml-legend splash-item">
         <span className="ml-legend-item"><span className="ml-day-dot">000</span> the day</span>
         <span className="ml-legend-item"><span className="ml-day-week">000</span> the week</span>
-        <span className="ml-legend-item"><span className="ml-day-left">000</span> left of 7,000</span>
       </div>
 
       {openDay && (

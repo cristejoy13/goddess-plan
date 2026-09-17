@@ -8917,24 +8917,7 @@ body {
   font-variant-numeric: tabular-nums;
   max-width: 100%; letter-spacing: -0.2px;
 }
-/* Sunday's third number: what is left of the 7,000-calorie week once
-   everything eaten Monday to Sunday is taken off. Bare text, not a third pill
-   — three stacked badges in a phone-width square is a wall — and it carries
-   its own colour instead: green while there is room left, rose once the week
-   has gone over, which is the whole question the number is there to answer. */
-.ml-day-left {
-  font-size: 8px; font-weight: 700; line-height: 1;
-  color: #8fe3a8;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.2px;
-  max-width: 100%;
-}
-/* Red, not another rose: the week badge sitting directly above it is already
-   rose, and "you went over" has to be a different colour from "here is your
-   week", not a second shade of the same one. */
-.ml-day-left-over { color: #ff7b6b; }
-
-/* Four lines instead of two, so the square gives up its gap rather than its
+/* Three lines instead of two, so the square gives up its gap rather than its
    numbers. */
 .ml-day-sun { gap: 1px; padding: 2px 0; }
 
@@ -8948,8 +8931,7 @@ body {
 /* The swatches are stand-ins, not data — dimmed so they cannot be misread as
    a real total sitting under the calendar. */
 .ml-legend .ml-day-dot,
-.ml-legend .ml-day-week,
-.ml-legend .ml-day-left { opacity: 0.55; }
+.ml-legend .ml-day-week { opacity: 0.55; }
 .ml-day-today { box-shadow: inset 0 0 0 1.5px rgba(255,92,157,0.55); color: var(--rose); font-weight: 700; }
 .ml-day-today.ml-day-has { box-shadow: inset 0 0 0 1.5px var(--gold); }
 .ml-day-open { background: rgba(255,92,157,0.20); color: var(--text); }
@@ -9118,7 +9100,6 @@ body {
   .ml-day-dot { font-size: 8.5px; padding: 1px 4px; }
   .ml-day-sun .ml-day-dot { font-size: 8px; padding: 0 3px; }
   .ml-day-week { font-size: 7.5px; padding: 0 3px; }
-  .ml-day-left { font-size: 7px; }
   .ml-nav-label { font-size: 19px; min-width: 104px; }
   .ml-nav-btn { width: 36px; height: 36px; }
   .ml-entry { padding: 11px 12px; gap: 13px; }
@@ -9171,10 +9152,6 @@ body {
   color: #8a0a48;
 }
 [data-mode="light"] .ml-day-dot-none { background: rgba(200,160,40,0.20); color: #6a4a10; }
-/* Pale green and pale rose vanish on a white square, so daylight gets the
-   deep pair instead. */
-[data-mode="light"] .ml-day-left { color: #14682f; }
-[data-mode="light"] .ml-day-left-over { color: #b8231a; }
 [data-mode="light"] .ml-legend { color: #5a2a4a; }
 /* The blue theme: the week badge is hard-coded rose, which is the wrong
    family there. It follows the theme's own accent instead. */
