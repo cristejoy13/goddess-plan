@@ -18,6 +18,12 @@
   --border-g:   rgba(240,204,96,0.22);
   --border-r:   rgba(255,92,157,0.32);
   --card:       rgba(16, 5, 22, 0.88);
+  /* The scale gets its own two colours, held apart from gold (calories) and
+     rose (the calorie week) so four numbers in one calendar square can never
+     be mistaken for one another. Mint is the day on the scale; lavender is the
+     week's average. */
+  --wt:         #6ee7c8;
+  --wt-avg:     #c4a6ff;
 }
 
 /* ─── MALE THEME — sky blue · yellow · dark navy ─── */
@@ -35,6 +41,8 @@
   --border-g:   rgba(234,179,8,0.28);
   --border-r:   rgba(56,189,248,0.35);
   --card:       rgba(8, 18, 34, 0.90);
+  --wt:         #5eead4;
+  --wt-avg:     #a5b4fc;
 }
 [data-theme="male"] .bg-layer {
   background:
@@ -63,6 +71,9 @@
   --gold-shine: #9a6800;
   --border-g:   rgba(154,104,0,0.28);
   --border-r:   rgba(200,23,110,0.28);
+  /* Mint and lavender go dark enough to read on white. */
+  --wt:         #0b7a62;
+  --wt-avg:     #5b35c4;
 }
 [data-mode="light"] body { background: #fff5fb; }
 [data-mode="light"] .bg-layer {
@@ -8921,6 +8932,106 @@ body {
    numbers. */
 .ml-day-sun { gap: 1px; padding: 2px 0; }
 
+/* ── the scale, on the square ───────────────────────────────────────────────
+   Kilos sit ABOVE the calories with a hairline between them, because two bare
+   numbers stacked with nothing in between read as one number. No unit is
+   printed: at this size the word would cost more room than it buys, and the
+   legend under the calendar says which is which once. */
+.ml-day-wt {
+  display: inline-flex; align-items: baseline; justify-content: center;
+  gap: 2px;
+  font-size: 8.5px; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  max-width: 100%; letter-spacing: -0.2px;
+}
+.ml-wt-day   { color: var(--wt); }
+.ml-wt-avg   { color: var(--wt-avg); }
+.ml-wt-slash { color: var(--text-soft); opacity: 0.7; font-weight: 400; }
+/* The rule the two halves of the square are divided by. Faint on purpose —
+   it separates, it does not compete with the numbers it is separating. */
+.ml-day-rule {
+  display: block; flex: none; width: 66%; height: 1px;
+  background: rgba(255,255,255,0.42);
+  margin: 1px 0;
+}
+[data-mode="light"] .ml-day-rule { background: rgba(90,42,74,0.40); }
+.ml-legend .ml-day-wt { opacity: 0.55; }
+
+/* ── the weigh-in, in the open day ──────────────────────────────────────────
+   A section of its own under the meal form: one number for the whole day,
+   asked once, not once per meal. */
+.ml-wt-form {
+  margin-top: 22px; padding: 16px;
+  background: rgba(110,231,200,0.07);
+  border: 1px solid rgba(110,231,200,0.26);
+  border-radius: 14px;
+}
+.ml-wt-row {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 14px; flex-wrap: wrap;
+}
+.ml-wt-wrap { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.ml-wt-field {
+  display: flex; align-items: center; gap: 7px;
+}
+.ml-wt-input {
+  width: 104px; text-align: center;
+  background: rgba(0,0,0,0.28);
+  border: 1.5px solid rgba(110,231,200,0.34);
+  border-radius: 12px;
+  padding: 11px 10px;
+  color: var(--text); font-size: 16px; font-weight: 700;
+  font-family: inherit;
+  -moz-appearance: textfield; appearance: textfield;
+}
+.ml-wt-input::-webkit-outer-spin-button,
+.ml-wt-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ml-wt-input::placeholder { text-align: center; }
+.ml-wt-input:focus { outline: none; border-color: var(--wt); }
+.ml-wt-unit { font-size: 13px; font-weight: 700; color: var(--wt); }
+.ml-wt-btn {
+  flex: none;
+  background: rgba(110,231,200,0.16); color: #bff6e6;
+  border: 1px solid rgba(110,231,200,0.42); border-radius: 999px;
+  padding: 11px 20px; font-size: 13px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+  min-height: 44px;
+}
+.ml-wt-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ml-wt-warn {
+  margin-top: 10px; text-align: center;
+  font-size: 11.5px; line-height: 1.5; color: #ffc4da;
+}
+/* Sunday's answer, spelled out in the panel the square only has room to hint
+   at — and only on Sunday, where the week closes. */
+.ml-wt-week {
+  margin-top: 14px; padding: 12px 16px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+  background: rgba(196,166,255,0.10);
+  border: 1px solid rgba(196,166,255,0.30);
+  border-radius: 12px;
+}
+.ml-wt-week-lbl  { font-size: 13px; font-weight: 600; color: var(--text-mid, #d4a0b8); }
+.ml-wt-week-num  { font-size: 19px; font-weight: 700; color: var(--wt-avg); font-variant-numeric: tabular-nums; }
+.ml-wt-week-note { flex: 1 0 100%; font-size: 11.5px; color: var(--text-soft, #c090b8); }
+
+[data-mode="light"] .ml-wt-form  { background: rgba(11,122,98,0.07); border-color: rgba(11,122,98,0.28); }
+[data-mode="light"] .ml-wt-input { color: #0a2a24; background: rgba(255,255,255,0.8); border-color: rgba(11,122,98,0.30); }
+[data-mode="light"] .ml-wt-btn   { background: rgba(11,122,98,0.12); color: #08564a; border-color: rgba(11,122,98,0.38); }
+[data-mode="light"] .ml-wt-warn  { color: #a00050; }
+[data-mode="light"] .ml-wt-week  { background: rgba(91,53,196,0.09); border-color: rgba(91,53,196,0.28); }
+[data-mode="light"] .ml-wt-week-lbl  { color: #4a2440; }
+[data-mode="light"] .ml-wt-week-note { color: #5a2a4a; }
+
+/* Phone: the box and its button take the full width one above the other, so
+   the button stays a thumb's width rather than being squeezed beside a box. */
+@media (max-width: 420px) {
+  .ml-wt-row { flex-direction: column; align-items: stretch; gap: 16px; }
+  .ml-wt-wrap { align-items: center; }
+  .ml-wt-btn { width: 100%; }
+}
+
 .ml-legend {
   display: flex; align-items: center; justify-content: center;
   flex-wrap: wrap; gap: 6px 16px;
@@ -9100,6 +9211,12 @@ body {
   .ml-day-dot { font-size: 8.5px; padding: 1px 4px; }
   .ml-day-sun .ml-day-dot { font-size: 8px; padding: 0 3px; }
   .ml-day-week { font-size: 7.5px; padding: 0 3px; }
+  /* Five lines can land in one square on a Sunday — day, scale, rule,
+     calories, week. They all have to fit without the square growing, so the
+     type steps down and the rule gives up its margin. */
+  .ml-day-wt { font-size: 7.5px; }
+  .ml-day-sun .ml-day-wt { font-size: 7px; gap: 1px; }
+  .ml-day-rule { margin: 0; width: 56%; }
   .ml-nav-label { font-size: 19px; min-width: 104px; }
   .ml-nav-btn { width: 36px; height: 36px; }
   .ml-entry { padding: 11px 12px; gap: 13px; }
@@ -9137,6 +9254,8 @@ body {
      symmetry cannot drift as the panel resizes. */
   .ml-add-row { grid-template-columns: 124px 1fr 124px; gap: 32px; }
   .ml-day-panel { padding: 26px; }
+  .ml-day-wt { font-size: 10px; }
+  .ml-day-week { font-size: 9px; }
 }
 
 /* Light theme: the calendar needs real contrast on white. */

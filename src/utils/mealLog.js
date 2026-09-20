@@ -5,9 +5,17 @@
 // each side and drifting apart.
 //
 // Shape:
-//   { days: { 'YYYY-MM-DD': [ entry, ... ] }, deleted: { id: iso }, updatedAt }
-//   entry = { id, time: 'HH:MM', text, cal: number|null, createdAt, updatedAt,
-//             fromPlan?: '<meal name>' }
+//   { days: { 'YYYY-MM-DD': [ entry, ... ] }, weights: { 'YYYY-MM-DD': weight },
+//     deleted: { id: iso }, updatedAt }
+//   entry  = { id, time: 'HH:MM', text, cal: number|null, createdAt, updatedAt,
+//              fromPlan?: '<meal name>' }
+//   weight = { kg: number|null, updatedAt: iso }
+//
+// The scale reading lives here rather than under a key of its own because it
+// is the same question as the meals — what happened on this date — and one
+// date-keyed record means one merge to get right instead of two. A cleared
+// weight is stored as kg: null with a fresh stamp, NOT deleted: that is what
+// stops another gadget's older copy putting the old number back.
 //
 // `fromPlan` marks a line that arrived by choosing a meal in the plan rather
 // than by typing. It is what lets un-choosing that meal take the line away
@@ -40,6 +48,58 @@ export function parseCal(v) {
   return Number.isFinite(n) && n > 0 ? Math.round(n) : null;
 }
 
+// Kilos, to one decimal place, and only a figure a human scale could produce.
+// A typo like 655 is refused rather than stored, because a wrong weight would
+// drag a whole week's average with it and she would have no way to see why.
+export const MIN_KG = 20;
+export const MAX_KG = 400;
+
+export function parseKg(v) {
+  const n = Number(String(v).trim());
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const r = Math.round(n * 10) / 10;
+  return r >= MIN_KG && r <= MAX_KG ? r : null;
+}
+
+// 62 reads as "62", 62.5 as "62.5". A trailing ".0" on a calendar square is a
+// character of noise in a space that has none to spare.
+export function formatKg(kg) {
+  if (typeof kg !== 'number' || !Number.isFinite(kg)) return '';
+  return Number.isInteger(kg) ? String(kg) : kg.toFixed(1);
+}
+
+export function weightOn(state, key) {
+  const w = state.weights?.[key];
+  return typeof w?.kg === 'number' ? w.kg : null;
+}
+
+// Writing null clears the day. The stamp is kept either way — see the note on
+// the shape above for why a cleared weight is not simply removed.
+export function setWeight(state, key, kg) {
+  const now = new Date().toISOString();
+  return {
+    ...state,
+    weights: { ...(state.weights || {}), [key]: { kg: kg ?? null, updatedAt: now } },
+    updatedAt: now,
+  };
+}
+
+// The average of every weighing in the seven days ending on a given date.
+//
+// Real dates walked backwards, exactly as the week calorie total does, so a
+// week that starts in the previous month still counts its Monday. Days with no
+// weighing are skipped rather than counted as zero — an average dragged down
+// by a day she never stood on the scale would be a made-up number.
+export function weekWeightAvg(state, year, monthIdx, day) {
+  let sum = 0;
+  let counted = 0;
+  for (let back = 6; back >= 0; back--) {
+    const kg = weightOn(state, dateKeyOf(new Date(year, monthIdx, day - back)));
+    if (kg != null) { sum += kg; counted += 1; }
+  }
+  return { avg: counted ? Math.round((sum / counted) * 10) / 10 : null, counted };
+}
+
 // Only meals that actually carry a number are counted, and the caller is told
 // how many were skipped. A partial figure presented as a whole day would be
 // worse than no figure, because it would be acted on.
@@ -61,10 +121,15 @@ export function loadLog() {
   try {
     const raw = JSON.parse(localStorage.getItem(MEAL_LOG_KEY) || 'null');
     if (raw && typeof raw === 'object' && raw.days && typeof raw.days === 'object') {
-      return { days: raw.days, deleted: raw.deleted || {}, updatedAt: raw.updatedAt || '' };
+      return {
+        days: raw.days,
+        weights: (raw.weights && typeof raw.weights === 'object') ? raw.weights : {},
+        deleted: raw.deleted || {},
+        updatedAt: raw.updatedAt || '',
+      };
     }
   } catch { /* fall through to an empty log */ }
-  return { days: {}, deleted: {}, updatedAt: '' };
+  return { days: {}, weights: {}, deleted: {}, updatedAt: '' };
 }
 
 // Returns whether the write actually landed. A meal she watched disappear is

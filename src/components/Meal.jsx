@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
+  parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
 } from '../utils/mealLog';
 
 // ─── MEAL ──────────────────────────────────────────────────────────────────
@@ -109,7 +110,10 @@ function MealForm({ initial, onSubmit, onCancel }) {
   }
 
   return (
-    <form className={`ml-add${editing ? ' ml-add-editing' : ''}`} onSubmit={submit}>
+    // noValidate for the same reason as the weigh-in below: step="1" on the
+    // calorie box made the browser swallow the submit whole if she typed a
+    // decimal, so the meal was simply never added and nothing said so.
+    <form className={`ml-add${editing ? ' ml-add-editing' : ''}`} noValidate onSubmit={submit}>
       <div className="ml-add-row">
         <label className="ml-time-wrap">
           <span className="ml-time-lbl">Time</span>
@@ -156,6 +160,83 @@ function MealForm({ initial, onSubmit, onCancel }) {
   );
 }
 
+// ─── the daily weigh-in ────────────────────────────────────────────────────
+// One number a day, in kilos, sitting under the meals because it is the other
+// half of the same question. It is a section of its own rather than a fourth
+// box on the meal form: a weight belongs to the DAY, not to the bowl of rice —
+// putting it in the form would ask her for it again with every meal she wrote.
+//
+// Nothing is ever filled in for her. A day she did not weigh stays empty, and
+// an empty day is left out of the week's average rather than counted as zero.
+function WeightForm({ kg, onSave }) {
+  const [draft, setDraft] = useState(() => (kg != null ? formatKg(kg) : ''));
+  const [warn, setWarn] = useState('');
+
+  // She may open Tuesday, then Wednesday, without the panel unmounting in
+  // between, so the box has to follow the day she is looking at.
+  const [seen, setSeen] = useState(kg);
+  if (seen !== kg) { setSeen(kg); setDraft(kg != null ? formatKg(kg) : ''); setWarn(''); }
+
+  const typed = draft.trim();
+  const parsed = parseKg(typed);
+  const clearing = typed === '' && kg != null;
+  // Compared as TEXT, not as parsed numbers. A refused number parses to null,
+  // which is also what an empty box parses to — so comparing the numbers made
+  // a typo look like no change at all, greyed the button out, and left her
+  // with no way to find out why it would not save.
+  const unchanged = typed === (kg != null ? formatKg(kg) : '');
+
+  function submit(e) {
+    e.preventDefault();
+    if (typed === '') {
+      if (kg == null) return;
+      if (!window.confirm(`Remove your weight of ${formatKg(kg)} kg for this day? This cannot be undone.`)) return;
+      setWarn('');
+      onSave(null);
+      return;
+    }
+    if (parsed == null) {
+      setWarn(`Type your weight in kilos, between ${MIN_KG} and ${MAX_KG}.`);
+      return;
+    }
+    setWarn('');
+    onSave(parsed);
+  }
+
+  return (
+    // noValidate on purpose. With min/max/step left to the browser, a reading
+    // like 62.53 fails the step check, the submit event never fires at all,
+    // and the number she typed vanishes with no message. The checking is done
+    // in parseKg instead, which can say what is wrong in words she can read.
+    <form className="ml-wt-form" noValidate onSubmit={submit}>
+      <div className="ml-wt-row">
+        <label className="ml-wt-wrap">
+          <span className="ml-time-lbl">⚖️ Weight today</span>
+          <div className="ml-wt-field">
+            <input
+              className="ml-wt-input"
+              type="number"
+              inputMode="decimal"
+              min={MIN_KG}
+              max={MAX_KG}
+              step="any"
+              value={draft}
+              onChange={e => { setDraft(e.target.value); setWarn(''); }}
+              placeholder="—"
+              aria-label="Your weight today, in kilos"
+            />
+            <span className="ml-wt-unit">kg</span>
+          </div>
+        </label>
+        <button type="submit" className="ml-wt-btn" disabled={unchanged}>
+          {clearing ? 'Remove' : kg != null ? 'Save' : '＋ Add'}
+        </button>
+      </div>
+      {warn && <div className="ml-wt-warn">{warn}</div>}
+    </form>
+  );
+}
+
 // One written meal. The two actions are icons only — a pencil and a bin — so
 // the row stays the meal rather than the buttons around it.
 function EntryRow({ entry, onEdit, onDelete }) {
@@ -192,7 +273,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 }
 
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, onAdd, onEdit, onDelete, onClose, saveFailed }) {
+function DayPanel({ year, monthIdx, day, entries, kg, weekAvg, onAdd, onEdit, onDelete, onWeight, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
   return (
@@ -245,6 +326,18 @@ function DayPanel({ year, monthIdx, day, entries, onAdd, onEdit, onDelete, onClo
       )}
 
       <MealForm onSubmit={onAdd} />
+
+      <WeightForm kg={kg} onSave={onWeight} />
+
+      {weekAvg && weekAvg.counted > 0 && (
+        <div className="ml-wt-week">
+          <span className="ml-wt-week-lbl">Average this week</span>
+          <span className="ml-wt-week-num">{formatKg(weekAvg.avg)} kg</span>
+          <span className="ml-wt-week-note">
+            from {weekAvg.counted} {weekAvg.counted === 1 ? 'day' : 'days'} on the scale
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -316,6 +409,13 @@ export default function Meal() {
     });
   };
 
+  // The scale reading for a day. Writing null clears it; the record keeps the
+  // cleared stamp so another gadget cannot put the old number back.
+  const saveWeight = (dayNum, kg) => {
+    const key = dateKey(year, monthIdx, dayNum);
+    commit(prev => setWeight(prev, key, kg));
+  };
+
   // Month and year both step, and each step closes the open day so the panel
   // can never show one month's meals under another month's heading.
   function step(deltaMonths, deltaYears) {
@@ -343,6 +443,7 @@ export default function Meal() {
   const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
 
   const openKey = openDay ? dateKey(year, monthIdx, openDay) : null;
+  const openIsSunday = openDay ? new Date(year, monthIdx, openDay).getDay() === 0 : false;
 
   return (
     <div className="section">
@@ -355,6 +456,8 @@ export default function Meal() {
           Anything else you type yourself. Calories are optional — leave the box empty when you
           do not know, and the total counts only what is filled in. ✏️ changes a line, 🗑 removes
           one, and everything stays for good, on every device, until you delete it yourself.
+          Under the meals there is one box for your weight in kilos. On Sunday the square shows
+          that day's weight and the week's average, side by side.
         </p>
       </div>
 
@@ -393,10 +496,18 @@ export default function Meal() {
               const isSunday = di === 6;
               const week = isSunday ? weekTotalEnding(days, year, monthIdx, day) : null;
               const showWeek = Boolean(week && week.counted > 0);
+              // The scale sits above the calories with a rule between them,
+              // because two bare numbers stacked in one square with nothing
+              // between them read as one four-digit number.
+              const kg = weightOn(state, key);
+              const wk = isSunday ? weekWeightAvg(state, year, monthIdx, day) : null;
+              const avg = wk && wk.counted > 0 ? wk.avg : null;
+              const showWt = kg != null || avg != null;
+              const showRule = showWt && count > 0;
               return (
                 <button
                   key={di}
-                  className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}${showWeek ? ' ml-day-sun' : ''}`}
+                  className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}${showWeek || showWt ? ' ml-day-sun' : ''}`}
                   onClick={() => setOpenDay(isOpen ? null : day)}
                   aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${
                     count === 0
@@ -404,9 +515,21 @@ export default function Meal() {
                       : counted === 0
                         ? `${count} ${count === 1 ? 'meal' : 'meals'} written down, no calories yet`
                         : `${total} calories`
-                  }${showWeek ? `, ${week.total} calories this week` : ''}`}
+                  }${showWeek ? `, ${week.total} calories this week` : ''}${
+                    kg != null ? `, ${formatKg(kg)} kilos` : ''
+                  }${avg != null ? `, ${formatKg(avg)} kilos on average this week` : ''}`}
                 >
                   <span className="ml-day-num">{day}</span>
+                  {showWt && (
+                    <span className="ml-day-wt">
+                      <span className="ml-wt-day">{kg != null ? formatKg(kg) : '–'}</span>
+                      {avg != null && <>
+                        <span className="ml-wt-slash">/</span>
+                        <span className="ml-wt-avg">{formatKg(avg)}</span>
+                      </>}
+                    </span>
+                  )}
+                  {showRule && <span className="ml-day-rule" aria-hidden="true" />}
                   {count > 0 && (
                     <span className={`ml-day-dot${counted === 0 ? ' ml-day-dot-none' : ''}`}>
                       {counted === 0 ? '·' : total}
@@ -426,8 +549,10 @@ export default function Meal() {
       {/* Two bare numbers stacked in one square would be a guess without this
           one line. It is the only words the grid gets. */}
       <div className="ml-legend splash-item">
-        <span className="ml-legend-item"><span className="ml-day-dot">000</span> the day</span>
-        <span className="ml-legend-item"><span className="ml-day-week">000</span> the week</span>
+        <span className="ml-legend-item"><span className="ml-day-dot">000</span> calories, the day</span>
+        <span className="ml-legend-item"><span className="ml-day-week">000</span> calories, the week</span>
+        <span className="ml-legend-item"><span className="ml-day-wt"><span className="ml-wt-day">00</span></span> kilos, the day</span>
+        <span className="ml-legend-item"><span className="ml-day-wt"><span className="ml-wt-avg">00</span></span> kilos, the week</span>
       </div>
 
       {openDay && (
@@ -436,9 +561,15 @@ export default function Meal() {
           monthIdx={monthIdx}
           day={openDay}
           entries={days[openKey] || []}
+          kg={weightOn(state, openKey)}
+          /* The average belongs to the week, so it is shown where the week
+             closes — on Sunday — and nowhere else, rather than on every day as
+             a half-finished figure. */
+          weekAvg={openIsSunday ? weekWeightAvg(state, year, monthIdx, openDay) : null}
           onAdd={(fields) => addEntry(openDay, fields)}
           onEdit={(entry, fields) => editEntry(openDay, entry, fields)}
           onDelete={(entry) => deleteEntry(openDay, entry)}
+          onWeight={(kg) => saveWeight(openDay, kg)}
           onClose={() => setOpenDay(null)}
           saveFailed={saveFailed}
         />
