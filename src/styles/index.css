@@ -9034,7 +9034,8 @@ body {
 
 /* The one line every day of the week shares, under the week grid. */
 .wg-every-day {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px 14px; flex-wrap: wrap;
   margin: 14px auto 0;
   padding: 9px 16px;
   background: rgba(255,92,157,0.10);

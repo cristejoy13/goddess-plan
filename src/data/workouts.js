@@ -22,19 +22,21 @@ export function getCurrentSprintProtocol() {
 
 // ─── WEEKLY ROUTINE ────────────────────────────────────────────────────────
 // Every day of the week is the same shape, in this order and no other:
-//     warm-up  →  (glute activation)  →  the main workout  →  one-hour walk
-// The walk is on all seven days now, and it is not a choice: it is how a day
-// ends. The rope is an extra on top of it for a day you want to sweat, never a
-// swap for it.
+//     warm-up  →  stomach vacuum  →  (glute activation)  →  the main workout
+//                                                        →  one-hour walk
+// Two things now bookend all seven days and neither is a choice: the vacuum
+// before the main workout, the hour walk after it. The vacuum used to be
+// Thursday's alone. The rope is an extra on top of the walk for a day you want
+// to sweat, never a swap for it.
 //   • Glute days (3×) — warm-up, glute activation, then three lifts:
 //       Mon  Hip Thrust · RDL · Step-Up
 //       Wed  Back Squat · Bulgarian Split Squat · RDL
 //       Fri  Hip Abduction · Cable Kickback · Sumo Squat
-//   • Tuesday — arms, back and shoulders: eight moves and nothing else. No
-//     core and no videos of any kind; both belong to Thursday.
-//   • Thursday — the core day and the video day. Vacuum, the five ab moves,
-//     then ONE video: Izzy's core or Nicole's full body, her pick. No arm,
-//     back or shoulder work — that is Tuesday's job.
+//   • Tuesday — arms, back and shoulders: eight moves and nothing else. No ab
+//     work and no videos of any kind; both belong to Thursday.
+//   • Thursday — the core day and the video day. The five ab moves, then ONE
+//     video: Izzy's core or Nicole's full body, her pick. No arm, back or
+//     shoulder work — that is Tuesday's job.
 // Weekend (Sat · Sun): one Jessica Diễm video comes FIRST on both days and is
 // the session, because her videos are full-body. Saturday follows it with the
 // sprint protocol, the one that advances by itself each challenge month.
@@ -96,8 +98,18 @@ const SWIM = { name: 'Swimming', detail: '30–45 min · Sunday only, straight a
 const BIKE = { name: 'Biking — an extra, if you want it', detail: '45–60 min · Sunday only, later in the day · steady easy pace, flat route · an extra on top of the swim, not instead of it · gentle on the legs, and it keeps Monday fresh' };
 // There is no long stretch on the weekend any more. The warm-up at the top of
 // each weekday still opens with a full-body stretch, so stretching has not
-// left the plan — it is just no longer a session of its own.
-const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · do this FIRST before your core video' };
+// left the plan — it is just no longer a session of its own. The weekend days
+// have no warm-up section either, so the vacuum is the first thing on them.
+// On all seven days now, straight after the warm-up and before the main
+// workout. It used to be Thursday's alone, tucked inside that day's warm-up.
+// It costs about two minutes, needs no equipment and does the one thing the
+// rest of the plan cannot: it pulls the waist IN, where crunches push it out.
+const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · EVERY day, after the warm-up and before the main workout · this pulls the waist in where crunches push it out, which is why it comes first and not last' };
+// Its own section, so it reads the same on every day of the week.
+const VACUUM_SEC = [
+  H('🫧 Stomach Vacuum', 'Every day, before the main workout.'),
+  VACUUM,
+];
 
 // ─── ABS ───────────────────────────────────────────────────────────────────
 // The waist work, two or three times a week and never more. These five build
@@ -953,9 +965,11 @@ export const DAILY_MEALS = {
 //   3 glute days   — Monday, Wednesday, Friday. Never two in a row, because
 //                    glutes grow on the day off, not on the day you train them.
 //   1 arms day     — Tuesday. Shoulders, back, arms. No core, no videos.
-//   1 core day     — Thursday. The vacuum, the five ab moves, then one video,
-//                    Izzy's or Nicole's. Core NEVER lands on a glute day: a
-//                    glute day is a glute day and nothing else.
+//   1 core day     — Thursday. The five ab moves, then one video, Izzy's or
+//                    Nicole's. Core NEVER lands on a glute day: a glute day is
+//                    a glute day and nothing else. (The vacuum is not core work
+//                    in this sense — it is a two-minute breathing hold, and it
+//                    opens every day.)
 //   2 weekend days — Jessica Diễm first on both, then sprints on Saturday and
 //                    the swim on Sunday. No stretch, and no run on Sunday.
 // The one-hour walk closes all seven days, without exception.
@@ -972,13 +986,14 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Monday · Glute Power', title: 'Hip Thrust · RDL · Step-Up',
-    sub: '~115 min total · warm-up → glute activation → main workout → 1-hour walk',
+    sub: '~120 min total · warm-up → vacuum → glute activation → main workout → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     noteBefore: { type: 'rose', text: '🍑 Hip thrust first, while you are freshest.' },
     exercises: [
       H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      H('🍑 Glute Activation', 'Straight after the warm-up, before the bar.'),
+      ...VACUUM_SEC,
+      H('🍑 Glute Activation', 'After the vacuum, straight into the bar.'),
       { name: 'Glute & Hamstring Activation', detail: '5 min · banded glute bridges × 20 → lateral band walks × 15 each → donkey kicks × 15 each' },
       H('🍑 Main Workout', '3 lifts · 3 × 10 · in this order.'),
       { name: '1. Barbell Hip Thrust', detail: 'MAIN 1 of 3 · 3 × 10 · shoulders on a bench, chin tucked, drive the hips up to parallel, pause 2 sec at the top, lower for 3 sec · GLUTEUS MAXIMUS' },
@@ -1002,12 +1017,13 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Tuesday · Arms, Back & Shoulders', title: 'Shoulders · Back · Arms',
-    sub: '~100 min total · warm-up → shoulders → back → arms → 1-hour walk',
+    sub: '~105 min total · warm-up → vacuum → shoulders → back → arms → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     noteBefore: { type: 'gold', text: '💪 Shoulders, then back, then arms. Light weight, slow lowering.' },
     exercises: [
       H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
+      ...VACUUM_SEC,
       H('🫧 Main Workout · Shoulders', 'Three moves, in order. Keep them light.'),
       ...SHOULDERS,
       H('🏋️ Main Workout · Back', 'Two moves. Back flat on the row.'),
@@ -1026,13 +1042,14 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🔥', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Wednesday · Glute Strength', title: 'Squat · Split Squat · RDL',
-    sub: '~115 min total · warm-up → glute activation → main workout → 1-hour walk',
+    sub: '~120 min total · warm-up → vacuum → glute activation → main workout → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     noteBefore: { type: 'rose', text: '🔥 The heaviest day. Go below parallel, or go lighter.' },
     exercises: [
       H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      H('🍑 Glute Activation', 'Straight after the warm-up, before the bar.'),
+      ...VACUUM_SEC,
+      H('🍑 Glute Activation', 'After the vacuum, straight into the bar.'),
       { name: 'Glute & Quad Activation', detail: '5 min · glute bridges × 15 → banded clamshells × 15 each → bodyweight squats × 15 → hip circles × 10 each' },
       H('🍑 Main Workout', '3 lifts · 3 × 10 · in this order.'),
       { name: '1. Barbell Back Squat', detail: 'MAIN 1 of 3 · 3 × 10 · bar on your upper back, chest tall, sit to below parallel, drive up through the whole foot · GLUTEUS MAXIMUS + QUADS · go below parallel or go lighter' },
@@ -1046,23 +1063,24 @@ export const WORKOUT_DAYS = [
     trackLifts: true,
     meals: DAILY_MEALS,
   },
-  // ══ THURSDAY ══ The video day, and the only core day.
+  // ══ THURSDAY ══ The video day, and the only ab day.
   //
   // Every video in the plan lives here: Izzy's core sessions and Nicole's
   // full-body ones, one or the other, her pick. The arms, back and shoulder
   // work is not on this day at all — that is Tuesday's, and nothing is doubled
-  // up between the two any more. The vacuum and the five ab moves stay, since
-  // they are the core work this day is named for.
+  // up between the two any more. The five ab moves stay, since they are the
+  // work this day is named for. The vacuum is no longer special to it: every
+  // day opens with one now.
   {
     emoji: '🎯', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Thursday · Core & Videos', title: 'Vacuum · Abs · Izzy or Nicole',
-    sub: '~95 min total · warm-up & vacuum → abs → one video → 1-hour walk',
+    day: 'Thursday · Core & Videos', title: 'Abs · Izzy or Nicole',
+    sub: '~95 min total · warm-up → vacuum → abs → one video → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
-    noteBefore: { type: 'gold', text: '🎯 Vacuum first — it pulls the waist in where crunches push it out.' },
+    noteBefore: { type: 'gold', text: '🎯 The five ab moves, then ONE video — Izzy or Nicole, not both.' },
     exercises: [
-      H('🔥 Warm-Up', 'Both, in this order, first thing.'),
+      H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      VACUUM,
+      ...VACUUM_SEC,
       H('🎯 Main Workout · Abs', 'All five, in order.'),
       ...ABS_MAIN,
       H('🌀 Then ONE video · Deep Core — Izzy', 'Izzy or Nicole, not both. Pick one.', 'core'),
@@ -1081,13 +1099,14 @@ export const WORKOUT_DAYS = [
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Friday · Glute Shape', title: 'Abduction · Kickback · Sumo',
-    sub: '~110 min total · warm-up → glute activation → main workout → 1-hour walk',
+    sub: '~115 min total · warm-up → vacuum → glute activation → main workout → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     noteBefore: { type: 'rose', text: '✨ Lighter weight, slower reps. Hold every squeeze 2 seconds.' },
     exercises: [
       H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
-      H('🍑 Glute Activation', 'Straight after the warm-up, before the work.'),
+      ...VACUUM_SEC,
+      H('🍑 Glute Activation', 'After the vacuum, straight into the work.'),
       { name: 'Glute Medius Activation', detail: '5 min · glute bridges × 15 → lateral band walks × 15 each → clamshells × 15 each → fire hydrants × 15 each' },
       H('🍑 Main Workout', '3 lifts · 3 × 10 · in this order.'),
       { name: '1. Hip Abduction (machine or band)', detail: 'MAIN 1 of 3 · 3 × 10 · push the knees apart, hold 2 sec at the widest point, release slow · GLUTEUS MEDIUS + MINIMUS · lean forward for the upper glute, sit upright for the side' },
@@ -1112,12 +1131,13 @@ export const WORKOUT_DAYS = [
   {
     emoji: '⚡', emojiBg: 'rgba(253,245,208,0.4)',
     day: 'Saturday · Jessica Diem & Sprints', title: 'Jessica Diem · Sprints',
-    sub: 'One Jessica Diem video → sprints → 1-hour walk',
+    sub: 'Vacuum → one Jessica Diem video → sprints → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     sprintDay: true,
     noteBefore: { type: 'gold', text: '💗 The video first, then the sprints. In that order.' },
     exercises: [
-      H('💗 1 · Jessica Diem — pick ONE video', 'First. Her videos are full body.', 'core'),
+      ...VACUUM_SEC,
+      H('💗 1 · Jessica Diem — pick ONE video', 'After the vacuum. Her videos are full body.', 'core'),
       ...JESSICA_DIEM,
       H('⚡ 2 · Sprints', 'After the video. Warm up first — never sprint cold.'),
       RUN_WARMUP,
@@ -1139,11 +1159,12 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🏊', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Sunday · Jessica Diem & Swim', title: 'Jessica Diem · Swim',
-    sub: 'One Jessica Diem video → swimming → 1-hour walk',
+    sub: 'Vacuum → one Jessica Diem video → swimming → 1-hour walk',
     cardio: { icon: '🏊', title: 'Swimming after the video', note: '30–45 min easy laps, after the main workout' },
     noteBefore: { type: 'gold', text: '💗 The video first, then the swim. In that order.' },
     exercises: [
-      H('💗 1 · Jessica Diem — pick ONE video', 'First. Her videos are full body.', 'core'),
+      ...VACUUM_SEC,
+      H('💗 1 · Jessica Diem — pick ONE video', 'After the vacuum. Her videos are full body.', 'core'),
       ...JESSICA_DIEM,
       H('🏊 2 · Swimming', 'After the video.'),
       SWIM,

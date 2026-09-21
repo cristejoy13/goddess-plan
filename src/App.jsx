@@ -43,12 +43,13 @@ const NAV_ITEMS = [
 
 const SEARCH_INDEX = [
   // Monday to Sunday. Glutes Mon/Wed/Fri, arms/back/shoulders Tue, the core and
-  // the videos Thu, and the weekend: Jessica Diễm first on both days, then the
-  // sprints Saturday and the swim Sunday. Every day ends with the walk.
+  // the videos Thu, and the weekend: Jessica Diễm on both days, then the
+  // sprints Saturday and the swim Sunday. Every day opens with the stomach
+  // vacuum and ends with the walk, so neither is repeated in the seven hints.
   { label: 'Monday — Glute Power', hint: 'Workouts · Hip Thrust · RDL · Step-Up · 1-hour walk', section: 'workout', scrollTo: 'day-monday'    },
   { label: 'Tuesday — Arms, Back & Shoulders', hint: 'Workouts · Lateral Raise · Press · Row · Push-Up · Triceps · Curls · 1-hour walk', section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Wednesday — Glute Strength', hint: 'Workouts · Squat · Bulgarian · RDL · 1-hour walk', section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Thursday — Core & Videos', hint: 'Workouts · Stomach Vacuum · 5 ab moves · one Izzy or Nicole video · 1-hour walk', section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Thursday — Core & Videos', hint: 'Workouts · 5 ab moves · one Izzy or Nicole video · 1-hour walk', section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Friday — Glute Shape', hint: 'Workouts · Abduction · Kickback · Sumo · 1-hour walk', section: 'workout', scrollTo: 'day-friday'    },
   { label: 'Saturday — Jessica Diễm & Sprints', hint: 'Workouts · one Jessica Diễm video first · then Sprint Intervals · 1-hour walk', section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Sunday — Jessica Diễm & Swim', hint: 'Workouts · one Jessica Diễm video first · then swimming · 1-hour walk', section: 'workout', scrollTo: 'day-sunday'  },
@@ -70,7 +71,7 @@ const SEARCH_INDEX = [
   { label: 'Lying Leg Raise',         hint: 'Workouts → Tuesday & Thursday · lower stomach', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Dead Bug',                hint: 'Workouts → Tuesday & Thursday · deep core', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Plank',                   hint: 'Workouts → Tuesday & Thursday', section: 'workout', scrollTo: 'day-tuesday' },
-  { label: 'Stomach Vacuum',          hint: 'Workouts → Tuesday & Thursday · warm-up · pulls the waist in', section: 'workout', scrollTo: 'day-tuesday' },
+  { label: 'Stomach Vacuum',          hint: 'Workouts → all seven days · after the warm-up, before the main workout · pulls the waist in', section: 'workout', scrollTo: 'day-monday' },
 
   // Upper body — kept light on purpose.
   { label: 'Band Pull-Apart',         hint: 'Workouts → Tuesday & Thursday · posture, not size', section: 'workout', scrollTo: 'day-tuesday' },

@@ -17,13 +17,14 @@ const DAY_IDS = [
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
-// The week at a glance. Every day ends with the hour walk, so the walk is not
-// repeated in seven focus lines — it is said once, under the grid.
+// The week at a glance. Every day opens with the stomach vacuum and closes
+// with the hour walk, so neither is repeated in seven focus lines — they are
+// said once, under the grid.
 const GRID_DAYS = [
   { lbl: 'Mon', emoji: '🍑', name: 'Glute Power',    focus: 'Hip Thrust · RDL · Step-Up', color: 'pr' },
   { lbl: 'Tue', emoji: '💪', name: 'Arms, Back & Shoulders', focus: 'Shoulders × 3 · Back × 2 · Arms × 3', color: 'py' },
   { lbl: 'Wed', emoji: '🔥', name: 'Glute Strength', focus: 'Squat · Bulgarian · RDL', color: 'pr' },
-  { lbl: 'Thu', emoji: '🎯', name: 'Core & Videos',  focus: 'Vacuum · Abs × 5 · Izzy or Nicole', color: 'py' },
+  { lbl: 'Thu', emoji: '🎯', name: 'Core & Videos',  focus: 'Abs × 5 · Izzy or Nicole', color: 'py' },
   { lbl: 'Fri', emoji: '✨', name: 'Glute Shape',    focus: 'Abduction · Kickback · Sumo', color: 'pr' },
   { lbl: 'Sat', emoji: '⚡', name: 'Jessica & Sprints', focus: 'Jessica Diễm · Sprints', color: 'py' },
   { lbl: 'Sun', emoji: '🏊', name: 'Jessica & Swim', focus: 'Jessica Diễm · Swim', color: 'py' },
@@ -568,10 +569,12 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         ))}
       </div>
 
-      {/* The walk used to be written into all seven focus lines. It is the one
-          thing every day has in common, so it is said once, here, instead of
-          seven times up there. */}
-      <div className="wg-every-day splash-item">🚶 Every day ends the same way — a one-hour walk after the main workout.</div>
+      {/* The two things every day has in common, said once here instead of
+          seven times in the focus lines above. */}
+      <div className="wg-every-day splash-item">
+        <span>🫧 Every day: the stomach vacuum before the main workout.</span>
+        <span>🚶 And a one-hour walk after it.</span>
+      </div>
 
       {/* The five explainers used to sit open on this screen, which is the first
           thing she sees. She asked for fewer words and more to look at, so they
