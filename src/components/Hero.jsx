@@ -1122,8 +1122,8 @@ export default function Hero({ onNavigate }) {
         <div className="hero-rules">
           <div className="hero-rule"><span>🍽️</span><span>Every day, two meals: black coffee until noon · THE BRUNCH at 12 · apple &amp; yogurt or a smoothie at 5 · nothing after but water and tea</span></div>
           <div className="hero-rule"><span>🚶</span><span>Every day: warm-up → glute activation on lifting days → the main workout → one hour of walking. The walk is not a choice; the rope is only an extra on top of it.</span></div>
-          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · arms &amp; shoulders Tuesday · the deep core Thursday — core never lands on a glute day · Saturday: sprints, then Jessica Diễm, then the long stretch · Sunday: Jessica Diễm is the workout, then the swim</span></div>
-          <div className="hero-rule"><span>🤍</span><span>Arms &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
+          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · arms, back &amp; shoulders Tuesday · the core and the videos Thursday — core never lands on a glute day · weekend: Jessica Diễm first, then sprints Saturday and the swim Sunday</span></div>
+          <div className="hero-rule"><span>🤍</span><span>Arms, back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
           <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
           <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>
         </div>

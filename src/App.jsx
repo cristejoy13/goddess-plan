@@ -42,15 +42,16 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  // Monday to Sunday. Glutes Mon/Wed/Fri, arms Tue, the deep core Thu, and the
-  // weekend: sprints Saturday, the swim Sunday. Every day ends with the walk.
+  // Monday to Sunday. Glutes Mon/Wed/Fri, arms/back/shoulders Tue, the core and
+  // the videos Thu, and the weekend: Jessica Diễm first on both days, then the
+  // sprints Saturday and the swim Sunday. Every day ends with the walk.
   { label: 'Monday — Glute Power', hint: 'Workouts · Hip Thrust · RDL · Step-Up · 1-hour walk', section: 'workout', scrollTo: 'day-monday'    },
-  { label: 'Tuesday — Arms & Shoulders', hint: 'Workouts · Lateral Raise · Press · Curls · Triceps · 1-hour walk', section: 'workout', scrollTo: 'day-tuesday'   },
+  { label: 'Tuesday — Arms, Back & Shoulders', hint: 'Workouts · Lateral Raise · Press · Row · Push-Up · Triceps · Curls · 1-hour walk', section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Wednesday — Glute Strength', hint: 'Workouts · Squat · Bulgarian · RDL · 1-hour walk', section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Thursday — Deep Core', hint: 'Workouts · Stomach Vacuum · 5 ab moves · core video · 1-hour walk', section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Thursday — Core & Videos', hint: 'Workouts · Stomach Vacuum · 5 ab moves · one Izzy or Nicole video · 1-hour walk', section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Friday — Glute Shape', hint: 'Workouts · Abduction · Kickback · Sumo · 1-hour walk', section: 'workout', scrollTo: 'day-friday'    },
-  { label: 'Saturday — Sprints & Jessica Diễm', hint: 'Workouts · Sprint Intervals · one Jessica Diễm video · long stretch · 1-hour walk', section: 'workout', scrollTo: 'day-saturday'  },
-  { label: 'Sunday — Jessica Diễm & Swim', hint: 'Workouts · one Jessica Diễm video · long stretch · 1-hour walk · swimming later', section: 'workout', scrollTo: 'day-sunday'  },
+  { label: 'Saturday — Jessica Diễm & Sprints', hint: 'Workouts · one Jessica Diễm video first · then Sprint Intervals · 1-hour walk', section: 'workout', scrollTo: 'day-saturday'  },
+  { label: 'Sunday — Jessica Diễm & Swim', hint: 'Workouts · one Jessica Diễm video first · then swimming · 1-hour walk', section: 'workout', scrollTo: 'day-sunday'  },
 
   // The six glute lifts everything is built on.
   { label: 'Barbell Hip Thrust',      hint: 'Workouts → Monday Glute Power · the best glute builder', section: 'workout', scrollTo: 'day-monday' },

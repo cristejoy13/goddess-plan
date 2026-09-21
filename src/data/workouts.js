@@ -30,15 +30,17 @@ export function getCurrentSprintProtocol() {
 //       Mon  Hip Thrust · RDL · Step-Up
 //       Wed  Back Squat · Bulgarian Split Squat · RDL
 //       Fri  Hip Abduction · Cable Kickback · Sumo Squat
-//   • Tuesday — arms and shoulders, and nothing else. No core: there is no
-//     vacuum and no ab work on this day, because the core has a day of its own.
-//   • Thursday — the deep core day. Vacuum, the five ab moves, then a core
-//     video if she wants one. No arm work: that is Tuesday's job.
-// Weekend (Sat · Sun): one Jessica Diễm video is the session, because her
-// videos are full-body. Saturday puts the sprint protocol first — the one that
-// advances by itself each challenge month. Sunday has no run; it swims instead,
-// hours after the video rather than bolted onto the end of it. Both days finish
-// with the same hour walk as every other day.
+//   • Tuesday — arms, back and shoulders: eight moves and nothing else. No
+//     core and no videos of any kind; both belong to Thursday.
+//   • Thursday — the core day and the video day. Vacuum, the five ab moves,
+//     then ONE video: Izzy's core or Nicole's full body, her pick. No arm,
+//     back or shoulder work — that is Tuesday's job.
+// Weekend (Sat · Sun): one Jessica Diễm video comes FIRST on both days and is
+// the session, because her videos are full-body. Saturday follows it with the
+// sprint protocol, the one that advances by itself each challenge month.
+// Sunday follows it with the swim and does not run at all. There is no long
+// stretch on either day. Both finish with the same hour walk as every other
+// day.
 
 // Shared warm-up and shared finisher.
 const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves · loosen every major muscle before you train · dynamic swings then gentle holds' };
@@ -89,10 +91,12 @@ const RUN_INTERVALS = (() => {
     detail: `${sp.reps} rounds · ${sp.sprint} sec hard, ${sp.rest} sec easy walk between · hold form over speed; the moment your form breaks, that round was your last · this protocol steps up on its own every challenge month (${sp.month})`,
   };
 })();
-const REST_STRETCH = { name: 'Long Full-Body Stretch', detail: '15–25 min · hold each stretch 45–60 sec · hamstrings, hips, chest, shoulders, wrists, calves · this is the work on a rest day' };
 const REST_WALK = { name: '20-Minute Walk — instead of the run', detail: '20 min · the alternative to running today, not an extra lap after it · no pace target, sunshine, podcast, whatever you like · take this on any weekend your legs still feel Friday' };
-const SWIM = { name: 'Swimming', detail: '30–45 min · Sunday only, hours after the video and the walk · easy laps, no racing the clock · water carries your weight, so this adds work without adding anything for your legs to recover from' };
+const SWIM = { name: 'Swimming', detail: '30–45 min · Sunday only, straight after the Jessica Diễm video · easy laps, no racing the clock · water carries your weight, so this adds work without adding anything for your legs to recover from' };
 const BIKE = { name: 'Biking — an extra, if you want it', detail: '45–60 min · Sunday only, later in the day · steady easy pace, flat route · an extra on top of the swim, not instead of it · gentle on the legs, and it keeps Monday fresh' };
+// There is no long stretch on the weekend any more. The warm-up at the top of
+// each weekday still opens with a full-body stretch, so stretching has not
+// left the plan — it is just no longer a session of its own.
 const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · do this FIRST before your core video' };
 
 // ─── ABS ───────────────────────────────────────────────────────────────────
@@ -110,10 +114,11 @@ const ABS_MAIN = [
 ];
 
 
-// ── JESSICA DIEM ── The weekend videos. On Saturday one of these follows the
-// sprints; on Sunday one of them IS the session, because her videos are
-// full-body. They never replace the weekday work: glutes stay Monday,
-// Wednesday and Friday, arms and shoulders Tuesday, the deep core Thursday.
+// ── JESSICA DIEM ── The weekend videos, and the first thing done on both
+// weekend days now. Her videos are full-body, so one of them IS the session;
+// the sprints on Saturday and the swim on Sunday follow it. They never replace
+// the weekday work: glutes stay Monday, Wednesday and Friday, arms, back and
+// shoulders Tuesday, the core and the other videos Thursday.
 const JESSICA_DIEM = [
   { name: 'Jessica Diễm — her channel', detail: 'Her page. Everything she posts is here — workouts, clean-eating and the daily vlogs', url: 'https://www.youtube.com/@Jessicadiem1122' },
   { name: 'Jessica Diễm — all her videos, newest first', detail: 'Her programme started Thursday 10 September 2026 · scroll to that day and work forward in order, one video per weekend day, so you follow it the way she laid it out', url: 'https://www.youtube.com/@Jessicadiem1122/videos' },
@@ -132,19 +137,17 @@ const SHOULDERS = [
 // the front, all light and all slow. The triceps come first because the back of
 // the arm is what she is actually after.
 const ARMS = [
-  { name: '4. Overhead Triceps Extension', detail: 'ARMS 1 of 3 · 3 × 12 · one dumbbell in both hands overhead, elbows close to your ears, lower behind your head for 3 sec, press back up · TRICEPS, long head — the back of the arm' },
-  { name: '5. Dumbbell Kickback', detail: 'ARMS 2 of 3 · 3 × 15 each arm · hinge to 45°, upper arm pinned to your side, straighten the elbow back, hold the squeeze 1 sec · TRICEPS · light — this one is all squeeze, no weight' },
-  { name: '6. Dumbbell Bicep Curl', detail: 'ARMS 3 of 3 · 3 × 12 · elbows pinned to your sides, curl without swinging, lower for 3 sec · BICEPS · the slow lower is where the work is' },
+  { name: '6. Overhead Triceps Extension', detail: 'ARMS 1 of 3 · 3 × 12 · one dumbbell in both hands overhead, elbows close to your ears, lower behind your head for 3 sec, press back up · TRICEPS, long head — the back of the arm' },
+  { name: '7. Dumbbell Kickback', detail: 'ARMS 2 of 3 · 3 × 15 each arm · hinge to 45°, upper arm pinned to your side, straighten the elbow back, hold the squeeze 1 sec · TRICEPS · light — this one is all squeeze, no weight' },
+  { name: '8. Dumbbell Bicep Curl', detail: 'ARMS 3 of 3 · 3 × 12 · elbows pinned to your sides, curl without swinging, lower for 3 sec · BICEPS · the slow lower is where the work is' },
 ];
 
-// ── BACK & CHEST ── These two used to be part of Tuesday's main workout, back
-// when Tuesday was abs, shoulders and back together. Tuesday is arms and
-// shoulders only now, so they sit at the bottom as an extra rather than being
-// thrown away — a row and a push-up are still good for the posture the rest of
-// this plan is built around.
+// ── BACK & CHEST ── Part of Tuesday's main workout, between the shoulders and
+// the arms. Tuesday is arms, back and shoulders, so these are not an extra at
+// the bottom of the day — they are two of its eight moves.
 const BACK_CHEST = [
-  { name: 'Double-Arm Dumbbell Row', detail: 'EXTRA · 3 × 12 · hinge to 45°, back flat, row both dumbbells to your ribs, hold 1 sec, lower for 3 sec · if you feel your lower back, hinge less' },
-  { name: 'Incline Push-Up', detail: 'EXTRA · 3 × 10 · hands on a bench or counter, body in one straight line, lower for 3 sec · lower the surface as you get stronger' },
+  { name: '4. Double-Arm Dumbbell Row', detail: 'BACK 1 of 2 · 3 × 12 · hinge to 45°, back flat, row both dumbbells to your ribs, hold 1 sec, lower for 3 sec · UPPER BACK · if you feel your lower back, hinge less' },
+  { name: '5. Incline Push-Up', detail: 'BACK 2 of 2 · 3 × 10 · hands on a bench or counter, body in one straight line, lower for 3 sec · CHEST + FRONT DELT · lower the surface as you get stronger' },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
@@ -949,14 +952,12 @@ export const DAILY_MEALS = {
 // Monday to Sunday. The shape of it:
 //   3 glute days   — Monday, Wednesday, Friday. Never two in a row, because
 //                    glutes grow on the day off, not on the day you train them.
-//   1 arms day     — Tuesday. Shoulders then arms, and nothing else on it. No
-//                    core: the core has a day of its own now.
-//   1 core day     — Thursday. The vacuum, the five ab moves, a core video.
-//                    Core NEVER lands on a glute day: a glute day is a glute
-//                    day and nothing else.
-//   2 weekend days — Saturday sprints, then one Jessica Diễm video, then the
-//                    stretch. Sunday does not run: the video IS the session,
-//                    and the swim comes hours later.
+//   1 arms day     — Tuesday. Shoulders, back, arms. No core, no videos.
+//   1 core day     — Thursday. The vacuum, the five ab moves, then one video,
+//                    Izzy's or Nicole's. Core NEVER lands on a glute day: a
+//                    glute day is a glute day and nothing else.
+//   2 weekend days — Jessica Diễm first on both, then sprints on Saturday and
+//                    the swim on Sunday. No stretch, and no run on Sunday.
 // The one-hour walk closes all seven days, without exception.
 //
 // The six glute lifts everything is built on, and where each one lives:
@@ -991,29 +992,28 @@ export const WORKOUT_DAYS = [
     trackLifts: true,
     meals: DAILY_MEALS,
   },
-  // ══ TUESDAY ══ Arms & shoulders, and nothing else.
+  // ══ TUESDAY ══ Arms, back and shoulders. No videos of any kind.
   //
-  // This day used to be abs, shoulders and back all at once, and the core work
-  // was doubled up with Thursday. The core moved out entirely — no vacuum, no
-  // ab moves, no core video — and the arm work it never really had moved in.
-  // Six moves: three for the shoulder, three for the arm.
+  // This day used to be abs, shoulders and back at once, doubling the core up
+  // with Thursday. The core moved out entirely — no vacuum, no ab moves — and
+  // so did every video: Izzy's core sessions and Nicole's full-body ones both
+  // belong to Thursday now, so there is nothing on this day but the eight
+  // moves. Three for the shoulder, two for the back, three for the arm.
   {
     emoji: '💪', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Tuesday · Arms & Shoulders', title: 'Shoulders · Arms',
-    sub: '~95 min total · warm-up → shoulders → arms → 1-hour walk',
+    day: 'Tuesday · Arms, Back & Shoulders', title: 'Shoulders · Back · Arms',
+    sub: '~100 min total · warm-up → shoulders → back → arms → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
-    noteBefore: { type: 'gold', text: '💪 Shoulders first, then arms. Light weight, slow lowering.' },
+    noteBefore: { type: 'gold', text: '💪 Shoulders, then back, then arms. Light weight, slow lowering.' },
     exercises: [
       H('🔥 Warm-Up · Full-Body Stretch', 'Whole body, first thing.'),
       WARMUP,
       H('🫧 Main Workout · Shoulders', 'Three moves, in order. Keep them light.'),
       ...SHOULDERS,
+      H('🏋️ Main Workout · Back', 'Two moves. Back flat on the row.'),
+      ...BACK_CHEST,
       H('💪 Main Workout · Arms', 'Three moves, in order. Slow on the way down.'),
       ...ARMS,
-      H('🏋️ Extra · Back & Chest', 'Only if you want more. These are not part of the day.'),
-      ...BACK_CHEST,
-      H('🧘 Extra · Full Body — Nicole', 'Only if you want more. Pick ONE.', 'core'),
-      ...NICOLE_FULLBODY,
       H('🚶 Finish · One-Hour Walk', 'Every day, after the main workout.'),
       WALK_HOUR,
       JUMP_ROPE,
@@ -1046,16 +1046,17 @@ export const WORKOUT_DAYS = [
     trackLifts: true,
     meals: DAILY_MEALS,
   },
-  // ══ THURSDAY ══ The deep core day, and the only one.
+  // ══ THURSDAY ══ The video day, and the only core day.
   //
-  // The core used to be split across Tuesday and Thursday, both days doing the
-  // same five moves, with upper body bolted on to each. It is all here now and
-  // nowhere else: the vacuum, the five ab moves, and Izzy's core videos for a
-  // day she wants to go further. The arm work went to Tuesday.
+  // Every video in the plan lives here: Izzy's core sessions and Nicole's
+  // full-body ones, one or the other, her pick. The arms, back and shoulder
+  // work is not on this day at all — that is Tuesday's, and nothing is doubled
+  // up between the two any more. The vacuum and the five ab moves stay, since
+  // they are the core work this day is named for.
   {
     emoji: '🎯', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Thursday · Deep Core', title: 'Vacuum · Abs · Deep Core',
-    sub: '~95 min total · warm-up & vacuum → abs → 1-hour walk',
+    day: 'Thursday · Core & Videos', title: 'Vacuum · Abs · Izzy or Nicole',
+    sub: '~95 min total · warm-up & vacuum → abs → one video → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     noteBefore: { type: 'gold', text: '🎯 Vacuum first — it pulls the waist in where crunches push it out.' },
     exercises: [
@@ -1064,9 +1065,9 @@ export const WORKOUT_DAYS = [
       VACUUM,
       H('🎯 Main Workout · Abs', 'All five, in order.'),
       ...ABS_MAIN,
-      H('🌀 Deep Core Video — Izzy', 'After the five moves. Pick ONE.', 'core'),
+      H('🌀 Then ONE video · Deep Core — Izzy', 'Izzy or Nicole, not both. Pick one.', 'core'),
       ...IZZY_ABS,
-      H('🧘 Extra · Full Body — Nicole', 'Only if you want more. Pick ONE.', 'core'),
+      H('🧘 Or ONE of these · Full Body — Nicole', 'The other choice. Pick one.', 'core'),
       ...NICOLE_FULLBODY,
       H('🚶 Finish · One-Hour Walk', 'Every day, after the main workout.'),
       WALK_HOUR,
@@ -1100,57 +1101,54 @@ export const WORKOUT_DAYS = [
     trackLifts: true,
     meals: DAILY_MEALS,
   },
-  // ══ SATURDAY ══ Sprints · Jessica Diem · stretch · walk
+  // ══ SATURDAY ══ Jessica Diem · sprints · walk
   //
-  // The sprints are Saturday's now. They used to be Sunday's, with Saturday
-  // taking an easy run — the two swapped, and Sunday gave up running entirely.
-  // The easy run stays on this day as the gentler option for legs that still
-  // feel Friday.
+  // The video leads both weekend days now. It used to come second here, after
+  // the sprints; the order is the other way round, so the full-body session is
+  // the first thing done and the sprints follow it. There is no stretch on
+  // either weekend day any more.
+  //
+  // The easy run stays as the gentler option for legs that still feel Friday.
   {
     emoji: '⚡', emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Saturday · Sprints & Jessica Diem', title: 'Sprints · Jessica Diem · Stretch',
-    sub: 'Sprints → one Jessica Diem video → long stretch → 1-hour walk',
+    day: 'Saturday · Jessica Diem & Sprints', title: 'Jessica Diem · Sprints',
+    sub: 'One Jessica Diem video → sprints → 1-hour walk',
     cardio: { icon: '🚶', title: 'One-hour walk after training', note: '60 min · every day, after the main workout' },
     sprintDay: true,
-    noteBefore: { type: 'gold', text: '⚡ Sprints first, then the video, then the stretch. In that order.' },
+    noteBefore: { type: 'gold', text: '💗 The video first, then the sprints. In that order.' },
     exercises: [
-      H('⚡ 1 · Sprints', 'Warm up first — never sprint cold.'),
+      H('💗 1 · Jessica Diem — pick ONE video', 'First. Her videos are full body.', 'core'),
+      ...JESSICA_DIEM,
+      H('⚡ 2 · Sprints', 'After the video. Warm up first — never sprint cold.'),
       RUN_WARMUP,
       RUN_INTERVALS,
       H('🏃 Instead · Easy run or a short walk', 'Only if your legs still feel Friday. Pick one.'),
       RUN_EASY,
       REST_WALK,
-      H('💗 2 · Jessica Diem — pick ONE video', 'After the sprints, never before them.', 'core'),
-      ...JESSICA_DIEM,
-      H('🤍 3 · Stretching', 'Last. Long, slow holds.'),
-      REST_STRETCH,
       H('🚶 Finish · One-Hour Walk', 'Every day, after the main workout.'),
       WALK_HOUR,
     ],
     noteAfter: { type: 'rose', text: '💡 Sore hamstrings? Take the easy run instead. The hour walk still stands.' },
     meals: DAILY_MEALS,
   },
-  // ══ SUNDAY ══ Jessica Diem · stretch · walk · swim
+  // ══ SUNDAY ══ Jessica Diem · swim · walk
   //
-  // No running on this day at all. One Jessica Diễm video IS the session —
-  // her videos are full-body — and the swim comes hours later, the way the
-  // Saturday swim used to. Biking is kept at the bottom as an extra rather
-  // than thrown away.
+  // No running on this day at all, and no stretch. One Jessica Diễm video is
+  // the session — her videos are full-body — and the swim follows it. Biking
+  // is kept at the bottom as an extra rather than thrown away.
   {
     emoji: '🏊', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Jessica Diem & Swim', title: 'Jessica Diem · Stretch · Swim',
-    sub: 'One Jessica Diem video → long stretch → 1-hour walk · then swimming later',
-    cardio: { icon: '🏊', title: 'Swimming · later in the day', note: '30–45 min easy laps, hours after the video' },
-    noteBefore: { type: 'gold', text: '🏊 The video is the workout — it is full body. Swim hours after it, not straight after.' },
+    day: 'Sunday · Jessica Diem & Swim', title: 'Jessica Diem · Swim',
+    sub: 'One Jessica Diem video → swimming → 1-hour walk',
+    cardio: { icon: '🏊', title: 'Swimming after the video', note: '30–45 min easy laps, after the main workout' },
+    noteBefore: { type: 'gold', text: '💗 The video first, then the swim. In that order.' },
     exercises: [
-      H('💗 1 · Jessica Diem — pick ONE video', 'This is the workout. Her videos are full body.', 'core'),
+      H('💗 1 · Jessica Diem — pick ONE video', 'First. Her videos are full body.', 'core'),
       ...JESSICA_DIEM,
-      H('🤍 2 · Stretching', 'After the video. Long, slow holds.'),
-      REST_STRETCH,
-      H('🚶 3 · Finish · One-Hour Walk', 'Every day, after the main workout.'),
-      WALK_HOUR,
-      H('🏊 Later · Swimming', 'Hours after the video, not straight after.'),
+      H('🏊 2 · Swimming', 'After the video.'),
       SWIM,
+      H('🚶 Finish · One-Hour Walk', 'Every day, after the main workout.'),
+      WALK_HOUR,
       H('🚲 Extra · Biking', 'Only if you want more. Not part of the day.'),
       BIKE,
     ],

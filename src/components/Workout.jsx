@@ -21,12 +21,12 @@ const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 // repeated in seven focus lines — it is said once, under the grid.
 const GRID_DAYS = [
   { lbl: 'Mon', emoji: '🍑', name: 'Glute Power',    focus: 'Hip Thrust · RDL · Step-Up', color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Arms & Shoulders', focus: 'Shoulders × 3 · Arms × 3', color: 'py' },
+  { lbl: 'Tue', emoji: '💪', name: 'Arms, Back & Shoulders', focus: 'Shoulders × 3 · Back × 2 · Arms × 3', color: 'py' },
   { lbl: 'Wed', emoji: '🔥', name: 'Glute Strength', focus: 'Squat · Bulgarian · RDL', color: 'pr' },
-  { lbl: 'Thu', emoji: '🎯', name: 'Deep Core',      focus: 'Vacuum · Abs × 5 · Core video', color: 'py' },
+  { lbl: 'Thu', emoji: '🎯', name: 'Core & Videos',  focus: 'Vacuum · Abs × 5 · Izzy or Nicole', color: 'py' },
   { lbl: 'Fri', emoji: '✨', name: 'Glute Shape',    focus: 'Abduction · Kickback · Sumo', color: 'pr' },
-  { lbl: 'Sat', emoji: '⚡', name: 'Sprints & Jessica', focus: 'Sprints · Jessica Diễm · Stretch', color: 'py' },
-  { lbl: 'Sun', emoji: '🏊', name: 'Jessica & Swim', focus: 'Jessica Diễm · Stretch · Swim', color: 'py' },
+  { lbl: 'Sat', emoji: '⚡', name: 'Jessica & Sprints', focus: 'Jessica Diễm · Sprints', color: 'py' },
+  { lbl: 'Sun', emoji: '🏊', name: 'Jessica & Swim', focus: 'Jessica Diễm · Swim', color: 'py' },
 ];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
