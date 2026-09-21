@@ -9032,6 +9032,127 @@ body {
   .ml-wt-btn { width: 100%; }
 }
 
+/* The one line every day of the week shares, under the week grid. */
+.wg-every-day {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 14px auto 0;
+  padding: 9px 16px;
+  background: rgba(255,92,157,0.10);
+  border: 1px solid rgba(255,92,157,0.28);
+  border-radius: 999px;
+  font-size: 12.5px; font-weight: 600; line-height: 1.45;
+  color: #ffc3da;
+  width: max-content; max-width: 100%;
+  text-align: center;
+}
+[data-mode="light"] .wg-every-day {
+  background: rgba(200,23,110,0.08); border-color: rgba(200,23,110,0.28); color: #a00050;
+}
+
+/* ── the week's goal, in the open day ───────────────────────────────────────
+   Closed it is one line — the number and a button. It only becomes a box when
+   she asks for one, because a screen she reads mid-workout should not carry an
+   input she is not using. */
+.ml-goal {
+  margin-top: 22px; padding: 14px 16px;
+  background: rgba(240,204,96,0.08);
+  border: 1px solid rgba(240,204,96,0.28);
+  border-radius: 14px;
+}
+.ml-goal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.ml-goal-lbl { font-size: 12.5px; font-weight: 700; color: var(--gold); }
+.ml-goal-edit {
+  flex: none;
+  background: rgba(240,204,96,0.16); color: #ffeab0;
+  border: 1px solid rgba(240,204,96,0.40); border-radius: 999px;
+  padding: 7px 16px; font-size: 12px; font-weight: 700;
+  font-family: inherit; cursor: pointer; min-height: 34px;
+}
+.ml-goal-val { margin-top: 8px; }
+.ml-goal-num {
+  font-size: 22px; font-weight: 700; color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+}
+.ml-goal-unit { font-size: 12.5px; font-weight: 600; color: var(--text-mid, #d4a0b8); }
+.ml-goal-none { font-size: 12.5px; color: var(--text-soft, #c090b8); }
+.ml-goal-row {
+  margin-top: 12px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.ml-goal-input {
+  width: 122px; text-align: center;
+  background: rgba(0,0,0,0.28);
+  border: 1.5px solid rgba(240,204,96,0.34);
+  border-radius: 12px; padding: 11px 10px;
+  color: var(--text); font-size: 17px; font-weight: 700; font-family: inherit;
+  -moz-appearance: textfield; appearance: textfield;
+}
+.ml-goal-input::-webkit-outer-spin-button,
+.ml-goal-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ml-goal-input::placeholder { text-align: center; }
+.ml-goal-input:focus { outline: none; border-color: var(--gold); }
+.ml-goal-btn {
+  flex: none; margin-left: auto;
+  background: rgba(240,204,96,0.18); color: #ffeab0;
+  border: 1px solid rgba(240,204,96,0.44); border-radius: 999px;
+  padding: 11px 22px; font-size: 13px; font-weight: 700;
+  font-family: inherit; cursor: pointer; min-height: 44px;
+}
+.ml-goal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ml-goal-note { margin-top: 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-soft, #c090b8); }
+
+/* What is left, in the open day. It leads the box, above what she has eaten:
+   the number she came for is the one at the top. */
+.ml-left-row { align-items: baseline; }
+.ml-left-num {
+  font-size: 23px; font-weight: 700; color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+}
+.ml-left-over .ml-left-num { color: var(--rose); }
+.ml-left-over .ml-total-lbl { color: var(--rose); }
+.ml-total-row + .ml-total-row { margin-top: 8px; }
+
+/* Counting down rather than up. Same gold pill, because it is still the
+   calorie number and still in the same place — only its meaning changed, and
+   the legend under the calendar says which meaning is in force. */
+.ml-day-left { background: rgba(240,204,96,0.30); color: #fff7dc; }
+/* Past the goal. Rose, and the number wears a minus sign: "0 left" and
+   "300 over" are things she would do different things about. */
+.ml-day-over {
+  background: rgba(255,92,157,0.40) !important;
+  border: 1px solid rgba(255,92,157,0.75) !important;
+  color: #fff !important;
+}
+
+[data-mode="light"] .ml-goal { background: rgba(154,104,0,0.08); border-color: rgba(154,104,0,0.30); }
+[data-mode="light"] .ml-goal-edit { background: rgba(154,104,0,0.12); color: #6b4a00; border-color: rgba(154,104,0,0.40); }
+[data-mode="light"] .ml-goal-btn { background: rgba(154,104,0,0.14); color: #6b4a00; border-color: rgba(154,104,0,0.44); }
+[data-mode="light"] .ml-goal-input { color: #3a2400; background: rgba(255,255,255,0.8); border-color: rgba(154,104,0,0.32); }
+[data-mode="light"] .ml-goal-num { color: #6b4a00; }
+[data-mode="light"] .ml-goal-unit { color: #5a2a4a; }
+[data-mode="light"] .ml-goal-none,
+[data-mode="light"] .ml-goal-note { color: #5a2a4a; }
+[data-mode="light"] .ml-left-num { color: #6b4a00; }
+[data-mode="light"] .ml-left-over .ml-left-num,
+[data-mode="light"] .ml-left-over .ml-total-lbl { color: #c8176e; }
+[data-mode="light"] .ml-day-left { background: rgba(200,160,40,0.38); color: #3a2600; }
+[data-mode="light"] .ml-day-over {
+  background: rgba(200,23,110,0.18) !important;
+  border-color: rgba(200,23,110,0.50) !important;
+  color: #8a0b4a !important;
+}
+
+/* Phone: the goal box and its button stack, so the button stays thumb-sized. */
+@media (max-width: 420px) {
+  .ml-goal-row { flex-direction: column; align-items: stretch; }
+  .ml-goal-input { width: 100%; }
+  .ml-goal-unit { text-align: center; }
+  .ml-goal-btn { width: 100%; margin-left: 0; }
+}
+
 .ml-legend {
   display: flex; align-items: center; justify-content: center;
   flex-wrap: wrap; gap: 6px 16px;

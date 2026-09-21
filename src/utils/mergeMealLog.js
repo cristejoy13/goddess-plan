@@ -14,10 +14,10 @@
 //   3. A deleted entry stays deleted, remembered by a tombstone, so the other
 //      gadget's copy cannot resurrect it on the next merge.
 //
-// The daily weight merges the same way, one date at a time, newest stamp wins.
-// A cleared weight is carried as kg: null rather than dropped, for the same
-// reason a deleted meal leaves a tombstone: without it the other gadget's old
-// number comes straight back.
+// The daily weight and the weekly calorie goal merge the same way, one key at
+// a time, newest stamp wins. A cleared one is carried as null rather than
+// dropped, for the same reason a deleted meal leaves a tombstone: without it
+// the other gadget's old number comes straight back.
 //
 // The merge must be commutative and deterministic — both gadgets run it on the
 // same pair and must produce byte-identical output, or they push edits back and
@@ -71,28 +71,33 @@ function mergeDay(a, b, deleted) {
   return [...byId.values()].sort(byTime);
 }
 
-// One date's weighing, newest stamp wins. The JSON tie-break is the same one
-// the entries use, for the same reason: both gadgets must land on the same
-// answer or they push the log back and forth forever.
-function mergeWeights(a = {}, b = {}) {
+// One key's number, newest stamp wins. Serves the daily weight (keyed by date,
+// field `kg`) and the weekly calorie goal (keyed by that week's Monday, field
+// `cal`) — the shape and the rule are identical, so they share one merge
+// rather than two that could drift apart.
+//
+// The JSON tie-break is the same one the entries use, for the same reason:
+// both gadgets must land on the same answer or they push the log back and
+// forth forever.
+function mergeNumbers(a = {}, b = {}, field) {
   const cutoff = Date.now() - MEAL_TOMBSTONE_TTL_MS;
   const out = {};
   const keys = [...new Set([
     ...Object.keys(a && typeof a === 'object' ? a : {}),
     ...Object.keys(b && typeof b === 'object' ? b : {}),
   ])].sort();
-  for (const date of keys) {
-    const pair = [a?.[date], b?.[date]].filter(w => w && typeof w === 'object');
+  for (const key of keys) {
+    const pair = [a?.[key], b?.[key]].filter(w => w && typeof w === 'object');
     if (!pair.length) continue;
     const win = pair.length === 1 ? pair[0] : pickNewer(pair[0], pair[1]);
-    const kg = typeof win.kg === 'number' && Number.isFinite(win.kg) ? win.kg : null;
-    // A cleared weight is only kept long enough for every gadget to have seen
+    const n = typeof win[field] === 'number' && Number.isFinite(win[field]) ? win[field] : null;
+    // A cleared number is only kept long enough for every gadget to have seen
     // it. After that it is an empty record of nothing.
-    if (kg === null) {
+    if (n === null) {
       const at = Date.parse(stampOf(win));
       if (!Number.isFinite(at) || at < cutoff) continue;
     }
-    out[date] = { kg, updatedAt: stampOf(win) };
+    out[key] = { [field]: n, updatedAt: stampOf(win) };
   }
   return out;
 }
@@ -141,7 +146,8 @@ export function mergeMealLogBlobs(localRaw, remoteRaw) {
 
   return JSON.stringify({
     days,
-    weights: mergeWeights(local.weights, remote.weights),
+    weights: mergeNumbers(local.weights, remote.weights, 'kg'),
+    goals: mergeNumbers(local.goals, remote.goals, 'cal'),
     deleted,
     updatedAt: str(local.updatedAt) > str(remote.updatedAt)
       ? str(local.updatedAt)

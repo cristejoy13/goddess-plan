@@ -6,10 +6,17 @@
 //
 // Shape:
 //   { days: { 'YYYY-MM-DD': [ entry, ... ] }, weights: { 'YYYY-MM-DD': weight },
-//     deleted: { id: iso }, updatedAt }
+//     goals: { 'YYYY-MM-DD': goal }, deleted: { id: iso }, updatedAt }
 //   entry  = { id, time: 'HH:MM', text, cal: number|null, createdAt, updatedAt,
 //              fromPlan?: '<meal name>' }
 //   weight = { kg: number|null, updatedAt: iso }
+//   goal   = { cal: number|null, updatedAt: iso }   ← keyed by that week's MONDAY
+//
+// The goal is how many calories she means to eat on each day of ONE week, and
+// it is keyed by the Monday of that week rather than by each day. She sets a
+// different number most weeks, so a goal stored per day would have to be typed
+// seven times and could drift out of step with itself; a goal stored per week
+// is typed once and cannot disagree with itself.
 //
 // The scale reading lives here rather than under a key of its own because it
 // is the same question as the meals — what happened on this date — and one
@@ -34,6 +41,19 @@ export function dateKeyOf(d = new Date()) {
 
 export function dateKey(y, monthIdx, day) {
   return `${y}-${pad(monthIdx + 1)}-${pad(day)}`;
+}
+
+// The Monday of the week a date falls in. Monday-first, because the calendar
+// grid is Monday-first and the week she means is the row she is looking at.
+// Built with a real Date so it rolls back into the previous month, and the
+// previous year, on its own.
+export function weekStartKeyOf(d = new Date()) {
+  const back = (d.getDay() + 6) % 7;
+  return dateKeyOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() - back));
+}
+
+export function weekStartKey(y, monthIdx, day) {
+  return weekStartKeyOf(new Date(y, monthIdx, day));
 }
 
 export function newEntryId() {
@@ -112,6 +132,59 @@ export function calTotals(entries = []) {
   };
 }
 
+// A day's ceiling in calories. Whole numbers only, and only a figure a day of
+// eating could plausibly be held to — a goal of 5 or of 50,000 is a typo, and
+// a typo here would make every "left" number on the calendar wrong for a week.
+export const MIN_GOAL = 100;
+export const MAX_GOAL = 20000;
+
+export function parseGoal(v) {
+  const n = Number(String(v).trim());
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const r = Math.round(n);
+  return r >= MIN_GOAL && r <= MAX_GOAL ? r : null;
+}
+
+// The goal in force on a date — read through that date's Monday, so one number
+// answers for all seven days of its week and no other.
+export function goalOn(state, key) {
+  const g = state.goals?.[weekStartKeyOf(new Date(`${key}T12:00:00`))];
+  return typeof g?.cal === 'number' ? g.cal : null;
+}
+
+export function goalForWeek(state, mondayKey) {
+  const g = state.goals?.[mondayKey];
+  return typeof g?.cal === 'number' ? g.cal : null;
+}
+
+// Writing null clears the week's goal. The stamp is kept either way, for the
+// same reason a cleared weight keeps one: without it another gadget's older
+// copy would put the old goal straight back.
+export function setGoal(state, mondayKey, cal) {
+  const now = new Date().toISOString();
+  return {
+    ...state,
+    goals: { ...(state.goals || {}), [mondayKey]: { cal: cal ?? null, updatedAt: now } },
+    updatedAt: now,
+  };
+}
+
+// What is left of a day's goal after what she has written down.
+//
+// Returns null when that week has no goal — there is no "left" without a
+// ceiling to be left of, and showing the eaten total in its place under the
+// same colour would be two different facts wearing one face.
+//
+// A day she has not eaten on yet reads as the whole goal, which is what she
+// asked for: set 1,000 on Monday and every day of that week starts at 1,000.
+// Eating past the goal goes NEGATIVE rather than stopping at zero, because
+// "0 left" and "300 over" are things she would act on differently.
+export function calsLeft(state, key) {
+  const goal = goalOn(state, key);
+  if (goal == null) return null;
+  return goal - calTotals(state.days?.[key] || []).total;
+}
+
 export const byTime = (a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0);
 
 // A missing or unreadable log starts empty. It is NEVER seeded with example
@@ -124,12 +197,13 @@ export function loadLog() {
       return {
         days: raw.days,
         weights: (raw.weights && typeof raw.weights === 'object') ? raw.weights : {},
+        goals: (raw.goals && typeof raw.goals === 'object') ? raw.goals : {},
         deleted: raw.deleted || {},
         updatedAt: raw.updatedAt || '',
       };
     }
   } catch { /* fall through to an empty log */ }
-  return { days: {}, weights: {}, deleted: {}, updatedAt: '' };
+  return { days: {}, weights: {}, goals: {}, deleted: {}, updatedAt: '' };
 }
 
 // Returns whether the write actually landed. A meal she watched disappear is

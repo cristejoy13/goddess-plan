@@ -17,14 +17,16 @@ const DAY_IDS = [
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
+// The week at a glance. Every day ends with the hour walk, so the walk is not
+// repeated in seven focus lines — it is said once, under the grid.
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glute Power',    focus: 'Run · Hip Thrust · RDL · Step-Up', color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Abs & Upper',    focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute Strength', focus: 'Run · Squat · Bulgarian · RDL', color: 'pr' },
-  { lbl: 'Thu', emoji: '🎯', name: 'Abs & Upper',    focus: 'Run · Abs × 5 · Shoulders · Back', color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glute Shape',    focus: 'Run · Abduction · Kickback · Sumo', color: 'pr' },
-  { lbl: 'Sat', emoji: '🏃', name: 'Run & Jessica',  focus: 'Easy Run · Jessica Diễm · Stretch', color: 'py' },
-  { lbl: 'Sun', emoji: '⚡', name: 'Sprints & Jessica', focus: 'Sprints · Jessica Diễm · Stretch', color: 'py' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glute Power',    focus: 'Hip Thrust · RDL · Step-Up', color: 'pr' },
+  { lbl: 'Tue', emoji: '💪', name: 'Arms & Shoulders', focus: 'Shoulders × 3 · Arms × 3', color: 'py' },
+  { lbl: 'Wed', emoji: '🔥', name: 'Glute Strength', focus: 'Squat · Bulgarian · RDL', color: 'pr' },
+  { lbl: 'Thu', emoji: '🎯', name: 'Deep Core',      focus: 'Vacuum · Abs × 5 · Core video', color: 'py' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glute Shape',    focus: 'Abduction · Kickback · Sumo', color: 'pr' },
+  { lbl: 'Sat', emoji: '⚡', name: 'Sprints & Jessica', focus: 'Sprints · Jessica Diễm · Stretch', color: 'py' },
+  { lbl: 'Sun', emoji: '🏊', name: 'Jessica & Swim', focus: 'Jessica Diễm · Stretch · Swim', color: 'py' },
 ];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
@@ -565,6 +567,11 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           </button>
         ))}
       </div>
+
+      {/* The walk used to be written into all seven focus lines. It is the one
+          thing every day has in common, so it is said once, here, instead of
+          seven times up there. */}
+      <div className="wg-every-day splash-item">🚶 Every day ends the same way — a one-hour walk after the main workout.</div>
 
       {/* The five explainers used to sit open on this screen, which is the first
           thing she sees. She asked for fewer words and more to look at, so they

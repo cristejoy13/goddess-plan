@@ -42,14 +42,15 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  // Monday to Sunday. Glute days Mon/Wed/Fri, abs days Tue/Thu, weekend runs.
+  // Monday to Sunday. Glutes Mon/Wed/Fri, arms Tue, the deep core Thu, and the
+  // weekend: sprints Saturday, the swim Sunday. Every day ends with the walk.
   { label: 'Monday — Glute Power', hint: 'Workouts · Hip Thrust · RDL · Step-Up · 1-hour walk', section: 'workout', scrollTo: 'day-monday'    },
-  { label: 'Tuesday — Abs & Upper Body', hint: 'Workouts · 5 ab moves · Shoulders · Back · 1-hour walk', section: 'workout', scrollTo: 'day-tuesday'   },
+  { label: 'Tuesday — Arms & Shoulders', hint: 'Workouts · Lateral Raise · Press · Curls · Triceps · 1-hour walk', section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Wednesday — Glute Strength', hint: 'Workouts · Squat · Bulgarian · RDL · 1-hour walk', section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Thursday — Abs & Upper Body', hint: 'Workouts · 5 ab moves · Shoulders · Back · 1-hour walk', section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Thursday — Deep Core', hint: 'Workouts · Stomach Vacuum · 5 ab moves · core video · 1-hour walk', section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Friday — Glute Shape', hint: 'Workouts · Abduction · Kickback · Sumo · 1-hour walk', section: 'workout', scrollTo: 'day-friday'    },
-  { label: 'Saturday — Run & Jessica Diễm', hint: 'Workouts · Easy Run · one Jessica Diễm video · long stretch', section: 'workout', scrollTo: 'day-saturday'  },
-  { label: 'Sunday — Sprints & Jessica Diễm', hint: 'Workouts · Sprint Intervals · one Jessica Diễm video · long stretch', section: 'workout', scrollTo: 'day-sunday'  },
+  { label: 'Saturday — Sprints & Jessica Diễm', hint: 'Workouts · Sprint Intervals · one Jessica Diễm video · long stretch · 1-hour walk', section: 'workout', scrollTo: 'day-saturday'  },
+  { label: 'Sunday — Jessica Diễm & Swim', hint: 'Workouts · one Jessica Diễm video · long stretch · 1-hour walk · swimming later', section: 'workout', scrollTo: 'day-sunday'  },
 
   // The six glute lifts everything is built on.
   { label: 'Barbell Hip Thrust',      hint: 'Workouts → Monday Glute Power · the best glute builder', section: 'workout', scrollTo: 'day-monday' },
@@ -80,7 +81,7 @@ const SEARCH_INDEX = [
   { label: 'Full Body Pilates — Move With Nicole', hint: 'Workouts → Tuesday & Thursday · optional extra', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Overnight Yogurt Bowl',   hint: 'Nutrition → Recipes · yogurt, protein, psyllium, blueberries', section: 'nutrition', tab: 'recipes' },
   { label: 'Meal Times — the daily clock',     hint: 'Nutrition → Daily Clock · 12 PM the big brunch, 5 PM apple & yogurt', section: 'nutrition', tab: 'daily' },
-  { label: 'One-Hour Walk — how a training day ends', hint: 'Workouts → every weekday, after the main workout · or the rope instead', section: 'workout', scrollTo: 'day-monday' },
+  { label: 'One-Hour Walk — how every day ends', hint: 'Workouts → all seven days, after the main workout', section: 'workout', scrollTo: 'day-monday' },
   { label: 'Protein — 50 g a day is the floor', hint: 'Nutrition → Daily Clock · the number to stay above', section: 'nutrition', tab: 'daily' },
   { label: 'Calories — 1,000 a day is the ceiling', hint: 'Nutrition → Daily Clock · the number to stay under', section: 'nutrition', tab: 'daily' },
   { label: 'THE BRUNCH — 12 PM', hint: 'Nutrition → Daily Clock · Meal A the egg plate, or Meal B beef or chicken', section: 'nutrition', tab: 'daily' },
