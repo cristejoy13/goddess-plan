@@ -9061,10 +9061,6 @@ body {
 [data-mode="light"] .ml-bold-rule {
   background: linear-gradient(90deg, transparent, rgba(154,104,0,0.7) 12%, rgba(200,23,110,0.7) 88%, transparent);
 }
-/* The square's deficit, once burned is typed. Green-teal like "Deficit" in
-   the day's sum; a gain wears the same rose as "over". */
-.ml-day-net { background: rgba(94,234,196,0.62); color: #03281f; }
-[data-mode="light"] .ml-day-net { background: rgba(11,122,98,0.22); color: #064a3c; }
 
 /* ── the day's sum, beside the weigh-in ─────────────────────────────────────
    Boxes on the left, the answer on the right. Under 560px there is no room for
