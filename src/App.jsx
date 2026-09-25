@@ -402,7 +402,10 @@ export default function App() {
         <div className="topbar-row">
           {/* Back and settings — the two big tap targets */}
           <div className="mobile-controls">
-            {history.length > 0 && (
+            {/* Only off Home. Home is the start of every trip, so an arrow
+                there would lead "back" to wherever she was before choosing
+                Home — which is not what back means to her. */}
+            {history.length > 0 && active !== 'home' && (
               <button className="topbar-icon-btn topbar-back-btn" onClick={goBack} aria-label="Go back">
                 ‹
               </button>
