@@ -123,6 +123,7 @@ export function KgGoalCard({ plan, onOpen, onNavigate }) {
 export function GoalsPanel({ data, onClose, onNavigate }) {
   const { goals, plan, achieved } = data;
   const [text, setText] = useState('');
+  const [reward, setRewardDraft] = useState('');
   // Three tabs instead of one long page — each fits a phone screen, so there
   // is nothing to scroll through to reach the part she wants.
   const [tab, setTab] = useState('goals');
@@ -137,10 +138,15 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
   function add(e) {
     e.preventDefault();
     const t = text.trim();
-    if (!t) return;
+    const r = reward.trim();
+    if (!t || !r) return;
+    // The reward is chosen with the goal and locked in from here — it cannot
+    // be edited, only earned (or lost by deleting the goal).
     const now = new Date().toISOString();
-    saveGoals({ ...goals, items: [...goals.items, { id: newGoalId(), text: t, done: null, createdAt: now, updatedAt: now }] });
+    const id = newGoalId();
+    saveGoals(setReward({ ...goals, items: [...goals.items, { id, text: t, done: null, createdAt: now, updatedAt: now }] }, id, r));
     setText('');
+    setRewardDraft('');
     inputRef.current?.focus();
   }
 
@@ -209,17 +215,25 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
             </li>
           ))}
         </ul>
-        <form className="goals-add" onSubmit={add}>
+        <form className="goals-add goals-add-2" onSubmit={add}>
           <input
             ref={inputRef}
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder="Add a goal…"
+            placeholder="🎯 New goal…"
             maxLength={120}
             aria-label="New goal"
           />
-          <button type="submit" disabled={!text.trim()}>＋ Add</button>
+          <input
+            value={reward}
+            onChange={e => setRewardDraft(e.target.value)}
+            placeholder="🎁 Its reward…"
+            maxLength={120}
+            aria-label="Reward for this goal"
+          />
+          <button type="submit" disabled={!text.trim() || !reward.trim()}>＋ Add</button>
         </form>
+        <div className="goals-lock-note">🔒 The reward locks in once you add it.</div>
 
         </>}
 
@@ -259,7 +273,8 @@ function RewardRow({ goals, id, goalText, earned }) {
   function save(e) {
     e.preventDefault();
     const t = draft.trim();
-    if (!t && reward && !window.confirm(`Remove the reward “${reward}” for “${goalText}”?`)) return;
+    if (!t) return;
+    if (!window.confirm(`Lock in “${t}” as the reward for “${goalText}”? You can't change it later.`)) return;
     saveGoals(setReward(goals, id, t));
     setEditing(false);
   }
@@ -279,13 +294,12 @@ function RewardRow({ goals, id, goalText, earned }) {
               maxLength={120}
               aria-label={`Reward for ${goalText}`}
             />
-            <button type="submit">Save</button>
-            <button type="button" className="rw-cancel" onClick={() => { setEditing(false); setDraft(reward || ''); }}>Cancel</button>
+            <button type="submit" disabled={!draft.trim()}>Lock in</button>
+            <button type="button" className="rw-cancel" onClick={() => { setEditing(false); setDraft(''); }}>Cancel</button>
           </form>
         ) : reward ? (
-          <button type="button" className="rw-text" onClick={() => { setDraft(reward); setEditing(true); }} aria-label={`Edit reward: ${reward}`}>
-            {reward} <span aria-hidden="true">✏️</span>
-          </button>
+          // Locked in: shown, never edited.
+          <span className="rw-text">{reward}</span>
         ) : (
           <button type="button" className="rw-add" onClick={() => { setDraft(''); setEditing(true); }}>＋ Add a reward</button>
         )}

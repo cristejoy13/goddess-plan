@@ -10170,3 +10170,13 @@ body {
 [data-mode="light"] .goals-tab { color: #6a3a5c; }
 [data-mode="light"] .gw-reward { color: #6b4a00; }
 @media (max-width: 360px) { .goals-tab { font-size: 12px; } }
+
+/* Goal + its reward, added together. Two boxes and the button on one row
+   on wider screens; stacked on a phone so each box is wide enough to read. */
+.goals-add-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; }
+.goals-lock-note { font-size: 11.5px; color: var(--text-soft); margin-top: -6px; }
+.rw-edit button:disabled { opacity: 0.45; cursor: not-allowed; }
+@media (max-width: 520px) {
+  .goals-add-2 { grid-template-columns: minmax(0, 1fr); }
+  .goals-add-2 button { width: 100%; }
+}
