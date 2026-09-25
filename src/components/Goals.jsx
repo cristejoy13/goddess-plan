@@ -123,6 +123,9 @@ export function KgGoalCard({ plan, onOpen, onNavigate }) {
 export function GoalsPanel({ data, onClose, onNavigate }) {
   const { goals, plan, achieved } = data;
   const [text, setText] = useState('');
+  // Three tabs instead of one long page — each fits a phone screen, so there
+  // is nothing to scroll through to reach the part she wants.
+  const [tab, setTab] = useState('goals');
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -154,6 +157,8 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
   }
 
   const open = goals.items.filter(g => !g.done);
+  // Earned but not yet claimed — the number on the Rewards tab.
+  const toClaim = achieved.filter(a => a.reward && !goals.rewards?.[a.id]?.claimed).length;
 
   return createPortal(
     <div className="daily-notebook-overlay goals-overlay" role="presentation" onClick={onClose}>
@@ -164,20 +169,29 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
           <button type="button" className="daily-notebook-close" onClick={onClose} aria-label="Close goals">×</button>
         </div>
 
-        {achieved.length > 0 && (
-          <div className="goals-won">
-            <div className="goals-sec">Achieved 🎉</div>
-            <ul>
-              {achieved.map(a => (
-                <li key={a.id}><span>👑 {a.text}</span><small>{prettyDate(a.at)}</small></li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div className="goals-tabs" role="tablist" aria-label="Goals sections">
+          {[
+            { id: 'goals', label: '🎯 Goals', count: 0 },
+            { id: 'rewards', label: '🎁 Rewards', count: toClaim },
+            { id: 'achieved', label: '👑 Achieved', count: achieved.length },
+          ].map(t => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={tab === t.id}
+              className={`goals-tab${tab === t.id ? ' on' : ''}`}
+              onClick={() => setTab(t.id)}
+            >
+              {t.label}
+              {t.count > 0 && <span className="goals-tab-count">{t.count}</span>}
+            </button>
+          ))}
+        </div>
 
+        {tab === 'goals' && <>
         <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
 
-        <div className="goals-sec">My other goals</div>
         {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Tick it when you reach it.</div>}
         <ul className="goals-list">
           {open.map(g => (
@@ -207,7 +221,26 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
           <button type="submit" disabled={!text.trim()}>＋ Add</button>
         </form>
 
-        <Rewards goals={goals} achievedIds={new Set(achieved.map(a => a.id))} />
+        </>}
+
+        {tab === 'rewards' && <Rewards goals={goals} achievedIds={new Set(achieved.map(a => a.id))} />}
+
+        {tab === 'achieved' && (
+          achieved.length === 0
+            ? <div className="goals-empty">Nothing yet. Your first win shows here. 👑</div>
+            : <ul className="goals-won-list">
+                {achieved.map(a => (
+                  <li key={a.id}>
+                    <span className="gw-crown" aria-hidden="true">👑</span>
+                    <div className="gw-body">
+                      <b>{a.text}</b>
+                      {a.reward && <span className="gw-reward">🎁 {a.reward}</span>}
+                    </div>
+                    <small>{prettyDate(a.at)}</small>
+                  </li>
+                ))}
+              </ul>
+        )}
       </div>
     </div>,
     document.body,
@@ -280,7 +313,6 @@ function Rewards({ goals, achievedIds }) {
   ];
   return (
     <>
-      <div className="goals-sec">My rewards 🎁</div>
       <ul className="rw-list">
         {rows.map(r => (
           <RewardRow key={r.id} goals={goals} id={r.id} goalText={r.text} earned={achievedIds.has(r.id)} />

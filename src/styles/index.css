@@ -10134,3 +10134,39 @@ body {
 [data-mode="light"] .rw-add, [data-mode="light"] .rw-edit button { color: #6b4a00; }
 [data-mode="light"] .rw-edit input { background: #fff; }
 [data-mode="light"] .goals-toast-reward { color: #6b4a00; }
+
+/* ── goals page tabs ────────────────────────────────────────────────────────
+   Goals · Rewards · Achieved, one at a time, so the page never scrolls. */
+.goals-tabs {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px;
+  padding: 4px; border-radius: 999px;
+  background: rgba(0,0,0,0.28); border: 1px solid rgba(240,204,96,0.18);
+}
+.goals-tab {
+  position: relative; min-height: 42px; padding: 0 6px; border-radius: 999px;
+  border: 0; background: transparent; cursor: pointer;
+  color: var(--text-soft); font-family: inherit; font-size: 13px; font-weight: 700;
+  white-space: nowrap; transition: background 0.18s ease, color 0.18s ease;
+}
+.goals-tab.on { background: linear-gradient(135deg, rgba(240,204,96,0.9), rgba(255,92,157,0.85)); color: #1a0c12; }
+.goals-tab-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; margin-left: 5px; padding: 0 5px; border-radius: 999px;
+  background: var(--rose); color: #fff; font-size: 10.5px; font-weight: 800; vertical-align: 1px;
+}
+.goals-tab.on .goals-tab-count { background: #1a0c12; color: var(--gold); }
+.goals-won-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.goals-won-list li {
+  display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(240,204,96,0.14), rgba(255,92,157,0.08));
+  border: 1px solid rgba(240,204,96,0.4);
+}
+.gw-crown { flex: none; font-size: 20px; }
+.gw-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.gw-body b { font-size: 15px; color: var(--text); overflow-wrap: anywhere; }
+.gw-reward { font-size: 12.5px; color: var(--gold); font-weight: 600; overflow-wrap: anywhere; }
+.goals-won-list small { flex: none; font-size: 11px; color: var(--text-soft); white-space: nowrap; }
+[data-mode="light"] .goals-tabs { background: rgba(255,240,248,0.8); border-color: rgba(154,104,0,0.2); }
+[data-mode="light"] .goals-tab { color: #6a3a5c; }
+[data-mode="light"] .gw-reward { color: #6b4a00; }
+@media (max-width: 360px) { .goals-tab { font-size: 12px; } }

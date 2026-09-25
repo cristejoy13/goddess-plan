@@ -111,7 +111,9 @@ export function achievedGoals(log, goals) {
     out.push({ id: KG_GOAL_ID, text: `Reached ${TARGET_KG} kg`, at: plan.reachedOn, reward: rewardText(goals, KG_GOAL_ID) });
   }
   for (const g of goals.items) {
-    if (g.done) out.push({ id: g.id, text: g.text, at: g.done.slice(0, 10), reward: rewardText(goals, g.id) });
+    // Local date, not g.done.slice(0, 10): the stamp is UTC, and in Cebu a
+    // morning tick would otherwise be dated the day before.
+    if (g.done) out.push({ id: g.id, text: g.text, at: dateKeyOf(new Date(g.done)), reward: rewardText(goals, g.id) });
   }
   return out.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
 }
