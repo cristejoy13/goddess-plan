@@ -6,11 +6,13 @@
 //
 // Shape:
 //   { days: { 'YYYY-MM-DD': [ entry, ... ] }, weights: { 'YYYY-MM-DD': weight },
-//     goals: { 'YYYY-MM-DD': goal }, deleted: { id: iso }, updatedAt }
+//     goals: { 'YYYY-MM-DD': goal }, burns: { 'YYYY-MM-DD': burn },
+//     deleted: { id: iso }, updatedAt }
 //   entry  = { id, time: 'HH:MM', text, cal: number|null, createdAt, updatedAt,
 //              fromPlan?: '<meal name>' }
 //   weight = { kg: number|null, updatedAt: iso }
 //   goal   = { cal: number|null, updatedAt: iso }   ← keyed by that week's MONDAY
+//   burn   = { cal: number|null, updatedAt: iso }   ← calories burned that day
 //
 // The goal is how many calories she means to eat on each day of ONE week, and
 // it is keyed by the Monday of that week rather than by each day. She sets a
@@ -120,6 +122,34 @@ export function weekWeightAvg(state, year, monthIdx, day) {
   return { avg: counted ? Math.round((sum / counted) * 10) / 10 : null, counted };
 }
 
+// Calories burned on a day — optional, typed by her, never estimated. Whole
+// numbers, and only a figure a day could plausibly burn, for the same reason
+// the weight refuses a typo: a wrong number here flips "deficit" into "gained".
+export const MIN_BURN = 1;
+export const MAX_BURN = 10000;
+
+export function parseBurn(v) {
+  const n = Number(String(v).trim());
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const r = Math.round(n);
+  return r >= MIN_BURN && r <= MAX_BURN ? r : null;
+}
+
+export function burnOn(state, key) {
+  const b = state.burns?.[key];
+  return typeof b?.cal === 'number' ? b.cal : null;
+}
+
+// Writing null clears the day, stamp kept — the same rule as the weight.
+export function setBurn(state, key, cal) {
+  const now = new Date().toISOString();
+  return {
+    ...state,
+    burns: { ...(state.burns || {}), [key]: { cal: cal ?? null, updatedAt: now } },
+    updatedAt: now,
+  };
+}
+
 // Only meals that actually carry a number are counted, and the caller is told
 // how many were skipped. A partial figure presented as a whole day would be
 // worse than no figure, because it would be acted on.
@@ -198,12 +228,13 @@ export function loadLog() {
         days: raw.days,
         weights: (raw.weights && typeof raw.weights === 'object') ? raw.weights : {},
         goals: (raw.goals && typeof raw.goals === 'object') ? raw.goals : {},
+        burns: (raw.burns && typeof raw.burns === 'object') ? raw.burns : {},
         deleted: raw.deleted || {},
         updatedAt: raw.updatedAt || '',
       };
     }
   } catch { /* fall through to an empty log */ }
-  return { days: {}, weights: {}, goals: {}, deleted: {}, updatedAt: '' };
+  return { days: {}, weights: {}, goals: {}, burns: {}, deleted: {}, updatedAt: '' };
 }
 
 // Returns whether the write actually landed. A meal she watched disappear is
@@ -212,6 +243,8 @@ export function loadLog() {
 export function saveLog(state) {
   try {
     localStorage.setItem(MEAL_LOG_KEY, JSON.stringify(state));
+    // A new weight may have just reached a goal; the goals watcher listens.
+    try { window.dispatchEvent(new Event('gp-goals-changed')); } catch { /* no window in tests */ }
     return true;
   } catch {
     return false;

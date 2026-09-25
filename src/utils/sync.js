@@ -37,7 +37,7 @@ const MEAL_KEYS = [
   'gp_meal_day-thursday', 'gp_meal_day-friday', 'gp_meal_day-saturday',
   'gp_meal_day-sunday',
 ];
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', ...MEAL_KEYS];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', 'gp_goals', ...MEAL_KEYS];
 // Keys that USED to sync and no longer exist in the app. They are cleared from
 // this device and deleted from the shared cloud document once, so the doc does
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key

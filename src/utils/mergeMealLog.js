@@ -14,7 +14,7 @@
 //   3. A deleted entry stays deleted, remembered by a tombstone, so the other
 //      gadget's copy cannot resurrect it on the next merge.
 //
-// The daily weight and the weekly calorie goal merge the same way, one key at
+// The daily weight, the calories burned and the weekly calorie goal merge the same way, one key at
 // a time, newest stamp wins. A cleared one is carried as null rather than
 // dropped, for the same reason a deleted meal leaves a tombstone: without it
 // the other gadget's old number comes straight back.
@@ -148,6 +148,7 @@ export function mergeMealLogBlobs(localRaw, remoteRaw) {
     days,
     weights: mergeNumbers(local.weights, remote.weights, 'kg'),
     goals: mergeNumbers(local.goals, remote.goals, 'cal'),
+    burns: mergeNumbers(local.burns, remote.burns, 'cal'),
     deleted,
     updatedAt: str(local.updatedAt) > str(remote.updatedAt)
       ? str(local.updatedAt)

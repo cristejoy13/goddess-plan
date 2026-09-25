@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&text=G&display=swap');
 
 :root {
   --rose:       #ff5c9d;
@@ -2526,14 +2527,25 @@ body {
   color: var(--gold);
   margin-bottom: 6px;
 }
+/* Three columns: Goals | title | notebook. The two sides share one width, so
+   the title's centre is the page's centre on every screen. */
 .hero-title-row {
-  display: flex;
+  display: grid;
+  /* The sides never shrink below their button, so a long title wraps
+     instead of shoving the buttons off the screen. */
+  --side: clamp(64px, 8.5vw, 78px);
+  grid-template-columns: minmax(var(--side), 1fr) minmax(0, auto) minmax(var(--side), 1fr);
   align-items: center;
-  justify-content: center;
   gap: clamp(10px, 1.8vw, 16px);
   max-width: 100%;
   width: 100%;
 }
+.hero-title-side { display: flex; align-items: center; min-width: 0; }
+.hero-title-left { justify-content: flex-end; }
+.hero-title-right { justify-content: flex-start; }
+/* Sized to the room left between the two buttons, so on an iPad the title
+   stays on one line instead of wrapping and flinging the buttons apart. */
+.hero-title-row .hero-brand-title { font-size: clamp(54px, calc((100vw - 240px) / 7.6), 110px); }
 .hero-brand-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(36px, 8vw, 64px);
@@ -2544,6 +2556,7 @@ body {
   text-shadow: 0 0 60px rgba(255,92,157,0.2);
 }
 .hero-brand-title em { font-style: italic; color: var(--rose); font-weight: 300; }
+.hero-title-row .goals-launcher,
 .hero-title-row .daily-notebook-launcher {
   width: clamp(64px, 8.5vw, 78px);
   height: clamp(64px, 8.5vw, 78px);
@@ -3988,7 +4001,11 @@ body {
   .ag-group.is-open .ag-group-inner { padding: 0 10px 10px; }
 
   .hero-dashboard { padding: 28px 16px 48px; }
-  .hero-title-row { gap: 8px; }
+  .hero-title-row { gap: 8px; --side: 54px; }
+  /* Small enough that "The Goddess" still fits on one line between the two
+     buttons, so the title stays two lines, as it was. */
+  .hero-title-row .hero-brand-title { font-size: clamp(34px, 11.5vw, 54px); }
+  .hero-title-row .goals-launcher,
   .hero-title-row .daily-notebook-launcher {
     width: 54px;
     height: 54px;
@@ -9032,6 +9049,52 @@ body {
   .ml-wt-btn { width: 100%; }
 }
 
+/* ── the day's sum, beside the weigh-in ─────────────────────────────────────
+   Boxes on the left, the answer on the right. Under 560px there is no room for
+   two columns that both stay readable, so the answer drops under the boxes. */
+.ml-wt-split {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px; align-items: center;
+}
+.ml-wt-split .ml-wt-row { flex-direction: column; align-items: center; gap: 12px; }
+.ml-wt-split .ml-wt-btn { min-width: 150px; }
+.ml-wt-opt { font-weight: 500; opacity: 0.7; }
+.ml-burn-input { border-color: rgba(255,170,110,0.36); }
+.ml-burn-input:focus { border-color: #ffb27a; }
+.ml-burn-unit { color: #ffb27a; }
+.ml-sum {
+  padding: 14px 16px;
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(110,231,200,0.22);
+  border-radius: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.ml-sum-kg {
+  text-align: center; font-size: 24px; font-weight: 700; color: var(--wt); line-height: 1.1;
+}
+.ml-sum-kg span { font-size: 13px; }
+.ml-sum-rule { height: 1px; margin: 10px 0; background: rgba(255,255,255,0.22); }
+.ml-sum-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  font-size: 13px; color: var(--text-mid, #d4a0b8);
+}
+.ml-sum-row + .ml-sum-row { margin-top: 6px; }
+.ml-sum-row b { font-size: 15px; color: var(--text); white-space: nowrap; }
+.ml-sum-burn b { color: #ffb27a; }
+.ml-sum-net span { font-weight: 700; }
+.ml-sum-net b { font-size: 18px; }
+.ml-sum-deficit span, .ml-sum-deficit b { color: var(--wt); }
+.ml-sum-gain span, .ml-sum-gain b { color: var(--rose); }
+[data-mode="light"] .ml-sum { background: rgba(255,255,255,0.7); border-color: rgba(11,122,98,0.24); }
+[data-mode="light"] .ml-sum-rule { background: rgba(90,42,74,0.25); }
+[data-mode="light"] .ml-sum-row { color: #4a2440; }
+[data-mode="light"] .ml-sum-burn b, [data-mode="light"] .ml-burn-unit { color: #b35a12; }
+[data-mode="light"] .ml-burn-input { border-color: rgba(179,90,18,0.34); }
+@media (max-width: 560px) {
+  .ml-wt-split { grid-template-columns: minmax(0, 1fr); }
+  .ml-wt-split .ml-wt-btn { width: 100%; }
+}
+
 /* The one line every day of the week shares, under the week grid. */
 .wg-every-day {
   display: flex; align-items: center; justify-content: center;
@@ -9845,4 +9908,168 @@ body {
 .why-card {
   font-size: 13px; line-height: 1.55; margin-top: 8px;
   color: var(--text-mid, #c090b8);
+}
+
+
+/* ── GOALS ──────────────────────────────────────────────────────────────────
+   The round button left of the title, twin of the notebook on the right. */
+.goals-launcher {
+  position: relative;
+  width: 48px; height: 48px;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0;
+  border: 2px solid rgba(240,204,96,0.22);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, rgba(255,92,157,0.16), rgba(240,204,96,0.06) 70%);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18), 0 0 24px rgba(240,204,96,0.08);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.goals-launcher:hover { transform: translateY(-1px); border-color: rgba(240,204,96,0.42); }
+.goals-launcher .goals-g { width: 92%; height: 92%; }
+.goals-launcher-won {
+  border-color: rgba(240,204,96,0.6);
+  box-shadow: 0 0 0 3px rgba(240,204,96,0.12), 0 0 28px rgba(240,204,96,0.35);
+}
+.goals-crown {
+  position: absolute; top: -8px; right: -6px;
+  font-size: 16px; line-height: 1;
+  font-weight: 700; color: var(--gold);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+[data-mode="light"] .goals-launcher {
+  background: radial-gradient(circle at 50% 40%, rgba(255,92,157,0.12), rgba(255,240,248,0.72) 70%);
+  border-color: rgba(154,104,0,0.28);
+}
+
+/* The page it opens — sits in the notebook's overlay, but reads narrower:
+   a list of goals is a column, not a desk. */
+.goals-panel {
+  position: relative;
+  width: min(560px, calc(100vw - 36px));
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(240,204,96,0.22);
+  background: rgba(20,10,28,0.96);
+  box-shadow: 0 16px 42px rgba(0,0,0,0.3);
+  text-align: left;
+}
+.goals-top { display: flex; align-items: center; gap: 10px; }
+.goals-top .goals-g { width: 44px; height: 44px; flex: none; }
+.goals-title {
+  flex: 1; font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700; color: var(--text); line-height: 1;
+}
+.goals-title em { font-style: italic; color: var(--rose); font-weight: 400; }
+.goals-sec {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold);
+}
+.goals-won {
+  padding: 14px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(240,204,96,0.16), rgba(255,92,157,0.10));
+  border: 1px solid rgba(240,204,96,0.4);
+}
+.goals-won ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.goals-won li { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 14px; font-weight: 600; color: var(--text); }
+.goals-won small { font-size: 11px; color: var(--text-soft); white-space: nowrap; font-weight: 500; }
+.goals-empty { font-size: 13px; color: var(--text-soft); }
+.goals-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.goals-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 8px 8px 10px; border-radius: 12px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+}
+.goals-text { flex: 1; min-width: 0; font-size: 14px; color: var(--text); overflow-wrap: anywhere; }
+.goals-item-done .goals-text { color: var(--text-soft); text-decoration: line-through; }
+.goals-tick {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid rgba(240,204,96,0.5); background: transparent;
+  color: #1a0c12; font-weight: 800; font-size: 14px; cursor: pointer; padding: 0;
+}
+.goals-tick-on { background: var(--gold); border-color: var(--gold); }
+.goals-add { display: flex; gap: 8px; }
+.goals-add input {
+  flex: 1; min-width: 0; min-height: 44px;
+  padding: 0 14px; border-radius: 12px;
+  border: 1px solid rgba(240,204,96,0.25); background: rgba(0,0,0,0.25);
+  color: var(--text); font-family: inherit; font-size: 16px;
+}
+.goals-add input:focus { outline: none; border-color: var(--gold); }
+.goals-add button {
+  flex: none; min-height: 44px; padding: 0 18px; border-radius: 999px;
+  border: 1px solid rgba(240,204,96,0.42); background: rgba(240,204,96,0.14);
+  color: var(--gold); font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.goals-add button:disabled { opacity: 0.4; cursor: not-allowed; }
+[data-mode="light"] .goals-panel { background: rgba(255,248,252,0.98); border-color: rgba(154,104,0,0.2); }
+[data-mode="light"] .goals-item { background: rgba(255,240,248,0.72); border-color: rgba(200,23,110,0.12); }
+[data-mode="light"] .goals-add input { background: #fff; border-color: rgba(154,104,0,0.25); }
+[data-mode="light"] .goals-add button { color: #6b4a00; background: rgba(154,104,0,0.08); }
+[data-mode="light"] .goals-tick { border-color: rgba(154,104,0,0.5); }
+
+/* The 40 kg card — on the dashboard and inside the goals page. */
+.kg-card {
+  display: block; width: 100%; max-width: 720px;   /* same column as the ribbon under it */
+  margin: 0 auto 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(110,231,200,0.28);
+  background: linear-gradient(135deg, rgba(110,231,200,0.08), rgba(196,166,255,0.08));
+  color: var(--text); font-family: inherit; text-align: left;
+}
+.goals-panel .kg-card { margin: 0; max-width: none; }
+.kg-card-tap { cursor: pointer; transition: transform 0.18s ease, border-color 0.18s ease; }
+.kg-card-tap:hover { transform: translateY(-1px); border-color: rgba(110,231,200,0.5); }
+.kg-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.kg-title { font-size: 15px; font-weight: 700; }
+.kg-pace { font-size: 11.5px; color: var(--wt); font-weight: 600; white-space: nowrap; }
+.kg-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.kg-stats div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.kg-stats span { font-size: 10.5px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+.kg-stats b { font-size: 18px; color: var(--wt); font-variant-numeric: tabular-nums; }
+.kg-bar { height: 8px; margin: 12px 0 8px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.kg-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--wt), var(--gold), var(--rose)); }
+.kg-note { font-size: 11.5px; color: var(--text-soft); text-align: center; line-height: 1.5; }
+.kg-empty, .kg-done { font-size: 13px; color: var(--text-mid, #d4a0b8); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.kg-done { color: var(--gold); font-weight: 700; justify-content: center; }
+.kg-link {
+  min-height: 40px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid rgba(110,231,200,0.42); background: rgba(110,231,200,0.12);
+  color: var(--wt); font-family: inherit; font-weight: 700; font-size: 12.5px; cursor: pointer;
+}
+[data-mode="light"] .kg-card { background: linear-gradient(135deg, rgba(11,122,98,0.07), rgba(91,53,196,0.06)); border-color: rgba(11,122,98,0.25); }
+[data-mode="light"] .kg-bar { background: rgba(0,0,0,0.08); }
+[data-mode="light"] .kg-empty { color: #4a2440; }
+[data-mode="light"] .kg-done { color: #6b4a00; }
+
+/* Confetti and the line that names the goal. */
+.goals-confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 3000; }
+.goals-toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  top: calc(var(--topbar-h, 120px) + 12px);
+  z-index: 3001;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 12px 22px; border-radius: 16px;
+  border: 1px solid rgba(240,204,96,0.55);
+  background: rgba(30,14,34,0.96);
+  box-shadow: 0 12px 34px rgba(0,0,0,0.4), 0 0 30px rgba(240,204,96,0.25);
+  color: var(--text); font-family: inherit; cursor: pointer;
+}
+.goals-toast span { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+.goals-toast b { font-family: 'Cormorant Garamond', serif; font-size: 22px; text-align: center; }
+[data-mode="light"] .goals-toast { background: rgba(255,248,252,0.98); }
+[data-mode="light"] .goals-toast span { color: #6b4a00; }
+
+@media (max-width: 380px) {
+  .hero-title-row { gap: 6px; --side: 46px; }
+  .hero-title-row .goals-launcher,
+  .hero-title-row .daily-notebook-launcher { width: 46px; height: 46px; }
+  .hero-title-row .daily-notebook-launcher-icon { width: 29px; height: 33px; }
+  .hero-title-row .hero-brand-title { font-size: 11vw; }
+  .kg-stats b { font-size: 16px; }
+  .goals-panel { padding: 14px; }
 }

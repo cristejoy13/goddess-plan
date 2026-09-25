@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WORKOUT_DAYS } from '../data/workouts';
 import { mergeNotebookBlobs } from '../utils/mergeNotebook';
+import { GoalsToggle, GoalsPanel, KgGoalCard } from './Goals';
+import { useGoalsData } from '../utils/useGoalsData';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1080,6 +1082,8 @@ function RuleBoard() {
 }
 
 export default function Hero({ onNavigate }) {
+  const goalsData = useGoalsData();
+  const [goalsOpen, setGoalsOpen] = useState(false);
   const today = WORKOUT_DAYS[dayIndex];
   const todayDayId = `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`;
 
@@ -1087,9 +1091,16 @@ export default function Hero({ onNavigate }) {
     <div className="hero hero-dashboard">
       <div className="hero-brand">
         <div className="hero-brand-tag">🌸 Run before · Lift · Rope or walk after 🌸</div>
+        {/* Goals on the left, the notebook on the right, the title between —
+            the two side columns are equal, so the title sits dead centre. */}
         <div className="hero-title-row">
+          <div className="hero-title-side hero-title-left">
+            <GoalsToggle achieved={goalsData.achieved} onOpen={() => setGoalsOpen(true)} />
+          </div>
           <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
-          <DailyNotebook />
+          <div className="hero-title-side hero-title-right">
+            <DailyNotebook />
+          </div>
         </div>
         <div className="hero-brand-sub">Flat Tummy · Small Waist · Round Glutes · Glow</div>
       </div>
@@ -1109,6 +1120,9 @@ export default function Hero({ onNavigate }) {
           </button>
         ))}
       </div>
+
+      <KgGoalCard plan={goalsData.plan} onOpen={() => setGoalsOpen(true)} onNavigate={onNavigate} />
+      {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 
       <div className="hero-goal-ribbon splash-item">🎯 Flat tummy · Small waist · Round glutes · Healthy gut · Glow</div>
 

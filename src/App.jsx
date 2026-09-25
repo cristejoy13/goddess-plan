@@ -6,6 +6,7 @@ import Meal from './components/Meal';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
 import Settings from './components/Settings';
+import { GoalWatcher } from './components/Goals';
 import { getAvatarByProfile } from './avatars';
 import './styles/index.css';
 
@@ -125,6 +126,8 @@ const SEARCH_INDEX = [
   { label: 'Hormone-Protective Eating',    hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Skin Longevity Nutrients',     hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
   { label: 'Supplement Stack',             hint: 'Skincare → Anti-Aging',    section: 'skincare', tab: 'antiaging' },
+  { label: 'Goals — 40 kg, half a kilo a week', hint: 'Home · the G beside the title · your own goals too', section: 'home' },
+  { label: 'Calories burned & deficit', hint: 'Meal → tap a day · beside your weight', section: 'meal' },
   { label: 'Meal — what you actually ate',  hint: 'A calendar you fill in yourself, day by day', section: 'meal' },
   { label: 'Nutrition & Meals',            hint: 'Workouts → Nutrition',      section: 'workout' },
   { label: 'Recipes',                      hint: 'Workouts → Nutrition',      section: 'workout' },
@@ -334,6 +337,12 @@ export default function App() {
         e.preventDefault();
         goHome();
       }
+      // On a Mac the system takes Cmd+H (it hides the browser) before the page
+      // ever sees it, so a plain H does the same — unless she is typing.
+      const typing = e.target.closest?.('input, textarea, select, [contenteditable="true"]');
+      if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === 'h') {
+        goHome();
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -387,6 +396,7 @@ export default function App() {
     <>
       {background}
       <InstallBanner />
+      <GoalWatcher />
 
       <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`} ref={topbarRef}>
         <div className="topbar-row">

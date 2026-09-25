@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
+  parseBurn, burnOn, setBurn, MAX_BURN, MIN_BURN,
   parseGoal, setGoal, weekStartKey, goalForWeek, goalOn, calsLeft, MIN_GOAL, MAX_GOAL,
 } from '../utils/mealLog';
 
@@ -295,42 +296,66 @@ function GoalForm({ cal, weekLabel, onSave }) {
 // box on the meal form: a weight belongs to the DAY, not to the bowl of rice —
 // putting it in the form would ask her for it again with every meal she wrote.
 //
+// Beside it, the day's sum: the weight, what she ate, minus what she burned,
+// and whether that left a deficit or a gain. "Burned" is optional and its line
+// only appears once she has typed one — without it there is no deficit to
+// speak of, and eaten-minus-nothing labelled "gained" would be a false alarm.
+//
 // Nothing is ever filled in for her. A day she did not weigh stays empty, and
 // an empty day is left out of the week's average rather than counted as zero.
-function WeightForm({ kg, onSave }) {
-  const [draft, setDraft] = useState(() => (kg != null ? formatKg(kg) : ''));
+function WeightForm({ kg, burn, eaten, onSave }) {
+  const kgText = kg != null ? formatKg(kg) : '';
+  const burnText = burn != null ? String(burn) : '';
+  const [draft, setDraft] = useState(kgText);
+  const [burnDraft, setBurnDraft] = useState(burnText);
   const [warn, setWarn] = useState('');
 
   // She may open Tuesday, then Wednesday, without the panel unmounting in
-  // between, so the box has to follow the day she is looking at.
-  const [seen, setSeen] = useState(kg);
-  if (seen !== kg) { setSeen(kg); setDraft(kg != null ? formatKg(kg) : ''); setWarn(''); }
+  // between, so the boxes have to follow the day she is looking at.
+  const [seen, setSeen] = useState(`${kgText}|${burnText}`);
+  if (seen !== `${kgText}|${burnText}`) {
+    setSeen(`${kgText}|${burnText}`); setDraft(kgText); setBurnDraft(burnText); setWarn('');
+  }
 
   const typed = draft.trim();
-  const parsed = parseKg(typed);
-  const clearing = typed === '' && kg != null;
+  const typedBurn = burnDraft.trim();
   // Compared as TEXT, not as parsed numbers. A refused number parses to null,
   // which is also what an empty box parses to — so comparing the numbers made
   // a typo look like no change at all, greyed the button out, and left her
   // with no way to find out why it would not save.
-  const unchanged = typed === (kg != null ? formatKg(kg) : '');
+  const kgChanged = typed !== kgText;
+  const burnChanged = typedBurn !== burnText;
+  const unchanged = !kgChanged && !burnChanged;
+  const clearingKg = kgChanged && typed === '' && kg != null;
+  const clearingBurn = burnChanged && typedBurn === '' && burn != null;
+  const onlyClearing = (clearingKg || !kgChanged) && (clearingBurn || !burnChanged) && !unchanged;
 
   function submit(e) {
     e.preventDefault();
-    if (typed === '') {
-      if (kg == null) return;
-      if (!window.confirm(`Remove your weight of ${formatKg(kg)} kg for this day? This cannot be undone.`)) return;
-      setWarn('');
-      onSave(null);
-      return;
+    if (unchanged) return;
+    const patch = {};
+    if (kgChanged && typed !== '') {
+      const parsed = parseKg(typed);
+      if (parsed == null) { setWarn(`Type your weight in kilos, between ${MIN_KG} and ${MAX_KG}.`); return; }
+      patch.kg = parsed;
     }
-    if (parsed == null) {
-      setWarn(`Type your weight in kilos, between ${MIN_KG} and ${MAX_KG}.`);
-      return;
+    if (burnChanged && typedBurn !== '') {
+      const parsed = parseBurn(typedBurn);
+      if (parsed == null) { setWarn(`Type the calories burned as a whole number, up to ${MAX_BURN.toLocaleString()}.`); return; }
+      patch.burn = parsed;
     }
+    const gone = [
+      clearingKg && `your weight of ${formatKg(kg)} kg`,
+      clearingBurn && `${burn.toLocaleString()} calories burned`,
+    ].filter(Boolean);
+    if (gone.length && !window.confirm(`Remove ${gone.join(' and ')} for this day? This cannot be undone.`)) return;
+    if (clearingKg) patch.kg = null;
+    if (clearingBurn) patch.burn = null;
     setWarn('');
-    onSave(parsed);
+    onSave(patch);
   }
+
+  const net = burn != null ? eaten - burn : null;
 
   return (
     // noValidate on purpose. With min/max/step left to the browser, a reading
@@ -338,28 +363,70 @@ function WeightForm({ kg, onSave }) {
     // and the number she typed vanishes with no message. The checking is done
     // in parseKg instead, which can say what is wrong in words she can read.
     <form className="ml-wt-form" noValidate onSubmit={submit}>
-      <div className="ml-wt-row">
-        <label className="ml-wt-wrap">
-          <span className="ml-time-lbl">⚖️ Weight today</span>
-          <div className="ml-wt-field">
-            <input
-              className="ml-wt-input"
-              type="number"
-              inputMode="decimal"
-              min={MIN_KG}
-              max={MAX_KG}
-              step="any"
-              value={draft}
-              onChange={e => { setDraft(e.target.value); setWarn(''); }}
-              placeholder="—"
-              aria-label="Your weight today, in kilos"
-            />
-            <span className="ml-wt-unit">kg</span>
+      <div className="ml-wt-split">
+        <div className="ml-wt-row">
+          <label className="ml-wt-wrap">
+            <span className="ml-time-lbl">⚖️ Weight today</span>
+            <div className="ml-wt-field">
+              <input
+                className="ml-wt-input"
+                type="number"
+                inputMode="decimal"
+                min={MIN_KG}
+                max={MAX_KG}
+                step="any"
+                value={draft}
+                onChange={e => { setDraft(e.target.value); setWarn(''); }}
+                placeholder="—"
+                aria-label="Your weight today, in kilos"
+              />
+              <span className="ml-wt-unit">kg</span>
+            </div>
+          </label>
+          <label className="ml-wt-wrap">
+            <span className="ml-time-lbl">🔥 Burned <span className="ml-wt-opt">(optional)</span></span>
+            <div className="ml-wt-field">
+              <input
+                className="ml-wt-input ml-burn-input"
+                type="number"
+                inputMode="numeric"
+                min={MIN_BURN}
+                max={MAX_BURN}
+                step="any"
+                value={burnDraft}
+                onChange={e => { setBurnDraft(e.target.value); setWarn(''); }}
+                placeholder="—"
+                aria-label="Calories burned today"
+              />
+              <span className="ml-wt-unit ml-burn-unit">cal</span>
+            </div>
+          </label>
+          <button type="submit" className="ml-wt-btn" disabled={unchanged}>
+            {onlyClearing ? 'Remove' : kg != null || burn != null ? 'Save' : '＋ Add'}
+          </button>
+        </div>
+
+        <div className="ml-sum" aria-label="This day in numbers">
+          <div className="ml-sum-kg">{kg != null ? formatKg(kg) : '—'} <span>kg</span></div>
+          <div className="ml-sum-rule" aria-hidden="true" />
+          <div className="ml-sum-row">
+            <span>Total calories eaten</span>
+            <b>{eaten.toLocaleString()}</b>
           </div>
-        </label>
-        <button type="submit" className="ml-wt-btn" disabled={unchanged}>
-          {clearing ? 'Remove' : kg != null ? 'Save' : '＋ Add'}
-        </button>
+          {burn != null && (
+            <div className="ml-sum-row ml-sum-burn">
+              <span>− Calories burned</span>
+              <b>{burn.toLocaleString()}</b>
+            </div>
+          )}
+          {net != null && <>
+            <div className="ml-sum-rule" aria-hidden="true" />
+            <div className={`ml-sum-row ml-sum-net${net > 0 ? ' ml-sum-gain' : ' ml-sum-deficit'}`}>
+              <span>{net > 0 ? 'Gained' : net < 0 ? 'Deficit' : 'Even'}</span>
+              <b>{Math.abs(net).toLocaleString()} cal</b>
+            </div>
+          </>}
+        </div>
       </div>
       {warn && <div className="ml-wt-warn">{warn}</div>}
     </form>
@@ -402,7 +469,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 }
 
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, kg, weekAvg, goal, weekLabel, left,
+function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekLabel, left,
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
@@ -470,7 +537,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, weekAvg, goal, weekLabel, 
 
       <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />
 
-      <WeightForm kg={kg} onSave={onWeight} />
+      <WeightForm kg={kg} burn={burn} eaten={total} onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
         <div className="ml-wt-week">
@@ -554,9 +621,14 @@ export default function Meal() {
 
   // The scale reading for a day. Writing null clears it; the record keeps the
   // cleared stamp so another gadget cannot put the old number back.
-  const saveWeight = (dayNum, kg) => {
+  const saveWeight = (dayNum, patch) => {
     const key = dateKey(year, monthIdx, dayNum);
-    commit(prev => setWeight(prev, key, kg));
+    commit(prev => {
+      let next = prev;
+      if ('kg' in patch) next = setWeight(next, key, patch.kg);
+      if ('burn' in patch) next = setBurn(next, key, patch.burn);
+      return next;
+    });
   };
 
   // The week's goal, filed against that week's Monday so one number answers
@@ -615,7 +687,7 @@ export default function Meal() {
           Set a goal for the week and every square counts down: the number is what you have
           LEFT to eat that day, not what you ate. Under the meals there is one box for your
           weight in kilos, and on Sunday the square shows that day's weight beside the week's
-          average.
+          average. Type what you burned too, if you know it, and it shows your deficit.
         </p>
       </div>
 
@@ -750,6 +822,7 @@ export default function Meal() {
           day={openDay}
           entries={days[openKey] || []}
           kg={weightOn(state, openKey)}
+          burn={burnOn(state, openKey)}
           /* The average belongs to the week, so it is shown where the week
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
@@ -760,7 +833,7 @@ export default function Meal() {
           onAdd={(fields) => addEntry(openDay, fields)}
           onEdit={(entry, fields) => editEntry(openDay, entry, fields)}
           onDelete={(entry) => deleteEntry(openDay, entry)}
-          onWeight={(kg) => saveWeight(openDay, kg)}
+          onWeight={(patch) => saveWeight(openDay, patch)}
           onGoal={(cal) => saveGoal(openDay, cal)}
           onClose={() => setOpenDay(null)}
           saveFailed={saveFailed}
