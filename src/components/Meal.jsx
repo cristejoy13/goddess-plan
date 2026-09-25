@@ -487,6 +487,21 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
         <button className="ml-close" onClick={onClose} aria-label="Close this day">✕</button>
       </div>
 
+      {/* Three parts, a bold line between each: the week's goal, then the
+          meals, then the scale. */}
+      <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />
+
+      <div className="ml-bold-rule" aria-hidden="true" />
+
+      <MealForm onSubmit={onAdd} />
+
+      {saveFailed && (
+        <div className="ml-save-warn">
+          ⚠️ This device would not save that. Its storage is full or blocked, so
+          what you just typed is not written down yet.
+        </div>
+      )}
+
       <ul className="ml-entries">
         {entries.map(en => (
           <EntryRow
@@ -497,7 +512,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
           />
         ))}
         {entries.length === 0 && (
-          <li className="ml-entry-empty">Write the first meal of this day below.</li>
+          <li className="ml-entry-empty">Write the first meal of this day above.</li>
         )}
       </ul>
 
@@ -526,16 +541,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
         </div>
       )}
 
-      {saveFailed && (
-        <div className="ml-save-warn">
-          ⚠️ This device would not save that. Its storage is full or blocked, so
-          what you just typed is not written down yet.
-        </div>
-      )}
-
-      <MealForm onSubmit={onAdd} />
-
-      <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />
+      <div className="ml-bold-rule" aria-hidden="true" />
 
       <WeightForm kg={kg} burn={burn} eaten={total} onSave={onWeight} />
 
@@ -665,6 +671,10 @@ export default function Meal() {
 
   // Does any week on screen carry a goal? The legend has to name what the
   // squares are showing, and that changes with the month she is looking at.
+  const anyBurn = useMemo(
+    () => weeks.some(wk => wk.some(d => d && burnOn(state, dateKey(year, monthIdx, d)) != null)),
+    [weeks, state, year, monthIdx],
+  );
   const anyGoal = useMemo(
     () => weeks.some(wk => wk.some(d => d && goalOn(state, dateKey(year, monthIdx, d)))),
     [weeks, state, year, monthIdx],
@@ -687,7 +697,8 @@ export default function Meal() {
           Set a goal for the week and every square counts down: the number is what you have
           LEFT to eat that day, not what you ate. Under the meals there is one box for your
           weight in kilos, and on Sunday the square shows that day's weight beside the week's
-          average. Type what you burned too, if you know it, and it shows your deficit.
+          average. Type what you burned too, if you know it, and it shows your deficit — on the
+          square as well, in place of what is left to eat.
         </p>
       </div>
 
@@ -730,7 +741,14 @@ export default function Meal() {
               // today. Only a week with a goal has an answer; without one the
               // square shows what she ate, as it always did.
               const left = calsLeft(state, key);
-              const showLeft = left != null;
+              // Once she has typed what she burned, the square answers the
+              // bigger question — did the day end in a deficit — and that
+              // takes the place of "left to eat". Without a burned number the
+              // square counts down from the goal exactly as it did before.
+              const burn = burnOn(state, key);
+              const net = burn != null ? total - burn : null;
+              const showNet = net != null;
+              const showLeft = !showNet && left != null;
               // The scale sits above the calories with a rule between them,
               // because two bare numbers stacked in one square with nothing
               // between them read as one four-digit number.
@@ -738,14 +756,16 @@ export default function Meal() {
               const wk = isSunday ? weekWeightAvg(state, year, monthIdx, day) : null;
               const avg = wk && wk.counted > 0 ? wk.avg : null;
               const showWt = kg != null || avg != null;
-              const showRule = showWt && (showLeft || count > 0);
+              const showRule = showWt && (showNet || showLeft || count > 0);
               return (
                 <button
                   key={di}
                   className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}${showWeek || showWt ? ' ml-day-sun' : ''}`}
                   onClick={() => setOpenDay(isOpen ? null : day)}
                   aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${
-                    showLeft
+                    showNet
+                      ? (net > 0 ? `gained ${net} calories` : `${Math.abs(net)} calories deficit`)
+                      : showLeft
                       ? (left < 0
                           ? `${Math.abs(left)} calories over your goal`
                           : `${left} calories left of your goal`)
@@ -773,7 +793,11 @@ export default function Meal() {
                     </span>
                   )}
                   {showRule && <span className="ml-day-rule" aria-hidden="true" />}
-                  {showLeft
+                  {showNet
+                    ? <span className={`ml-day-dot ml-day-net${net > 0 ? ' ml-day-over' : ''}`}>
+                        {net > 0 ? `+${net}` : Math.abs(net)}
+                      </span>
+                    : showLeft
                     ? <span className={`ml-day-dot ml-day-left${left < 0 ? ' ml-day-over' : ''}`}>
                         {left < 0 ? `−${Math.abs(left)}` : left}
                       </span>
@@ -810,6 +834,9 @@ export default function Meal() {
             <span className="ml-legend-item"><span className="ml-day-dot">000</span> calories eaten, the day</span>
             <span className="ml-legend-item"><span className="ml-day-week">000</span> calories eaten, the week</span>
           </>
+        )}
+        {anyBurn && (
+          <span className="ml-legend-item"><span className="ml-day-dot ml-day-net">000</span> calories deficit, once burned is typed</span>
         )}
         <span className="ml-legend-item"><span className="ml-day-wt"><span className="ml-wt-day">00</span></span> kilos, the day</span>
         <span className="ml-legend-item"><span className="ml-day-wt"><span className="ml-wt-avg">00</span></span> kilos, the week</span>
