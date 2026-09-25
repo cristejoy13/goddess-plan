@@ -4,6 +4,7 @@ import { loadLog, formatKg } from '../utils/mealLog';
 import {
   loadGoals, saveGoals, newGoalId, achievedGoals,
   loadCelebrated, saveCelebrated, TARGET_KG, KG_PER_WEEK,
+  KG_GOAL_ID, rewardText, setReward, claimReward,
 } from '../utils/goals';
 
 // ─── GOALS ─────────────────────────────────────────────────────────────────
@@ -147,8 +148,9 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
   }
 
   function remove(g) {
-    if (!window.confirm(`Delete the goal “${g.text}”? This cannot be undone.`)) return;
-    saveGoals({ ...goals, items: goals.items.filter(x => x.id !== g.id) });
+    const r = rewardText(goals, g.id);
+    if (!window.confirm(`Delete the goal “${g.text}”${r ? ` and its reward “${r}”` : ''}? This cannot be undone.`)) return;
+    saveGoals(setReward({ ...goals, items: goals.items.filter(x => x.id !== g.id) }, g.id, ''));
   }
 
   const open = goals.items.filter(g => !g.done);
@@ -176,7 +178,7 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
         <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
 
         <div className="goals-sec">My other goals</div>
-        {open.length === 0 && <div className="goals-empty">Write a goal below. Tick it when you reach it.</div>}
+        {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Tick it when you reach it.</div>}
         <ul className="goals-list">
           {open.map(g => (
             <li key={g.id} className="goals-item">
@@ -204,9 +206,87 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
           />
           <button type="submit" disabled={!text.trim()}>＋ Add</button>
         </form>
+
+        <Rewards goals={goals} achievedIds={new Set(achieved.map(a => a.id))} />
       </div>
     </div>,
     document.body,
+  );
+}
+
+// ─── rewards ───────────────────────────────────────────────────────────────
+// One row per goal, the 40 kg goal first. She writes each reward herself.
+// Locked until its goal is reached; then it can be claimed.
+function RewardRow({ goals, id, goalText, earned }) {
+  const reward = rewardText(goals, id);
+  const claimed = Boolean(goals.rewards?.[id]?.claimed);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(reward || '');
+
+  function save(e) {
+    e.preventDefault();
+    const t = draft.trim();
+    if (!t && reward && !window.confirm(`Remove the reward “${reward}” for “${goalText}”?`)) return;
+    saveGoals(setReward(goals, id, t));
+    setEditing(false);
+  }
+
+  return (
+    <li className={`rw-item${earned ? ' rw-earned' : ''}${claimed ? ' rw-claimed' : ''}`}>
+      <span className="rw-icon" aria-hidden="true">{claimed ? '✅' : earned ? '🎁' : '🔒'}</span>
+      <div className="rw-body">
+        <div className="rw-goal">{goalText}</div>
+        {editing ? (
+          <form className="rw-edit" onSubmit={save}>
+            <input
+              autoFocus
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              placeholder="Your reward…"
+              maxLength={120}
+              aria-label={`Reward for ${goalText}`}
+            />
+            <button type="submit">Save</button>
+            <button type="button" className="rw-cancel" onClick={() => { setEditing(false); setDraft(reward || ''); }}>Cancel</button>
+          </form>
+        ) : reward ? (
+          <button type="button" className="rw-text" onClick={() => { setDraft(reward); setEditing(true); }} aria-label={`Edit reward: ${reward}`}>
+            {reward} <span aria-hidden="true">✏️</span>
+          </button>
+        ) : (
+          <button type="button" className="rw-add" onClick={() => { setDraft(''); setEditing(true); }}>＋ Add a reward</button>
+        )}
+      </div>
+      {earned && reward && !editing && (
+        <button
+          type="button"
+          className={`rw-claim${claimed ? ' on' : ''}`}
+          onClick={() => {
+            if (claimed && !window.confirm(`Mark “${reward}” as not claimed yet?`)) return;
+            saveGoals(claimReward(goals, id, !claimed));
+          }}
+        >
+          {claimed ? 'Claimed' : 'Claim'}
+        </button>
+      )}
+    </li>
+  );
+}
+
+function Rewards({ goals, achievedIds }) {
+  const rows = [
+    { id: KG_GOAL_ID, text: `Reach ${TARGET_KG} kg` },
+    ...goals.items.map(g => ({ id: g.id, text: g.text })),
+  ];
+  return (
+    <>
+      <div className="goals-sec">My rewards 🎁</div>
+      <ul className="rw-list">
+        {rows.map(r => (
+          <RewardRow key={r.id} goals={goals} id={r.id} goalText={r.text} earned={achievedIds.has(r.id)} />
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -267,7 +347,10 @@ export function GoalWatcher() {
     if (changed) saveCelebrated(seen);
     if (fresh.length) {
       fireConfetti();
-      setToast(fresh.map(a => a.text).join(' · '));
+      setToast({
+        text: fresh.map(a => a.text).join(' · '),
+        reward: fresh.map(a => a.reward).filter(Boolean).join(' · '),
+      });
     }
   }, []);
 
@@ -285,7 +368,7 @@ export function GoalWatcher() {
 
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(null), 6000);
+    const t = setTimeout(() => setToast(null), toast.reward ? 9000 : 6000);
     return () => clearTimeout(t);
   }, [toast]);
 
@@ -293,7 +376,8 @@ export function GoalWatcher() {
   return (
     <button type="button" className="goals-toast" onClick={() => setToast(null)}>
       <span>🎉 Goal achieved</span>
-      <b>{toast}</b>
+      <b>{toast.text}</b>
+      {toast.reward && <em className="goals-toast-reward">🎁 Your reward: {toast.reward}</em>}
     </button>
   );
 }

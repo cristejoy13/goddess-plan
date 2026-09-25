@@ -7,7 +7,11 @@
 // says so rather than guessing a start from the profile.
 //
 // Shape of gp_goals (synced):
-//   { items: [ { id, text, done: iso|null, createdAt, updatedAt } ], updatedAt }
+//   { items: [ { id, text, done: iso|null, createdAt, updatedAt } ],
+//     rewards: { [goalId]: { text, claimed: iso|null, updatedAt } }, updatedAt }
+//
+// A reward belongs to one goal and is keyed by that goal's id — the 40 kg
+// goal uses KG_GOAL_ID. She writes every reward herself; none is suggested.
 //
 // Which goals have already had their confetti is kept per device, under
 // gp_goals_celebrated, NOT synced: reaching a goal on the phone should still
@@ -74,9 +78,12 @@ export function kgPlan(log, todayKey = dateKeyOf()) {
 export function loadGoals() {
   try {
     const raw = JSON.parse(localStorage.getItem(GOALS_KEY) || 'null');
-    if (raw && Array.isArray(raw.items)) return { items: raw.items, updatedAt: raw.updatedAt || '' };
+    if (raw && Array.isArray(raw.items)) {
+      const rewards = raw.rewards && typeof raw.rewards === 'object' ? raw.rewards : {};
+      return { items: raw.items, rewards, updatedAt: raw.updatedAt || '' };
+    }
   } catch { /* start empty */ }
-  return { items: [], updatedAt: '' };
+  return { items: [], rewards: {}, updatedAt: '' };
 }
 
 export function saveGoals(goals) {
@@ -101,12 +108,32 @@ export function achievedGoals(log, goals) {
   const out = [];
   const plan = kgPlan(log);
   if (plan?.reached) {
-    out.push({ id: KG_GOAL_ID, text: `Reached ${TARGET_KG} kg`, at: plan.reachedOn });
+    out.push({ id: KG_GOAL_ID, text: `Reached ${TARGET_KG} kg`, at: plan.reachedOn, reward: rewardText(goals, KG_GOAL_ID) });
   }
   for (const g of goals.items) {
-    if (g.done) out.push({ id: g.id, text: g.text, at: g.done.slice(0, 10) });
+    if (g.done) out.push({ id: g.id, text: g.text, at: g.done.slice(0, 10), reward: rewardText(goals, g.id) });
   }
   return out.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+}
+
+export function rewardText(goals, id) {
+  const t = goals.rewards?.[id]?.text;
+  return typeof t === 'string' && t.trim() ? t.trim() : null;
+}
+
+// Writing '' clears the reward.
+export function setReward(goals, id, text) {
+  const rewards = { ...(goals.rewards || {}) };
+  const t = String(text || '').trim();
+  if (t) rewards[id] = { ...(rewards[id] || {}), text: t, claimed: rewards[id]?.claimed || null, updatedAt: new Date().toISOString() };
+  else delete rewards[id];
+  return { ...goals, rewards };
+}
+
+export function claimReward(goals, id, claimed) {
+  const r = goals.rewards?.[id];
+  if (!r) return goals;
+  return { ...goals, rewards: { ...goals.rewards, [id]: { ...r, claimed: claimed ? new Date().toISOString() : null, updatedAt: new Date().toISOString() } } };
 }
 
 export function loadCelebrated() {

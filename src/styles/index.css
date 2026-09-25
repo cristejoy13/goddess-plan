@@ -10086,3 +10086,51 @@ body {
   .kg-stats b { font-size: 16px; }
   .goals-panel { padding: 14px; }
 }
+
+/* ── rewards, inside the goals page ─────────────────────────────────────────
+   One row per goal: lock until reached, gift once reached, tick once claimed. */
+.rw-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.rw-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px 10px 12px; border-radius: 12px;
+  background: rgba(255,255,255,0.04); border: 1px dashed rgba(240,204,96,0.28);
+}
+.rw-earned { border-style: solid; border-color: rgba(240,204,96,0.6); background: linear-gradient(135deg, rgba(240,204,96,0.14), rgba(255,92,157,0.10)); }
+.rw-claimed { border-style: solid; border-color: rgba(110,231,200,0.4); background: rgba(110,231,200,0.07); }
+.rw-icon { flex: none; font-size: 20px; line-height: 1; }
+.rw-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.rw-goal { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); overflow-wrap: anywhere; }
+.rw-text, .rw-add {
+  align-self: flex-start; padding: 0; border: 0; background: none; cursor: pointer;
+  font-family: inherit; text-align: left; min-height: 28px;
+}
+.rw-text { font-size: 15px; font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
+.rw-text span { font-size: 11px; opacity: 0.6; }
+.rw-add { font-size: 13px; font-weight: 700; color: var(--gold); }
+.rw-claimed .rw-text { color: var(--text-soft); text-decoration: line-through; }
+.rw-edit { display: flex; gap: 6px; flex-wrap: wrap; }
+.rw-edit input {
+  flex: 1 1 160px; min-width: 0; min-height: 40px; padding: 0 12px; border-radius: 10px;
+  border: 1px solid rgba(240,204,96,0.3); background: rgba(0,0,0,0.25);
+  color: var(--text); font-family: inherit; font-size: 16px;
+}
+.rw-edit input:focus { outline: none; border-color: var(--gold); }
+.rw-edit button {
+  min-height: 40px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(240,204,96,0.42); background: rgba(240,204,96,0.14);
+  color: var(--gold); font-family: inherit; font-weight: 700; font-size: 12.5px;
+}
+.rw-edit .rw-cancel { border-color: rgba(255,255,255,0.15); background: transparent; color: var(--text-soft); }
+.rw-claim {
+  flex: none; min-height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  border: 0; background: var(--gold); color: #1a0c12;
+  font-family: inherit; font-weight: 800; font-size: 12.5px;
+}
+.rw-claim.on { background: transparent; border: 1px solid rgba(110,231,200,0.5); color: var(--wt); }
+.goals-toast-reward { font-style: normal; font-size: 14px; font-weight: 700; color: var(--gold); text-align: center; margin-top: 4px; }
+[data-mode="light"] .rw-item { background: rgba(255,240,248,0.72); border-color: rgba(154,104,0,0.3); }
+[data-mode="light"] .rw-earned { background: linear-gradient(135deg, rgba(240,204,96,0.22), rgba(255,92,157,0.10)); border-color: rgba(154,104,0,0.55); }
+[data-mode="light"] .rw-claimed { background: rgba(11,122,98,0.07); border-color: rgba(11,122,98,0.35); }
+[data-mode="light"] .rw-add, [data-mode="light"] .rw-edit button { color: #6b4a00; }
+[data-mode="light"] .rw-edit input { background: #fff; }
+[data-mode="light"] .goals-toast-reward { color: #6b4a00; }

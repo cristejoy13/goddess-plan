@@ -1,6 +1,6 @@
 // The 40 kg plan and the calories burned. Run with:
 //   node src/utils/__tests__/goals.test.mjs
-import { kgPlan, achievedGoals } from '../goals.js';
+import { kgPlan, achievedGoals, setReward, claimReward, rewardText, KG_GOAL_ID } from '../goals.js';
 import { parseBurn, setBurn, burnOn } from '../mealLog.js';
 import { mergeMealLogBlobs } from '../mergeMealLog.js';
 
@@ -35,6 +35,17 @@ const A = JSON.stringify({ ...log({}), burns: { '2026-09-25': { cal: 700, update
 const B = JSON.stringify({ ...log({}), burns: { '2026-09-25': { cal: 500, updatedAt: '2026-09-25T01:00:00Z' } } });
 ok('the newer burned number wins a sync', JSON.parse(mergeMealLogBlobs(A, B)).burns['2026-09-25'].cal === 700);
 ok('and the merge agrees both ways', mergeMealLogBlobs(A, B) === mergeMealLogBlobs(B, A));
+
+// ── rewards ──
+const g0 = { items: [{ id: 'a', text: 'Run', done: '2026-09-20T00:00:00Z' }], rewards: {} };
+const g1 = setReward(setReward(g0, 'a', '  New shoes '), KG_GOAL_ID, 'Spa day');
+ok('a reward is saved, trimmed', rewardText(g1, 'a') === 'New shoes');
+ok('the 40 kg goal has its own reward', rewardText(g1, KG_GOAL_ID) === 'Spa day');
+ok('an achieved goal carries its reward', achievedGoals(log({}), g1)[0].reward === 'New shoes');
+ok('claiming marks it claimed', Boolean(claimReward(g1, 'a', true).rewards.a.claimed));
+ok('unclaiming clears it', claimReward(claimReward(g1, 'a', true), 'a', false).rewards.a.claimed === null);
+ok('an empty reward removes it', rewardText(setReward(g1, 'a', ''), 'a') === null);
+ok('claiming a goal with no reward does nothing', claimReward(g0, 'a', true) === g0);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
