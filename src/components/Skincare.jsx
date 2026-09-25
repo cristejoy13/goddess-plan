@@ -75,7 +75,7 @@ function ProductCard({ brand, name, badges = [], why, primary = false }) {
           <div className="pc-badges">{badges.map((b, i) => <span key={i} className="pc-badge">{b}</span>)}</div>
         )}
         <div className="pc-why">{why}</div>
-        <div className="pc-find">🛍 <strong>Find it:</strong> Search the full product name on Shopee, Lazada, or Watsons PH.</div>
+        <div className="pc-find">🛍 <strong>Find it:</strong> Search the full name on Shopee, Lazada, or Watsons PH.</div>
       </div>
     </div>
   );
@@ -150,39 +150,39 @@ function AMFace() {
     <>
       <AMCalendar />
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        ☀️ Morning goal: cleanse, hydrate, protect. Do NOT over-strip reactive skin. SPF minimises pores and prevents dark spots.
+        ☀️ Morning goal: cleanse, hydrate, protect. Do NOT over-strip. SPF helps prevent dark spots.
       </div>
       <StepFlow>
         <RoutineStep num="1" cat="First Step — Gentle Cleanse" name="Low pH Cleanser">
-          <ProductCard brand="COSRX" primary name="Low pH Good Morning Gel Cleanser" badges={['pH 5.0', 'BHA', 'Tea Tree', 'Fragrance-Free']} why="pH 5.0 matches the skin barrier. Cleanses without stripping redness-prone skin." />
-          <ProductCard brand="Beauty of Joseon" name="Relief Foam Cleanser (Rice + Probiotics)" badges={['Rice Extract', 'Probiotics', 'Fragrance-Free', 'Ultra-Gentle']} why="Gentle rice foam for reactive redness. Use on sensitive or irritated mornings." />
-          <div className="step-note">Use lukewarm water only. Hot water weakens the barrier. Cleanse 30 seconds, then pat dry.</div>
+          <ProductCard brand="COSRX" primary name="Low pH Good Morning Gel Cleanser" badges={['pH 5.0', 'BHA', 'Tea Tree', 'Fragrance-Free']} why="pH 5.0 is barrier-friendly. Cleanses without stripping." />
+          <ProductCard brand="Beauty of Joseon" name="Relief Foam Cleanser (Rice + Probiotics)" badges={['Rice Extract', 'Probiotics', 'Fragrance-Free', 'Ultra-Gentle']} why="Gentle rice foam for redness. Use on irritated mornings." />
+          <div className="step-note">Lukewarm water only. Cleanse 30 seconds, then pat dry.</div>
         </RoutineStep>
         <RoutineStep num="2" cat="Second Step — Pore Tightening" name="Niacinamide Toner">
-          <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Toner" badges={['Niacinamide 2%', 'Yuja Extract', 'Brightening', 'Pore-Minimising']} why="Niacinamide regulates sebum, reduces redness, and brightens uneven tone. Expect full results in 4–8 weeks." />
-          <ProductCard brand="COSRX" name="AHA/BHA Clarifying Treatment Toner" badges={['Willow Bark BHA', 'AHA', 'Pore-Clearing']} why="Willow bark BHA exfoliates inside pores. Use 3–4× per week, alternating with niacinamide." />
+          <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Toner" badges={['Niacinamide 2%', 'Yuja Extract', 'Brightening', 'Pore-Minimising']} why="Controls oil, redness, and uneven tone. Expect results in 4–8 weeks." />
+          <ProductCard brand="COSRX" name="AHA/BHA Clarifying Treatment Toner" badges={['Willow Bark BHA', 'AHA', 'Pore-Clearing']} why="Clears pores. Use 3–4× per week, alternating with niacinamide." />
           <ProductCard brand="The Ordinary" name="Niacinamide 10% + Zinc 1%" badges={['Niacinamide 10%', 'Zinc', 'Budget-Friendly', 'Pore-Minimising']} why="Budget higher-strength niacinamide. Apply 2–3 drops after cleansing. Shopee and Lazada." />
-          <div className="step-note">Pat in gently; never rub. Niacinamide needs 4–8 weeks of daily use.</div>
+          <div className="step-note">Pat, never rub. Use daily for 4–8 weeks.</div>
         </RoutineStep>
         <RoutineStep num="3" cat="Third Step — Barrier Hydration" name="Lightweight Essence">
-          <ProductCard brand="COSRX" primary name="Advanced Snail 96 Mucin Power Essence" badges={['Snail Secretion 96%', 'Barrier Repair', 'Redness Calming']} why="Repairs barrier, calms redness, speeds texture healing, and hydrates without grease." />
-          <ProductCard brand="Missha" name="Time Revolution First Treatment Essence" badges={['Fermented Yeast', 'Niacinamide', 'Skin Luminosity']} why="Fermented niacinamide improves absorption, clarity, and glow over 4–6 weeks." />
+          <ProductCard brand="COSRX" primary name="Advanced Snail 96 Mucin Power Essence" badges={['Snail Secretion 96%', 'Barrier Repair', 'Redness Calming']} why="Repairs, calms, and hydrates without grease." />
+          <ProductCard brand="Missha" name="Time Revolution First Treatment Essence" badges={['Fermented Yeast', 'Niacinamide', 'Skin Luminosity']} why="Boosts clarity and glow over 4–6 weeks." />
           <div className="step-note">Press in with palms. Pat 3–5 times until absorbed.</div>
         </RoutineStep>
         <RoutineStep num="4" cat="Fourth Step — Targeted Treatment" name="Vitamin C or Niacinamide Serum">
-          <ProductCard brand="Some By Mi" primary name="Galactomyces Pure Vitamin C Glow Serum" badges={['Vitamin C', 'Galactomyces', 'Brightening', 'UV Protection']} why="Vitamin C brightens post-pimple marks, protects against UV damage, and gradually fades uneven pigmentation. Use 4–5× per week in the morning." />
+          <ProductCard brand="Some By Mi" primary name="Galactomyces Pure Vitamin C Glow Serum" badges={['Vitamin C', 'Galactomyces', 'Brightening', 'UV Protection']} why="Brightens marks and uneven tone. Use 4–5× per week in the morning." />
           <ProductCard brand="Beauty of Joseon" name="Glow Serum (Propolis + Niacinamide)" badges={['Propolis 60%', 'Niacinamide 2%', 'Calming', 'Gentle']} why="Gentler Month 1 option. Propolis calms redness while niacinamide works on pores." />
-          <div className="step-note">Use the Joseon serum for your first month while your barrier strengthens. Introduce Vitamin C in Month 2 — start 2× per week and build up.</div>
+          <div className="step-note">Month 1: Joseon serum. Month 2: Vitamin C, start 2× per week.</div>
         </RoutineStep>
         <RoutineStep num="5" cat="Fifth Step — Seal & Protect" name="Non-Comedogenic Moisturiser">
           <ProductCard brand="COSRX" primary name="Oil-Free Ultra Moisturizing Lotion (with Birch Sap)" badges={['Oil-Free', 'Non-Comedogenic', 'Birch Sap', 'Lightweight']} why="Hydrates without clogging or heaviness. Good for oily-prone skin." />
-          <ProductCard brand="Etude" name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Redness Repair']} why="Use on reactive days. Panthenol repairs the barrier and calms redness." />
+          <ProductCard brand="Etude" name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Redness Repair']} why="Use on reactive days. Repairs and calms." />
           <div className="step-note">Apply while skin is slightly damp to lock hydration in.</div>
         </RoutineStep>
         <RoutineStep num="6" cat="Final Step — Never Skip This ☀️" name="Sunscreen SPF 50+ PA++++">
-          <ProductCard brand="Beauty of Joseon" primary name="Relief Sun: Rice + Probiotics SPF 50+ PA++++" badges={['SPF 50+', 'PA++++', 'Probiotics', 'Zero White Cast', 'Sensitive Skin']} why="For reactive skin. Probiotics calm, rice brightens, and it leaves zero white cast." />
+          <ProductCard brand="Beauty of Joseon" primary name="Relief Sun: Rice + Probiotics SPF 50+ PA++++" badges={['SPF 50+', 'PA++++', 'Probiotics', 'Zero White Cast', 'Sensitive Skin']} why="For reactive skin. Calming, brightening, zero white cast." />
           <ProductCard brand="Round Lab" name="Birch Juice Moisturizing Sun Cream SPF 50+" badges={['SPF 50+', 'Birch Juice', 'Hydrating', 'Moisturiser + SPF']} why="Hydrating sunscreen that doubles as moisturiser on minimal-layer days." />
-          <div className="step-note">⚠️ UV enlarges pores, worsens redness, and blocks active results. Apply generously. Reapply every 2 hours outdoors.</div>
+          <div className="step-note">⚠️ Apply generously. Reapply every 2 hours outdoors.</div>
         </RoutineStep>
       </StepFlow>
       <div className="note-box note-rose" style={{ marginTop: 16 }}>
@@ -198,25 +198,25 @@ function PMFace() {
     <>
       <PMCalendar />
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🌙 Night goal: cleanse, exfoliate congestion, and repair the barrier while skin regenerates.
+        🌙 Night goal: cleanse, clear congestion, and repair.
       </div>
       <StepFlow>
         <RoutineStep num="1" cat="First Cleanse — Remove Everything" name="Oil or Balm Cleanser">
-          <ProductCard brand="Banila Co" primary name="Clean It Zero Cleansing Balm (Purifying)" badges={['BHA', 'Pore-Decongesting', 'SPF Remover', 'Purifying']} why="BHA helps decongest pores while removing SPF and pollution." />
-          <ProductCard brand="DHC" name="Deep Cleansing Oil" badges={['Olive Oil Base', 'Deep Pore Cleanse', 'Oil-Based']} why="Olive-based oil cleanser. Pulls oil-based congestion from pores." />
+          <ProductCard brand="Banila Co" primary name="Clean It Zero Cleansing Balm (Purifying)" badges={['BHA', 'Pore-Decongesting', 'SPF Remover', 'Purifying']} why="Removes SPF and helps clear pores." />
+          <ProductCard brand="DHC" name="Deep Cleansing Oil" badges={['Olive Oil Base', 'Deep Pore Cleanse', 'Oil-Based']} why="Olive-based oil cleanser for pore buildup." />
           <div className="step-note">Apply to DRY skin. Massage 60–90 seconds, emulsify with water, then rinse.</div>
         </RoutineStep>
         <RoutineStep num="2" cat="Second Cleanse — Water-Based" name="Gel Cleanser">
           <ProductCard brand="COSRX" primary name="Low pH Good Morning Gel Cleanser" badges={['pH 5.0', 'BHA', 'Gentle', 'Double Cleanse']} why="Removes oil-cleanser residue and keeps skin at the right pH." />
-          <div className="step-note">Double cleanse nightly to improve congestion and texture in 3–4 weeks.</div>
+          <div className="step-note">Double cleanse nightly. Expect smoother texture in 3–4 weeks.</div>
         </RoutineStep>
         <RoutineStep num="3" cat="Third Step — Chemical Exfoliation (3–4×/week)" name="BHA Toner">
-          <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['BHA', 'AHA', 'PHA', 'Pore Clearing', 'Texture Smoothing']} why="BHA penetrates pores and dissolves congestion. Use 3–4 nights per week." />
+          <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['BHA', 'AHA', 'PHA', 'Pore Clearing', 'Texture Smoothing']} why="Clears pores and texture. Use 3–4 nights per week." />
           <ProductCard brand="Paula's Choice" name="2% BHA Liquid Exfoliant" badges={['Salicylic Acid 2%', 'Gold Standard BHA', 'Pore-Clearing']} why="Strong BHA for pores and texture. Search Shopee or Lazada." />
           <div className="step-note">Start 2× per week in Month 1. Build to 3–4×. On non-BHA nights, use hydrating toner or essence.</div>
         </RoutineStep>
         <RoutineStep num="4" cat="Fourth Step — Barrier Repair" name="Snail Mucin Essence">
-          <ProductCard brand="COSRX" primary name="Advanced Snail 96 Mucin Power Essence" badges={['Snail Secretion 96%', 'Post-Exfoliation Repair', 'Redness Calming']} why="Repairs after BHA, calms redness, and supports overnight regeneration." />
+          <ProductCard brand="COSRX" primary name="Advanced Snail 96 Mucin Power Essence" badges={['Snail Secretion 96%', 'Post-Exfoliation Repair', 'Redness Calming']} why="Repairs after BHA and calms redness." />
           <div className="step-note">Use especially on BHA nights to reduce irritation.</div>
         </RoutineStep>
         <RoutineStep num="5" cat="Fifth Step — Rotation Schedule" name="Treatment Rotation">
@@ -224,17 +224,17 @@ function PMFace() {
           <div className="prod-item"><div className="prod-badge">Tue·Thu</div><div><div className="prod-name">Niacinamide Serum — Some By Mi 10% Niacinamide · Alt: COSRX Niacinamide 15% or The Ordinary Niacinamide 10%+Zinc</div><div className="prod-why">Minimise pores and strengthen barrier.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Sat (M2+)</div><div><div className="prod-name">Retinol 0.025% — The Inkey List Retinol Serum · Alt: Mediheal Retinol or Rohto Melano CC Retinol</div><div className="prod-why">Start Saturday only once barrier is strong.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Sun</div><div><div className="prod-name">Laneige Water Sleeping Mask — rest night only</div><div className="prod-why">Zero actives. Let the barrier recover.</div></div></div>
-          <div className="step-note">⚠️ Never use BHA and retinol on the same night. Never use retinol and AHA on the same night. One active at a time — always.</div>
+          <div className="step-note">⚠️ Never use BHA or AHA on a retinol night. One active at a time.</div>
         </RoutineStep>
         <RoutineStep num="6" cat="Sixth Step" name="Eye Care">
-          <ProductCard brand="Some By Mi" primary name="Eye Serum" badges={['Peptides', 'Puffiness Reducing', 'Dark Circles']} why="Peptides reduce puffiness and visible dark circles. Pat — never rub." />
-          <ProductCard brand="Innisfree" name="Jeju Cherry Blossom Eye Cream" badges={['Cherry Blossom Extract', 'Brightening', 'Asian Skin']} why="Brightens and moisturises under-eyes. Use ring finger pressure only." />
-          <div className="step-note">Ring finger only. Tap gently in a semicircle under the eye — never pull or rub. The under-eye skin is the thinnest skin on your face.</div>
+          <ProductCard brand="Some By Mi" primary name="Eye Serum" badges={['Peptides', 'Puffiness Reducing', 'Dark Circles']} why="Reduces puffiness. Pat, never rub." />
+          <ProductCard brand="Innisfree" name="Jeju Cherry Blossom Eye Cream" badges={['Cherry Blossom Extract', 'Brightening', 'Asian Skin']} why="Brightens and moisturises. Ring finger only." />
+          <div className="step-note">Ring finger only. Tap gently; never pull or rub.</div>
         </RoutineStep>
         <RoutineStep num="7" cat="Final Step — Seal Everything" name="Night Moisturiser">
-          <ProductCard brand="Laneige" primary name="Water Sleeping Mask" badges={['Overnight Hydration', 'Sleeping Pack', '2–3× per week']} why="Overnight hydration surge. Sleep deprivation and dehydration show on skin first — this fights both. Wake up with visibly plumper, more glowing skin." />
-          <ProductCard brand="COSRX" name="Ultimate Nourishing Rice Overnight Spa Mask" badges={['Rice Extract', 'Overnight Nourishing', 'Brightening']} why="Rice extract brightens and nourishes. Excellent on retinol nights as a buffer to reduce potential irritation." />
-          <div className="step-note">On BHA nights use a lighter moisturiser. On retinol nights use the richer one. Sunday rest night use the sleeping mask for maximum overnight repair.</div>
+          <ProductCard brand="Laneige" primary name="Water Sleeping Mask" badges={['Overnight Hydration', 'Sleeping Pack', '2–3× per week']} why="Overnight hydration. Wake up plumper and glowier." />
+          <ProductCard brand="COSRX" name="Ultimate Nourishing Rice Overnight Spa Mask" badges={['Rice Extract', 'Overnight Nourishing', 'Brightening']} why="Brightens and buffers retinol nights." />
+          <div className="step-note">BHA: lighter moisturiser. Retinol: richer one. Sunday: sleeping mask.</div>
         </RoutineStep>
       </StepFlow>
     </>
@@ -246,30 +246,30 @@ function BodyMorning() {
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🫧 Treat body skin consistently. Build soft, smooth skin over 4–8 weeks.
+        🫧 Stay consistent. Softer skin in 4–8 weeks.
       </div>
       <StepFlow>
         <RoutineStep num="1" cat="In The Shower" name="Cleanse & Exfoliate">
           <div className="note-box note-rose" style={{ marginBottom: 12, marginTop: 0 }}>
-            🌡️ Use warm water, never hot. Hot water strips oils and weakens the barrier. Finish with a 30-second cooler rinse.
+            🌡️ Use warm water, never hot. Finish with a 30-second cooler rinse.
           </div>
-          <ProductCard brand="Human Nature" primary name="Naturals Body Wash — Sunflower" badges={['Sulfate-Free', 'Moisturising', 'Filipino Brand', 'Gentle']} why="Gentle sulfate-free wash with sunflower oil. Cleanses without stripping body skin." />
+          <ProductCard brand="Human Nature" primary name="Naturals Body Wash — Sunflower" badges={['Sulfate-Free', 'Moisturising', 'Filipino Brand', 'Gentle']} why="Gentle sulfate-free wash. Cleanses without stripping." />
           <ProductCard brand="Dove" name="Sensitive Skin Body Wash" badges={['Fragrance-Free', 'Hypoallergenic', 'Moisture Seal']} why="Contains ¼ moisturising cream. Good for reactive skin or after sun." />
           <div className="step-note">🪥 Dry brush 2× per week BEFORE shower (Sunday + Wednesday): firm upward circles from feet toward heart.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="St. Ives" name="Oatmeal & Shea Butter Body Scrub" badges={['Physical Exfoliant', '2× per week', 'Texture Smoothing']} why="Buffs dull, rough patches. Use Sunday and Wednesday after body wash." />
           </div>
-          <div className="step-note">Exfoliate Sunday and Wednesday only. Over-exfoliating irritates and damages the barrier.</div>
+          <div className="step-note">Exfoliate Sunday and Wednesday only. Overdoing it irritates.</div>
         </RoutineStep>
         <RoutineStep num="2" cat="After Shower — Before Going Out" name="Seal & Protect">
           <div className="step-note" style={{ marginBottom: 12 }}>⏱️ Apply body moisturiser within 2 minutes after showering, while skin is damp.</div>
-          <ProductCard brand="CeraVe" primary name="Moisturizing Cream (body)" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free', '24-Hour Hydration']} why="Ceramides repair the barrier. Non-greasy daily body hydration." />
+          <ProductCard brand="CeraVe" primary name="Moisturizing Cream (body)" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free', '24-Hour Hydration']} why="Barrier repair with non-greasy hydration." />
           <ProductCard brand="Human Nature" name="Naturals Intensive Moisturizer" badges={['Sunflower Oil', 'Non-Greasy', 'Lightweight', 'Filipino Brand']} why="Fast-absorbing and non-sticky for humid Philippine weather." />
           <div className="step-note">🦵 Use a thicker layer on elbows, knees, and heels.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Biore" name="UV Aqua Rich Watery Essence SPF 50+ PA++++" badges={['SPF 50+', 'PA++++', 'Lightweight', 'No White Cast']} why="Apply to exposed arms, neck, décolletage, and legs. Absorbs fast with no stickiness." />
           </div>
-          <div className="step-note">⚠️ Body SPF is mandatory outdoors. Reapply every 2 hours. Protect neck and arms like your face.</div>
+          <div className="step-note">⚠️ Body SPF outdoors. Reapply every 2 hours.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Bio-Oil" name="Bio-Oil Skincare Oil" badges={['Vitamin A & E', 'Stretch Mark Fading', 'Scar Reduction', 'Skin Glow']} why="2–3 drops over moisturiser add glow and help fade marks. Pat, never rub." />
           </div>
@@ -286,17 +286,17 @@ function BodyEvening() {
     <>
       <StepFlow>
         <RoutineStep num="3" cat="Evening Routine" name="Repair Overnight">
-          <div className="step-note" style={{ marginBottom: 12 }}>🌙 Skin repairs most between 10 PM and 2 AM. Use richer products at night.</div>
+          <div className="step-note" style={{ marginBottom: 12 }}>🌙 Use richer products between 10 PM and 2 AM.</div>
           <ProductCard brand="Aveeno" primary name="Daily Moisturizing Lotion" badges={['Colloidal Oat', 'Soothing', 'Fragrance-Free', '24-Hour Repair']} why="Colloidal oatmeal soothes and repairs the barrier overnight." />
           <ProductCard brand="CeraVe" name="Moisturizing Cream (heavy layer)" badges={['Ceramides', 'Overnight Repair', 'Barrier Restoration']} why="Use a generous night layer for barrier repair." />
-          <div className="step-note">🦶 Apply Vaseline on heels and elbows nightly after moisturiser. Expect smoother skin in 2–3 weeks.</div>
+          <div className="step-note">🦶 Vaseline on heels and elbows nightly. Smoother in 2–3 weeks.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Vaseline" name="Original Petroleum Jelly" badges={['Occlusive', 'Heel Repair', 'Elbow Softening', 'Fragrance-Free']} why="Seals moisture in. Apply on heels and elbows every night after moisturiser." />
           </div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="AmLactin" name="Daily Moisturizing Body Lotion" badges={['Lactic Acid 12%', 'AHA', 'Keratosis Pilaris', '1× per week']} why="Lactic acid smooths keratosis pilaris, texture, and uneven tone. Use Sunday evening only." />
           </div>
-          <div className="step-note">AmLactin: Sunday evenings only (after your scrub day). Do not combine with Bio-Oil on the same night — one treatment at a time. Wash hands after applying.</div>
+          <div className="step-note">AmLactin: Sunday evenings only. Do not mix with Bio-Oil. Wash hands.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Bio-Oil" name="Bio-Oil Evening Massage (2× per week)" badges={['Circulation Boost', 'Lymphatic Drainage', 'Firming', 'Tue + Fri']} why="Massage 5 minutes on Tuesday and Friday. Use long upward strokes on arms, thighs, and abdomen." />
           </div>
@@ -318,15 +318,15 @@ function BodyEvening() {
 /* ─── Retinoid ─── */
 function Retinoid() {
   const rows = [
-    { phase: 'Month 2 — Start here', product: 'Retinol 0.025% OTC', brand: 'The Inkey List Retinol Serum', alt: 'Mediheal Collagen Retinol Serum · Rohto Melano CC Retinol', freq: '1× per week (Saturday)', what: 'Normalises cell turnover — smooths texture and prevents dead-cell buildup. Use the sandwich method: moisturiser → retinol → moisturiser over the top.' },
-    { phase: 'Month 3–6', product: 'Retinol 0.05% OTC', brand: 'The Inkey List or Mediheal', alt: 'Cos De BAHA Retinol 0.05% · The Ordinary Retinol 0.5%', freq: '2–3× per week', what: 'Deeper resurfacing, visible pore tightening, early collagen stimulation. Upgrade only when 0.025% causes absolutely zero irritation.' },
-    { phase: 'Month 6–12', product: 'Retinol 0.1% or Adapalene 0.1%', brand: 'La Roche-Posay Effaclar or Differin', alt: 'A-Derma Dermalibour+ Retinol · APLB Retinol Cream 0.1%', freq: '4–5× per week', what: 'Adapalene is OTC and clinically proven for acne, pore size, and skin texture. Often more effective than retinol for congested skin types like yours.' },
-    { phase: 'Age 24–25+', product: 'Tretinoin 0.025% (prescription)', brand: 'Consult a dermatologist', alt: 'Prescription only — no OTC alternative', freq: '3–5× per week', what: 'The most powerful retinoid available. Begin only after being fully adapted to OTC retinoids for at least 6 months. Consult a PH dermatologist.' },
+    { phase: 'Month 2 — Start here', product: 'Retinol 0.025% OTC', brand: 'The Inkey List Retinol Serum', alt: 'Mediheal Collagen Retinol Serum · Rohto Melano CC Retinol', freq: '1× per week (Saturday)', what: 'Smooths texture and buildup. Use sandwich method: moisturiser → retinol → moisturiser.' },
+    { phase: 'Month 3–6', product: 'Retinol 0.05% OTC', brand: 'The Inkey List or Mediheal', alt: 'Cos De BAHA Retinol 0.05% · The Ordinary Retinol 0.5%', freq: '2–3× per week', what: 'More resurfacing and pore tightening. Upgrade only when 0.025% gives zero irritation.' },
+    { phase: 'Month 6–12', product: 'Retinol 0.1% or Adapalene 0.1%', brand: 'La Roche-Posay Effaclar or Differin', alt: 'A-Derma Dermalibour+ Retinol · APLB Retinol Cream 0.1%', freq: '4–5× per week', what: 'Stronger for acne, pores, and texture. Often better for congested skin.' },
+    { phase: 'Age 24–25+', product: 'Tretinoin 0.025% (prescription)', brand: 'Consult a dermatologist', alt: 'Prescription only — no OTC alternative', freq: '3–5× per week', what: 'Strongest retinoid. Start only after at least 6 months adapted to OTC retinoids. Consult a PH dermatologist.' },
   ];
   return (
     <>
       <div className="note-box note-gold" style={{ marginBottom: 16 }}>
-        ✨ Start retinoids low and slow. Consistency beats intensity and protects your barrier.
+        ✨ Start retinoids low and slow. Protect your barrier.
       </div>
       <table className="fancy-table splash-item">
         <thead>
@@ -345,7 +345,7 @@ function Retinoid() {
         </tbody>
       </table>
       <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        ⚠️ Never combine retinol with BHA or AHA. Never use retinoids during pregnancy. Night only. SPF next morning is mandatory.
+        ⚠️ Never mix retinol with BHA or AHA. No retinoids during pregnancy. Night only. SPF next morning.
       </div>
     </>
   );
@@ -355,44 +355,44 @@ function Retinoid() {
 const AG_CARDS = [
   {
     ico: '🛌', t: 'Sleep — Master Hormone', group: 'Daily Rhythms',
-    b: 'Sleep 7.5–9 hours. Deep sleep releases growth hormone for glutes and skin.',
-    how: ['Sleep by 10 PM — key GH window is 10 PM to 2 AM','Keep your room completely dark and cool (18–21°C)','Stop screens at least 30 minutes before bed — blue light suppresses melatonin','Drink chamomile tea 30 minutes before sleep to lower cortisol','No food after 4 PM — digestion during sleep reduces GH secretion','Use a silk pillowcase — reduce face creases and hair breakage'],
-    why: 'Deep sleep releases growth hormone for muscle, collagen, and body composition. Poor sleep raises cortisol and slows visible results.',
+    b: 'Sleep 7.5–9 hours. Deep sleep supports glutes and skin.',
+    how: ['Sleep by 10 PM — key GH window is 10 PM to 2 AM','Keep your room dark and cool (18–21°C)','Stop screens at least 30 minutes before bed','Drink chamomile tea 30 minutes before sleep','No food after 4 PM','Use a silk pillowcase'],
+    why: 'Deep sleep supports muscle, collagen, and body composition. Poor sleep slows results.',
     when: 'Wind down at 9:30 PM. Lights out by 10 PM.',
   },
   {
     ico: '☀️', t: 'Morning Sunlight', group: 'Daily Rhythms',
-    b: 'Get 10–20 min direct morning sunlight before 9 AM to anchor sleep, mood, and cortisol.',
-    how: ['Go outside within 30–60 minutes of waking — daily','Look in the direction of the sun (not directly at it) for 10–20 minutes','No sunglasses — the light must reach your retinas to signal your brain','Walk slowly, stretch, or sit during light exposure','If outdoors is not possible, use a 10,000-lux daylight lamp for 20 min'],
-    why: 'Morning light sets cortisol timing, supports serotonin, and helps melatonin release at night.',
+    b: 'Get 10–20 min direct morning sunlight before 9 AM.',
+    how: ['Go outside within 30–60 minutes of waking — daily','Look toward the sun, not directly at it, for 10–20 minutes','No sunglasses during the light exposure','Walk slowly, stretch, or sit','If needed, use a 10,000-lux daylight lamp for 20 min'],
+    why: 'Morning light anchors sleep, mood, and cortisol.',
     when: 'First thing in the morning, ideally before 8 AM.',
   },
   {
     ico: '🧠', t: 'Brain Health', group: 'Hormones & Mind',
-    b: 'Eat omega-3 fish, eggs for choline, and ginger to support brain health.',
-    how: ['Eat fatty fish (bangus, tuna, tanigue) 3× per week — omega-3 EPA and DHA','Eat eggs daily — yolks provide choline for learning','Add fresh ginger to your tea or cooking daily — gingerol reduces neuroinflammation','Add turmeric with black pepper to eggs or broth — curcumin is neuroprotective','Consider an omega-3 supplement (1–2g EPA+DHA) if fish intake is inconsistent','Protect sleep — 7.5+ hours clears brain waste overnight'],
-    why: 'Omega-3 supports brain-cell membranes, while choline supports memory. Ginger and turmeric help reduce neuroinflammation.',
+    b: 'Eat omega-3 fish, eggs, and ginger for brain health.',
+    how: ['Eat fatty fish (bangus, tuna, tanigue) 3× per week','Eat eggs daily — yolks provide choline','Add fresh ginger to tea or cooking daily','Add turmeric with black pepper to eggs or broth','Consider an omega-3 supplement (1–2g EPA+DHA) if fish intake is inconsistent','Protect sleep — 7.5+ hours'],
+    why: 'Omega-3 supports brain cells. Choline supports memory.',
     when: 'Daily through food. Fish 3× weekly, eggs daily, ginger and turmeric in cooking.',
   },
   {
     ico: '🍃', t: 'Cortisol Management', group: 'Hormones & Mind',
-    b: 'Lower cortisol to reduce belly fat and support skin, hair, and hormones over 8–12 weeks.',
-    how: ['Drink chamomile tea 30 min before bed — clinically shown to reduce cortisol','Limit screens after 8 PM — blue light raises cortisol in the evening','Do pilates 2× per week — clinically proven to reduce cortisol more than any other exercise type','Never train hard on poor sleep — cortisol is already high, training raises it further','Take 10 deep slow breaths before meals — activates the parasympathetic nervous system','Get 10–20 min morning sunlight — correctly times cortisol peak to morning only','Eat regular meals with 4-hour gaps — erratic eating spikes cortisol'],
-    why: 'Chronically high cortisol breaks down collagen, increases belly fat, disrupts hormones, and can worsen shedding.',
+    b: 'Lower cortisol for skin, hair, and hormones over 8–12 weeks.',
+    how: ['Drink chamomile tea 30 min before bed','Limit screens after 8 PM','Do pilates 2× per week','Never train hard on poor sleep','Take 10 deep slow breaths before meals','Get 10–20 min morning sunlight','Eat regular meals with 4-hour gaps'],
+    why: 'High cortisol can affect collagen, belly fat, hormones, and shedding.',
     when: 'All day. Combine chamomile, morning light, and pilates for 8–12 weeks.',
   },
   {
     ico: '🌸', t: 'Hormone-Protective Eating', group: 'Hormones & Mind',
-    b: 'Eat eggs and healthy fats to support estrogen and progesterone production.',
-    how: ['Eat eggs daily — yolk cholesterol supports steroid hormones','Use olive oil, avocado, and nuts at every meal — these fats are required for hormone synthesis','Remove processed foods completely — they contain xenoestrogens (synthetic estrogens) from packaging and additives','Remove dairy — A1 casein raises IGF-1 which disrupts the estrogen-progesterone balance','Add pumpkin seeds (zinc) — zinc is required for healthy progesterone levels','Eat fatty fish 3× weekly — omega-3 reduces the inflammatory prostaglandins that worsen PMS and period pain','Spearmint tea nightly — reduces androgenic hormones that cause excess sebum and acne'],
-    why: 'Sex hormones are made from cholesterol and dietary fat. Processed foods can disrupt estrogen balance.',
+    b: 'Eat eggs and healthy fats for hormone support.',
+    how: ['Eat eggs daily','Use olive oil, avocado, and nuts at every meal','Remove processed foods completely','Remove dairy','Add pumpkin seeds (zinc)','Eat fatty fish 3× weekly','Spearmint tea nightly'],
+    why: 'Hormones need cholesterol and dietary fat. Keep food simple.',
     when: 'Every meal. Prioritize eggs, healthy fats, and whole foods.',
   },
   {
     ico: '✨', t: 'Skin Longevity Nutrients', group: 'Skin Longevity',
-    b: 'Take collagen, Vitamin C, and omega-3 to support elastic, hydrated skin.',
-    how: ['Take 5–10g collagen peptides (bovine or marine) dissolved in water daily with a Vitamin C source','Squeeze calamansi on everything — Vitamin C is the co-factor for every step of collagen synthesis','Eat papaya regularly — papain enzyme exfoliates from the inside, improving skin texture','Eat fatty fish 3× weekly — omega-3 reduces transepidermal water loss, keeping skin plump','Add a small handful of pumpkin seeds or walnuts — zinc for oil gland regulation and skin healing','Use collagen water at lunch and post-workout as your hydration with every training meal','Protect with SPF 50+ every single morning — UV exposure degrades collagen 3× faster than time alone'],
-    why: 'Collagen supports structure and elasticity. Vitamin C helps synthesis, and SPF prevents the most visible aging.',
+    b: 'Take collagen, Vitamin C, and omega-3 for hydrated skin.',
+    how: ['Take 5–10g collagen peptides (bovine or marine) dissolved in water daily with a Vitamin C source','Squeeze calamansi on everything','Eat papaya regularly','Eat fatty fish 3× weekly','Add a small handful of pumpkin seeds or walnuts','Use collagen water at lunch and post-workout as your hydration with every training meal','Protect with SPF 50+ every single morning'],
+    why: 'Collagen supports structure. Vitamin C helps, and SPF protects.',
     when: 'Daily: collagen at meals, calamansi on food, SPF every morning. Fatty fish 3× weekly.',
   },
 ];
@@ -509,83 +509,83 @@ const OIL_COLORS = {
 const OIL_GUIDE = {
   Rosemary: {
     emoji: '🌿',
-    how: 'In every Saturday soak, never on its own. 3 drops stirred into the partner oil already in your palm, then along the parting lines. Massage 5 min.',
-    tip: 'Always diluted. Once a week is enough — the trial that matched minoxidil ran on consistency, not frequency.',
+    how: 'Every Saturday soak, never alone. Mix 3 drops into the partner oil, apply along partings, massage 5 min.',
+    tip: 'Always diluted. Once a week is enough.',
   },
   Jojoba: {
     emoji: '🌼',
-    how: 'Saturday partner oil. 4 drops in your palm, rosemary stirred in, onto the scalp. Also the base for your nightly scalp oil if you mix your own.',
-    tip: "Closest match to your scalp's own sebum, so it carries the rosemary without clogging.",
+    how: 'Saturday partner oil. 4 drops in your palm, rosemary mixed in, scalp only.',
+    tip: "Light carrier oil for rosemary.",
   },
   Camellia: {
     emoji: '🌸',
-    how: 'Saturday partner oil. 4 drops in your palm with the rosemary, scalp first, then whatever is left through the lengths.',
-    tip: 'The one that actually conditions. It gets into the shaft without weighing fine hair down.',
+    how: 'Saturday partner oil. 4 drops with rosemary, scalp first, then leftovers through lengths.',
+    tip: 'Conditions fine hair without much weight.',
   },
   Argan: {
     emoji: '✨',
-    how: 'Not in any of your routines any more — camellia took the night and the after-shower job, squalane took the daytime one. If you ever want it back, it goes 1–2 drops on the bottom third, dry hair, never the scalp.',
-    tip: 'Kept here because you own it and it still works. Nothing is asking you to use it.',
+    how: 'Optional only. Use 1–2 drops on the bottom third, dry hair, never scalp.',
+    tip: 'Kept as an option because you own it.',
   },
   Coconut: {
     emoji: '🥥',
     how: 'Saturday partner oil, one week in four. On the ends for the last 20 min only, then shampoo out completely.',
-    tip: 'Never the nightly ends oil — that is argan. Coconut every night on fine hair is how protein overload starts.',
+    tip: 'Never nightly on fine hair. Too much can cause protein overload.',
   },
   Squalane: {
     emoji: '💧',
-    how: 'Saturday partner oil, one week in four: 4 drops in your palm with the rosemary. Also the daytime ends oil — half a drop on dry ends before you go out.',
-    tip: 'The lightest thing you can put on hair. It disappears into the ends and leaves nothing sitting on top.',
+    how: 'Saturday partner oil, one week in four: 4 drops with rosemary. Daytime: half a drop on dry ends.',
+    tip: 'Lightest oil here. Ends only.',
   },
   Peppermint: {
     emoji: '🌱',
-    how: 'Optional extra, not scheduled. ONE drop stirred into the Saturday palm alongside the rosemary. Never neat, never on its own.',
-    tip: 'It will feel cold. If it stings or burns, rinse it off.',
+    how: 'Optional. ONE drop in the Saturday mix with rosemary. Never neat.',
+    tip: 'Cold is normal. If it stings or burns, rinse.',
   },
 };
 
 const OIL_BENEFITS = {
   Camellia: {
     emoji: '🌸',
-    tagline: 'Your hero oil for fine, wavy strands',
+    tagline: 'Hero oil for fine, wavy strands',
     color: 'rgba(255,92,157,0.12)',
     borderColor: 'rgba(255,92,157,0.3)',
-    science: 'Camellia oil (Tsubaki) is 80–85% oleic acid, which can penetrate the cortex. It adds moisture and strength without weighing fine hair down.',
+    science: 'Camellia oil (Tsubaki) is 80–85% oleic acid. It moisturises without weighing fine hair down.',
     benefits: [
-      { icon: '💧', title: 'Deep shaft hydration', body: 'Oleic acid reaches the cortex and replenishes moisture.' },
-      { icon: '🛡️', title: 'Reduces breakage', body: 'Strengthens strands and reduces mid-shaft splits.' },
-      { icon: '✨', title: 'Frizz control without weight', body: 'Smooths cuticle and seals moisture without flattening waves.' },
+      { icon: '💧', title: 'Deep shaft hydration', body: 'Replenishes dry lengths.' },
+      { icon: '🛡️', title: 'Reduces breakage', body: 'Helps strands feel stronger.' },
+      { icon: '✨', title: 'Frizz control without weight', body: 'Smooths without flattening waves.' },
       { icon: '🌿', title: 'Scalp health', body: 'Soothes dry, itchy scalp and supports follicles.' },
-      { icon: '🌸', title: 'Wavy hair-safe', body: 'Does not cause protein overload on fine or wavy hair.' },
+      { icon: '🌸', title: 'Wavy hair-safe', body: 'No protein overload on fine or wavy hair.' },
     ],
     bestFor: 'Fine, wavy, or colour-treated hair',
     frequency: 'One Saturday in four — the partner oil',
   },
   Rosemary: {
     emoji: '🌿',
-    tagline: 'Clinically proven to match minoxidil for hair density',
+    tagline: 'Hair density support',
     color: 'rgba(240,204,96,0.10)',
     borderColor: 'rgba(240,204,96,0.28)',
-    science: 'A 2023 Skinmed trial found rosemary oil for 6 months matched 2% minoxidil hair count gains. Carnosic acid supports blood flow and helps inhibit DHT.',
+    science: 'A 2023 Skinmed trial found rosemary oil for 6 months matched 2% minoxidil hair count gains.',
     benefits: [
       { icon: '🩸', title: 'Increases scalp blood flow', body: 'Boosts microcirculation around active follicles.' },
       { icon: '🔬', title: 'DHT inhibition', body: 'Carnosic acid helps reduce DHT linked to thinning.' },
-      { icon: '💪', title: 'Supports hair density', body: 'Hair-count gains appear after 6 months of consistent use.' },
-      { icon: '🛡️', title: 'Antioxidant protection', body: 'Rosmarinic acid protects follicles from oxidative stress.' },
-      { icon: '⚠️', title: 'Must always be diluted', body: 'Rosemary essential oil is potent. Never apply neat to skin. Always dilute in a carrier oil (jojoba or camellia) before applying.' },
+      { icon: '💪', title: 'Supports hair density', body: 'Results need 6 months of consistent use.' },
+      { icon: '🛡️', title: 'Antioxidant protection', body: 'Helps protect follicles.' },
+      { icon: '⚠️', title: 'Must always be diluted', body: 'Never apply neat. Always dilute in jojoba or camellia first.' },
     ],
     bestFor: 'Hair density support and seasonal shedding',
     frequency: 'Every Saturday — always diluted',
   },
   Argan: {
     emoji: '✨',
-    tagline: 'Liquid gold for frizz, shine, and wave definition',
+    tagline: 'For frizz, shine, and wave definition',
     color: 'rgba(255,232,122,0.10)',
     borderColor: 'rgba(255,232,122,0.3)',
-    science: "Argan oil is rich in Vitamin E and unsaturated fatty acids. As a finishing oil, it coats the cuticle to seal moisture and smooth texture.",
+    science: "Argan oil is rich in Vitamin E and fatty acids. It seals moisture and smooths texture.",
     benefits: [
-      { icon: '✨', title: 'Frizz elimination', body: 'Seals cuticle scales and blocks humidity frizz.' },
-      { icon: '💎', title: 'Mirror-like shine', body: 'Vitamin E helps hair reflect light without silicone.' },
+      { icon: '✨', title: 'Frizz elimination', body: 'Seals cuticle and blocks humidity.' },
+      { icon: '💎', title: 'Mirror-like shine', body: 'Adds shine without silicone.' },
       { icon: '🌊', title: 'Wave definition', body: 'Scrunch into damp hair for soft wave clumps.' },
       { icon: '🛡️', title: 'Heat protection', body: 'Adds light protection, but use heat protectant above 180°C.' },
       { icon: '🌿', title: 'Scalp-free application', body: 'Use only mid-lengths and ends to avoid greasiness.' },
@@ -595,14 +595,14 @@ const OIL_BENEFITS = {
   },
   Jojoba: {
     emoji: '🌼',
-    tagline: "The oil that mimics your scalp's own sebum",
+    tagline: "Closest to scalp sebum",
     color: 'rgba(240,204,96,0.08)',
     borderColor: 'rgba(240,204,96,0.22)',
-    science: "Jojoba is a liquid wax close to scalp sebum. It helps balance oil, soothe inflammation, and avoid clogging.",
+    science: "Jojoba is close to scalp sebum. It carries rosemary without clogging.",
     benefits: [
       { icon: '🔬', title: 'Sebum mimic', body: 'Absorbs cleanly and helps balance oil production.' },
       { icon: '⚖️', title: 'Scalp balance', body: 'Works for oily and dry scalps.' },
-      { icon: '🌿', title: 'Anti-inflammatory', body: 'Myristic acid and zinc soothe irritated scalp skin.' },
+      { icon: '🌿', title: 'Anti-inflammatory', body: 'Soothes irritated scalp skin.' },
       { icon: '🧪', title: 'Best carrier for rosemary', body: 'Dilutes rosemary without clogging follicles.' },
       { icon: '💧', title: 'Lightweight hydration', body: 'Moisturises scalp without heaviness.' },
     ],
@@ -611,15 +611,15 @@ const OIL_BENEFITS = {
   },
   Peppermint: {
     emoji: '🌱',
-    tagline: 'The cold tingle that pulls blood to the follicle',
+    tagline: 'Cold tingle for the scalp',
     color: 'rgba(120,220,180,0.10)',
     borderColor: 'rgba(120,220,180,0.28)',
-    science: 'Peppermint oil contains menthol, which widens the small vessels in the scalp. In a 2014 animal study a 3% dilution outperformed both jojoba alone and 3% minoxidil for follicle depth and count. Human evidence is not there yet, so it sits as a helper to rosemary, not a replacement for it.',
+    science: 'Peppermint has menthol. Promising in one animal study; human proof is limited.',
     benefits: [
-      { icon: '🩸', title: 'Opens scalp circulation', body: 'Menthol widens small vessels, so more blood reaches the follicle.' },
+      { icon: '🩸', title: 'Opens scalp circulation', body: 'Menthol increases blood flow.' },
       { icon: '❄️', title: 'The cold feeling is the point', body: 'A clean cold tingle for 5–10 minutes is normal and expected.' },
       { icon: '🧼', title: 'Helps a flaky scalp', body: 'Mildly antimicrobial, so it also settles itch and flaking.' },
-      { icon: '⚠️', title: 'One drop, never neat', body: 'Far stronger than rosemary. One drop in a full palm of jojoba is the whole dose. Straight on skin it burns.' },
+      { icon: '⚠️', title: 'One drop, never neat', body: 'One drop in a full palm of jojoba is the whole dose. Straight on skin burns.' },
       { icon: '🚫', title: 'Keep it away from the eyes', body: 'Wash your hands after applying. Menthol in the eye is extremely painful.' },
     ],
     bestFor: 'A scalp that feels sluggish, flaky, or itchy — one week in four',
@@ -627,30 +627,30 @@ const OIL_BENEFITS = {
   },
   Squalane: {
     emoji: '💧',
-    tagline: 'Weightless. The one that never looks greasy',
+    tagline: 'Weightless and not greasy',
     color: 'rgba(180,220,255,0.10)',
     borderColor: 'rgba(180,220,255,0.28)',
-    science: 'Squalane is a stable form of squalene, which your own skin already makes. The plant-derived kind is a very small, very light molecule — it absorbs almost instantly and leaves no film, which is why it is the one oil that works on dry hair in daylight.',
+    science: 'Plant-derived squalane is very light. It absorbs fast and works on dry hair in daylight.',
     benefits: [
-      { icon: '🪶', title: 'Lightest oil you can buy', body: 'Sinks in at once. Nothing sits on the surface to catch the light.' },
-      { icon: '👜', title: 'Safe for daytime', body: 'The only oil here you can use on dry hair before going out without looking oily.' },
+      { icon: '🪶', title: 'Lightest oil you can buy', body: 'Sinks in fast.' },
+      { icon: '👜', title: 'Safe for daytime', body: 'Use on dry hair before going out.' },
       { icon: '🌡️', title: 'Does not go rancid', body: 'Very stable, so a bottle lasts and never smells off.' },
       { icon: '🧴', title: 'No smell, no residue', body: 'Fragrance-free and colourless — it will not fight your perfume.' },
-      { icon: '⚖️', title: 'Ends only, still', body: 'Light is not the same as invisible. Keep it below the ears.' },
+      { icon: '⚖️', title: 'Ends only, still', body: 'Keep it below the ears.' },
     ],
     bestFor: 'Going out, and anyone who finds every other oil too heavy',
     frequency: 'Daytime ends, and one Saturday in four',
   },
   Coconut: {
     emoji: '🥥',
-    tagline: 'Powerful ends treatment — use with care',
+    tagline: 'Powerful ends treatment',
     color: 'rgba(255,255,255,0.05)',
     borderColor: 'rgba(255,255,255,0.15)',
-    science: 'Coconut oil is high in lauric acid and reduces protein loss. On fine or wavy hair, overuse can cause protein overload: stiff, brittle, breakage-prone hair.',
+    science: 'Coconut oil reduces protein loss. On fine or wavy hair, overuse can cause protein overload.',
     benefits: [
       { icon: '🛡️', title: 'Protein loss prevention', body: 'Lauric acid binds to keratin and reduces protein loss during washing.' },
-      { icon: '💧', title: 'Deep end conditioning', body: 'A small amount softens dry, split ends temporarily.' },
-      { icon: '⚠️', title: 'Fine hair caution', body: 'Fine and wavy hair is prone to protein overload. Signs: hair feels straw-like, loses elasticity, snaps instead of stretches. Use 1–2 drops, ends only.' },
+      { icon: '💧', title: 'Deep end conditioning', body: 'Softens dry ends temporarily.' },
+      { icon: '⚠️', title: 'Fine hair caution', body: 'Fine and wavy hair can get protein overload. Use 1–2 drops, ends only.' },
       { icon: '⏱️', title: '20-minute maximum', body: 'Long exposure can cause buildup on fine hair. Set a timer and shampoo fully.' },
       { icon: '📅', title: 'One Saturday in four', body: 'Its own week in the rotation. Argan is the nightly ends oil, not this.' },
     ],
@@ -687,7 +687,7 @@ function OilDayModal({ day, monthIdx, oils, dayName, onClose }) {
           <div className="oil-modal-rest">
             <div className="oil-modal-rest-icon">🌙</div>
             <p className="oil-modal-rest-text">No soak today.</p>
-            <p className="oil-modal-rest-sub">Saturdays only. Tonight is just the light oil and the massage. 🌸</p>
+            <p className="oil-modal-rest-sub">Saturdays only. Tonight: light oil and massage. 🌸</p>
           </div>
         ) : (
           <>
@@ -697,7 +697,7 @@ function OilDayModal({ day, monthIdx, oils, dayName, onClose }) {
               ))}
             </div>
             <p className="oil-modal-card-tip" style={{ marginBottom: 10 }}>
-              💡 Mix both in your palm. Scalp first, then the lengths. Leave 45 min, then shampoo twice.
+              💡 Mix in your palm. Scalp first, lengths second. Leave 45 min, shampoo twice.
             </p>
             {oils.map(o => {
               const g = OIL_GUIDE[o.n];
@@ -825,7 +825,7 @@ function OilRotationCalendar({ onSelectOil }) {
         })}
       </div>
       <div className="oil-rot-summary">
-        <div className="oil-rot-summary-label">Tap an oil to read what it does</div>
+        <div className="oil-rot-summary-label">Tap an oil for details</div>
         <div className="oil-rot-summary-grid">
           {ALL_OILS.map(o => (
             <button key={o.n} className="oil-rot-summary-item oil-rot-summary-btn" onClick={() => onSelectOil(o.n)}>
@@ -866,23 +866,23 @@ const HAIR_ROUTINES = [
         list: [
           'Wooden wide-tooth comb, dry hair only',
           'Start at the very ends, work upward in short sections',
-          'Never drag from the roots down — that is how strands snap',
-          'Finish with slow strokes over the scalp to wake it up',
+          'Never drag from roots down',
+          'Finish with slow scalp strokes',
         ],
         tools: [
-          { icon: '🪵', name: 'Wooden wide-tooth comb', why: 'Sandalwood or neem. Wood makes no static, wide teeth slide past a tangle instead of tearing it. Under ₱200 — search "wooden wide tooth comb sandalwood" on Shopee.' },
+          { icon: '🪵', name: 'Wooden wide-tooth comb', why: 'Wood reduces static. Under ₱200 — search "wooden wide tooth comb sandalwood" on Shopee.' },
         ],
       },
       {
         id: 'pre2', cat: '5 minutes', name: 'Scalp massage',
         list: [
           'Fingertips flat, never nails',
-          'Small firm circles — move the skin, do not slide over it',
-          'Hairline and temples longest. That is where you want growth',
-          'Five minutes. Set a timer, it is longer than it feels',
+          'Small firm circles — move the skin',
+          'Focus longest on hairline and temples',
+          'Five minutes. Set a timer',
         ],
         tools: [
-          { icon: '🫧', name: 'Silicone scalp massager', why: 'The soft rubber brush sold for shampooing. Saves your arms over five minutes. ₱100–₱250.' },
+          { icon: '🫧', name: 'Silicone scalp massager', why: 'Soft shampoo brush. Easier for five minutes. ₱100–₱250.' },
         ],
       },
       {
@@ -891,30 +891,30 @@ const HAIR_ROUTINES = [
           '4 drops jojoba + 3 drops rosemary, mixed in your palm',
           'Onto the parting lines only — scalp, never the lengths',
           'Massage it in for 2 more minutes',
-          'Rosemary is never used neat. Jojoba is what carries it',
+          'Rosemary is never used neat. Jojoba carries it',
         ],
         products: [
-          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil — ready-mixed scalp oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'Rosemary and biotin already blended, so there is nothing to measure. ₱500–₱800 on Shopee and Lazada.' },
-          { brand: 'The Ordinary', name: '100% Cold-Pressed Virgin Jojoba Oil — the carrier', badges: ['Carrier oil', 'Mix it yourself'], why: 'Use with your own rosemary drops. Cheaper per use and you control the strength. About ₱600.' },
+          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil — ready-mixed scalp oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'Ready-mixed, nothing to measure. ₱500–₱800 on Shopee and Lazada.' },
+          { brand: 'The Ordinary', name: '100% Cold-Pressed Virgin Jojoba Oil — the carrier', badges: ['Carrier oil', 'Mix it yourself'], why: 'Use with rosemary drops. Cheaper per use. About ₱600.' },
         ],
       },
       {
         id: 'pre4', cat: 'Ends only', name: '🌸 Camellia on the ends',
         list: [
           '1–2 drops on the bottom third',
-          'This is the shield against the shampoo that is coming',
-          'Camellia, not argan — it gets into the shaft instead of sitting on it',
+          'Protects ends before shampoo',
+          'Camellia, not argan',
         ],
         tools: [
-          { icon: '🌸', name: '100% Camellia (Tsubaki) oil', why: 'Japanese hair oil, about 80% oleic acid. Search "camellia oil tsubaki 100%" on Shopee. ₱300–₱700.' },
-          { icon: '💧', name: 'Squalane — if camellia feels heavy', why: 'Lighter again, absorbs instantly. The Ordinary 100% Plant-Derived Squalane, about ₱600.' },
+          { icon: '🌸', name: '100% Camellia (Tsubaki) oil', why: 'About 80% oleic acid. Search "camellia oil tsubaki 100%" on Shopee. ₱300–₱700.' },
+          { icon: '💧', name: 'Squalane — if camellia feels heavy', why: 'Lighter and fast-absorbing. The Ordinary 100% Plant-Derived Squalane, about ₱600.' },
         ],
       },
       {
         id: 'pre5', cat: '20–30 min later', name: 'Wash it out',
         list: [
-          '20–30 minutes is plenty on a normal night',
-          'Shampoo the SCALP first, before the lengths get wet',
+          '20–30 minutes is enough',
+          'Shampoo the SCALP first',
           'Two washes on an oiled night — one lifts, one cleans',
           'Conditioner on the lengths only, never the scalp',
         ],
@@ -935,39 +935,39 @@ const HAIR_ROUTINES = [
       {
         id: 'po1', cat: 'First 30 seconds', name: 'Squeeze, never rub',
         list: [
-          'Press the water out in your hands, section by section',
-          'Microfibre towel or an old cotton shirt — not a terry bath towel',
-          'Never wrap tight, never rub. That is where frizz is made',
+          'Press water out section by section',
+          'Use microfibre towel or old cotton shirt',
+          'Never wrap tight, never rub',
         ],
         tools: [
-          { icon: '🧻', name: 'Microfibre hair towel', why: 'Drinks water without roughing the cuticle. ₱150–₱300, or use a spare cotton t-shirt.' },
+          { icon: '🧻', name: 'Microfibre hair towel', why: 'Dries gently. ₱150–₱300, or use a cotton t-shirt.' },
         ],
       },
       {
         id: 'po2', cat: 'Scalp · damp', name: 'Scalp growth serum — caffeine',
         list: [
-          'A watery leave-in liquid, NOT an oil. Onto the scalp, not the hair',
+          'Watery leave-in, NOT oil. Scalp only',
           'Hairline and temples first, then down the partings',
-          'Massage 1 minute. It stays in — it is never rinsed',
-          'Every wash. This is the one that moves the hairline forward',
+          'Massage 1 minute. Leave it in',
+          'Use every wash',
         ],
         products: [
-          { brand: 'The Ordinary', primary: true, name: 'Multi-Peptide Serum for Hair Density — scalp growth serum', badges: ['Caffeine', 'Peptides', 'Leave-in'], why: 'Caffeine plus a peptide complex, aimed straight at density and the hairline. About ₱900 and the best value in its class.' },
-          { brand: 'Alpecin', name: 'Caffeine Liquid Hair Energizer — scalp tonic', badges: ['Caffeine', 'Leave-in'], why: 'Stronger caffeine, drugstore price, easy to find in Watsons PH. The tonic smell fades within the hour.' },
+          { brand: 'The Ordinary', primary: true, name: 'Multi-Peptide Serum for Hair Density — scalp growth serum', badges: ['Caffeine', 'Peptides', 'Leave-in'], why: 'Caffeine plus peptides for density and hairline. About ₱900.' },
+          { brand: 'Alpecin', name: 'Caffeine Liquid Hair Energizer — scalp tonic', badges: ['Caffeine', 'Leave-in'], why: 'Stronger caffeine, easy at Watsons PH. Smell fades within the hour.' },
         ],
-        note: 'Biotin works swallowed, not applied. Take it as a tablet and let the caffeine do the outside job.',
+        note: 'Biotin works swallowed, not applied. Let caffeine do the scalp job.',
       },
       {
         id: 'po3', cat: 'Mid-length to ends', name: 'Leave-in hair serum',
         list: [
-          'A smoothing cream-serum, not an oil and not the scalp serum above',
+          'Smoothing cream-serum, not oil',
           'One pump, or half a pump if your hair is short',
           'Start at the mid-length and pull down to the ends',
-          'Nothing above the ears. Serum near the roots is what looks greasy',
+          'Nothing above the ears',
         ],
         products: [
-          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original, gold bottle — leave-in hair serum', badges: ['Lightweight', 'Damp or dry hair'], why: 'The Korean bestseller for exactly this step, and light enough for fine hair. ₱400–₱600 on Shopee.' },
-          { brand: 'Olaplex', name: 'No.9 Bond Protector Nourishing Hair Serum — leave-in + heat guard', badges: ['Bond repair', 'Protects to 230°C'], why: 'Does this step and the heat guard step in one bottle. Costs more, saves a purchase.' },
+          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original, gold bottle — leave-in hair serum', badges: ['Lightweight', 'Damp or dry hair'], why: 'Light enough for fine hair. ₱400–₱600 on Shopee.' },
+          { brand: 'Olaplex', name: 'No.9 Bond Protector Nourishing Hair Serum — leave-in + heat guard', badges: ['Bond repair', 'Protects to 230°C'], why: 'Leave-in plus heat guard in one bottle.' },
         ],
       },
       {
@@ -975,22 +975,22 @@ const HAIR_ROUTINES = [
         list: [
           '1 drop, ends only, while the hair is still damp',
           'Scrunch upward if you want the waves to clump',
-          'Swap to squalane if camellia ever feels like too much',
+          'Swap to squalane if camellia feels heavy',
         ],
         tools: [
-          { icon: '🌸', name: '100% Camellia (Tsubaki) oil', why: 'Your main ends oil, morning and night. Search "camellia oil tsubaki 100%".' },
+          { icon: '🌸', name: '100% Camellia (Tsubaki) oil', why: 'Main ends oil. Search "camellia oil tsubaki 100%".' },
         ],
       },
       {
         id: 'po5', cat: 'Only if you use heat', name: 'Heat protectant spray',
         list: [
-          'A water-light mist, not an oil. Mid-lengths and ends, never the scalp',
+          'Water-light mist. Mid-lengths and ends, never scalp',
           'Let it dry 30 seconds before the heat touches it',
-          'No heat protectant, no heat. There is no safe version of skipping it',
+          'No heat protectant, no heat',
           'Dryer on cool or warm, held 15 cm away',
         ],
         products: [
-          { brand: 'TRESemmé', primary: true, name: 'Thermal Creations Heat Tamer Spray — heat protectant', badges: ['Protects to 230°C', 'Light'], why: 'Under ₱400, in every Watsons, light enough for fine hair. The sensible default.' },
+          { brand: 'TRESemmé', primary: true, name: 'Thermal Creations Heat Tamer Spray — heat protectant', badges: ['Protects to 230°C', 'Light'], why: 'Under ₱400, easy at Watsons, light for fine hair.' },
         ],
       },
       {
@@ -998,7 +998,7 @@ const HAIR_ROUTINES = [
         list: [
           'Wooden wide-tooth comb only, ends upward',
           'Air dry as far as you can before reaching for the dryer',
-          'Never sleep on soaking wet hair — that is when it is weakest',
+          'Never sleep on soaking wet hair',
         ],
       },
     ],
@@ -1019,7 +1019,7 @@ const HAIR_ROUTINES = [
         id: 'n1', cat: '2 minutes', name: 'Comb it out',
         list: [
           'Ends upward, in sections, gently',
-          'Takes out the day, so a knot does not become a tear in the morning',
+          'Remove knots before morning',
         ],
       },
       {
@@ -1027,18 +1027,18 @@ const HAIR_ROUTINES = [
         list: [
           'Fingertips, small firm circles, no nails',
           'Hairline and temples get the most',
-          'Sitting up or lying down, it does not matter — only that it happens',
+          'Sitting or lying down both work',
         ],
       },
       {
         id: 'n3', cat: 'Scalp only', name: '🌿 Rosemary mint oil on the scalp',
         list: [
           '3–4 drops on the parting lines, massaged in',
-          'Skip this on a wash night — you already did it before the shower',
-          'If your roots start feeling flat or coated, go every other night',
+          'Skip on wash nights',
+          'If roots feel coated, go every other night',
         ],
         products: [
-          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil — nightly scalp oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'The same bottle as the pre-shower step. One oil, two moments, nothing extra to buy.' },
+          { brand: 'Mielle Organics', primary: true, name: 'Rosemary Mint Scalp & Hair Strengthening Oil — nightly scalp oil', badges: ['Biotin', 'Rosemary', 'Lightweight'], why: 'Same bottle as pre-shower. Nothing extra to buy.' },
         ],
       },
       {
@@ -1052,14 +1052,14 @@ const HAIR_ROUTINES = [
       {
         id: 'n5', cat: 'Last thing', name: 'Loose plait, then the bonnet',
         list: [
-          'One loose plait, or a loose bun on the very top of your head',
-          'Never a tight elastic — traction is the one hair loss you cause yourself',
+          'One loose plait, or loose top bun',
+          'Never a tight elastic',
           'Satin bonnet over the top, every night',
-          'It keeps the oil in your hair instead of on the pillow',
+          'Keeps oil off the pillow',
         ],
         tools: [
-          { icon: '👑', name: 'Satin sleep bonnet', why: 'Wide soft band, not a tight elastic one. ₱150–₱350 on Shopee. Buy two so one is always clean.' },
-          { icon: '🛏️', name: 'Silk or satin pillowcase', why: 'Backup for the nights the bonnet slips off. Kinder to your face too.' },
+          { icon: '👑', name: 'Satin sleep bonnet', why: 'Wide soft band, not tight elastic. ₱150–₱350 on Shopee. Buy two.' },
+          { icon: '🛏️', name: 'Silk or satin pillowcase', why: 'Backup when the bonnet slips off.' },
         ],
       },
     ],
@@ -1075,37 +1075,37 @@ const HAIR_ROUTINES = [
       {
         id: 'l1', cat: 'First', name: 'Clean, dry lids',
         list: [
-          'Face washed and completely dry — no cream, no oil, no makeup',
-          'A wet or oily lid carries the serum where it should not go',
+          'Face washed and completely dry',
+          'No cream, oil, or makeup on lids',
         ],
       },
       {
         id: 'l2', cat: '10 seconds', name: 'One stroke along the lash line',
         list: [
-          'Along the UPPER lash line only, like a thin eyeliner',
+          'Along the UPPER lash line only',
           'One stroke per eye. More is not faster',
-          'Nothing on the lower lashes, nothing inside the eye',
+          'Nothing on lower lashes or inside the eye',
         ],
         products: [
-          { brand: 'Grande Cosmetics', primary: true, name: 'GrandeLASH-MD Lash Enhancing Serum — peptide lash serum', badges: ['Peptides', 'Amino acids', '3-month tube'], why: 'The best-known peptide lash serum and the one with the most real-world use behind it. Around ₱3,500 at Sephora PH and on Shopee. One tube lasts about 3 months.' },
-          { brand: 'The Ordinary', name: 'Multi-Peptide Lash and Brow Serum — budget peptide serum', badges: ['Peptides', 'Brows too'], why: 'A fifth of the price, same peptide idea, slower results. About ₱700. Works on brows as well.' },
+          { brand: 'Grande Cosmetics', primary: true, name: 'GrandeLASH-MD Lash Enhancing Serum — peptide lash serum', badges: ['Peptides', 'Amino acids', '3-month tube'], why: 'Known peptide lash serum. Around ₱3,500 at Sephora PH and on Shopee. One tube lasts about 3 months.' },
+          { brand: 'The Ordinary', name: 'Multi-Peptide Lash and Brow Serum — budget peptide serum', badges: ['Peptides', 'Brows too'], why: 'Budget peptide option. About ₱700. Works on brows too.' },
         ],
-        note: 'The blue bottle you already own is fine — keep finishing it. These two are what to buy when it runs out.',
+        note: 'Finish your blue bottle first. Buy these next.',
       },
       {
         id: 'l3', cat: '2 minutes', name: 'Wait before your face cream',
         list: [
           'Let it dry fully first',
-          'Cream on top too soon spreads it onto the lid and around the eye',
+          'Cream too soon spreads it around the eye',
         ],
       },
       {
         id: 'l4', cat: 'Keep going', name: 'Every night, 12 weeks',
         list: [
-          'Lashes turn over slowly. Nothing shows in week one',
-          'First change around week 6. The real result at week 12',
-          'Then keep using it — stop and they go back over a few months',
-          'Itchy, red, or a darkening lid? Stop. That is the ingredient, not you',
+          'Lashes turn over slowly',
+          'First change around week 6. Real result at week 12',
+          'Keep using it after week 12',
+          'Itchy, red, or darker lid? Stop',
         ],
       },
     ],
@@ -1124,17 +1124,17 @@ const HAIR_ROUTINES = [
       {
         id: 'o1', cat: 'The rule', name: 'Nothing on the scalp',
         list: [
-          'No oil, no serum, no cream anywhere near the roots',
-          'Last night is already working. More is what tips it into greasy',
-          'Dry shampoo is the only thing that touches the scalp in daylight',
+          'No oil, serum, or cream near roots',
+          'More makes roots greasy',
+          'Daylight scalp gets dry shampoo only',
         ],
       },
       {
         id: 'o2', cat: '1 minute', name: 'Comb, do not brush from the roots',
         list: [
           'Wooden comb, ends upward as always',
-          'Brushing from the scalp down drags the night oil into the lengths',
-          'That one habit is the difference between shiny and flat',
+          'Brushing from scalp down drags night oil',
+          'This keeps hair shiny, not flat',
         ],
       },
       {
@@ -1143,42 +1143,42 @@ const HAIR_ROUTINES = [
           'Shake hard, hold 25–30 cm away',
           'Short bursts on the roots only, in partings',
           'Wait 2 minutes, massage in with your fingertips, comb through',
-          'A rescue, not a routine. Three days running and the scalp clogs',
+          'A rescue, not a routine. Three days running clogs scalp',
         ],
         products: [
-          { brand: 'Batiste', primary: true, name: 'Dry Shampoo Original — root oil absorber', badges: ['Absorbs oil', 'Everywhere in PH'], why: 'Under ₱350 in any Watsons. Use a tinted version if you see white cast on dark hair.' },
+          { brand: 'Batiste', primary: true, name: 'Dry Shampoo Original — root oil absorber', badges: ['Absorbs oil', 'Everywhere in PH'], why: 'Under ₱350 in Watsons. Use tinted if white cast shows.' },
         ],
       },
       {
         id: 'o4', cat: 'Mid-length to ends', name: 'Leave-in serum on dry hair',
         list: [
-          'Half a pump for fine hair. You can add, you cannot take back',
+          'Half a pump for fine hair',
           'Rub into both palms first, then smooth downward from the mid-length',
           'Press whatever is left onto the very ends',
-          'Nothing above the ears. Ever',
+          'Nothing above the ears',
         ],
         products: [
-          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original, gold bottle — leave-in hair serum', badges: ['Light', 'Dry hair safe'], why: 'Light enough to use on dry hair in the morning without turning the lengths oily.' },
+          { brand: 'Mise en Scene', primary: true, name: 'Perfect Serum Original, gold bottle — leave-in hair serum', badges: ['Light', 'Dry hair safe'], why: 'Light enough for dry morning hair.' },
         ],
       },
       {
         id: 'o5', cat: 'If it is humid', name: '💧 Squalane on the very ends',
         list: [
-          'Half a drop, rubbed right down until your palms barely feel it',
+          'Half a drop, rubbed until palms barely feel it',
           'Press onto the last two inches only',
-          'Squalane, not camellia — it is the only oil light enough for daylight',
-          'Frizz lives at the ends. Fixing it at the roots is the classic mistake',
+          'Squalane, not camellia, for daylight',
+          'Fix frizz at the ends, not roots',
         ],
         products: [
-          { brand: 'The Ordinary', primary: true, name: '100% Plant-Derived Squalane — weightless ends oil', badges: ['Weightless', 'No smell', 'No residue'], why: 'Absorbs instantly and leaves nothing on the surface, which is why it is the one oil that is safe before going out. About ₱600.' },
+          { brand: 'The Ordinary', primary: true, name: '100% Plant-Derived Squalane — weightless ends oil', badges: ['Weightless', 'No smell', 'No residue'], why: 'Absorbs fast and looks clean before going out. About ₱600.' },
         ],
       },
       {
         id: 'o6', cat: 'Only if you style', name: 'Heat protectant first',
         list: [
           'Mist, wait 30 seconds, then the iron or the dryer',
-          'Lowest heat that actually does the job',
-          'Skipping once is fine. Skipping as a habit is how ends split',
+          'Use the lowest heat that works',
+          'Never skip heat protectant as a habit',
         ],
       },
     ],
@@ -1357,7 +1357,7 @@ function UnderarmRoutine() {
               </ul>
               <ProductCard brand="Organic Skin Japan" primary name="Intensive Whitening Underarm Deo Mist" badges={['Glutathione', 'Alpha Arbutin', 'Niacinamide', 'Kojic Acid', 'Vitamin C']} why="Five brightening actives in one deo-treatment spray. Search 'OSJ Whitening Deo Mist'." />
               <ProductCard brand="Luxe Organix" name="Belo Intense White Deo Spray" badges={['Whitening', 'Antiperspirant', 'PH Brand']} why="Filipino medical brand. Watsons PH and Mercury Drug — good starting option." />
-              <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free, hypoallergenic — best for very sensitive skin or after waxing. Available everywhere in PH.</div></div></div>
+              <div className="prod-item"><div className="prod-badge">Alt 2</div><div><div className="prod-name">Dove Advanced Care Sensitive Antiperspirant</div><div className="prod-why">Fragrance-free. Best for sensitive skin or after waxing..</div></div></div>
             </RoutineStep>
           </StepFlow>
         </>
@@ -1376,10 +1376,10 @@ function UnderarmRoutine() {
                 <li>Never within 24 hours of shaving — wait until skin heals</li>
                 <li>Week 1: 1× only. Build to 3–4× per week over 4 weeks</li>
               </ul>
-              <div className="step-note">Exfoliates the dead skin causing dark spots. Slow build prevents irritation.</div>
-              <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner — most-used Korean product for underarm brightening. Shopee PH, Lazada." />
-              <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget cult classic. Apply with cotton pad. Shopee PH, Lazada, BeautyMNL." />
-              <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads — no cotton needed. YesStyle and Olive Young Global." />
+              <div className="step-note">Clears dead skin behind dark spots. Build up slowly.</div>
+              <ProductCard brand="Some By Mi" primary name="AHA BHA PHA 30 Days Miracle Toner" badges={['AHA', 'BHA', 'PHA', 'Dark Spot']} why="Triple-acid toner for underarm brightening. Shopee PH, Lazada." />
+              <ProductCard brand="The Ordinary" name="Glycolic Acid 7% Toning Solution" badges={['Glycolic Acid 7%', 'AHA', 'Budget']} why="Budget pick. Apply with a cotton pad." />
+              <ProductCard brand="Medicube" name="Zero Pore Pad 2.0" badges={['AHA', 'BHA', 'Panthenol', 'Dual-Sided']} why="Pre-soaked pads. YesStyle, Olive Young Global." />
             </RoutineStep>
             <RoutineStep num="2" cat="Daily · 5 min after exfoliant" name="Brighten — Niacinamide Serum">
               <ul className="ag-detail-list">
@@ -1388,8 +1388,8 @@ function UnderarmRoutine() {
                 <li>Niacinamide fades dark spots over 4–8 weeks</li>
                 <li>On nights you skip acid, still apply the serum alone</li>
               </ul>
-              <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot']} why="Niacinamide + yuja Vitamin C for underarm brightening. Shopee PH, Lazada." />
-              <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="High-concentration niacinamide — 2 drops patted in. Use on nights you skip acid." />
+              <ProductCard brand="Some By Mi" primary name="Yuja Niacin 30 Days Brightening Serum" badges={['Niacinamide 2%', 'Yuja Vitamin C', 'Dark Spot']} why="Brightens underarms. Shopee PH, Lazada." />
+              <ProductCard brand="COSRX" name="Niacinamide 15% Face Serum" badges={['Niacinamide 15%', 'High-Strength']} why="2 drops, patted in. Use on nights you skip acid." />
               <ProductCard brand="Beauty of Joseon" name="Glow Serum Propolis + Niacinamide" badges={['Propolis 60%', 'Niacinamide 2%', 'Soothing']} why="Gentler option — best for sensitive skin or first 2 weeks." />
             </RoutineStep>
             <RoutineStep num="3" cat="Every night · seals everything in" name="Repair — Barrier Cream">
@@ -1398,9 +1398,9 @@ function UnderarmRoutine() {
                 <li>Seals actives and reduces friction inflammation overnight</li>
                 <li>Keep the barrier intact so brightening actives work</li>
               </ul>
-              <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Panthenol heals friction damage, madecassoside calms post-acid inflammation. Makes all other actives work faster." />
-              <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Centella calms post-shaving and post-acid inflammation overnight." />
-              <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Most accessible — ceramides repair the barrier. Watsons or Mercury Drug PH." />
+              <ProductCard brand="Etude" primary name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Barrier Repair']} why="Heals friction and calms skin after acids." />
+              <ProductCard brand="Dr. Jart+" name="Cicapair Tiger Grass Color Correcting Treatment" badges={['Centella', 'Calming', 'Barrier Restore']} why="Calms skin after shaving or acids." />
+              <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Repairs the barrier. Watsons or Mercury Drug PH." />
             </RoutineStep>
           </StepFlow>
           <div className="note-box note-rose" style={{ marginTop: 8 }}>
@@ -1444,31 +1444,31 @@ function TeethRoutine() {
               <li>Spit into the trash — never the sink (oil solidifies in pipes)</li>
               <li>Rinse with warm water, then proceed to brushing</li>
             </ul>
-            <div className="step-note">Targets bacteria linked to bad breath, gum inflammation, and stains. 3–5× per week is enough.</div>
+            <div className="step-note">For breath, gums and stains. 3–5× per week is enough.</div>
           </RoutineStep>
           <RoutineStep num="2" cat="Every morning · 2 min" name="Brush with HA Toothpaste">
             <ul className="ag-detail-list">
-              <li>Soft-bristle brush at 45° to the gumline — gentle circular strokes, never hard scrubbing</li>
+              <li>Soft brush at 45° to the gumline, gentle circles, never scrub</li>
               <li>All surfaces: outer, inner, chewing, and the tongue</li>
-              <li><strong>Do NOT rinse after</strong> — spit only. Leaving the film allows HA to remineralise enamel for 30+ min</li>
+              <li><strong>Do NOT rinse after</strong> — spit only</li>
             </ul>
-            <div className="step-note">💡 HA toothpaste remineralises micro-lesions and smooths surface irregularities for natural whitening.</div>
-            <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="Clinically studied HA toothpaste. Remineralises, whitens naturally, and reduces sensitivity." />
-            <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper enamel penetration. Popular in dentist communities. iHerb ships to PH." />
-            <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="Familiar brand. Use for 2 weeks before any whitening course. Watsons and Mercury Drug PH." />
+            <div className="step-note">💡 HA toothpaste repairs enamel and whitens naturally.</div>
+            <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="Repairs enamel, whitens, eases sensitivity." />
+            <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA toothpaste. iHerb ships to PH." />
+            <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="Use for 2 weeks before whitening. Watsons, Mercury Drug." />
           </RoutineStep>
           <RoutineStep num="3" cat="Every morning" name="Floss or Water Flosser">
             <ul className="ag-detail-list">
               <li>C-shape around each tooth, reach below the gumline</li>
-              <li>Or water flosser 60 seconds along the gumline — easier to keep as a daily habit</li>
+              <li>Or a water flosser, 60 seconds along the gumline</li>
               <li>Skipping flossing leaves 35% of tooth surfaces uncleaned</li>
             </ul>
           </RoutineStep>
           <RoutineStep num="4" cat="Every morning · 30 seconds" name="Tongue Scraper">
             <ul className="ag-detail-list">
-              <li>Metal or plastic scraper — not your toothbrush (it moves bacteria rather than removes it)</li>
+              <li>Metal or plastic scraper, not your toothbrush</li>
               <li>5–7 strokes from back to front, rinse scraper between each</li>
-              <li>Tongue bacteria = #1 source of bad breath — biggest payoff per second spent</li>
+              <li>The #1 fix for bad breath</li>
             </ul>
           </RoutineStep>
         </StepFlow>
@@ -1481,9 +1481,9 @@ function TeethRoutine() {
         <StepFlow>
           <RoutineStep num="1" cat="Before brushing · every night" name="Floss First">
             <ul className="ag-detail-list">
-              <li>Floss between every tooth — C-shape around each, reach below the gumline</li>
-              <li>Removes food debris so HA toothpaste can reach all surfaces during brushing</li>
-              <li>Flossing at night is more important than in the morning — food has been sitting there all day</li>
+              <li>Floss every tooth in a C-shape, just below the gumline</li>
+              <li>Clears food so the toothpaste reaches every surface</li>
+              <li>Night flossing matters most</li>
             </ul>
           </RoutineStep>
           <RoutineStep num="2" cat="Every night · 2 min" name="Brush with HA Toothpaste">
@@ -1493,10 +1493,10 @@ function TeethRoutine() {
               <li>No eating or drinking (except water) after brushing</li>
               <li>Optional: salt water rinse before brushing if gums feel sore tonight</li>
             </ul>
-            <div className="step-note">HA stays on enamel overnight for your longest remineralisation window.</div>
-            <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Most effective overnight — HA film repairs micro-damage during sleep. Same paste as morning. Shopee PH, Lazada." />
-            <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA for deeper overnight penetration. iHerb ships to PH." />
-            <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Pressure sensor prevents hard brushing. Round head reaches gumline well. Shopee PH." />
+            <div className="step-note">Don't rinse — let it work overnight.</div>
+            <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Overnight Remineralisation', 'Whitening']} why="Same paste as morning. Works best overnight." />
+            <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA option. iHerb ships to PH." />
+            <ProductCard brand="Oral-B" name="Oral-B iO Series Electric Toothbrush" badges={['Pressure Sensor', 'Round Head', 'Gum Health']} why="Warns you when you brush too hard. Shopee PH." />
           </RoutineStep>
         </StepFlow>
       </>}
@@ -1512,9 +1512,9 @@ function TeethRoutine() {
               <li>Stir until fully dissolved — use immediately while warm</li>
               <li>Make fresh every time — do not store leftover rinse</li>
             </ul>
-            <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any grocery-brand fine salt works. Under ₱50 at any Philippine supermarket. Most effective and most accessible.</div></div></div>
-            <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Pre-made rinse for consistent concentration — convenient ready-to-use alternative to DIY. iHerb ships to PH." />
-            <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="Kills bacteria without burning or dryness. Watsons and Mercury Drug PH." />
+            <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any fine salt works. Under ₱50.</div></div></div>
+            <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Ready-made rinse. iHerb ships to PH." />
+            <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="No burning, no dryness. Watsons, Mercury Drug." />
           </RoutineStep>
           <RoutineStep num="2" cat="Before brushing" name="Rinse Technique">
             <ul className="ag-detail-list">
@@ -1541,32 +1541,32 @@ function TeethRoutine() {
         <StepFlow>
           <RoutineStep num="1" cat="2 weeks before starting a course" name="Prep — Sensitivity Protection">
             <ul className="ag-detail-list">
-              <li>Use Sensodyne for 2 weeks before — builds potassium nitrate in dentinal tubules, significantly reduces sensitivity during whitening</li>
-              <li>Do not use strips if you have untreated cavities, active gum disease, or veneers on front teeth — consult a dentist first</li>
+              <li>Use Sensodyne for 2 weeks before, to cut sensitivity</li>
+              <li>No strips with untreated cavities, gum disease, or front veneers — see a dentist first</li>
             </ul>
-            <ProductCard brand="Sensodyne" primary name="Sensodyne Pronamel or Rapid Relief" badges={['Potassium Nitrate', 'Sensitivity Protection', 'Enamel']} why="Use 2 weeks before whitening and throughout treatment to reduce discomfort." />
+            <ProductCard brand="Sensodyne" primary name="Sensodyne Pronamel or Rapid Relief" badges={['Potassium Nitrate', 'Sensitivity Protection', 'Enamel']} why="Use 2 weeks before and during whitening." />
           </RoutineStep>
           <RoutineStep num="2" cat="Day of use · prep teeth first" name="Before Applying Strips">
             <ul className="ag-detail-list">
-              <li>Brush 30 min BEFORE applying strips — fluoride right before temporarily reduces whitening effectiveness</li>
-              <li>Dry teeth with a tissue — strips adhere far better to completely dry enamel</li>
+              <li>Brush 30 min BEFORE applying strips</li>
+              <li>Dry teeth with a tissue first</li>
             </ul>
           </RoutineStep>
           <RoutineStep num="3" cat="30–60 min" name="Apply Strips">
             <ul className="ag-detail-list">
-              <li>Gel side faces teeth — align straight edge with gumline, do not overlap onto gum tissue</li>
+              <li>Gel side on teeth, straight edge at the gumline, not on gums</li>
               <li>Press firmly, fold any excess behind teeth</li>
               <li>Leave on for directed time (30 min standard, 60 min express strips)</li>
               <li>No eating, drinking, or talking while strips are on</li>
             </ul>
-            <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="Strong OTC whitening strips with professional-level HP. Shopee PH, Lazada, or iHerb." />
-            <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Lower HP for those prone to sensitivity. Same visible whitening — good starting option." />
-            <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen for maintenance between quarterly courses — paint on before bed, leave overnight. Shopee PH and Lazada." />
+            <ProductCard brand="Crest" primary name="Crest 3D Whitestrips Professional Effects" badges={['HP Whitening', '14-Day Course', 'Most Effective OTC']} why="Strongest over-the-counter strips. Shopee PH, Lazada, iHerb." />
+            <ProductCard brand="Crest" name="Crest 3D Glamorous White Whitestrips" badges={['Gentler Formula', '14-Day Course', 'Less Sensitivity']} why="Gentler, for sensitive teeth. Good first try." />
+            <ProductCard brand="Colgate" name="Colgate Optic White Overnight Whitening Pen" badges={['Maintenance Pen', 'No Strips', 'Overnight']} why="Touch-up pen between courses. Paint on at bedtime." />
           </RoutineStep>
           <RoutineStep num="4" cat="After removing" name="Post-Strip Care">
             <ul className="ag-detail-list">
               <li>Peel off and discard — never reuse</li>
-              <li>Rinse with water, then wait 30 min before brushing — enamel is temporarily softened</li>
+              <li>Rinse with water, then wait 30 min before brushing</li>
               <li>Avoid coffee, tea, berries, tomato sauce for 1 hour after</li>
               <li>Sensitivity tip: apply Sensodyne directly to teeth, leave 5 min, then rinse</li>
             </ul>
@@ -1574,7 +1574,7 @@ function TeethRoutine() {
           <RoutineStep num="5" cat="Reference" name="Your Whitening Schedule">
             <div className="prod-item" style={{ marginTop: 8 }}><div className="prod-badge">Course</div><div><div className="prod-name">Once daily for 14–20 days (standard) or 7–10 days (express)</div><div className="prod-why">One course per quarter — every 3 months.</div></div></div>
             <div className="prod-item"><div className="prod-badge">Maintenance</div><div><div className="prod-name">1–2 strips per month after a course</div><div className="prod-why">Maintains results without committing to a full treatment.</div></div></div>
-            <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Skip a day when sensitive — resume the next. Resolves within 24 hours.</div></div></div>
+            <div className="prod-item"><div className="prod-badge">Sensitivity</div><div><div className="prod-name">Sensitive? Skip a day, then carry on.</div></div></div>
           </RoutineStep>
         </StepFlow>
       </>}
@@ -1595,10 +1595,10 @@ function MakeupRoutine() {
         <p className="ag-detail-body">Spritz setting spray on bare skin → skincare + primer + foundation → setting spray → powder T-zone only → final setting spray.</p>
         <ul className="ag-detail-list" style={{ marginTop: 8 }}>
           <li><strong>Damp beauty sponge always</strong> — bouncing, never dragging. Dry sponge = cakey without exception</li>
-          <li>Powder the T-zone only — never powder cheeks or nose if you want a skin-like finish</li>
+          <li>Powder the T-zone only</li>
           <li>Apply foundation in thin layers and build only where needed</li>
-          <li>Hydrate skin the night before any important makeup day — plump, hydrated skin holds makeup longer</li>
-          <li><strong>Skin flooding:</strong> toner → essence → serum → moisturiser (all absorbed) = the plumpest possible base</li>
+          <li>Hydrate well the night before a big makeup day</li>
+          <li><strong>Skin flooding:</strong> toner → essence → serum → moisturiser</li>
         </ul>
       </div>
 
@@ -1611,80 +1611,80 @@ function MakeupRoutine() {
             <li>Optional: mix 1–2 drops of facial oil into moisturiser for an extra glow base</li>
             <li><strong>Ice roll for 2 minutes</strong> before moisturiser on important days — reduce pores and puffiness</li>
           </ul>
-          <div className="step-note">Never skip the wait time — applying primer over still-wet skincare causes pilling and uneven blending.</div>
+          <div className="step-note">Wait for skincare to dry, or primer will pill.</div>
         </RoutineStep>
 
         <RoutineStep num="2" cat="Primer" name="Grip + Blur Primer">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">e.l.f. Power Grip Primer</div><div className="prod-why">Thick, tacky gel with glycerin + hyaluronic acid that grips makeup and holds it in place all day. TikTok-viral as the closest budget match to Milk Hydro Grip at a fraction of the price. Available on Shopee PH and BeautyMNL.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Splurge</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Primer</div><div className="prod-why">Blurs and grips — specifically designed for the CT sandwich hack. Gives a soft-focus, filter-like finish before any base product. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Milk Makeup Hydro Grip Primer</div><div className="prod-why">The original hydration-grip primer with blue agave + niacinamide. Lighter texture than e.l.f. — great for dry skin types.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">e.l.f. Power Grip Primer</div><div className="prod-why">Tacky gel that holds makeup all day. Budget dupe for Milk Hydro Grip. Shopee PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Splurge</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Primer</div><div className="prod-why">Blurs and grips for a soft-focus base. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Milk Makeup Hydro Grip Primer</div><div className="prod-why">Lighter than e.l.f. Good for dry skin.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
-            <li>Press — do not rub — with a damp beauty sponge over T-zone and visible pores</li>
+            <li>Press with a damp sponge over the T-zone and pores</li>
             <li>Allow 1–2 minutes to set before applying foundation</li>
-            <li>Match formula: silicone primer under silicone-based foundation, water-based under water-based</li>
+            <li>Match formulas: silicone with silicone, water with water</li>
           </ul>
-          <div className="step-note">Primer prevents sliding and separation in Philippine heat and humidity.</div>
+          <div className="step-note">Stops makeup sliding in the heat.</div>
         </RoutineStep>
 
         <RoutineStep num="3" cat="Foundation" name="Your Skin But Better">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Foundation</div><div className="prod-why">Medium coverage, skin-like satin finish. Feels weightless — looks like your skin, not like makeup. Designed for the sandwich hack system and blends like water. Available at Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Foundation</div><div className="prod-why">Medium coverage, satin finish, looks like skin. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Armani Beauty Luminous Silk Foundation</div><div className="prod-why">The iconic silk finish. Sheer-to-medium buildable coverage that looks like filtered skin. Serum-like texture, virtually weightless. The gold standard for "your skin but better" worldwide. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Matte + Poreless Foundation</div><div className="prod-why">The most accessible non-cakey foundation available in the Philippines. Breathable, buildable — blend with a damp sponge for the most skin-like result. Available at Watsons, SM Beauty, and Shopee PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Matte + Poreless Foundation</div><div className="prod-why">Easy to find, not cakey. Blend with a damp sponge. Watsons, SM Beauty.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
-            <li>Apply in small dots to the centre of the face and blend outward — never start at the edges</li>
+            <li>Dot on the centre of the face, blend outward</li>
             <li>Blend downward on fine facial hair to avoid reverse-brushed texture</li>
-            <li>Build coverage only where needed — under-eyes, around the nose, any redness</li>
+            <li>Add more only where needed: under-eyes, nose, redness</li>
             <li>On good skin days: skin tint or BB cream instead of full foundation</li>
           </ul>
-          <div className="step-note">Start with less — easier to build than to remove. A damp sponge makes any foundation look 10× more seamless.</div>
+          <div className="step-note">Start with less. A damp sponge blends best.</div>
         </RoutineStep>
 
         <RoutineStep num="4" cat="Concealer" name="Spot & Under-Eye">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">NARS Radiant Creamy Concealer</div><div className="prod-why">Consistently ranked the world's most popular concealer — radiant, creamy, skin-like finish. Does not crease or look heavy. Used by Alix Earle and featured in virtually every professional MUA tutorial. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Rare Beauty Liquid Touch Brightening Concealer</div><div className="prod-why">Lightweight, natural finish, buildable — loved for not settling into fine lines. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Concealer</div><div className="prod-why">Breathable and lightweight — TikTok users consistently rate it as a near-perfect dupe for NARS. Available everywhere in the Philippines.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">NARS Radiant Creamy Concealer</div><div className="prod-why">Creamy, radiant, doesn't crease. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Rare Beauty Liquid Touch Brightening Concealer</div><div className="prod-why">Light, natural, doesn't settle in lines. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Concealer</div><div className="prod-why">Budget dupe for NARS. Everywhere in PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
             <li>Apply in an inverted triangle under the eyes</li>
             <li>Blend downward and outward with a damp sponge or ring finger</li>
             <li>Tap — never drag — onto blemishes with a small flat brush</li>
             <li>Set immediately with translucent powder to prevent creasing</li>
           </ul>
-          <div className="step-note">The inverted triangle brightens under-eyes and visually lifts the face.</div>
+          <div className="step-note">An upside-down triangle under the eye lifts the face.</div>
         </RoutineStep>
 
         <RoutineStep num="5" cat="Setting Powder" name="Lock — T-Zone Only">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Laura Mercier Translucent Loose Setting Powder</div><div className="prod-why">Used by professional makeup artists worldwide. Sets without adding coverage or altering finish — invisible on all skin tones. Over-powdering the whole face is the most common cause of cakey makeup. Apply to T-zone and under-eyes only.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Laneige Neo Blurring Powder</div><div className="prod-why">TikTok-trending K-Beauty powder — blurs pores and blends makeup seamlessly without over-mattifying. Soft-focus result. Available on YesStyle and Shopee PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Laura Mercier Translucent Loose Setting Powder</div><div className="prod-why">Sets without adding coverage. T-zone and under-eyes only.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Laneige Neo Blurring Powder</div><div className="prod-why">Blurs pores without going flat. YesStyle, Shopee PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
-            <li><strong>T-zone only</strong> — forehead, nose bridge, chin. Never powder cheeks or nose for a dewy, skin-like finish</li>
+            <li><strong>T-zone only</strong> — forehead, nose bridge, chin</li>
             <li>Use a fluffy brush — tap off all excess before applying</li>
-            <li>"Baking" the under-eye: press powder generously under eyes, leave 5 min, then dust off — concealer stays crease-free all day</li>
+            <li>Bake under-eyes: press powder on, wait 5 min, dust off</li>
           </ul>
-          <div className="step-note">Powder kills the finish on cheeks. The secret is restraint — less powder = more skin-like.</div>
+          <div className="step-note">Less powder looks more like skin.</div>
         </RoutineStep>
 
         <RoutineStep num="6" cat="Contour & Blush" name="Sculpt & Flush">
-          <div className="prod-item"><div className="prod-badge">★ Blush</div><div><div className="prod-name">Rare Beauty Soft Pinch Liquid Blush</div><div className="prod-why">The viral liquid blush. One tiny dot goes incredibly far — highly pigmented but buildable. Melts into skin and looks like you're genuinely flushed, not painted. Available at Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">★ Contour</div><div><div className="prod-name">Charlotte Tilbury Filmstar Bronze & Glow</div><div className="prod-why">Dual-pan bronzer + highlighter. The bronze shade is perfect for natural contouring — cool-toned and buildable. Glow side adds a lit-from-within highlight. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Budget Blush</div><div><div className="prod-name">e.l.f. Halo Glow Blush Beauty Wand</div><div className="prod-why">Liquid blush stick — easy to blend, no tools needed, natural flush. Available on Shopee PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Blush</div><div><div className="prod-name">Rare Beauty Soft Pinch Liquid Blush</div><div className="prod-why">One tiny dot is enough. Looks like a natural flush. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Contour</div><div><div className="prod-name">Charlotte Tilbury Filmstar Bronze & Glow</div><div className="prod-why">Bronzer and highlighter in one. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Budget Blush</div><div><div className="prod-name">e.l.f. Halo Glow Blush Beauty Wand</div><div className="prod-why">Easy blush wand, no tools. Shopee PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
-            <li><strong>Contour:</strong> cool-toned matte bronzer in hollows of cheeks, temples, and jawline — blend until no harsh lines remain</li>
+            <li><strong>Contour:</strong> matte bronzer under cheekbones, temples, jaw — blend well</li>
             <li><strong>Blush:</strong> apply high on cheekbones, blend upward toward temples for a lifted look</li>
             <li>For sun-kissed: sweep blush lightly across the nose bridge</li>
-            <li>Tap off excess before each application — heavy blush is difficult to soften</li>
+            <li>Tap off extra first</li>
           </ul>
-          <div className="step-note">For a lifted look: apply blush high on the cheekbones close to the temples — not on the round of the cheeks.</div>
+          <div className="step-note">Blush high, near the temples, for a lifted look.</div>
         </RoutineStep>
 
         <RoutineStep num="7" cat="Eyes" name="Eye Makeup">
           <ul className="ag-detail-list" style={{ marginTop: 8 }}>
-            <li><strong>Brows:</strong> fill sparse areas with a micro-pen brow pencil using light feathery strokes — set with clear or tinted brow gel. Budget duo: e.l.f. Instant Lift Brow Pencil + NYX Control Freak</li>
+            <li><strong>Brows:</strong> light feathery strokes, then brow gel. Budget: e.l.f. Instant Lift + NYX Control Freak</li>
             <li><strong>Eyeshadow:</strong> matte neutral across the lid, slightly darker in the crease, blend with a fluffy brush</li>
-            <li><strong>Tightline:</strong> dark liner along the upper waterline for maximum definition without visible liner weight</li>
+            <li><strong>Tightline:</strong> dark liner on the upper waterline</li>
             <li><strong>Mascara:</strong> if not lash-lifted — 1–2 coats from root to tip with a zigzag motion at the base</li>
             <li><strong>If lash-lifted + tinted:</strong> 1 light coat of clear mascara or skip entirely</li>
           </ul>
-          <div className="step-note">Lash lift + tint eliminates most of the eye routine — fill brows and you are camera-ready.</div>
+          <div className="step-note">With a lash lift, just fill brows and go.</div>
         </RoutineStep>
 
         <RoutineStep num="8" cat="Lips" name="Lip Look">
@@ -1695,20 +1695,20 @@ function MakeupRoutine() {
             <li>For defined lips: line 1 mm outside the lip line, fill in, then apply lipstick</li>
             <li>A dot of peppermint gloss in the centre of the lips adds a natural plump effect</li>
           </ul>
-          <div className="step-note">MLBB (my lips but better) = your lips enhanced, not covered. The most flattering everyday lip.</div>
+          <div className="step-note">MLBB = my lips but better. Best everyday lip.</div>
         </RoutineStep>
 
         <RoutineStep num="9" cat="Set & Finish" name="Setting Spray — Final Lock">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Urban Decay All Nighter Setting Spray</div><div className="prod-why">Holds makeup for up to 16 hours with zero melting or fading — the #1 rated setting spray globally by MUAs and TikTok. Especially effective in heat and humidity. The final lock layer of the CT sandwich hack. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">MAC Fix+</div><div className="prod-why">Not a traditional setting spray — blends and melts products into skin for a natural, refreshed finish. Also use it to dampen your sponge before blending foundation for an ultra-seamless result. MAC counters, Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">e.l.f. Power Grip Dewy Setting Spray</div><div className="prod-why">Extends the Power Grip primer system — locks and adds a hydrated glow. Available on Shopee PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Urban Decay All Nighter Setting Spray</div><div className="prod-why">Up to 16 hours, holds in heat. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">MAC Fix+</div><div className="prod-why">Melts makeup into skin. Also great for dampening your sponge.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">e.l.f. Power Grip Dewy Setting Spray</div><div className="prod-why">Locks makeup with a dewy glow. Shopee PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
             <li>Hold 25–30 cm from face, mist in an X then T pattern over finished makeup</li>
             <li>Let dry completely — do not touch face or fan while setting</li>
             <li>For dewy finish: hydrating formula. For long wear in heat: matte or oil-control formula</li>
-            <li>Light translucent powder on T-zone first, then setting spray over everything = all-day wear in Manila heat</li>
+            <li>Powder the T-zone, then spray all over for all-day wear</li>
           </ul>
-          <div className="step-note">Setting spray is the single biggest difference between makeup that lasts 2 hours and makeup that lasts all day.</div>
+          <div className="step-note">Setting spray makes makeup last all day.</div>
         </RoutineStep>
       </StepFlow>
 
@@ -1735,7 +1735,7 @@ function MakeupRoutine() {
           <li>Keep lashes completely dry for 48 hours — no water, steam, sweat, or humidity</li>
           <li>No mascara, eye makeup, or eye cream near lashes for 48 hours</li>
           <li>Sleep on your back for the first 2 nights</li>
-          <li>After 48 hours: apply a nourishing lash serum nightly to strengthen lashes between treatments</li>
+          <li>After 48 hours: lash serum nightly</li>
         </ul>
       </div>
 
@@ -1756,27 +1756,27 @@ function MakeupRoutine() {
         <ul className="ag-detail-list" style={{ marginTop: 8 }}>
           <li><strong>Brow lamination:</strong> any brow salon, lasts 6–8 weeks, can be tinted darker at the same appointment</li>
           <li><strong>At-home soap brows (daily):</strong> wet a spoolie, touch clear glycerin soap, brush brows upward</li>
-          <li><strong>For darker brows:</strong> e.l.f. Instant Lift Brow Pencil (micro-pen, feathery strokes) + NYX Control Freak clear brow gel = the most natural-looking full brow on a budget</li>
-          <li><strong>Microblading:</strong> semi-permanent, lasts 1–2 years — fills sparse areas with hair-stroke tattoo marks. Consult a certified technician</li>
+          <li><strong>For darker brows:</strong> e.l.f. Instant Lift pencil + NYX Control Freak gel</li>
+          <li><strong>Microblading:</strong> lasts 1–2 years. Use a certified technician</li>
         </ul>
       </div>
 
       <div className="g-card splash-item">
         <div className="ag-detail-section-title">💋 Full, Defined Lips</div>
         <ul className="ag-detail-list">
-          <li><strong>Sugar scrub 2× per week:</strong> 1 tsp sugar + 1 tsp honey, massage lips in circular motion for 1 min, rinse — makes lips look visibly fuller and smoother</li>
+          <li><strong>Sugar scrub 2× per week:</strong> 1 tsp sugar + 1 tsp honey, 1 min, rinse</li>
           <li><strong>Overline technique:</strong> line 1 mm outside the natural lip line, focus cupid's bow and lower-lip centre</li>
-          <li><strong>Peppermint gloss:</strong> a dot in the centre of the lower lip creates a temporary plumping effect — adds fullness without filler</li>
-          <li><strong>Highlight the cupid's bow:</strong> a tiny swipe of shimmer highlight directly on the cupid's bow makes lips look more defined and lifted</li>
-          <li><strong>Overnight hydration:</strong> Laneige Lip Sleeping Mask every night — wakes up with noticeably softer, plumper lips by morning</li>
+          <li><strong>Peppermint gloss:</strong> a dot on the lower lip centre to plump</li>
+          <li><strong>Highlight the cupid's bow:</strong> a tiny swipe of shimmer</li>
+          <li><strong>Overnight hydration:</strong> Laneige Lip Sleeping Mask every night</li>
         </ul>
       </div>
 
       <div className="g-card splash-item">
         <div className="ag-detail-section-title">🌊 Glass Skin Before Makeup — The Night Before Trick</div>
         <ul className="ag-detail-list">
-          <li><strong>Slugging the night before:</strong> full PM skincare → wait to absorb → thin layer of CeraVe Healing Ointment or Vaseline over everything. Creates an occlusive seal — skin wakes up plump, bouncy, and glass-like. Foundation applies effortlessly and lasts longer on this base</li>
-          <li><strong>Morning ice water dunk:</strong> fill a bowl with cold water + ice cubes, submerge your face for 10 seconds, repeat 3× — tightens skin, closes pores, reduces puffiness before any makeup</li>
+          <li><strong>Slugging the night before:</strong> full PM skincare → wait to absorb → thin layer of CeraVe Healing Ointment or Vaseline over everything. Wake up plump; makeup lasts longer</li>
+          <li><strong>Morning ice water dunk:</strong> ice water, face in for 10 seconds, 3× — less puffiness</li>
           <li><strong>Skin flooding:</strong> layer hydration in thin coats on light-makeup days (toner → essence → serum → moisturiser)</li>
         </ul>
       </div>

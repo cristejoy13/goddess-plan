@@ -224,7 +224,7 @@ function GoalForm({ cal, weekLabel, onSave }) {
     e.preventDefault();
     if (typed === '') {
       if (cal == null) return;
-      if (!window.confirm(`Remove your goal of ${cal.toLocaleString()} calories a day for ${weekLabel}? The calendar will stop showing what you have left for those seven days.`)) return;
+      if (!window.confirm(`Remove your goal of ${cal.toLocaleString()} calories a day for ${weekLabel}? The calendar will stop showing calories left for those seven days.`)) return;
       setWarn(''); onSave(null); setOpen(false);
       return;
     }
@@ -283,7 +283,7 @@ function GoalForm({ cal, weekLabel, onSave }) {
           {clearing ? 'Remove' : 'Save'}
         </button>
       </div>
-      <div className="ml-goal-note">All seven days of {weekLabel} will count down from this.</div>
+      <div className="ml-goal-note">All seven days count down from this.</div>
       {warn && <div className="ml-wt-warn">{warn}</div>}
     </form>
   );
@@ -496,8 +496,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
 
       {saveFailed && (
         <div className="ml-save-warn">
-          ⚠️ This device would not save that. Its storage is full or blocked, so
-          what you just typed is not written down yet.
+          ⚠️ This device could not save. What you typed is not written down yet.
         </div>
       )}
 
@@ -534,7 +533,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
           )}
           {missing > 0 && (
             <div className="ml-total-note">
-              {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories yet, so {missing === 1 ? 'it is' : 'they are'} not counted.
+              {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
             </div>
           )}
         </div>
@@ -549,7 +548,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
           <span className="ml-wt-week-lbl">Average this week</span>
           <span className="ml-wt-week-num">{formatKg(weekAvg.avg)} kg</span>
           <span className="ml-wt-week-note">
-            from {weekAvg.counted} {weekAvg.counted === 1 ? 'day' : 'days'} on the scale
+            from {weekAvg.counted} {weekAvg.counted === 1 ? 'day' : 'days'} weighed
           </span>
         </div>
       )}
@@ -685,14 +684,9 @@ export default function Meal() {
         <div className="s-tag">What you actually ate</div>
         <h2 className="s-title">My <em>Meals</em></h2>
         <p className="s-desc">
-          Tap a day and write down what you ate. The time fills itself in — tap it to change it.
-          Meals you choose in your plan land here on their own, with their time and calories.
-          Anything else you type yourself. ✏️ changes a line, 🗑 removes one, and everything stays
-          for good, on every device, until you delete it yourself.
-          Set a goal for the week and every square counts down: the number is what you have
-          LEFT to eat that day, not what you ate. Under the meals there is one box for your
-          weight in kilos, and on Sunday the square shows that day's weight beside the week's
-          average. Type what you burned too, if you know it, and it shows your deficit.
+          Tap a day to write meals, calories, weight, and burned calories.
+          Plan meals land here with time and calories; anything else is yours to type.
+          Weekly goals show calories left, and Sundays show that day&apos;s weight with the week&apos;s average.
         </p>
       </div>
 

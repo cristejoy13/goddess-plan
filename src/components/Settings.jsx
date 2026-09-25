@@ -475,21 +475,19 @@ function DeviceSyncSection() {
         <div className={`sync-health sync-health-${health.state}`} role="status">
           {health.state === 'error' ? (
             <>
-              <strong>Sync couldn’t save.</strong> Your gadget’s cloud storage is full,
-              so new changes aren’t reaching your other gadgets. Free up room by deleting
-              old diary pages or photos, then tap “Push this gadget’s data” below.
+              <strong>Sync couldn’t save.</strong> Cloud storage is full.
+              Delete old diary pages or photos, then tap “Push this gadget’s data”.
             </>
           ) : (
             <>
               <strong>Storage is filling up.</strong> You’ve used about {Math.round((health.sizeBytes / health.limitBytes) * 100)}%
-              of the space that keeps your gadgets in sync. Clearing old diary pages or photos
-              now will keep everything syncing smoothly.
+              of your sync space. Delete old diary pages or photos soon.
             </>
           )}
         </div>
       )}
       <div className="sync-note">
-        Your notes, checklist, plan, and profile are saved to the cloud and shared with every gadget below.
+        Notes, checklist, plan, and profile sync across your gadgets.
       </div>
 
       <div className="settings-section-title">Your gadgets</div>
@@ -511,7 +509,7 @@ function DeviceSyncSection() {
         })}
       </div>
       {otherCount === 0 && (
-        <div className="sync-note">No other gadgets yet. Scan the QR code below on your phone or tablet to add one.</div>
+        <div className="sync-note">No other gadgets yet. Scan the QR code on another phone or tablet.</div>
       )}
 
       <button
@@ -525,7 +523,7 @@ function DeviceSyncSection() {
           : pushState === 'error' ? 'Could not send — try again'
           : 'Push this gadget’s data to all my gadgets'}
       </button>
-      <div className="sync-note">Use this on the gadget that has the data you want everywhere — it makes the others match this one.</div>
+      <div className="sync-note">Use this on the gadget with the data you want everywhere. The others will match it.</div>
 
       <div className="settings-section-title">Add another gadget</div>
       <button className="sync-code-row" type="button" onClick={copyCode}>
@@ -535,9 +533,9 @@ function DeviceSyncSection() {
       {qrUrl && <img className="sync-qr" src={qrUrl} alt="Sync QR code" />}
       <div className="sync-help">
         <div className="sync-help-title">How to connect a new gadget</div>
-        <p>On the new phone or tablet, open the Camera app and scan this QR code from this screen. It opens the app already linked to your sync code.</p>
-        <p><strong>Using the installed app icon?</strong> Scanning opens the browser, which keeps separate data from the installed app. In that case open the installed app instead, go to Settings, and type the code into the box below.</p>
-        <p>If scanning does not work, tap the code above to copy it, then type it into the box below on the other gadget.</p>
+        <p>On the new phone or tablet, scan this QR code. It opens the linked app.</p>
+        <p><strong>Using the installed app icon?</strong> Scanning opens the browser, which has separate data. Open the installed app, go to Settings, and type the code below.</p>
+        <p>If scanning does not work, copy the code and type it on the other gadget.</p>
       </div>
       <div className="sync-join-row">
         <input

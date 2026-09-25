@@ -33,8 +33,8 @@ const RULE_BOARDS = [
     tone: 'no',
     items: [
       ['G', 'Gluten', 'skip bread, pasta, flour'],
-      ['O', 'Oils', 'steam, boil, bake, or sear in a hot dry pan'],
-      ['D', 'Dairy', 'no milk or cheese — Greek yogurt is the one exception'],
+      ['O', 'Oils', 'steam, boil, bake, or dry sear'],
+      ['D', 'Dairy', 'no milk or cheese — Greek yogurt only'],
       ['S', 'Sweet', 'fruit first, no added sugar'],
       ['S', 'Salty', 'keep seasoning light'],
       ['S', 'Stress', 'walk, breathe, sleep'],
@@ -45,8 +45,8 @@ const RULE_BOARDS = [
     emoji: '✨',
     tone: 'yes',
     items: [
-      ['P', 'Protein', 'beef, chicken, fish, eggs or tofu — any of them, any day'],
-      ['F', 'Fruit', 'banana, berries or papaya · 5 PM, to close the day'],
+      ['P', 'Protein', 'beef, chicken, fish, eggs or tofu — any day'],
+      ['F', 'Fruit', 'banana, berries or papaya · 5 PM'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -59,7 +59,7 @@ const RULE_BOARDS = [
       ['S', 'Small bites', 'put the fork down'],
       ['L', 'Last meal', '5 PM — apple & yogurt. Nothing after'],
       ['O', 'Only 80%', 'light, not stuffed'],
-      ['W', 'Walk', 'one hour after training · every single day'],
+      ['W', 'Walk', 'one hour after training · daily'],
     ],
   },
 ];
@@ -814,7 +814,7 @@ function DailyNotebook() {
                     </div>
                     <div className="daily-page-list">
                       {data.checklists.length === 0 && (
-                        <div className="daily-page-empty">No lists yet — tap ＋ to make one (groceries, to-do, packing…).</div>
+                        <div className="daily-page-empty">No lists yet — tap ＋ to make one.</div>
                       )}
                       {data.checklists.map(list => {
                         const done = list.items.filter(item => item.done).length;
@@ -861,7 +861,7 @@ function DailyNotebook() {
                       type="text"
                       value={currentChecklist.title || ''}
                       onChange={e => updateChecklistTitle(e.target.value)}
-                      placeholder="List name (e.g. Groceries, To-do, Packing)"
+                      placeholder="List name"
                     />
 
                     <form className="daily-check-add" onSubmit={addChecklistItem}>
@@ -875,7 +875,7 @@ function DailyNotebook() {
                     </form>
                     <div className="daily-check-count">{checkedCount}/{checklistItems.length} done</div>
                     <div className={`daily-note-save${storageState === 'error' ? ' is-error' : ''}`}>{offlineSaveText}</div>
-                    <div className="daily-check-hint">Tip: press and hold a list or item to delete it. Items sort into categories automatically.</div>
+                    <div className="daily-check-hint">Hold a list or item to delete. Categories sort automatically.</div>
 
                     {checklistItems.length === 0 ? (
                       <div className="daily-check-empty">No items yet.</div>
@@ -1129,19 +1129,6 @@ export default function Hero({ onNavigate }) {
       <TodayDashboard today={today} todayDayId={todayDayId} onNavigate={onNavigate} />
 
       <RuleBoard />
-
-      {/* Gentle reminders — only what the boards & timeline don't already say */}
-      <div className="hero-pfbs hero-baby-steps splash-item">
-        <div className="hero-rules-title">Gentle reminders 🌙</div>
-        <div className="hero-rules">
-          <div className="hero-rule"><span>🍽️</span><span>Every day, two meals: black coffee until noon · THE BRUNCH at 12 · apple &amp; yogurt or a smoothie at 5 · nothing after but water and tea</span></div>
-          <div className="hero-rule"><span>🚶</span><span>Every day: warm-up → stomach vacuum → glute activation on lifting days → the main workout → one hour of walking. The vacuum and the walk are not choices; the rope is only an extra on top of the walk.</span></div>
-          <div className="hero-rule"><span>🏋️</span><span>3 glute days of 3 lifts each (Mon · Wed · Fri) · arms, back &amp; shoulders Tuesday · the core and the videos Thursday — core never lands on a glute day · weekend: Jessica Diễm first, then sprints Saturday and the swim Sunday</span></div>
-          <div className="hero-rule"><span>🤍</span><span>Arms, back &amp; shoulders: light weight, high reps, slow control — strong and pain-free, never bulky. Stop any move that hurts past 2/10.</span></div>
-          <div className="hero-rule"><span>😴</span><span>Sleep 7.5–9 hours — glutes grow overnight</span></div>
-          <div className="hero-rule hero-rule-bored"><span>💧</span><span>Craving? Water first, wait 10 minutes. Still hungry — eat slowly. Bored — walk, stretch, or read a page.</span></div>
-        </div>
-      </div>
     </div>
   );
 }

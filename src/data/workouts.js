@@ -45,13 +45,13 @@ export function getCurrentSprintProtocol() {
 // day.
 
 // Shared warm-up and shared finisher.
-const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves · loosen every major muscle before you train · dynamic swings then gentle holds' };
+const WARMUP = { name: 'Full-Body Stretch Warm-Up', detail: '5–8 min · neck, shoulders, chest, back, hips, hamstrings, calves' };
 // The walk is on all seven days now, after the main workout, and it is no
 // longer a choice against the rope. It was "walk OR rope, pick one" before; it
 // is simply what every day ends with.
-const WALK_HOUR = { name: 'One-Hour Walk', detail: '60 min · EVERY day, after the main workout · flat easy pace, relaxed breathing, podcast if you like · an hour of easy walking burns fat without touching your recovery, which is the whole reason it is an hour and not a run' };
+const WALK_HOUR = { name: 'One-Hour Walk', detail: '60 min · EVERY day, after the main workout · flat easy pace' };
 // Kept as an extra for a day you want to sweat, not as a swap for the walk.
-const JUMP_ROPE = { name: 'Jump Rope — extra, if you want it', detail: '10–20 min · steady, light on the balls of your feet · an extra on top of the walk on a day you want to sweat, not a replacement for it · skip it entirely and the day is still complete' };
+const JUMP_ROPE = { name: 'Jump Rope — extra, if you want it', detail: '10–20 min · steady, light feet · extra sweat, not a walk replacement' };
 
 // ── VIDEOS ── Two channels only.
 // PILATES BY IZZY — 4 core workouts + her full CORE WORKOUTS playlist.
@@ -60,7 +60,7 @@ const IZZY_ABS = [
   { name: 'Abs (Izzy) — 20 Min Ab Burn',                 detail: 'PILATES BY IZZY · no-equipment core, abs & waist', url: 'https://www.youtube.com/watch?v=TV1yswlJnIY' },
   { name: 'Abs (Izzy) — 15 Min Deep Core',               detail: 'PILATES BY IZZY · intermediate–advanced deep core, optional equipment', url: 'https://www.youtube.com/watch?v=cPVrEm3C-N4' },
   { name: 'Abs (Izzy) — 15 Min Core Strength',           detail: 'PILATES BY IZZY · 25 Day Challenge S2 Day 2 · intermediate core', url: 'https://www.youtube.com/watch?v=mn8uPZFjycY' },
-  { name: 'Abs (Izzy) — CORE WORKOUTS Playlist',         detail: 'PILATES BY IZZY · her whole core playlist · open this to pick any other core session by mood', url: 'https://www.youtube.com/playlist?list=PLefYzZnhersYvg6wIbgePfGmFs_nB6yH7' },
+  { name: 'Abs (Izzy) — CORE WORKOUTS Playlist',         detail: 'PILATES BY IZZY · whole core playlist · pick by mood', url: 'https://www.youtube.com/playlist?list=PLefYzZnhersYvg6wIbgePfGmFs_nB6yH7' },
 ];
 
 // Move With Nicole — 5 short 30-minute full-body workouts.
@@ -84,8 +84,8 @@ const H = (heading, hint, tone) => ({ heading, hint, tone });
 // so the session gets harder without you editing it. The easy run stays on
 // Saturday too, as the gentler option on a day the legs are not up to sprints.
 // Sunday has no run at all any more.
-const RUN_WARMUP = { name: 'Run Warm-Up', detail: '5 min · brisk walk building to a slow jog · ankle circles, leg swings, 3 × 20 m build-ups · never start a run cold' };
-const RUN_EASY = { name: 'Easy Run', detail: '20–30 min · conversational pace — if you cannot talk, slow down · flat route, land soft under your hips, shoulders loose · builds your engine without eating into leg recovery for Monday' };
+const RUN_WARMUP = { name: 'Run Warm-Up', detail: '5 min · brisk walk building to a slow jog · ankle circles, leg swings, 3 × 20 m build-ups' };
+const RUN_EASY = { name: 'Easy Run', detail: '20–30 min · conversational pace · if you cannot talk, slow down' };
 const RUN_INTERVALS = (() => {
   const sp = getCurrentSprintProtocol();
   return {
@@ -93,9 +93,9 @@ const RUN_INTERVALS = (() => {
     detail: `${sp.reps} rounds · ${sp.sprint} sec hard, ${sp.rest} sec easy walk between · hold form over speed; the moment your form breaks, that round was your last · this protocol steps up on its own every challenge month (${sp.month})`,
   };
 })();
-const REST_WALK = { name: '20-Minute Walk — instead of the run', detail: '20 min · the alternative to running today, not an extra lap after it · no pace target, sunshine, podcast, whatever you like · take this on any weekend your legs still feel Friday' };
-const SWIM = { name: 'Swimming', detail: '30–45 min · Sunday only, straight after the Jessica Diễm video · easy laps, no racing the clock · water carries your weight, so this adds work without adding anything for your legs to recover from' };
-const BIKE = { name: 'Biking — an extra, if you want it', detail: '45–60 min · Sunday only, later in the day · steady easy pace, flat route · an extra on top of the swim, not instead of it · gentle on the legs, and it keeps Monday fresh' };
+const REST_WALK = { name: '20-Minute Walk — instead of the run', detail: '20 min · use instead of running · no pace target · pick this if legs still feel Friday' };
+const SWIM = { name: 'Swimming', detail: '30–45 min · Sunday only, straight after the Jessica Diễm video · easy laps, no racing' };
+const BIKE = { name: 'Biking — an extra, if you want it', detail: '45–60 min · Sunday only, later in the day · steady easy pace · extra, not instead of swim' };
 // There is no long stretch on the weekend any more. The warm-up at the top of
 // each weekday still opens with a full-body stretch, so stretching has not
 // left the plan — it is just no longer a session of its own. The weekend days
@@ -104,7 +104,7 @@ const BIKE = { name: 'Biking — an extra, if you want it', detail: '45–60 min
 // workout. It used to be Thursday's alone, tucked inside that day's warm-up.
 // It costs about two minutes, needs no equipment and does the one thing the
 // rest of the plan cannot: it pulls the waist IN, where crunches push it out.
-const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · EVERY day, after the warm-up and before the main workout · this pulls the waist in where crunches push it out, which is why it comes first and not last' };
+const VACUUM = { name: 'Stomach Vacuum', detail: '4 × 20 sec hold · exhale fully, pull belly button in and up, breathe shallow · EVERY day, after the warm-up, before the main workout' };
 // Its own section, so it reads the same on every day of the week.
 const VACUUM_SEC = [
   H('🫧 Stomach Vacuum', 'Every day, before the main workout.'),
@@ -132,17 +132,17 @@ const ABS_MAIN = [
 // the weekday work: glutes stay Monday, Wednesday and Friday, arms, back and
 // shoulders Tuesday, the core and the other videos Thursday.
 const JESSICA_DIEM = [
-  { name: 'Jessica Diễm — her channel', detail: 'Her page. Everything she posts is here — workouts, clean-eating and the daily vlogs', url: 'https://www.youtube.com/@Jessicadiem1122' },
-  { name: 'Jessica Diễm — all her videos, newest first', detail: 'Her programme started Thursday 10 September 2026 · scroll to that day and work forward in order, one video per weekend day, so you follow it the way she laid it out', url: 'https://www.youtube.com/@Jessicadiem1122/videos' },
+  { name: 'Jessica Diễm — her channel', detail: 'Her workouts, clean-eating videos, and daily vlogs.', url: 'https://www.youtube.com/@Jessicadiem1122' },
+  { name: 'Jessica Diễm — all her videos, newest first', detail: 'Programme started Thursday 10 September 2026 · move forward, one video per weekend day', url: 'https://www.youtube.com/@Jessicadiem1122/videos' },
 ];
 
 // ── SHOULDERS ── Tuesday's first half. The shape of a shoulder comes from the
 // side and rear heads, not from pressing heavy, so the lateral raise leads and
 // the press stays light. Moderate on purpose: straight shoulders, not big ones.
 const SHOULDERS = [
-  { name: '1. Dumbbell Lateral Raise', detail: 'SHOULDERS 1 of 3 · 3 × 15 · light dumbbells, elbows soft, lift to shoulder height only, lower for 3 sec · SIDE DELT — this is the one that gives a shoulder its shape · if you have to swing it, it is too heavy' },
-  { name: '2. Seated Dumbbell Shoulder Press', detail: 'SHOULDERS 2 of 3 · 3 × 12 · seated, back supported, press from chin height to just short of locked, lower for 3 sec · FRONT + SIDE DELT · light: this is for shape, not for a bigger press' },
-  { name: '3. Band Pull-Apart', detail: 'SHOULDERS 3 of 3 · 3 × 20 · light band, arms straight at chest height, pull apart, hold the squeeze 1 sec, return slow · REAR DELT — this is what pulls your shoulders back and holds them there · never feel it in your neck' },
+  { name: '1. Dumbbell Lateral Raise', detail: 'SHOULDERS 1 of 3 · 3 × 15 · light dumbbells, elbows soft, lift to shoulder height only, lower for 3 sec · SIDE DELT · if you swing it, go lighter' },
+  { name: '2. Seated Dumbbell Shoulder Press', detail: 'SHOULDERS 2 of 3 · 3 × 12 · seated, back supported, press from chin height to just short of locked, lower for 3 sec · FRONT + SIDE DELT · keep it light' },
+  { name: '3. Band Pull-Apart', detail: 'SHOULDERS 3 of 3 · 3 × 20 · light band, arms straight at chest height, pull apart, hold the squeeze 1 sec, return slow · REAR DELT · never feel it in your neck' },
 ];
 
 // ── ARMS ── Tuesday's second half. Two moves for the back of the arm, one for
@@ -150,8 +150,8 @@ const SHOULDERS = [
 // the arm is what she is actually after.
 const ARMS = [
   { name: '6. Overhead Triceps Extension', detail: 'ARMS 1 of 3 · 3 × 12 · one dumbbell in both hands overhead, elbows close to your ears, lower behind your head for 3 sec, press back up · TRICEPS, long head — the back of the arm' },
-  { name: '7. Dumbbell Kickback', detail: 'ARMS 2 of 3 · 3 × 15 each arm · hinge to 45°, upper arm pinned to your side, straighten the elbow back, hold the squeeze 1 sec · TRICEPS · light — this one is all squeeze, no weight' },
-  { name: '8. Dumbbell Bicep Curl', detail: 'ARMS 3 of 3 · 3 × 12 · elbows pinned to your sides, curl without swinging, lower for 3 sec · BICEPS · the slow lower is where the work is' },
+  { name: '7. Dumbbell Kickback', detail: 'ARMS 2 of 3 · 3 × 15 each arm · hinge to 45°, upper arm pinned to your side, straighten the elbow back, hold the squeeze 1 sec · TRICEPS · light, all squeeze' },
+  { name: '8. Dumbbell Bicep Curl', detail: 'ARMS 3 of 3 · 3 × 12 · elbows pinned to your sides, curl without swinging, lower for 3 sec · BICEPS' },
 ];
 
 // ── BACK & CHEST ── Part of Tuesday's main workout, between the shoulders and
@@ -227,7 +227,7 @@ const SLOT_DEFS = {
 // The same two slots every day, in clock order.
 export function mealSlots() {
   return [
-    { ...SLOT_DEFS.post, label: 'Brunch · Meal A or Meal B', hint: 'ONE of the two · A is the egg plate, B is beef or chicken · this is the meal the day is built around' },
+    { ...SLOT_DEFS.post, label: 'Brunch · Meal A or Meal B', hint: 'ONE of the two · A eggs, B beef or chicken · big meal of the day' },
     { ...SLOT_DEFS.noon, label: 'Apple & Yogurt or Smoothie', hint: 'Apple slices with yogurt · or a smoothie: 2–3 fruits with chia, granola on top' },
   ];
 }
@@ -257,42 +257,42 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🍳', slot: 'post', main: true, protein: 'egg', name: 'Meal A · Egg Plate', cal: 630, pro: 50,
     ingredients: '2 whole eggs · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · a small bowl of Greek yogurt',
     steps: [
-      'Boil or bake the sweet potato first — 20 min boiled, 40 min at 200°C baked, which makes it far sweeter.',
-      'Wilt the spinach in a dry non-stick pan for a minute — it lets out its own water, which is all you need.',
-      'Pour the 2 whole eggs and 3 egg whites over it and fold slowly on low heat. No oil: low and slow in a non-stick pan is what keeps eggs soft.',
+      'Boil or bake the sweet potato first — 20 min boiled, 40 min at 200°C baked.',
+      'Wilt the spinach in a dry non-stick pan for a minute.',
+      'Pour the 2 whole eggs and 3 egg whites over it. Fold slowly on low heat, no oil.',
       'Plate the eggs with the split sweet potato, the kimchi and the papaya alongside.',
-      'Scatter the chia and the pumpkin or sesame seeds over the top, and put the Greek yogurt in its own small bowl.',
-      'This plate on its own is 50 g of protein — your whole daily floor in one meal.',
+      'Scatter chia and pumpkin or sesame seeds over the top. Keep yogurt separate.',
+      'This plate gives 50 g of protein.',
     ] },
   { emoji: '🍳', slot: 'post', main: true, protein: 'egg', name: 'Meal A · Egg Plate — lighter', cal: 440, pro: 29,
     ingredients: '1 whole egg · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds',
     steps: [
-      'The same plate with one whole egg instead of two, and no yogurt — the yogurt goes in your other meal instead.',
+      'Same plate, with one whole egg instead of two. No yogurt here.',
       'Boil or bake the sweet potato.',
-      'Wilt the spinach in a dry non-stick pan, then pour the egg and whites over and fold slowly.',
+      'Wilt the spinach, then fold in the egg and whites.',
       'Plate with the kimchi and papaya, and scatter the chia and seeds over.',
-      'Take this version on the days you want more room at 5 PM. It saves you 190 calories and costs you 21 g of protein.',
+      'Use this when you want more room at 5 PM. Saves 190 calories; costs 21 g of protein.',
     ] },
 
   { emoji: '🥩', slot: 'post', main: true, protein: 'beef', name: 'Meal B · Beef Plate', cal: 565, pro: 56,
     ingredients: '100 g lean beef · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · a small bowl of Greek yogurt · 1 tbsp pumpkin seeds or chia',
     steps: [
       'Boil or bake the sweet potato while you get everything else ready.',
-      'Slice the beef thin across the grain — across the grain is what makes lean beef tender instead of chewy.',
-      'Sear it in a hot dry non-stick pan, one layer, and leave it alone for a full minute before you stir. A properly hot pan needs no oil.',
-      'Add the sliced bell pepper and spinach for the last two minutes, just until the spinach wilts.',
-      'Plate with the chopped tomato, cucumber and kimchi on the side, the yogurt in its own bowl, and the seeds scattered over.',
-      'Lean beef is where your iron and zinc come from, which a 1,000-calorie day otherwise runs short on.',
+      'Slice the beef thin across the grain.',
+      'Sear in one layer in a hot dry non-stick pan. Leave it for a full minute.',
+      'Add the sliced bell pepper and spinach for the last two minutes.',
+      'Plate with tomato, cucumber, kimchi, yogurt, and seeds.',
+      'Lean beef adds iron and zinc to a 1,000-calorie day.',
     ] },
   { emoji: '🍗', slot: 'post', main: true, protein: 'chicken', name: 'Meal B · Chicken Plate', cal: 550, pro: 57,
     ingredients: '100 g chicken breast · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · a small bowl of Greek yogurt · 1 tbsp pumpkin seeds or chia',
     steps: [
       'Boil or bake the sweet potato first.',
-      'Pat the chicken dry with kitchen paper — wet chicken steams instead of browning, and that is the whole difference.',
-      'Grill or sear it 4–5 min a side in a hot dry pan without moving it, until the juices run clear.',
+      'Pat the chicken dry with kitchen paper.',
+      'Grill or sear it 4–5 min a side in a hot dry pan, until juices run clear.',
       'Add the bell pepper and spinach to the pan for the last two minutes.',
-      'Plate with the tomato, cucumber and kimchi, the yogurt in its own bowl, and the seeds over the top.',
-      'Slightly leaner than the beef and almost the same protein — take the beef when you want the iron, the chicken when you want the calories back.',
+      'Plate with tomato, cucumber, kimchi, yogurt, and seeds.',
+      'Chicken is leaner; beef gives more iron.',
     ] },
   { emoji: '🥩', slot: 'post', main: true, protein: 'beef', name: 'Meal B · Beef Plate — lighter', cal: 445, pro: 41,
     ingredients: '100 g lean beef · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · 1 tbsp pumpkin seeds or chia',
@@ -301,7 +301,7 @@ export const RECOMMENDED_MEALS = [
       'Sear the thin-sliced beef in a hot dry pan, one layer, undisturbed for a minute.',
       'Bell pepper and spinach in for the last two minutes.',
       'Plate with the sweet potato, the chopped veg and the kimchi, seeds over the top.',
-      'Yogurt in one meal, not two — that single change is 120 calories, and it is the easiest cut in the plan.',
+      'Yogurt in one meal, not two. That saves 120 calories.',
     ] },
   { emoji: '🍗', slot: 'post', main: true, protein: 'chicken', name: 'Meal B · Chicken Plate — lighter', cal: 430, pro: 42,
     ingredients: '100 g chicken breast · 1 sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber · kimchi · 1 tbsp pumpkin seeds or chia',
@@ -325,11 +325,11 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🍠', slot: 'post', main: true, protein: 'fish', name: 'Fish, Sweet Potato, Eggs & Yogurt', cal: 645, pro: 59,
     ingredients: '150 g white fish · 1 medium sweet potato · 2 eggs · a small bowl of Greek yogurt · kimchi · ½ cucumber · 1 banana',
     steps: [
-      'Put the sweet potato on first — boil it 20 min, or bake it 40 min at 200°C if you have the time, because baking makes it far sweeter.',
+      'Put the sweet potato on first — boil it 20 min, or bake it 40 min at 200°C.',
       'Boil the eggs 8 min in the same pot, then cool them under cold water so they peel clean.',
       'Steam or bake the fish 8–10 min, until it flakes with a fork.',
-      'Plate the fish, the split sweet potato and the halved eggs, with the kimchi and sliced cucumber on the side.',
-      'Eat the protein first, the sweet potato next, then the yogurt and the banana last. This is your biggest plate and your highest protein — it is the default for a reason.',
+      'Plate the fish, sweet potato, eggs, kimchi, and cucumber.',
+      'Eat protein first, sweet potato next, then yogurt and banana. Biggest plate, highest protein.',
     ] },
   { emoji: '🥚', slot: 'post', main: true, protein: 'egg', name: 'Eggs, Sweet Potato & Yogurt', cal: 600, pro: 40,
     ingredients: '3 eggs · 1 medium sweet potato · a small bowl of Greek yogurt · kimchi · ½ cucumber · 1 tomato · 1 banana',
@@ -347,23 +347,23 @@ export const RECOMMENDED_MEALS = [
       'Drain the tuna completely — pour off every drop, that liquid is most of the salt.',
       'Flake the tuna into a bowl with the chopped tomato and cucumber.',
       'Add the halved eggs and the sweet potato cut into chunks, and toss gently.',
-      'The quickest big plate there is — about fifteen minutes, and the most protein for the fewest calories on this list.',
+      'Quickest big plate — about fifteen minutes, with high protein.',
     ] },
   { emoji: '🍲', slot: 'post', main: true, protein: 'tofu', name: 'Tofu, Sweet Potato & Eggs', cal: 530, pro: 36,
     ingredients: '150 g firm tofu · 1 medium sweet potato · 2 eggs · kimchi · ½ cucumber · 1 tomato · 1 banana',
     steps: [
-      'Press the tofu 10 min between two plates with a weight on top — this is what stops it going soggy.',
+      'Press the tofu 10 min between two plates with a weight on top.',
       'Boil or bake the sweet potato, and boil the eggs 8 min.',
-      'Sear the tofu slices in a dry non-stick pan, 3 min a side, until golden. No oil; a hot dry pan is enough.',
+      'Sear tofu in a dry non-stick pan, 3 min a side, until golden.',
       'Plate everything with the kimchi and the chopped veg, banana last.',
     ] },
   { emoji: '🐟', slot: 'post', main: true, protein: 'fish', name: 'Salmon, Sweet Potato & Greens', cal: 585, pro: 39,
     ingredients: '150 g salmon · 1 medium sweet potato · a big handful of spinach or broccoli · kimchi · 1 banana',
     steps: [
-      'Bake the sweet potato and the salmon together at 200°C — potato 40 min, salmon in for the last 12–14 min, skin down.',
+      'Bake at 200°C — potato 40 min, salmon for the last 12–14 min, skin down.',
       'Steam the spinach or broccoli 3–4 min while they finish.',
       'Plate with the kimchi on the side and squeeze calamansi over the fish.',
-      'The fattiest plate here, and the one worth having on a heavy glute day. Salmon fat is the good kind, but it is the reason this one costs more calories than the white fish plate.',
+      'Fattiest plate here. Best for a heavy glute day.',
     ] },
   { emoji: '💪', slot: 'post', main: true, protein: 'fish', name: 'The Glute-Day Plate', cal: 725, pro: 60,
     ingredients: '150 g white fish · 1 medium sweet potato · 2 eggs · a small bowl of Greek yogurt · ¼ avocado · kimchi · cucumber · 1 banana',
@@ -371,7 +371,7 @@ export const RECOMMENDED_MEALS = [
       'The Fish, Sweet Potato, Eggs & Yogurt plate, with a quarter of an avocado added.',
       'Cook it exactly the same way: sweet potato on first, eggs 8 min, fish steamed 8–10 min.',
       'Slice the avocado on at the end.',
-      'Take this on Monday, Wednesday and Friday — the days you lift. It puts your day nearer 1,080 calories than 1,000, and on a lifting day that is the right trade.',
+      'Take this on Monday, Wednesday and Friday. It puts your day near 1,080 calories, not 1,000.',
     ] },
 
   // ── SMALLER BRUNCH PLATES ──────────────────────────────────────────────
@@ -384,9 +384,9 @@ export const RECOMMENDED_MEALS = [
     ingredients: '150 g fish (any) · a small bowl of kimchi · ½ cucumber · 1 banana',
     steps: [
       'Steam or bake the fish until it flakes — 8–10 min steamed, 12–14 min at 200°C.',
-      'Spoon the kimchi onto the side of the plate. A small bowl is plenty; it is salty, so it is a condiment, not a serving.',
+      'Spoon kimchi on the side. A small bowl is plenty.',
       'Slice the cucumber into thick rounds.',
-      'Eat the fish and kimchi first, then the cucumber, and the banana last. This is the standard after-training plate.',
+      'Eat fish and kimchi first, then cucumber, then banana.',
     ] },
   { emoji: '🥬', slot: 'post', protein: 'egg', name: 'Eggs, Kimchi & Cucumber', cal: 300, pro: 21,
     ingredients: '2–3 eggs · a small bowl of kimchi · ½ cucumber · 1 banana',
@@ -450,15 +450,15 @@ export const RECOMMENDED_MEALS = [
       'Lower the eggs into boiling water and cook 8 min for firm yolks.',
       'Cool them under cold water — that makes them peel cleanly.',
       'Slice the avocado and tomato onto the plate.',
-      'Halve the eggs over the top. Protein plus good fat, the perfect post-training plate.',
+      'Halve the eggs over the top. Protein plus good fat.',
     ] },
   { emoji: '🥚', slot: 'post', protein: 'egg', name: 'Egg & Tomato Scramble', cal: 260, pro: 20,
     ingredients: '2–3 eggs · 2 tomatoes · spring onion',
     steps: [
-      'Chop the tomatoes and cook them in a dry non-stick pan until they soften and give up their juice.',
+      'Chop the tomatoes and cook them in a dry non-stick pan until soft.',
       'Beat the eggs and pour them in over low heat.',
-      'Fold slowly with a spatula — low and slow keeps them soft.',
-      'Take it off the heat while still slightly wet, top with spring onion. No oil needed, the tomato juice is enough.',
+      'Fold slowly with a spatula.',
+      'Take it off the heat slightly wet. Top with spring onion. No oil.',
     ] },
   { emoji: '🥚', slot: 'post', protein: 'egg', name: 'Egg White Omelette & Veggies', cal: 220, pro: 17,
     ingredients: '4 egg whites · bell pepper · tomato · spinach',
@@ -466,12 +466,12 @@ export const RECOMMENDED_MEALS = [
       'Chop the bell pepper, tomato, and spinach small.',
       'Soften them in a dry non-stick pan for 2 min.',
       'Pour the egg whites over and cover the pan for 3 min on low.',
-      'Fold in half once set. Light protein — pair with avocado if you want more fat.',
+      'Fold in half once set. Add avocado if you want more fat.',
     ] },
   { emoji: '🍲', slot: 'post', protein: 'tofu', name: 'Tofu & Rice Bowl', cal: 370, pro: 21,
     ingredients: '150 g firm tofu · 1 cup cooked rice · ginger · spring onion',
     steps: [
-      'Press the tofu 10 min between two plates with a weight on top to squeeze out the water — this is what stops it going soggy.',
+      'Press the tofu 10 min between two plates with a weight on top.',
       'Cut into cubes and sear in a dry non-stick pan until golden on two sides.',
       'Cook the rice and spoon the tofu over it.',
       'Top with grated ginger and spring onion.',
@@ -498,7 +498,7 @@ export const RECOMMENDED_MEALS = [
       'Press the tofu 10 min, then slice it thick.',
       'Sear the slices in a dry non-stick pan, 3 min a side, until golden.',
       'Fan the avocado and cucumber alongside.',
-      'Squeeze calamansi over everything. Plant protein plus your fats in one plate.',
+      'Squeeze calamansi over everything.',
     ] },
 
   { emoji: '🐟', slot: 'post', protein: 'fish', name: 'Grilled Tilapia & Tomato Salad', cal: 340, pro: 33,
@@ -514,14 +514,14 @@ export const RECOMMENDED_MEALS = [
     steps: [
       'Cook the rice.',
       'Lay the fish on a plate, cover it with plenty of sliced ginger, and steam 8–10 min.',
-      'Spoon the steaming juices from the plate over the rice — that is all the flavour you need, no oil.',
+      'Spoon the steaming juices over the rice. No oil.',
       'Top with spring onion and calamansi. Glute-day meal.',
     ] },
 
   { emoji: '🍠', slot: 'post', protein: 'egg', name: 'Egg & Sweet Potato', cal: 320, pro: 15,
     ingredients: '2 eggs · 1 medium sweet potato',
     steps: [
-      'Bake the sweet potato at 200°C for 40 min, or boil it 20 min if you are in a hurry — baking makes it far sweeter.',
+      'Bake the sweet potato at 200°C for 40 min, or boil it 20 min if you are in a hurry.',
       'Boil the eggs 8 min alongside.',
       'Split the sweet potato open and halve the eggs over it.',
       'Eat it slowly at sunset. Nothing after this but tea.',
@@ -532,7 +532,7 @@ export const RECOMMENDED_MEALS = [
       'Boil the eggs 8 min and cool them under cold water.',
       'Peel and halve them.',
       'Eat with the banana alongside.',
-      'The lightest version of your last meal — good on a night you are not very hungry.',
+      'Lightest version for a less-hungry night.',
     ] },
   { emoji: '🍠', slot: 'post', protein: 'egg', name: 'Egg, Sweet Potato & Banana', cal: 400, pro: 16,
     ingredients: '2 eggs · 1 small sweet potato · 1 banana',
@@ -540,21 +540,21 @@ export const RECOMMENDED_MEALS = [
       'Bake or boil the sweet potato until soft.',
       'Boil the eggs 8 min.',
       'Plate all three together.',
-      'The biggest version — take this one after your heaviest glute days.',
+      'Biggest version. Use after heavy glute days.',
     ] },
   { emoji: '🥚', slot: 'post', protein: 'egg', name: 'Egg & Mashed Sweet Potato', cal: 330, pro: 15,
     ingredients: '2 eggs · 1 medium sweet potato · cinnamon',
     steps: [
       'Boil the sweet potato 20 min until a fork slides straight through.',
-      'Mash it with a fork — no butter, no milk, it is sweet enough on its own.',
+      'Mash it with a fork — no butter, no milk.',
       'Boil the eggs 8 min and chop them through the mash.',
-      'Add a pinch of cinnamon. Warm and filling for the night.',
+      'Add a pinch of cinnamon.',
     ] },
   { emoji: '🍌', slot: 'post', protein: 'egg', name: 'Egg & Banana Mash', cal: 290, pro: 15,
     ingredients: '2 eggs · 1 ripe banana · ½ small sweet potato · cinnamon',
     steps: [
       'Boil the sweet potato until soft and mash it warm.',
-      'Mash a very ripe banana through it — the riper it is, the sweeter this gets.',
+      'Mash a very ripe banana through it.',
       'Boil the eggs 8 min and eat them alongside.',
       'Cinnamon on top. Nothing after sunset but tea.',
     ] },
@@ -568,7 +568,7 @@ export const RECOMMENDED_MEALS = [
       'Boil the egg 8 min while the fish steams or bakes — they finish at about the same time.',
       'Steam or bake the fish until it flakes, 8–10 min steamed or 12–14 min at 200°C.',
       'Kimchi on the side, cucumber sliced thick alongside.',
-      'Fish and egg first, then the cucumber, then the banana. This is the biggest protein plate in the plan — take it after Thursday and Monday.',
+      'Fish and egg first, then cucumber, then banana. Biggest protein plate in the plan.',
     ] },
   { emoji: '🍲', slot: 'post', protein: 'tofu', name: 'Tofu, Egg & Kimchi', cal: 375, pro: 25,
     ingredients: '150 g firm tofu · 1 egg · a small bowl of kimchi · ½ cucumber · 1 banana',
@@ -588,25 +588,25 @@ export const RECOMMENDED_MEALS = [
     ingredients: '1 cup berries · tea',
     steps: [
       'A cup of berries, fresh or thawed from frozen.',
-      'Tea alongside — no milk, no sugar. Keep coffee for the morning; at five it will still be in you at bedtime.',
-      'The lightest plate on the whole list, at about 70 calories.',
-      'The smallest way to close the day. Nothing after it but water.',
+      'Tea alongside — no milk, no sugar. Keep coffee for morning.',
+      'Lightest plate, at about 70 calories.',
+      'Smallest close. Nothing after but water.',
     ] },
   { emoji: '🍈', slot: 'noon', name: 'Papaya & Tea', cal: 57, pro: 1,
     ingredients: '1 cup papaya · tea',
     steps: [
       'Scoop the papaya, discarding the seeds.',
       'Tea alongside.',
-      'The gentlest one on your stomach, and the cheapest in calories — about 55.',
-      'Good on an evening your brunch was a big one and you only want something in your hands.',
+      'Gentle on your stomach, about 55 calories.',
+      'Good after a big brunch.',
     ] },
   { emoji: '🍌', slot: 'noon', name: 'Banana, Berries & Papaya', cal: 230, pro: 3,
     ingredients: '1 banana · ½ cup berries · ½ cup papaya · tea',
     steps: [
-      'All three of your fruits on one plate — nothing blended, nothing added.',
+      'All three fruits on one plate — nothing blended, nothing added.',
       'Tea alongside.',
-      'The biggest fruit plate at about 230 calories. Take this on an evening you are genuinely hungry rather than just bored.',
-      'Eat it slowly. It should take twenty minutes, not five.',
+      'Biggest fruit plate, about 230 calories. Use when truly hungry.',
+      'Eat slowly. Twenty minutes, not five.',
     ] },
 
   // ── 5:00 PM · fruit, and not much of it ────────────────────────────────
@@ -615,42 +615,42 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🍌', slot: 'noon', name: 'Banana & Tea', cal: 100, pro: 1,
     ingredients: '1 banana · tea',
     steps: [
-      'Ripe and spotted is better — the starch has turned to sugar, so it tastes sweeter for the same calories.',
+      'Ripe and spotted tastes sweeter for the same calories.',
       'Tea alongside, no milk, no sugar.',
-      'About 100 calories, which leaves plenty of room under the ceiling.',
-      'The simplest close there is.',
+      'About 100 calories.',
+      'Simplest close.',
     ] },
   { emoji: '🍌', slot: 'noon', name: 'Two Bananas & Tea', cal: 190, pro: 3,
     ingredients: '2 bananas · tea',
     steps: [
-      'For the evenings after a heavy Monday or Friday, or any day you are truly hungry.',
+      'For after heavy Monday or Friday, or any truly hungry day.',
       'Eat both bananas, then the tea.',
-      'Still nothing else after — the closing is what makes the window work.',
+      'Still nothing else after.',
       'If two feels heavy before bed, drop back to one.',
     ] },
   { emoji: '🥣', slot: 'noon', name: 'Overnight Yogurt Bowl', cal: 320, pro: 33,
     ingredients: 'yogurt · 1 scoop protein powder · 1 tsp psyllium husk · 10 blueberries',
     steps: [
-      'The night before: stir the protein powder into the yogurt until there are no dry pockets left.',
-      'Add the psyllium husk and mix straight away — it thickens fast, so it has to go in moving.',
+      'The night before: stir protein powder into the yogurt until smooth.',
+      'Add the psyllium husk and mix straight away.',
       'Drop the 10 blueberries on top, cover, and leave it in the fridge overnight.',
-      'Eat it cold at 5 PM. Drink a full glass of water with it — psyllium needs the water to work.',
+      'Eat it cold at 5 PM. Drink a full glass of water with it.',
     ] },
   { emoji: '🍠', slot: 'noon', name: 'Sweet Potato & Tea', cal: 180, pro: 2,
     ingredients: '1 small sweet potato (cooked earlier) · tea',
     steps: [
       'Boil or steam it while you cook your brunch and leave it in the fridge.',
-      'Eat it cold or warmed — cold sweet potato is actually gentler on your gut.',
-      'Slower carbs than a banana, so it holds you through the evening better than fruit does.',
-      'Good on the days a banana leaves you hunting the kitchen at nine.',
+      'Eat it cold or warmed.',
+      'Slower carbs than a banana.',
+      'Good when fruit is not enough.',
     ] },
   { emoji: '🥭', slot: 'noon', name: 'Mango & Banana Plate', cal: 190, pro: 2,
     ingredients: '1 banana · ½ cup mango',
     steps: [
       'Slice both onto a plate — nothing blended, nothing added.',
-      'The sweetest plate on the list, which is why it works as the last one.',
+      'Sweetest plate on the list.',
       'Tea alongside if you want it.',
-      'Eat it slowly and let that be the end of the day.',
+      'Eat it slowly. End there.',
     ] },
 
   // ── THE BIG BOWLS · 5:00 PM · the filling end of the day ───────────────
@@ -660,10 +660,10 @@ export const RECOMMENDED_MEALS = [
   { emoji: '💪', slot: 'noon', name: 'Protein Bowl · Berries & Banana', cal: 470, pro: 32,
     ingredients: '1 cup frozen mixed berries · 1 frozen banana · 1 scoop protein powder · 3 tbsp granola · 1 tbsp chia · banana to top',
     steps: [
-      'Frozen berries and frozen banana in the blender with the scoop of protein powder and a splash of water.',
-      'Blend thick — push the fruit down with a spoon rather than adding more water, or the powder makes it foamy.',
+      'Blend frozen berries, frozen banana, protein powder, and a splash of water.',
+      'Blend thick — push fruit down instead of adding more water.',
       'Spoon into a bowl and stir the chia through while it is still soft.',
-      'Granola over the top and sliced banana across it. This one bowl is about a third of your whole day’s protein.',
+      'Granola over the top and sliced banana across it.',
     ] },
   { emoji: '💪', slot: 'noon', name: 'Protein Bowl · Mango & Banana', cal: 480, pro: 32,
     ingredients: '1 cup frozen mango · 1 frozen banana · 1 scoop protein powder · 3 tbsp granola · 1 tbsp chia · berries to top',
@@ -671,15 +671,15 @@ export const RECOMMENDED_MEALS = [
       'Mango and banana frozen, protein powder in with them, only a splash of water.',
       'Blend until it holds a spoon upright.',
       'Spoon into a bowl and stir the chia through.',
-      'Granola on top, then the berries. Sweeter than the berry one — good on a heavy training day.',
+      'Granola on top, then berries. Good on a heavy training day.',
     ] },
   { emoji: '🥛', slot: 'noon', name: 'Protein Bowl · Yogurt & Fruit', cal: 430, pro: 38,
     ingredients: 'a bowl of Greek yogurt · 1 scoop protein powder · 1 frozen banana · ½ cup berries · 3 tbsp granola · 1 tbsp chia',
     steps: [
-      'Stir the protein powder into the Greek yogurt first, until there are no dry pockets left.',
+      'Stir protein powder into the Greek yogurt until smooth.',
       'Blend the frozen banana on its own until creamy, then fold it through the yogurt.',
       'Scatter the berries over and stir the chia in.',
-      'Granola last so it stays crunchy. The highest-protein bowl on the list — this one alone is most of your 50 grams.',
+      'Granola last so it stays crunchy. Highest-protein bowl on the list.',
     ] },
 
   // ── SMOOTHIE BOWLS · 5:00 PM ───────────────────────────────────────────
@@ -689,10 +689,10 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Mango & Banana', cal: 380, pro: 8,
     ingredients: '1 cup frozen mango · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries & banana to top',
     steps: [
-      'Two or three frozen fruits in the blender, never more — that is what keeps it thick instead of runny, and keeps the sugar sensible.',
-      'Blend the mango and banana with only a splash of water. Push the fruit down with a spoon rather than adding more water.',
+      'Two or three frozen fruits in the blender, never more.',
+      'Blend mango and banana with a splash of water. Push fruit down.',
       'Pour into a bowl and stir the chia through while it is still soft.',
-      'Granola over the top, then berries and sliced banana — or whatever fruit is in the house.',
+      'Granola over the top, then berries and sliced banana.',
     ] },
   { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Berries & Banana', cal: 370, pro: 8,
     ingredients: '1 cup frozen mixed berries · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · banana to top',
@@ -705,10 +705,10 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Papaya, Mango & Banana', cal: 390, pro: 8,
     ingredients: '1 cup papaya · ½ cup frozen mango · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries to top',
     steps: [
-      'Three fruits — the ceiling. Freeze the mango and banana the night before; the papaya goes in fresh because it is wet enough.',
-      'Blend all three with no water at first, adding a teaspoon at a time only if the blender sticks.',
+      'Three fruits — the ceiling. Freeze the mango and banana the night before.',
+      'Blend all three with no water first. Add a teaspoon only if stuck.',
       'Spoon into a bowl and stir the chia through.',
-      'Granola over the top, berries scattered on. The easiest one on the stomach.',
+      'Granola over the top, berries scattered on.',
     ] },
   { emoji: '🥣', slot: 'noon', name: 'Granola Bowl · Dragon Fruit & Banana', cal: 360, pro: 8,
     ingredients: '1 cup frozen dragon fruit · 1 frozen banana · 3 tbsp granola · 1 tbsp chia · berries & banana to top',
@@ -721,7 +721,7 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🥣', slot: 'noon', main: true, name: 'Papaya · Banana · Mango', cal: 250, pro: 4,
     ingredients: '1 cup papaya · 1 frozen banana · ½ cup mango · 1 tbsp chia · splash of water',
     steps: [
-      'Freeze the banana and mango the night before — frozen fruit is what makes it thick instead of runny.',
+      'Freeze the banana and mango the night before.',
       'Blend all three fruits with only a splash of water.',
       'Stop and push the fruit down with a spoon rather than adding more water.',
       'Pour into a bowl and top with chia. No milk, no sugar.',
@@ -730,7 +730,7 @@ export const RECOMMENDED_MEALS = [
     ingredients: '1 cup mango · 1 frozen banana · ½ cup berries · 1 tbsp chia',
     steps: [
       'Use frozen mango and banana straight from the freezer.',
-      'Blend them first until creamy, then add the berries for 5 seconds only — that keeps the colour bright.',
+      'Blend them first until creamy, then add berries for 5 seconds only.',
       'Spoon into a bowl.',
       'Top with chia and a few whole berries.',
     ] },
@@ -740,13 +740,13 @@ export const RECOMMENDED_MEALS = [
       'Scoop the papaya, discarding the seeds.',
       'Blend with pineapple and frozen banana until thick.',
       'Pour into a bowl.',
-      'Top with chia. This is the best one for digestion — papaya and pineapple both carry natural enzymes.',
+      'Top with chia. Papaya and pineapple help digestion.',
     ] },
   { emoji: '🍓', slot: 'noon', main: true, name: 'Berries · Banana · Kiwi', cal: 230, pro: 4,
     ingredients: '1 cup mixed berries · 1 frozen banana · 1 kiwi · 1 tbsp chia',
     steps: [
       'Blend the frozen berries and banana with a splash of water.',
-      'Slice the kiwi into rounds — this one goes on top, not in the blender.',
+      'Slice the kiwi into rounds for the top.',
       'Pour the purple base into a bowl.',
       'Lay the kiwi over it and finish with chia.',
     ] },
@@ -754,7 +754,7 @@ export const RECOMMENDED_MEALS = [
     ingredients: '1 cup mango · 1 cup papaya · ½ cup pineapple · 1 tbsp chia',
     steps: [
       'Freeze the mango and pineapple beforehand.',
-      'Blend all three together — no water at first, the papaya is wet enough.',
+      'Blend all three together — no water at first.',
       'Add water only a teaspoon at a time if the blender sticks.',
       'Top with chia. Pure tropical, no banana needed.',
     ] },
@@ -769,15 +769,15 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🍉', slot: 'noon', name: 'Watermelon · Kiwi · Banana', cal: 200, pro: 4,
     ingredients: '1 cup frozen watermelon · 1 kiwi · 1 frozen banana · 1 tbsp chia',
     steps: [
-      'Freeze the watermelon cubes — fresh watermelon makes this too watery to be a bowl.',
+      'Freeze the watermelon cubes first.',
       'Blend it with the frozen banana until slushy.',
       'Add the kiwi last and pulse twice only.',
-      'Top with chia. The most hydrating one — good on a hot day.',
+      'Top with chia. Good on a hot day.',
     ] },
   { emoji: '🍎', slot: 'noon', name: 'Apple · Banana · Berries', cal: 240, pro: 4,
     ingredients: '1 apple · 1 frozen banana · ½ cup berries · 1 tbsp chia · cinnamon',
     steps: [
-      'Core and chop the apple — leave the skin on for the fibre.',
+      'Core and chop the apple, skin on.',
       'Blend it with the frozen banana and berries until smooth.',
       'Pour into a bowl.',
       'Top with chia and a pinch of cinnamon.',
@@ -788,7 +788,7 @@ export const RECOMMENDED_MEALS = [
       'Use frozen pineapple and mango.',
       'Blend them thick with a splash of water.',
       'Slice the kiwi for the top.',
-      'Finish with chia. Sharp and sweet — the most refreshing bowl of the set.',
+      'Finish with chia. Sharp and sweet.',
     ] },
   { emoji: '🥥', slot: 'noon', name: 'Papaya · Berries · Banana', cal: 230, pro: 4,
     ingredients: '1 cup papaya · ½ cup berries · 1 frozen banana · 1 tbsp chia',
@@ -796,15 +796,15 @@ export const RECOMMENDED_MEALS = [
       'Blend the papaya and frozen banana first until creamy.',
       'Add the berries and blend 5 seconds more.',
       'Spoon into a bowl.',
-      'Top with chia. Gentle on the stomach — the easiest bowl to digest.',
+      'Top with chia. Gentle on the stomach.',
     ] },
   { emoji: '🥑', slot: 'noon', name: 'Avocado · Banana · Berries', cal: 300, pro: 5,
     ingredients: '¼ avocado · 1 frozen banana · ½ cup berries · 1 tbsp chia',
     steps: [
       'Blend the avocado and frozen banana until it goes thick like ice cream.',
-      'Spoon it into a bowl — this one is too thick to pour.',
+      'Spoon it into a bowl.',
       'Scatter the berries over the top.',
-      'Finish with chia. The most filling bowl — the avocado adds your fats.',
+      'Finish with chia. Most filling bowl.',
     ] },
 
   { emoji: '🍉', slot: 'noon', name: 'Big Fruit Plate', cal: 260, pro: 4,
@@ -812,7 +812,7 @@ export const RECOMMENDED_MEALS = [
     steps: [
       'Nothing blended — just cut it all onto one large plate.',
       'Start with the watermelon while it is coldest; it digests fastest.',
-      'The biggest of the evening plates. Eat until you are full — it is still only 260 calories.',
+      'Biggest evening plate. Eat until full — still only 260 calories.',
       'Water or green tea alongside, nothing sweetened.',
     ] },
   { emoji: '🥝', slot: 'noon', name: 'Papaya, Mango & Kiwi Plate', cal: 230, pro: 2,
@@ -820,7 +820,7 @@ export const RECOMMENDED_MEALS = [
     steps: [
       'Scoop the papaya, discarding the seeds.',
       'Slice the mango and kiwi alongside it.',
-      'Papaya and kiwi both carry natural enzymes — this is the flattest-stomach plate on the list.',
+      'Papaya and kiwi carry natural enzymes.',
       'Eat it fresh and alone, no yogurt, no toppings.',
     ] },
 
@@ -831,18 +831,18 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks & Greek Yogurt', cal: 215, pro: 16,
     ingredients: '1 apple · a small bowl of plain Greek yogurt',
     steps: [
-      'Core the apple and cut it into thick sticks, skin on — that is where the fibre is.',
-      'Spoon the Greek yogurt into a small bowl. It is thicker than plain, so it clings to the apple better as a sauce.',
+      'Core the apple and cut it into thick sticks, skin on.',
+      'Spoon the Greek yogurt into a small bowl.',
       'Dip and eat slowly. It should take you twenty minutes, not five.',
-      'The default 5 PM meal. Nothing after it but water and tea.',
+      'Default 5 PM meal. Nothing after but water and tea.',
     ] },
   { emoji: '🥛', slot: 'noon', name: 'Greek Yogurt, Berries & Chia', cal: 230, pro: 18,
     ingredients: 'a bowl of plain Greek yogurt · ½ cup berries · 1 tsp chia · cinnamon',
     steps: [
       'Stir the chia through the yogurt and leave it five minutes to thicken.',
-      'Scatter the berries over and add a pinch of cinnamon — that is what makes it taste sweet without a grain of sugar.',
+      'Scatter berries over and add a pinch of cinnamon.',
       'Eat it slowly with a teaspoon.',
-      'The lightest high-protein close to the day. Nothing after but tea.',
+      'Light high-protein close. Nothing after but tea.',
     ] },
 
   // ── 5:00 PM · the other small options ──────────────────────────────────
@@ -852,8 +852,8 @@ export const RECOMMENDED_MEALS = [
   { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks & Yogurt', cal: 180, pro: 9,
     ingredients: '1 apple · a small bowl of plain yogurt',
     steps: [
-      'Core the apple and cut it into thick sticks — skin on, that is where the fibre is.',
-      'Spoon plain unsweetened yogurt into a small bowl. This is the sauce, not a side.',
+      'Core the apple and cut it into thick sticks, skin on.',
+      'Spoon plain unsweetened yogurt into a small bowl.',
       'Dip and eat slowly. It should take you twenty minutes, not five.',
       'Nothing after this but tea.',
     ] },
@@ -862,32 +862,32 @@ export const RECOMMENDED_MEALS = [
     steps: [
       'Cut the apple into sticks, skin on.',
       'Stir a good pinch of cinnamon through the yogurt until it goes pale brown.',
-      'Cinnamon is what makes this taste sweet without a grain of sugar in it.',
+      'Cinnamon makes it taste sweet.',
       'Dip and eat slowly. Nothing after but tea.',
     ] },
   { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks, Yogurt & Chia', cal: 210, pro: 11,
     ingredients: '1 apple · a small bowl of plain yogurt · 1 tsp chia',
     steps: [
-      'Stir the chia into the yogurt and leave it five minutes — it thickens the sauce so it clings to the apple.',
+      'Stir chia into the yogurt and leave it five minutes.',
       'Cut the apple into sticks while it sits.',
       'Dip and eat slowly.',
-      'Drink a full glass of water with it — chia needs the water to work.',
+      'Drink a full glass of water with it.',
     ] },
   { emoji: '🍌', slot: 'noon', name: 'Boiled Saba Banana', cal: 160, pro: 2,
     ingredients: '1–2 saba bananas',
     steps: [
-      'Drop them in boiling water, skin still on, and boil 15–20 min until a fork slides straight through.',
-      'The skin peels away easily once they have cooled for a minute.',
-      'Eat them warm and plain — no sugar, no butter, they are sweet enough already.',
+      'Drop them in boiling water, skin on, and boil 15–20 min until soft.',
+      'The skin peels away after they cool for a minute.',
+      'Eat them warm and plain — no sugar, no butter.',
       'This is a craving option: take it instead of the apple sticks, not as well as them.',
     ] },
   { emoji: '🍠', slot: 'noon', name: 'Boiled Sweet Potato', cal: 180, pro: 2,
     ingredients: '1 medium sweet potato',
     steps: [
-      'Boil it whole 20 min, or bake it at 200°C for 40 min if you have the time — baking makes it far sweeter.',
+      'Boil it whole 20 min, or bake it at 200°C for 40 min if you have the time.',
       'Split it open and eat it straight out of the skin.',
       'No butter, no salt. Slow carbs to close the day.',
-      'The other craving option. Instead of the apple sticks, not on top of them.',
+      'Craving option. Instead of apple sticks, not on top.',
     ] },
   { emoji: '🍠', slot: 'noon', name: 'Sweet Potato Sticks & Yogurt', cal: 260, pro: 10,
     ingredients: '1 small sweet potato · a small bowl of plain yogurt · cinnamon',
@@ -895,7 +895,7 @@ export const RECOMMENDED_MEALS = [
       'Boil or bake the sweet potato until soft, then let it cool enough to handle.',
       'Cut it into sticks the same way you would the apple.',
       'Dip them in the yogurt with a pinch of cinnamon stirred through.',
-      'A craving night and a yogurt night at once. Nothing after but tea.',
+      'Craving night plus yogurt. Nothing after but tea.',
     ] },
 ];
 
@@ -1173,7 +1173,7 @@ export const WORKOUT_DAYS = [
       H('🚲 Extra · Biking', 'Only if you want more. Not part of the day.'),
       BIKE,
     ],
-    noteAfter: { type: 'rose', text: '💡 Water carries your weight, so the swim adds work without anything for your legs to recover from.' },
+    noteAfter: { type: 'rose', text: '💡 Swim adds work without stressing your legs.' },
     meals: DAILY_MEALS,
   },
 ];

@@ -152,7 +152,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
       <div className="meal-plan-head">
         <div className="meal-plan-label">{baseMeals.label}</div>
         <div className="meal-plan-hint">
-          Two meals, then the window shuts. The big brunch at 12 — Meal A or Meal B, one of the two, never both — and apple and yogurt or a smoothie at 5. Nothing before noon but black coffee.
+          Two meals only. Brunch at 12: Meal A or Meal B, never both. At 5, apple and yogurt or a smoothie.
         </div>
       </div>
 
@@ -167,9 +167,9 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
           </div>
           <div className="protein-meter-note">
             {chosen.length === 0
-              ? 'Get above 50 g. Pick your meals below and this counts them up.'
+              ? 'Pick meals below. Aim above 50 g.'
               : hitTarget
-                ? 'Above the floor. This is the number that protects your glutes.'
+                ? 'Above the floor. Good.'
                 : `${PROTEIN_TARGET - pro} g short. Add an egg, or swap plain yogurt for Greek.`}
           </div>
         </div>
@@ -184,10 +184,10 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
           </div>
           <div className="protein-meter-note">
             {chosen.length === 0
-              ? 'Stay under 1,000. Most of it belongs to the 12 PM brunch.'
+              ? 'Stay under 1,000. Save most for 12 PM.'
               : overBudget
-                ? `${cal - CALORIE_TARGET} over. Fine on a lifting day; drop the avocado or the second banana on a rest day.`
-                : `${CALORIE_TARGET - cal} left. Room for a bigger 5 PM plate if you are still hungry.`}
+                ? `${cal - CALORIE_TARGET} over. Okay on lifting days.`
+                : `${CALORIE_TARGET - cal} left. Eat more at 5 PM if hungry.`}
           </div>
         </div>
       </div>
@@ -261,8 +261,8 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 
       <div className="meal-auto-note">
         {isToday
-          ? '📓 Everything you add here is written into Meal for today, with its time and calories. Take it back off and the line goes with it — unless you have edited that line yourself, and then it stays.'
-          : '📓 This is not today, so nothing here is written into your Meal record. Open today to have your choices filed for you.'}
+          ? '📓 Added meals go into today’s Meal record. Remove them here to remove them there.'
+          : '📓 Not today, so nothing is saved to Meal. Open today to file choices.'}
       </div>
 
       {detail && (
@@ -355,8 +355,8 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
       <div className="exercise-hint ex-hint-row">
         <span>
-          👆 Tap a section to open it. Inside, tap a video (▶) for YouTube or any exercise for a form demo.
-          {day.trackLifts && ' Tap the grey bar under a lift to set your sets, reps, and weight.'}
+          👆 Open a section. Tap ▶ for YouTube or an exercise for form.
+          {day.trackLifts && ' Use the grey bar to log sets, reps, and weight.'}
         </span>
         <button className="ex-sec-all" onClick={toggleAll}>
           {allOpen ? 'Close all' : 'Open all'}
@@ -440,7 +440,7 @@ function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">Food, Meals &amp; Recipes</div>
         <h2 className="s-title">Nutrition <em>&amp;</em> Meals</h2>
-        <p className="s-desc">The one eating clock you run every day, how to prep every food, and what each one does for you.</p>
+        <p className="s-desc">Your daily eating clock, recipes, and food guide.</p>
       </div>
       <div className="sk-top-tabs splash-item">
         <button className={`sk-top-tab${tab === 'daily'   ? ' active' : ''}`} onClick={() => setTab('daily')}>🍽️ Daily Clock</button>
@@ -591,22 +591,22 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {showWhy && (
         <>
           <div className="g-card splash-item why-card">
-            <strong>Your week:</strong> 3 glute days (Mon · Wed · Fri), 2 abs and upper-body days (Tue · Thu), one Jessica Diễm video each weekend day. Never two glute days in a row — glutes grow on the rest day. Abs never land on a glute day.
+            <strong>Your week:</strong> 3 glute days (Mon · Wed · Fri), 2 abs and upper-body days (Tue · Thu), and one Jessica Diễm video each weekend day. Never two glute days in a row. Abs stay off glute days.
           </div>
           <div className="g-card splash-item why-card">
             <strong>🍑 Round comes from three muscles:</strong><br />
-            <strong>Maximus</strong> — the size at the back. Hip thrust, squat, RDL, step-up, Bulgarian.<br />
-            <strong>Medius</strong> — the upper-side shelf that makes it round, not flat. Abduction, band walks, step-up.<br />
+            <strong>Maximus</strong> — size at the back. Hip thrust, squat, RDL, step-up, Bulgarian.<br />
+            <strong>Medius</strong> — round upper side. Abduction, band walks, step-up.<br />
             <strong>Minimus</strong> — holds the hip steady. Abduction, clamshells, anything on one leg.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Getting stronger:</strong> weeks 1–2 learn the form. From week 3, when all three sets felt controlled, add 2.5 kg on the barbell, 2 kg on the dumbbells, 0.5 kg on the band. Form breaks? Add a rep instead.
+            <strong>Getting stronger:</strong> weeks 1–2 learn the form. From week 3, add 2.5 kg barbell, 2 kg dumbbells, or 0.5 kg band when all three sets feel controlled. Form breaks? Add a rep instead.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Why the waist stays small:</strong> only the weighted crunch gets heavier. Everything else grows by reps or seconds. Heavy twisting builds the waist outward, so there is none here.
+            <strong>Why the waist stays small:</strong> only the weighted crunch gets heavier. Everything else grows by reps or seconds. No heavy twisting.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>⚠️ About 1,000 calories:</strong> the fat comes off and you keep the glutes you have. But growing <em>bigger</em> glutes needs more food than you burn. Expect tighter and more defined for now. If your lifts stop climbing after a month, eat more.
+            <strong>⚠️ About 1,000 calories:</strong> fat comes off, but bigger glutes need more food than you burn. Expect tighter and more defined for now. If lifts stall for a month, eat more.
           </div>
         </>
       )}

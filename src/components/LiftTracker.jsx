@@ -127,8 +127,7 @@ export default function LiftTracker({ exercise, lifts, onChange }) {
       </div>
 
       <p className="lift-hint">
-        Steps of {step} kg for this lift. Add weight only when every set stays controlled —
-        if form breaks, add a rep instead and keep the weight.
+        Step: {step} kg. Add weight only with controlled form; if form breaks, add a rep instead.
       </p>
 
       <div className="lift-editor-btns">

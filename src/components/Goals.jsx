@@ -77,7 +77,7 @@ export function GoalsToggle({ achieved, onOpen }) {
 export function KgGoalCard({ plan, onOpen, onNavigate }) {
   const body = !plan ? (
     <div className="kg-empty">
-      Weigh yourself in Meal to start. Your first weight is the start.
+      Weigh yourself in Meal to start.
       {onNavigate && (
         <button type="button" className="kg-link" onClick={e => { e.stopPropagation(); onNavigate('meal'); }}>
           Go to Meal ›

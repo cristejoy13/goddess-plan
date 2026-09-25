@@ -19,7 +19,7 @@ export const INGREDIENT_RECIPES = {
           'Transfer immediately to ice water for 2 min.',
           'Peel and eat with a pinch of salt.',
         ],
-        tip: 'Soft-boiled keeps the yolk creamy. Ice bath makes peeling easy.',
+        tip: 'Ice bath makes peeling easy.',
       },
       {
         name: 'Sunny-side up',
@@ -30,20 +30,20 @@ export const INGREDIENT_RECIPES = {
           'Add a tiny amount of olive oil or coconut oil to coat.',
           'Crack the egg directly into the pan.',
           'Cook on low heat for 3–4 min. Do not flip.',
-          'Remove when the white is set but the yolk is still runny. Season lightly.',
+          'Remove when white is set and yolk is runny. Season lightly.',
         ],
-        tip: 'Cook low and slow. High heat toughens the white.',
+        tip: 'Use low heat for tender whites.',
       },
       {
         name: 'Scrambled',
         emoji: '🍳',
         time: '8 min',
         steps: [
-          'Crack egg into a bowl, whisk with a pinch of salt and a tiny pinch of turmeric.',
+          'Whisk egg with a pinch of salt and turmeric.',
           'Heat a non-stick pan on medium-low heat.',
           'Add a drop of olive oil, then pour in the egg.',
-          'Gently push the egg around with a spatula — do not stir aggressively.',
-          'Remove from heat when still slightly wet. Residual heat will finish it.',
+          'Gently push the egg with a spatula.',
+          'Remove when slightly wet. Residual heat finishes it.',
         ],
         tip: 'Remove while slightly wet for soft scrambled eggs.',
       },
@@ -79,17 +79,17 @@ export const INGREDIENT_RECIPES = {
           'Bake 25–30 min until internal temperature reaches 75°C.',
           'Rest 5 min before serving.',
         ],
-        tip: 'Baked chicken is the easiest to batch-cook on Sunday for the whole week.',
+        tip: 'Batch-cook baked chicken on Sunday.',
       },
       {
         name: 'Pan-seared',
         emoji: '🍳',
         time: '15 min',
         steps: [
-          'Pat chicken dry with a paper towel — moisture prevents browning.',
+          'Pat chicken dry with a paper towel.',
           'Season both sides with salt and a pinch of ginger powder.',
           'Heat pan dry on medium-high for 1–2 min before adding a drop of oil.',
-          'Sear 4–5 min per side without moving. A golden crust = full flavour.',
+          'Sear 4–5 min per side without moving.',
           'Squeeze calamansi over the top, rest 3 min off heat.',
         ],
         tip: 'Use dry chicken and a hot pan for a clean sear.',
@@ -113,19 +113,19 @@ export const INGREDIENT_RECIPES = {
           'Fry skin-side down first for 4 min without moving.',
           'Flip gently, fry 3–4 min on the other side. Rest 2 min.',
         ],
-        tip: 'Dry fish + hot oil = crispy skin. Wet fish steams instead of frying.',
+        tip: 'Dry fish and hot oil crisp the skin.',
       },
       {
         name: 'Steamed',
         emoji: '♨️',
         time: '12 min',
         steps: [
-          'Place fish on a sheet of parchment paper in a steamer or colander over boiling water.',
+          'Place fish on parchment in a steamer over boiling water.',
           'Top with thin slices of fresh ginger and a squeeze of calamansi.',
           'Cover and steam 10–12 min until flesh flakes easily with a fork.',
           'Transfer carefully. Drizzle a tiny amount of sesame-free oil and extra calamansi.',
         ],
-        tip: 'Steaming preserves omega-3 with less oxidation.',
+        tip: 'Steam for a gentle cook.',
       },
       {
         name: 'Baked',
@@ -153,13 +153,13 @@ export const INGREDIENT_RECIPES = {
         emoji: '🍳',
         time: '20 min',
         steps: [
-          'Press firm tofu 10 min between two plates with something heavy on top to squeeze the water out.',
+          'Press firm tofu 10 min between weighted plates.',
           'Cut into thick slices or 2 cm cubes.',
-          'Heat a non-stick pan on medium-high — no oil needed once the pan is properly hot.',
+          'Heat a non-stick pan on medium-high — no oil needed.',
           'Sear 3–4 min a side without moving it, until golden and firm.',
           'Finish with calamansi and grated ginger.',
         ],
-        tip: 'Pressing is the whole trick. Unpressed tofu steams in its own water and never browns.',
+        tip: 'Press tofu first so it browns.',
       },
       {
         name: 'Steamed',
@@ -171,7 +171,7 @@ export const INGREDIENT_RECIPES = {
           'Steam 5–8 min until hot all the way through.',
           'Spoon the plate juices back over it and add calamansi.',
         ],
-        tip: 'The gentlest way to eat tofu — good on a day your stomach feels heavy.',
+        tip: 'Gentle for heavy-stomach days.',
       },
       {
         name: 'Scrambled',
@@ -184,7 +184,7 @@ export const INGREDIENT_RECIPES = {
           'Cook 5 min, stirring, until the water has cooked off.',
           'Finish with spring onion.',
         ],
-        tip: 'Turmeric is what makes it look and feel like scrambled eggs.',
+        tip: 'Turmeric gives the egg-like look.',
       },
     ],
   },
@@ -201,11 +201,11 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Slice lean beef thin, across the grain, into strips.',
           'Marinate 10 min: coconut aminos + fresh ginger + pinch of salt.',
-          'Heat pan or wok on HIGH — the hottest setting.',
+          'Heat pan or wok on HIGH.',
           'Add a drop of coconut oil, then beef in a single layer. Do not stir for 1 min.',
           'Toss and stir-fry 2–3 min more. Add broccoli and pechay in the last min.',
         ],
-        tip: 'High heat is everything for stir-fry. Low heat makes the beef grey and tough.',
+        tip: 'Use high heat for tender stir-fry.',
       },
       {
         name: 'Grilled',
@@ -216,7 +216,7 @@ export const INGREDIENT_RECIPES = {
           'Season both sides: salt, turmeric, calamansi juice. Marinate 10 min.',
           'Heat a grill or grill pan on very high heat.',
           'Grill 3–4 min per side for medium. Do not press down.',
-          'Rest 5 min — this is not optional. Resting keeps all the juices inside.',
+          'Rest 5 min to keep juices inside.',
         ],
         tip: 'Rest 5 min to keep juices in.',
       },
@@ -248,13 +248,13 @@ export const INGREDIENT_RECIPES = {
         emoji: '♨️',
         time: '5 min',
         steps: [
-          'Boil water, then let it cool 2–3 min — ideal temperature is 80°C, not boiling.',
+          'Boil water, then cool 2–3 min to 80°C.',
           'Place 1 green tea bag or 1 tsp loose-leaf tea in a cup.',
           'Pour the hot water over the tea.',
           'Steep exactly 2–3 min. Remove the bag immediately.',
           'Drink plain or add a squeeze of calamansi.',
         ],
-        tip: 'Avoid boiling water. 80°C protects EGCG and prevents bitterness.',
+        tip: 'Use 80°C water to avoid bitterness.',
       },
       {
         name: 'Ginger Green Tea',
@@ -267,7 +267,7 @@ export const INGREDIENT_RECIPES = {
           'Add green tea bag. Steep 2–3 min, then remove.',
           'Add a squeeze of calamansi. Drink warm.',
         ],
-        tip: 'Ginger + green tea support thermogenesis together.',
+        tip: 'Ginger + green tea support heat.',
       },
       {
         name: 'Iced Green Tea',
@@ -278,9 +278,9 @@ export const INGREDIENT_RECIPES = {
           'Remove bags. Stir in 1 tsp raw honey while still warm.',
           'Add a squeeze of calamansi.',
           'Pour over a full glass of ice immediately.',
-          'Stir and drink — the ice dilutes it perfectly.',
+          'Stir and drink.',
         ],
-        tip: 'Use iced green tea for a sweet, low-sugar afternoon drink.',
+        tip: 'Use iced green tea in the afternoon.',
       },
     ],
   },
@@ -295,10 +295,10 @@ export const INGREDIENT_RECIPES = {
         emoji: '♨️',
         time: '3 min',
         steps: [
-          'Boil 300ml of water, then cool to warm (not hot — heat degrades peptides).',
+          'Boil 300ml water, then cool to warm.',
           'Add 1 scoop of unflavored collagen powder.',
           'Stir well until completely dissolved.',
-          'Add a squeeze of calamansi — Vitamin C doubles collagen absorption.',
+          'Add a squeeze of calamansi for Vitamin C.',
           'Drink slowly over 10–15 min.',
         ],
         tip: 'Pair collagen with citrus for Vitamin C.',
@@ -314,7 +314,7 @@ export const INGREDIENT_RECIPES = {
           'Add 1 tsp raw honey and stir.',
           'Add a few ice cubes if desired.',
         ],
-        tip: 'Calamansi helps dissolve collagen peptides.',
+        tip: 'Calamansi helps collagen mix smoothly.',
       },
       {
         name: 'Collagen Ginger Shot',
@@ -334,7 +334,7 @@ export const INGREDIENT_RECIPES = {
   'spearmint-tea': {
     emoji: '🍵',
     color: 'rgba(60,200,140,0.07)',
-    tagline: 'Anti-androgen support for clarity',
+    tagline: 'Skin clarity support',
     options: [
       {
         name: 'Classic Hot Brew',
@@ -343,10 +343,10 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Bring water to a gentle boil, then remove from heat and wait 1 min.',
           'Add 1 spearmint tea bag or 1 tsp dried spearmint leaves.',
-          'Steep 5–7 min — spearmint needs full extraction, longer than green tea.',
+          'Steep 5–7 min.',
           'Remove bag or strain. Drink plain or with a small drizzle of raw honey.',
         ],
-        tip: 'Two cups daily may reduce androgens and support clearer skin.',
+        tip: 'Two cups daily may support clearer skin.',
       },
       {
         name: 'Iced Spearmint Tea',
@@ -372,7 +372,7 @@ export const INGREDIENT_RECIPES = {
           'Steep 5 min. Remove bag. Add calamansi and optional honey.',
           'Drink warm in the evening.',
         ],
-        tip: 'Ginger settles digestion; spearmint supports androgen balance.',
+        tip: 'Ginger calms digestion; spearmint supports skin.',
       },
     ],
   },
@@ -393,7 +393,7 @@ export const INGREDIENT_RECIPES = {
           'Add calamansi for extra citrus brightness.',
           'Drink as a shot or sip slowly on an empty stomach.',
         ],
-        tip: 'Beet supports blood flow; ginger supports thermogenesis.',
+        tip: 'Beet supports flow; ginger supports heat.',
       },
       {
         name: 'Classic Ginger Shot',
@@ -406,7 +406,7 @@ export const INGREDIENT_RECIPES = {
           'Stir and drink in one or two sips.',
           'Chase with a full glass of plain water.',
         ],
-        tip: 'A morning ginger shot supports thermogenesis within 20 minutes.',
+        tip: 'Morning ginger supports heat within 20 minutes.',
       },
       {
         name: 'Ginger Lemon Water',
@@ -419,7 +419,7 @@ export const INGREDIENT_RECIPES = {
           'Squeeze half a lemon or 3 calamansi.',
           'Stir and drink immediately before eating.',
         ],
-        tip: 'Drink before your first meal to support stomach acid.',
+        tip: 'Drink before your first meal.',
       },
     ],
   },
@@ -429,7 +429,7 @@ export const INGREDIENT_RECIPES = {
   papaya: {
     emoji: '🍈',
     color: 'rgba(255,160,60,0.08)',
-    tagline: 'Digestive enzyme fruit, three ways',
+    tagline: 'Papaya, three ways',
     options: [
       {
         name: 'Plain Sliced',
@@ -440,9 +440,9 @@ export const INGREDIENT_RECIPES = {
           'Peel the skin or eat directly from the skin with a spoon.',
           'Slice into cubes or long strips.',
           'Squeeze calamansi over the top for brightness.',
-          'Eat immediately — papaya oxidises quickly once cut.',
+          'Eat immediately after cutting.',
         ],
-        tip: 'Black seeds are edible, peppery, and contain papain.',
+        tip: 'Black seeds are edible and peppery.',
       },
       {
         name: 'Atchara-Style Salad',
@@ -455,7 +455,7 @@ export const INGREDIENT_RECIPES = {
           'Toss papaya with dressing, sliced tomato, and thin onion rings.',
           'Rest 5 min before eating for flavors to meld.',
         ],
-        tip: 'Green papaya has the most papain for protein digestion.',
+        tip: 'Green papaya helps protein digestion.',
       },
       {
         name: 'Papaya Smoothie',
@@ -468,7 +468,7 @@ export const INGREDIENT_RECIPES = {
           'Add a squeeze of calamansi and a pinch of cinnamon.',
           'Blend until completely smooth. Drink immediately.',
         ],
-        tip: 'Papaya + coconut water works well after workouts or heat.',
+        tip: 'Good after workouts or heat.',
       },
     ],
   },
@@ -476,7 +476,7 @@ export const INGREDIENT_RECIPES = {
   watermelon: {
     emoji: '🍉',
     color: 'rgba(255,80,80,0.07)',
-    tagline: '92% water, three refreshing options',
+    tagline: '92% water, three ways',
     options: [
       {
         name: 'Plain Chilled',
@@ -485,7 +485,7 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Slice watermelon into triangles or cube it.',
           'Remove visible seeds if desired.',
-          'Refrigerate 30 min before eating — cold watermelon is significantly sweeter.',
+          'Refrigerate 30 min before eating.',
           'Sprinkle a tiny pinch of salt on top before eating.',
         ],
         tip: 'A pinch of salt makes watermelon taste sweeter.',
@@ -497,11 +497,11 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Cube 2 cups of seedless watermelon.',
           'Blend until smooth.',
-          'Do not strain — the fibre slows sugar absorption.',
+          'Do not strain; keep the fibre.',
           'Add a squeeze of calamansi and pour over ice.',
-          'Drink immediately — do not store, it separates quickly.',
+          'Drink immediately; it separates quickly.',
         ],
-        tip: 'Citrulline supports blood flow and post-workout recovery.',
+        tip: 'Citrulline supports blood flow.',
       },
       {
         name: 'Watermelon Mint Bowl',
@@ -514,7 +514,7 @@ export const INGREDIENT_RECIPES = {
           'Top with a small handful of blueberries or strawberries.',
           'Serve cold.',
         ],
-        tip: 'Mint makes watermelon feel extra cooling on hot days.',
+        tip: 'Mint makes it extra cooling.',
       },
     ],
   },
@@ -531,10 +531,10 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Rinse berries under cold running water in a colander.',
           'Pat dry gently with a paper towel.',
-          'Eat immediately at room temperature — cold blunts the flavour.',
-          'Mix blueberries, strawberries, and raspberries for maximum antioxidant variety.',
+          'Eat immediately at room temperature.',
+          'Mix blueberries, strawberries, and raspberries.',
         ],
-        tip: 'Mix berry colours for broader antioxidant support.',
+        tip: 'Mix berry colours.',
       },
       {
         name: 'Berry Compote',
@@ -547,7 +547,7 @@ export const INGREDIENT_RECIPES = {
           'Remove from heat and cool slightly.',
           'Spoon over banana nice cream, chia pudding, or eat plain.',
         ],
-        tip: 'Warm compote releases more anthocyanins than raw berries.',
+        tip: 'Warm compote deepens berry flavour.',
       },
       {
         name: 'Berry Smoothie',
@@ -592,9 +592,9 @@ export const INGREDIENT_RECIPES = {
           'Blend with a 1cm knob of fresh ginger and ½ cup water.',
           'Strain through a fine sieve, pressing the pulp.',
           'Add a squeeze of calamansi.',
-          'Drink on an empty stomach for maximum bromelain effect.',
+          'Drink on an empty stomach.',
         ],
-        tip: 'Drink pineapple-ginger juice on an empty stomach for digestion.',
+        tip: 'Drink on an empty stomach.',
       },
       {
         name: 'Grilled Pineapple',
@@ -605,9 +605,9 @@ export const INGREDIENT_RECIPES = {
           'Sprinkle a tiny pinch of cinnamon on each piece.',
           'Heat a dry grill pan or non-stick pan on medium-high.',
           'Grill 2–3 min per side until caramelized lines form.',
-          'Serve warm — the heat intensifies the sweetness dramatically.',
+          'Serve warm.',
         ],
-        tip: 'Grilling caramelises pineapple and reduces acidity.',
+        tip: 'Grill for sweetness and less acidity.',
       },
     ],
   },
@@ -615,18 +615,18 @@ export const INGREDIENT_RECIPES = {
   apple: {
     emoji: '🍎',
     color: 'rgba(255,80,60,0.07)',
-    tagline: 'Pectin fibre for gut health',
+    tagline: 'Gut-friendly fibre',
     options: [
       {
         name: 'Plain with Cinnamon',
         emoji: '🌀',
         time: '2 min',
         steps: [
-          'Wash the apple thoroughly — eat with the skin on for maximum fibre.',
+          'Wash the apple and keep the skin on.',
           'Core and slice into wedges.',
           'Sprinkle a pinch of cinnamon over the slices.',
           'Optional: dip in a small amount of almond butter.',
-          'Eat at room temperature — cold dulls the flavour.',
+          'Eat at room temperature.',
         ],
         tip: 'Apple skin contains most of the quercetin.',
       },
@@ -639,7 +639,7 @@ export const INGREDIENT_RECIPES = {
           'Stuff the cavity with a pinch of cinnamon and 1 tsp raw honey.',
           'Place in a small baking dish with 2 tbsp water at the bottom.',
           'Bake at 180°C for 15–18 min until tender and slightly caramelised.',
-          'Eat warm — the cinnamon and honey melt through the apple.',
+          'Eat warm.',
         ],
         tip: 'Bake apple for a warm, naturally sweet dessert.',
       },
@@ -654,7 +654,7 @@ export const INGREDIENT_RECIPES = {
           'Do not strain — blend smooth to keep all the fibre.',
           'Drink immediately.',
         ],
-        tip: 'Apple pectin feeds good gut bacteria.',
+        tip: 'Apple pectin supports gut bacteria.',
       },
     ],
   },
@@ -664,7 +664,7 @@ export const INGREDIENT_RECIPES = {
   broccoli: {
     emoji: '🥦',
     color: 'rgba(80,180,80,0.07)',
-    tagline: 'Anti-bloat green vegetable',
+    tagline: 'Green anti-bloat veg',
     options: [
       {
         name: 'Steamed',
@@ -673,11 +673,11 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Cut broccoli into even-sized florets.',
           'Place in a steamer basket over boiling water.',
-          'Cover and steam exactly 4–5 min — keep it bright green and firm.',
-          'Remove immediately. Do not let it sit in steam or it turns mushy.',
+          'Cover and steam exactly 4–5 min.',
+          'Remove immediately so it stays firm.',
           'Season with a squeeze of calamansi and a tiny pinch of salt.',
         ],
-        tip: 'Steamed broccoli retains more sulforaphane.',
+        tip: 'Steam to keep it light.',
       },
       {
         name: 'Roasted',
@@ -690,7 +690,7 @@ export const INGREDIENT_RECIPES = {
           'Roast 18–20 min until edges are slightly crispy and caramelized.',
           'Finish with calamansi and optional garlic powder.',
         ],
-        tip: 'Roast for crisp, nutty edges.',
+        tip: 'Roast for crisp edges.',
       },
       {
         name: 'Stir-fried',
@@ -703,7 +703,7 @@ export const INGREDIENT_RECIPES = {
           'Add broccoli and toss constantly for 4–5 min.',
           'Finish with a splash of water and calamansi — let it steam off for 1 min.',
         ],
-        tip: 'High heat adds light char and flavour.',
+        tip: 'High heat adds light char.',
       },
     ],
   },
@@ -711,7 +711,7 @@ export const INGREDIENT_RECIPES = {
   'sweet potato': {
     emoji: '🍠',
     color: 'rgba(255,160,60,0.08)',
-    tagline: 'Slow energy, high-fibre carbs',
+    tagline: 'Slow energy carbs',
     options: [
       {
         name: 'Roasted',
@@ -722,9 +722,9 @@ export const INGREDIENT_RECIPES = {
           'Toss with a light drizzle of olive oil and a pinch of cinnamon and salt.',
           'Spread on a lined baking sheet in a single layer.',
           'Roast at 200°C for 25–28 min, flipping once halfway.',
-          'They are ready when golden and slightly caramelized at the edges.',
+          'Ready when golden at the edges.',
         ],
-        tip: 'Roasting makes sweet potato naturally sweeter.',
+        tip: 'Roast for natural sweetness.',
       },
       {
         name: 'Steamed',
@@ -736,7 +736,7 @@ export const INGREDIENT_RECIPES = {
           'Cover and steam 12–15 min until completely fork-tender.',
           'Season lightly with salt or eat plain.',
         ],
-        tip: 'Steamed sweet potato digests more slowly.',
+        tip: 'Steam for slower digestion.',
       },
       {
         name: 'Mashed',
@@ -745,10 +745,10 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Steam or boil sweet potato chunks until very soft, about 15 min.',
           'Drain and mash thoroughly with a fork.',
-          'Add a pinch of cinnamon, a tiny pinch of salt, and a small splash of unsweetened almond milk.',
+          'Add cinnamon, salt, and unsweetened almond milk.',
           'Mash until smooth. No butter or sugar needed.',
         ],
-        tip: 'Mash with cinnamon for a dessert-like bowl.',
+        tip: 'Cinnamon makes it dessert-like.',
       },
     ],
   },
@@ -766,10 +766,10 @@ export const INGREDIENT_RECIPES = {
           'Slice ½ cucumber into thin rounds.',
           'Halve 5–6 cherry tomatoes.',
           'Thinly slice ¼ bell pepper (any colour).',
-          'Dressing: squeeze 2 calamansi + ½ tsp olive oil + pinch of salt + pinch of pepper. Whisk.',
+          'Dressing: squeeze 2 calamansi + ½ tsp olive oil + pinch of salt + pinch of pepper.',
           'Toss everything together and serve immediately.',
         ],
-        tip: 'Calamansi dressing supports digestion with protein.',
+        tip: 'Calamansi pairs well with protein.',
       },
       {
         name: 'Mango Honey Salad',
@@ -785,7 +785,7 @@ export const INGREDIENT_RECIPES = {
           'Dressing: 1 tsp honey + squeeze of calamansi or lemon + pinch of salt. Mix well.',
           'Add a small handful of walnuts on top. Toss and serve.',
         ],
-        tip: 'Mango and honey add natural sweetness.',
+        tip: 'Mango and honey sweeten it.',
       },
       {
         name: 'Sweet Bell Pepper Salad',
@@ -807,7 +807,7 @@ export const INGREDIENT_RECIPES = {
   avocado: {
     emoji: '🥑',
     color: 'rgba(80,160,80,0.07)',
-    tagline: 'Hormone-healthy fat — three ways to enjoy it',
+    tagline: 'Healthy fat, three ways',
     options: [
       {
         name: 'Plain with Calamansi',
@@ -819,7 +819,7 @@ export const INGREDIENT_RECIPES = {
           'Squeeze calamansi generously over the top.',
           'Eat directly from the skin with a spoon.',
         ],
-        tip: 'Calamansi prevents browning and adds Vitamin C — which helps your body absorb the fat-soluble nutrients in avocado.',
+        tip: 'Calamansi prevents browning and adds Vitamin C.',
       },
       {
         name: 'Mashed',
@@ -827,11 +827,11 @@ export const INGREDIENT_RECIPES = {
         time: '3 min',
         steps: [
           'Scoop avocado flesh into a small bowl.',
-          'Mash with a fork until your desired consistency — chunky or smooth.',
+          'Mash with a fork: chunky or smooth.',
           'Add squeeze of calamansi, pinch of salt, optional pinch of ginger powder.',
           'Eat with cucumber slices as natural dippers.',
         ],
-        tip: 'Mashing breaks the cell walls slightly, making the healthy fats easier to absorb.',
+        tip: 'Mash for easier eating.',
       },
       {
         name: 'Chocolate Mousse',
@@ -841,10 +841,10 @@ export const INGREDIENT_RECIPES = {
           'Scoop ½ avocado into a blender or bowl.',
           'Add 1 tsp raw cacao powder and 1 tsp raw honey.',
           'Add a pinch of sea salt and a splash of unsweetened almond milk.',
-          'Blend until perfectly smooth — or whisk vigorously.',
-          'Taste and adjust — more cacao for bitterness, more honey for sweetness.',
+          'Blend until smooth, or whisk hard.',
+          'Taste and adjust cacao or honey.',
         ],
-        tip: 'This mousse has the same creamy texture as chocolate mousse but with healthy fats and zero processed sugar.',
+        tip: 'Creamy texture, healthy fats, zero processed sugar.',
       },
     ],
   },
@@ -852,7 +852,7 @@ export const INGREDIENT_RECIPES = {
   banana: {
     emoji: '🍌',
     color: 'rgba(255,220,50,0.08)',
-    tagline: 'Natural sweetness — three dessert options',
+    tagline: 'Natural sweet desserts',
     options: [
       {
         name: 'Banana Nice Cream',
@@ -861,11 +861,11 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Peel and slice 2 ripe bananas. Freeze overnight or at least 4 hours.',
           'Add frozen banana chunks to a blender.',
-          'Blend until smooth and creamy — stop and scrape sides as needed.',
+          'Blend until creamy, scraping sides as needed.',
           'Serve immediately for soft-serve texture, or refreeze 30 min for firmer.',
           'Optional: add 1 tsp raw cacao, or cinnamon, or a few frozen berries.',
         ],
-        tip: 'Fully frozen bananas are key. Partially frozen gives a lumpy result. Use very ripe bananas for the best sweetness.',
+        tip: 'Use fully frozen, very ripe bananas.',
       },
       {
         name: 'Banana Pancakes',
@@ -878,7 +878,7 @@ export const INGREDIENT_RECIPES = {
           'Pour small circles of batter (about 2 tbsp each).',
           'Cook 2 min until bubbles form on top, flip gently, cook 1 min more.',
         ],
-        tip: 'Only 2 ingredients, naturally sweet, no flour. Works best with very ripe (spotted) bananas.',
+        tip: 'Only 2 ingredients. Use very ripe (spotted) bananas.',
       },
       {
         name: 'Banana Chia Bowl',
@@ -891,7 +891,7 @@ export const INGREDIENT_RECIPES = {
           'Refrigerate for at least 2 hours or overnight until thick and pudding-like.',
           'Top with kiwi or papaya before eating.',
         ],
-        tip: 'The banana replaces any need for sweetener. The chia adds fibre and omega-3.',
+        tip: 'Banana sweetens; chia adds fibre and omega-3.',
       },
     ],
   },
@@ -899,20 +899,20 @@ export const INGREDIENT_RECIPES = {
   yogurtbowl: {
     emoji: '🥣',
     color: 'rgba(200,180,255,0.08)',
-    tagline: 'Made the night before — protein, fibre and berries in one jar',
+    tagline: 'Overnight protein, fibre, and berries',
     options: [
       {
         name: 'The Overnight Yogurt Bowl',
         emoji: '🫐',
         time: '3 min + overnight',
         steps: [
-          'Spoon plain unsweetened yogurt into a jar or bowl — about a cup.',
-          'Add 1 scoop of protein powder and stir until there are no dry pockets left. Do this before the psyllium goes in, or it will never mix smoothly.',
-          'Add 1 tsp psyllium husk and keep stirring straight away — it starts thickening within seconds.',
+          'Spoon plain unsweetened yogurt into a jar or bowl.',
+          'Add 1 scoop protein powder and stir until smooth before psyllium.',
+          'Add 1 tsp psyllium husk and stir right away.',
           'Drop 10 blueberries on top, cover, and leave it in the fridge overnight.',
           'Eat it cold at 5 PM, with a full glass of water.',
         ],
-        tip: 'Always drink a full glass of water with it. Psyllium husk pulls water in to do its job — without enough, it does the opposite of what you want.',
+        tip: 'Drink a full glass of water with psyllium.',
       },
       {
         name: 'Thicker Version',
@@ -922,9 +922,9 @@ export const INGREDIENT_RECIPES = {
           'Same build, but use 2 tsp psyllium husk instead of 1.',
           'Add 2–3 tbsp of water as you stir so it does not seize into a solid block.',
           'Leave it overnight — it sets to a spoonable pudding.',
-          'Berries on top in the morning rather than the night before, so they stay firm.',
+          'Add berries in the morning so they stay firm.',
         ],
-        tip: 'Use this one on days you know you will be hungry early. It stays with you noticeably longer than the standard bowl.',
+        tip: 'Use this when you need more fullness.',
       },
       {
         name: 'Fruit-Forward Version',
@@ -934,9 +934,9 @@ export const INGREDIENT_RECIPES = {
           'Build the base as usual: yogurt, protein powder, psyllium husk.',
           'Layer half a mashed banana or a few spoons of mango through the middle.',
           'Finish with the 10 blueberries on top.',
-          'Set overnight. The fruit sweetens the whole jar so nothing else is needed.',
+          'Set overnight. Fruit sweetens the jar.',
         ],
-        tip: 'No honey, no sugar, no sweetened yogurt. If it needs sweetening, use riper fruit instead.',
+        tip: 'No honey, sugar, or sweetened yogurt.',
       },
     ],
   },
@@ -944,7 +944,7 @@ export const INGREDIENT_RECIPES = {
   chia: {
     emoji: '🫙',
     color: 'rgba(100,80,220,0.07)',
-    tagline: 'Fibre, omega-3, and naturally sweet — three pudding builds',
+    tagline: 'Three chia pudding builds',
     options: [
       {
         name: 'Classic Chia Pudding',
@@ -955,9 +955,9 @@ export const INGREDIENT_RECIPES = {
           'Pour in 1 cup unsweetened almond milk.',
           'Add ½ tsp cinnamon and stir well.',
           'Stir again after 10 min to break up any clumps.',
-          'Refrigerate overnight. It is ready when thick and pudding-like.',
+          'Refrigerate overnight until thick.',
         ],
-        tip: 'Make this the night before — 5 min of prep means a full, nutritious breakfast is waiting in the morning.',
+        tip: 'Prep 5 min the night before.',
       },
       {
         name: 'Mango Chia Pudding',
@@ -966,11 +966,11 @@ export const INGREDIENT_RECIPES = {
         steps: [
           'Make the classic base: 3 tbsp chia + 1 cup almond milk + cinnamon.',
           'Blend ½ ripe mango (or use 3 tbsp mango puree).',
-          'Swirl the mango puree into the chia base — do not fully mix. Keep swirls.',
+          'Swirl mango puree into the chia base.',
           'Refrigerate overnight.',
           'Top with fresh mango slices before serving.',
         ],
-        tip: 'Mango is high in digestive enzymes (amylase and lipase) — naturally improves digestion and reduces bloating.',
+        tip: 'Mango supports digestion and less bloating.',
       },
       {
         name: 'Chocolate Chia Pudding',
@@ -983,7 +983,7 @@ export const INGREDIENT_RECIPES = {
           'Optional: add 1 tsp raw honey for sweetness.',
           'Stir well, refrigerate overnight.',
         ],
-        tip: 'Raw cacao is not the same as cocoa powder — it is unprocessed and rich in magnesium, which supports sleep and hormone balance.',
+        tip: 'Raw cacao is unprocessed and magnesium-rich.',
       },
     ],
   },
@@ -991,7 +991,7 @@ export const INGREDIENT_RECIPES = {
   oats: {
     emoji: '🌾',
     color: 'rgba(200,160,60,0.08)',
-    tagline: 'Slow-releasing energy — three oat builds',
+    tagline: 'Slow energy oats',
     options: [
       {
         name: 'Warm Oatmeal',
@@ -1004,7 +1004,7 @@ export const INGREDIENT_RECIPES = {
           'Remove from heat. Stir in ¼ cup unsweetened almond milk, ½ tsp cinnamon.',
           'Top with sliced banana. Eat immediately.',
         ],
-        tip: 'Rolled oats have a lower glycaemic index than instant oats — they digest more slowly and keep you fuller for hours.',
+        tip: 'Rolled oats digest more slowly than instant oats.',
       },
       {
         name: 'Overnight Oats',
@@ -1017,7 +1017,7 @@ export const INGREDIENT_RECIPES = {
           'Seal jar and refrigerate overnight.',
           'In the morning, top with kiwi or banana slices and eat cold.',
         ],
-        tip: 'Soaking oats overnight increases their resistant starch content — which feeds good gut bacteria and reduces bloating.',
+        tip: 'Overnight oats feed good gut bacteria.',
       },
       {
         name: 'Oat Porridge',
@@ -1030,7 +1030,7 @@ export const INGREDIENT_RECIPES = {
           'Season with a pinch of salt to balance the coconut sweetness.',
           'Top with sliced banana and a drizzle of raw honey.',
         ],
-        tip: 'Coconut milk adds medium-chain fatty acids (MCTs) which are metabolised quickly for energy — not stored as fat.',
+        tip: 'Coconut milk adds quick-use MCTs.',
       },
     ],
   },
