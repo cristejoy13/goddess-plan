@@ -61,7 +61,7 @@ const RULE_BOARDS = [
       ['S', 'Small bites', 'put the fork down'],
       ['L', 'Last meal', '5 PM — apple & yogurt. Nothing after'],
       ['O', 'Only 80%', 'light, not stuffed'],
-      ['W', 'Walk', 'one hour after training · daily'],
+      ['W', 'Walk', 'easy, every evening'],
     ],
   },
 ];
@@ -1007,7 +1007,7 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
       ? [{ id: 'cardio-pre', icon: today.cardioBefore.icon, title: today.cardioBefore.title, note: today.cardioBefore.note }]
       : []),
     { id: 'workout', icon: today.emoji, title: today.title, note: today.sub, nav: ['workout', null, todayDayId] },
-    { id: 'cardio', icon: today.cardio?.icon || '🚶', title: today.cardio?.title || 'One-hour walk after training', note: today.cardio?.note },
+    { id: 'cardio', icon: today.cardio?.icon || '🚶', title: today.cardio?.title || 'Easy evening walk', note: today.cardio?.note },
     { id: 'sec-day', divider: true, label: `🌤️ Meals · ${today.meals.clock}` },
     ...mealRows,
     { id: 'sec-night', divider: true, label: '🌙 Night' },

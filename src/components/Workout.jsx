@@ -20,17 +20,16 @@ const DAY_IDS = [
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
-// The week at a glance. Every day opens with the stomach vacuum and closes
-// with the hour walk, so neither is repeated in seven focus lines — they are
-// said once, under the grid.
+// The week at a glance. The evening walk is on every day, so it is said once,
+// under the grid, rather than seven times in the focus lines.
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glute Power',    focus: 'Hip Thrust · RDL · Step-Up', color: 'pr' },
-  { lbl: 'Tue', emoji: '💪', name: 'Arms, Back & Shoulders', focus: 'Shoulders × 3 · Back × 2 · Arms × 3', color: 'py' },
-  { lbl: 'Wed', emoji: '🔥', name: 'Glute Strength', focus: 'Squat · Bulgarian · RDL', color: 'pr' },
-  { lbl: 'Thu', emoji: '🎯', name: 'Core & Videos',  focus: 'Abs × 5 · Izzy or Nicole', color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glute Shape',    focus: 'Abduction · Kickback · Sumo', color: 'pr' },
-  { lbl: 'Sat', emoji: '⚡', name: 'Jessica & Sprints', focus: 'Jessica Diễm · Sprints', color: 'py' },
-  { lbl: 'Sun', emoji: '🏊', name: 'Jessica & Swim', focus: 'Jessica Diễm · Swim', color: 'py' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian', color: 'pr' },
+  { lbl: 'Tue', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope', color: 'py' },
+  { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope', color: 'py' },
+  { lbl: 'Thu', emoji: '🏃', name: 'Zone 2 Run',      focus: 'Easy run', color: 'py' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glutes B',        focus: 'Step-Up · Goblet · Abduction', color: 'pr' },
+  { lbl: 'Sat', emoji: '🌿', name: 'Gentle Pilates',  focus: 'Jessica or Nicole · Rope', color: 'py' },
+  { lbl: 'Sun', emoji: '🏊', name: 'Swimming',        focus: 'Easy swim', color: 'py' },
 ];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
@@ -337,11 +336,10 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
   const toggleAll = () =>
     setOpenSecs(allOpen ? {} : Object.fromEntries(groups.map((_, i) => [i, true])));
   // Parse stats from day.sub string
-  const durationMatch = day.sub?.match(/~?(\d+)\s*min/);
+  const durationMatch = day.sub?.match(/(\d+(?:–\d+)?)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
   const isStrength = day.sub?.toLowerCase().includes('strength') || day.title?.toLowerCase().includes('glute') || day.title?.toLowerCase().includes('back') || day.title?.toLowerCase().includes('core');
-  const hasSprint  = day.title?.toLowerCase().includes('sprint') || day.sprintDay;
-  const hasWalk    = day.sub?.toLowerCase().includes('1-hour walk');
+  const hasWalk    = day.sub?.toLowerCase().includes('walk');
   const isRest     = day.day?.toLowerCase().includes('rest');
   const isMobility = isRest || day.title?.toLowerCase().includes('mobility') || day.title?.toLowerCase().includes('flexibility') || day.title?.toLowerCase().includes('recovery') || day.title?.toLowerCase().includes('stretch');
 
@@ -364,9 +362,8 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
       {/* Visual stat chips */}
       <div className="dd-stats">
         {duration   && <div className="dd-stat dd-stat-time"><span>⏱</span>{duration}</div>}
-        {hasSprint  && <div className="dd-stat dd-stat-sprint"><span>⚡</span>Sprint</div>}
         {isStrength && <div className="dd-stat dd-stat-strength"><span>💪</span>Strength</div>}
-        {hasWalk    && <div className="dd-stat dd-stat-zone"><span>🚶</span>1-hr walk</div>}
+        {hasWalk    && <div className="dd-stat dd-stat-zone"><span>🚶</span>Evening walk</div>}
         {isMobility && <div className="dd-stat dd-stat-mobility"><span>🌿</span>Mobility</div>}
         <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.filter(e => !e.heading).length} exercises</div>
       </div>
@@ -594,8 +591,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {/* The two things every day has in common, said once here instead of
           seven times in the focus lines above. */}
       <div className="wg-every-day splash-item">
-        <span>🫧 Every day: the stomach vacuum before the main workout.</span>
-        <span>🚶 And a one-hour walk after it.</span>
+        <span>🚶 Every evening: an easy walk.</span>
+        <span>🪢 Jump rope only Tue · Wed · Sat, after the workout.</span>
       </div>
 
       {/* The five explainers used to sit open on this screen, which is the first
@@ -613,22 +610,16 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {showWhy && (
         <>
           <div className="g-card splash-item why-card">
-            <strong>Your week:</strong> 3 glute days (Mon · Wed · Fri), 2 abs and upper-body days (Tue · Thu), and one Jessica Diễm video each weekend day. Never two glute days in a row. Abs stay off glute days.
+            <strong>Your week:</strong> glutes Mon · Fri, Pilates or yoga Tue · Sat, upper body &amp; core Wed, Zone 2 run Thu, swim Sun. An easy walk every evening.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>🍑 Round comes from three muscles:</strong><br />
-            <strong>Maximus</strong> — size at the back. Hip thrust, squat, RDL, step-up, Bulgarian.<br />
-            <strong>Medius</strong> — round upper side. Abduction, band walks, step-up.<br />
-            <strong>Minimus</strong> — holds the hip steady. Abduction, clamshells, anything on one leg.
+            <strong>Getting stronger:</strong> same 3 lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Getting stronger:</strong> weeks 1–2 learn the form. From week 3, add 2.5 kg barbell, 2 kg dumbbells, or 0.5 kg band when all three sets feel controlled. Form breaks? Add a rep instead.
+            <strong>Cardio:</strong> go longer, not harder. Zone 2 stays easy. Jump rope never gets in the way of glute recovery.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Why the waist stays small:</strong> only the weighted crunch gets heavier. Everything else grows by reps or seconds. No heavy twisting.
-          </div>
-          <div className="g-card splash-item why-card">
-            <strong>⚠️ About 1,000 calories:</strong> fat comes off, but bigger glutes need more food than you burn. Expect tighter and more defined for now. If lifts stall for a month, eat more.
+            <strong>Tired or sore?</strong> 1. Less jump rope. 2. Shorter walks. 3. Gentler Saturday. Keep Monday and Friday.
           </div>
         </>
       )}

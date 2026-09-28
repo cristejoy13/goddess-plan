@@ -9,8 +9,8 @@ import {
 export const DONE_EVENT = 'gp-workout-done';
 export const fmt = n => n.toLocaleString('en-US');
 
-// The name a day's session goes by in the history: "Glute Power", not the
-// whole "Monday · Glute Power" heading. Monday-first, like the plan.
+// The name a day's session goes by in the history: "Glutes A", not the
+// whole "Monday · Glutes A" heading. Monday-first, like the plan.
 export function typeFor(key) {
   const js = parseDay(key).getDay();
   const day = WORKOUT_DAYS[js === 0 ? 6 : js - 1];
