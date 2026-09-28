@@ -46,11 +46,11 @@ const NAV_ITEMS = [
 const SEARCH_INDEX = [
   // Monday to Sunday: glutes Mon/Fri, Pilates or yoga Tue/Sat, Izzy Wed,
   // Zone 2 Thu, swim Sun. An easy walk every evening.
-  { label: 'Monday — Glutes A', hint: 'Workouts · Hip Thrust · RDL · Bulgarian Split Squat', section: 'workout', scrollTo: 'day-monday'    },
+  { label: 'Monday — Glutes A', hint: 'Workouts · Hip Thrust · RDL · Bulgarian Split Squat · Squat', section: 'workout', scrollTo: 'day-monday'    },
   { label: 'Tuesday — Pilates or Yoga', hint: 'Workouts · Jessica Diễm or Nicole · jump rope', section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Wednesday — Upper Body & Core', hint: 'Workouts · Pilates by Izzy · jump rope', section: 'workout', scrollTo: 'day-wednesday' },
   { label: 'Thursday — Zone 2 Run', hint: 'Workouts · easy conversational run', section: 'workout', scrollTo: 'day-thursday'  },
-  { label: 'Friday — Glutes B', hint: 'Workouts · Step-Up · Goblet Squat · Hip Abduction', section: 'workout', scrollTo: 'day-friday'    },
+  { label: 'Friday — Glutes B', hint: 'Workouts · Cable Kickback · Hip Abduction · Step-Up · Squat', section: 'workout', scrollTo: 'day-friday'    },
   { label: 'Saturday — Gentle Pilates or Yoga', hint: 'Workouts · Jessica Diễm or Nicole · jump rope', section: 'workout', scrollTo: 'day-saturday'  },
   { label: 'Sunday — Swimming', hint: 'Workouts · easy 30–45 min swim', section: 'workout', scrollTo: 'day-sunday'  },
 
@@ -58,7 +58,8 @@ const SEARCH_INDEX = [
   { label: 'Romanian Deadlift (RDL)', hint: 'Workouts → Monday Glutes A', section: 'workout', scrollTo: 'day-monday' },
   { label: 'Bulgarian Split Squat',   hint: 'Workouts → Monday Glutes A', section: 'workout', scrollTo: 'day-monday' },
   { label: 'Dumbbell Step-Up',        hint: 'Workouts → Friday Glutes B', section: 'workout', scrollTo: 'day-friday' },
-  { label: 'Goblet Squat',            hint: 'Workouts → Friday Glutes B', section: 'workout', scrollTo: 'day-friday' },
+  { label: 'Squat — finisher',        hint: 'Workouts → Monday & Friday, last', section: 'workout', scrollTo: 'day-monday' },
+  { label: 'Cable Kickback',          hint: 'Workouts → Friday Glutes B', section: 'workout', scrollTo: 'day-friday' },
   { label: 'Hip Abduction',           hint: 'Workouts → Friday Glutes B', section: 'workout', scrollTo: 'day-friday' },
   { label: 'Jump Rope',               hint: 'Workouts → Tue · Wed · Sat, after the main workout', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Zone 2 Run',              hint: 'Workouts → Thursday', section: 'workout', scrollTo: 'day-thursday' },

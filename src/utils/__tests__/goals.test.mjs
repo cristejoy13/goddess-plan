@@ -1,6 +1,6 @@
 // The 40 kg plan and the calories burned. Run with:
 //   node src/utils/__tests__/goals.test.mjs
-import { kgPlan, achievedGoals, setReward, claimReward, rewardText, KG_GOAL_ID } from '../goals.js';
+import { kgPlan, achievedGoals, setReward, claimReward, rewardText, KG_GOAL_ID, WORKOUT_GOAL_ID, goalTarget, goalTotal, addProgress, removeProgress } from '../goals.js';
 import { parseBurn, setBurn, burnOn } from '../mealLog.js';
 import { mergeMealLogBlobs } from '../mergeMealLog.js';
 
@@ -46,6 +46,22 @@ ok('claiming marks it claimed', Boolean(claimReward(g1, 'a', true).rewards.a.cla
 ok('unclaiming clears it', claimReward(claimReward(g1, 'a', true), 'a', false).rewards.a.claimed === null);
 ok('an empty reward removes it', rewardText(setReward(g1, 'a', ''), 'a') === null);
 ok('claiming a goal with no reward does nothing', claimReward(g0, 'a', true) === g0);
+
+// Goals with a number.
+ok('the first number is the target', goalTarget('Run 50 km') === 50);
+ok('commas are read', goalTarget('Save 10,000 pesos') === 10000);
+ok('no number, no target', goalTarget('Be kind') === null);
+let ng = { items: [{ id: 'r', text: 'Run 50 km', done: null }], rewards: {} };
+ng = addProgress(ng, 'r', 20, '2026-09-20');
+ok('progress adds up', goalTotal(ng.items[0]) === 20 && !ng.items[0].done);
+ok('zero or words add nothing', addProgress(ng, 'r', 0) === ng && addProgress(ng, 'r', 'x') === ng);
+ng = addProgress(ng, 'r', 30.5, '2026-09-21');
+ok('reaching the target ticks it', !!ng.items[0].done);
+ok('a ticked number goal counts as achieved', achievedGoals(log({}), ng).some(a => a.id === 'r'));
+ng = removeProgress(ng, 'r', ng.items[0].progress[1].id);
+ok('dropping under the target unticks it', ng.items[0].done === null && goalTotal(ng.items[0]) === 20);
+ok('1,000 workouts is achieved on its date', achievedGoals(log({}), none, '2029-01-01')[0].id === WORKOUT_GOAL_ID);
+ok('no 1,000 yet, no workout goal', !achievedGoals(log({}), none, null).some(a => a.id === WORKOUT_GOAL_ID));
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -7,7 +7,8 @@
 // says so rather than guessing a start from the profile.
 //
 // Shape of gp_goals (synced):
-//   { items: [ { id, text, done: iso|null, createdAt, updatedAt } ],
+//   { items: [ { id, text, done: iso|null, createdAt, updatedAt,
+//                progress?: [ { id, date, amount, at } ] } ],
 //     rewards: { [goalId]: { text, claimed: iso|null, updatedAt } }, updatedAt }
 //
 // A reward belongs to one goal and is keyed by that goal's id — the 40 kg
@@ -22,6 +23,7 @@ import { dateKeyOf } from './mealLog.js';
 export const GOALS_KEY = 'gp_goals';
 export const CELEBRATED_KEY = 'gp_goals_celebrated';
 export const KG_GOAL_ID = 'kg-goal';
+export const WORKOUT_GOAL_ID = 'workout-goal';
 export const TARGET_KG = 40;
 export const KG_PER_WEEK = 0.5;
 
@@ -104,8 +106,12 @@ export function newGoalId() {
  * Everything achieved so far, newest first: the kilo goal once the latest
  * weigh-in is at or under 40, and every goal she has ticked.
  */
-export function achievedGoals(log, goals) {
+// `workoutsReachedOn` is the date of the 1,000th workout, or null.
+export function achievedGoals(log, goals, workoutsReachedOn = null) {
   const out = [];
+  if (workoutsReachedOn) {
+    out.push({ id: WORKOUT_GOAL_ID, text: 'Completed 1,000 workouts', at: workoutsReachedOn, reward: rewardText(goals, WORKOUT_GOAL_ID) });
+  }
   const plan = kgPlan(log);
   if (plan?.reached) {
     out.push({ id: KG_GOAL_ID, text: `Reached ${TARGET_KG} kg`, at: plan.reachedOn, reward: rewardText(goals, KG_GOAL_ID) });
@@ -149,4 +155,53 @@ export function loadCelebrated() {
 
 export function saveCelebrated(map) {
   try { localStorage.setItem(CELEBRATED_KEY, JSON.stringify(map)); } catch { /* confetti may repeat */ }
+}
+
+// ── goals with a number ──────────────────────────────────────────────────
+// A goal she writes with a number in it — "Run 50 km", "Read 12 books",
+// "Save 10,000" — gets a count. The first number is the target; she adds
+// what she did as she goes, the amounts add up, and the goal ticks itself
+// the moment the total reaches the target. A goal with no number keeps the
+// plain tick.
+export function goalTarget(text) {
+  const m = String(text || '').match(/\d[\d,]*(?:\.\d+)?/);
+  if (!m) return null;
+  const n = Number(m[0].replace(/,/g, ''));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+export function goalTotal(g) {
+  const t = (g.progress || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  return Math.round(t * 100) / 100;
+}
+
+function withProgress(goals, id, progress) {
+  const now = new Date().toISOString();
+  return {
+    ...goals,
+    items: goals.items.map(g => {
+      if (g.id !== id) return g;
+      const next = { ...g, progress, updatedAt: now };
+      const target = goalTarget(g.text);
+      const reached = target !== null && goalTotal(next) >= target;
+      // Reaching the target ticks it; dropping back under unticks it.
+      next.done = reached ? (g.done || now) : null;
+      return next;
+    }),
+  };
+}
+
+export function addProgress(goals, id, amount, date = dateKeyOf()) {
+  const n = Number(amount);
+  if (!Number.isFinite(n) || n <= 0) return goals;
+  const g = goals.items.find(x => x.id === id);
+  if (!g) return goals;
+  const entry = { id: newGoalId(), date, amount: n, at: new Date().toISOString() };
+  return withProgress(goals, id, [...(g.progress || []), entry]);
+}
+
+export function removeProgress(goals, id, entryId) {
+  const g = goals.items.find(x => x.id === id);
+  if (!g) return goals;
+  return withProgress(goals, id, (g.progress || []).filter(p => p.id !== entryId));
 }

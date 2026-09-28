@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { WORKOUT_DAYS, MEAL_SLOTS, RECOMMENDED_MEALS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
-import WorkoutGoalCard from './WorkoutTracker';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { numberOf, dayKey } from '../utils/workoutLog';
 import { loadLifts, isTrackable } from '../utils/lifts';
@@ -23,11 +22,11 @@ const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 // The week at a glance. The evening walk is on every day, so it is said once,
 // under the grid, rather than seven times in the focus lines.
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian', color: 'pr' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian · Squat', color: 'pr' },
   { lbl: 'Tue', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope', color: 'py' },
   { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope', color: 'py' },
   { lbl: 'Thu', emoji: '🏃', name: 'Zone 2 Run',      focus: 'Easy run', color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glutes B',        focus: 'Step-Up · Goblet · Abduction', color: 'pr' },
+  { lbl: 'Fri', emoji: '✨', name: 'Glutes B',        focus: 'Kickback · Abduction · Step-Up · Squat', color: 'pr' },
   { lbl: 'Sat', emoji: '🌿', name: 'Gentle Pilates',  focus: 'Jessica or Nicole · Rope', color: 'py' },
   { lbl: 'Sun', emoji: '🏊', name: 'Swimming',        focus: 'Easy swim', color: 'py' },
 ];
@@ -564,7 +563,6 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         <p className="s-desc">Tap a day to open its full workout and meal plan.</p>
       </div>
 
-      <WorkoutGoalCard />
 
       <div className="today-banner splash-item">
         <span className="today-badge">Today</span>
@@ -613,7 +611,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
             <strong>Your week:</strong> glutes Mon · Fri, Pilates or yoga Tue · Sat, upper body &amp; core Wed, Zone 2 run Thu, swim Sun. An easy walk every evening.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Getting stronger:</strong> same 3 lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.
+            <strong>Getting stronger:</strong> same lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.
           </div>
           <div className="g-card splash-item why-card">
             <strong>Cardio:</strong> go longer, not harder. Zone 2 stays easy. Jump rope never gets in the way of glute recovery.

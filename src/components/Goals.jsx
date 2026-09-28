@@ -5,12 +5,17 @@ import { fireConfetti } from '../utils/confetti';
 import {
   loadGoals, saveGoals, newGoalId, achievedGoals,
   loadCelebrated, saveCelebrated, TARGET_KG, KG_PER_WEEK,
-  KG_GOAL_ID, rewardText, setReward, claimReward,
+  KG_GOAL_ID, WORKOUT_GOAL_ID, rewardText, setReward, claimReward,
+  goalTarget, goalTotal, addProgress, removeProgress,
 } from '../utils/goals';
+import { loadWorkouts, goalReachedOn, WORKOUTS_CHANGED } from '../utils/workoutLog';
+import WorkoutGoalCard from './WorkoutTracker';
+import { ProgressChart, WeightChart } from './GoalChart';
 
 // ─── GOALS ─────────────────────────────────────────────────────────────────
 // The button left of the title (the notebook is on the right), the page it
-// opens, the 40 kg card on the dashboard, and the confetti when a goal lands.
+// opens — every goal and its chart lives inside it, nowhere else — and the
+// confetti when a goal lands.
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function prettyDate(key) {
@@ -75,7 +80,7 @@ export function GoalsToggle({ achieved, onOpen }) {
   );
 }
 
-// The 40 kg plan in a few lines. Used on the dashboard and inside the page.
+// The 40 kg plan in a few lines, inside the goals page.
 export function KgGoalCard({ plan, onOpen, onNavigate }) {
   const body = !plan ? (
     <div className="kg-empty">
@@ -121,8 +126,89 @@ export function KgGoalCard({ plan, onOpen, onNavigate }) {
   );
 }
 
+// A goal she wrote with a number in it. Closed, it is one line with a bar;
+// open, it shows the chart, a box to add what she did, and what she added.
+function NumberGoal({ goals, g, onRemove }) {
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState('');
+  const target = goalTarget(g.text);
+  const total = goalTotal(g);
+  const pct = Math.min(100, (total / target) * 100);
+  const entries = [...(g.progress || [])].sort((a, b) => (a.date < b.date ? 1 : -1));
+
+  function add(e) {
+    e.preventDefault();
+    const n = Number(String(amount).replace(/,/g, ''));
+    if (!(n > 0)) return;
+    saveGoals(addProgress(goals, g.id, n));
+    setAmount('');
+  }
+  function removeEntry(p) {
+    if (!window.confirm(`Take ${p.amount} (${prettyDate(p.date)}) off “${g.text}”?`)) return;
+    saveGoals(removeProgress(goals, g.id, p.id));
+  }
+
+  return (
+    <li className={`goals-item goals-num${g.done ? ' goals-item-done' : ''}${open ? ' is-open' : ''}`}>
+      <div className="goals-num-top">
+        <button type="button" className="goals-num-main" onClick={() => setOpen(v => !v)} aria-expanded={open}>
+          <span className="goals-text">{g.done ? '✓ ' : ''}{g.text}</span>
+          <span className="goals-num-count">{total.toLocaleString('en-US')} / {target.toLocaleString('en-US')}</span>
+          <span className="goals-num-bar"><span style={{ width: `${Math.max(total ? 2 : 0, pct)}%` }} /></span>
+        </button>
+        <button type="button" className="ml-icon-btn ml-del" onClick={() => onRemove(g)} aria-label={`Delete ${g.text}`}>🗑</button>
+      </div>
+      {open && (
+        <div className="goals-num-body">
+          <ProgressChart entries={entries} target={target} />
+          <form className="goals-num-add" onSubmit={add}>
+            <input
+              type="number" inputMode="decimal" min="0" step="any"
+              value={amount} onChange={e => setAmount(e.target.value)}
+              placeholder="How much today?" aria-label={`Add to ${g.text}`}
+            />
+            <button type="submit" disabled={!(Number(amount) > 0)}>＋ Add</button>
+          </form>
+          {entries.length > 0 && (
+            <ul className="goals-num-log">
+              {entries.map(p => (
+                <li key={p.id}>
+                  <span>{prettyDate(p.date)}</span>
+                  <b>+{p.amount.toLocaleString('en-US')}</b>
+                  <button type="button" className="ml-icon-btn ml-del" onClick={() => removeEntry(p)} aria-label="Remove this entry">🗑</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
+// The 40 kg card with its chart folded underneath.
+function KgGoalWithChart({ plan, log, onNavigate }) {
+  const [open, setOpen] = useState(false);
+  const weighIns = Object.entries(log?.weights || {})
+    .filter(([, w]) => typeof w?.kg === 'number' && Number.isFinite(w.kg))
+    .map(([date, w]) => ({ date, kg: w.kg }));
+  return (
+    <div className="goals-kg">
+      <KgGoalCard plan={plan} onNavigate={onNavigate} />
+      <div className={`ex-sec${open ? ' is-open' : ''}`}>
+        <button className="ex-sec-pill" onClick={() => setOpen(v => !v)} aria-expanded={open}>
+          <span className="ex-sec-name">📉 Weight chart</span>
+          <span className="ex-sec-count">{weighIns.length}</span>
+          <span className="ex-sec-caret">▾</span>
+        </button>
+        {open && <div className="ex-sec-body"><WeightChart weighIns={weighIns} target={TARGET_KG} /></div>}
+      </div>
+    </div>
+  );
+}
+
 export function GoalsPanel({ data, onClose, onNavigate }) {
-  const { goals, plan, achieved } = data;
+  const { goals, plan, achieved, log } = data;
   const [text, setText] = useState('');
   const [reward, setRewardDraft] = useState('');
   // Three tabs instead of one long page — each fits a phone screen, so there
@@ -197,20 +283,23 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
         </div>
 
         {tab === 'goals' && <>
-        <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
+        <KgGoalWithChart plan={plan} log={log} onNavigate={p => { onClose(); onNavigate(p); }} />
+        <WorkoutGoalCard />
 
-        {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Tick it when you reach it.</div>}
+        {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a chart.</div>}
         <ul className="goals-list">
-          {open.map(g => (
-            <li key={g.id} className="goals-item">
-              <button type="button" className="goals-tick" onClick={() => toggle(g)} aria-label={`Mark “${g.text}” achieved`} />
-              <span className="goals-text">{g.text}</span>
-              <button type="button" className="ml-icon-btn ml-del" onClick={() => remove(g)} aria-label={`Delete ${g.text}`}>🗑</button>
-            </li>
-          ))}
-          {goals.items.filter(g => g.done).map(g => (
-            <li key={g.id} className="goals-item goals-item-done">
-              <button type="button" className="goals-tick goals-tick-on" onClick={() => toggle(g)} aria-label={`Mark “${g.text}” not achieved`}>✓</button>
+          {/* One list, open goals first. A single array keeps each row's key,
+              so a number goal that is reached moves down without shutting. */}
+          {[...open, ...goals.items.filter(g => g.done)].map(g => goalTarget(g.text) && (!g.done || g.progress?.length) ? (
+            <NumberGoal key={g.id} goals={goals} g={g} onRemove={remove} />
+          ) : (
+            <li key={g.id} className={`goals-item${g.done ? ' goals-item-done' : ''}`}>
+              <button
+                type="button"
+                className={`goals-tick${g.done ? ' goals-tick-on' : ''}`}
+                onClick={() => toggle(g)}
+                aria-label={g.done ? `Mark “${g.text}” not achieved` : `Mark “${g.text}” achieved`}
+              >{g.done ? '✓' : null}</button>
               <span className="goals-text">{g.text}</span>
               <button type="button" className="ml-icon-btn ml-del" onClick={() => remove(g)} aria-label={`Delete ${g.text}`}>🗑</button>
             </li>
@@ -234,7 +323,7 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
           />
           <button type="submit" disabled={!text.trim() || !reward.trim()}>＋ Add</button>
         </form>
-        <div className="goals-lock-note">🔒 The reward locks in once you add it.</div>
+        <div className="goals-lock-note">🔒 The reward locks in. A number in the goal gets a chart.</div>
 
         </>}
 
@@ -324,6 +413,7 @@ function RewardRow({ goals, id, goalText, earned }) {
 function Rewards({ goals, achievedIds }) {
   const rows = [
     { id: KG_GOAL_ID, text: `Reach ${TARGET_KG} kg` },
+    { id: WORKOUT_GOAL_ID, text: 'Complete 1,000 workouts' },
     ...goals.items.map(g => ({ id: g.id, text: g.text })),
   ];
   return (
@@ -344,7 +434,7 @@ function Rewards({ goals, achievedIds }) {
 export function GoalWatcher() {
   const [toast, setToast] = useState(null);
   const check = useCallback(() => {
-    const achieved = achievedGoals(loadLog(), loadGoals());
+    const achieved = achievedGoals(loadLog(), loadGoals(), goalReachedOn(loadWorkouts()));
     const seen = loadCelebrated();
     const now = new Set(achieved.map(a => a.id));
     // A goal un-ticked (or a weight back above 40) may celebrate again later.
@@ -366,10 +456,12 @@ export function GoalWatcher() {
     // A beat after opening, so the confetti lands on a page that has drawn.
     const first = setTimeout(check, 600);
     window.addEventListener('gp-goals-changed', check);
+    window.addEventListener(WORKOUTS_CHANGED, check);
     window.addEventListener('gp-remote-sync', check);
     return () => {
       clearTimeout(first);
       window.removeEventListener('gp-goals-changed', check);
+      window.removeEventListener(WORKOUTS_CHANGED, check);
       window.removeEventListener('gp-remote-sync', check);
     };
   }, [check]);

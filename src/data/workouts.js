@@ -1,15 +1,15 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
 // Her plan of 2026-09-28, Monday to Sunday:
-//   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat
+//   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat, squat finisher
 //   Tue  Pilates or yoga (Jessica Diễm or Nicole) + jump rope
 //   Wed  Upper body & core — Pilates by Izzy + jump rope
 //   Thu  Zone 2 run
-//   Fri  Glutes B — step-up, goblet squat, hip abduction
+//   Fri  Glutes B — cable kickback, hip abduction, step-up, squat finisher
 //   Sat  Gentle Pilates or yoga (Jessica Diễm or Nicole) + jump rope
 //   Sun  Swimming
 // An easy walk every evening. Jump rope ONLY after the main workout on Tue,
-// Wed and Sat. The glute days keep exactly three lifts each and never share
-// one; they progress by reps first, then a little weight — never by adding
+// Wed and Sat. The glute days keep three main lifts each, never shared, and the
+// same light squat to finish; they progress by reps first, then a little weight — never by adding
 // exercises. Consistency over volume: nothing extra is added on its own.
 //
 // Lift names match the old plan where the lift is the same, because the lift
@@ -866,17 +866,18 @@ export const DAILY_MEALS = {
 export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Monday · Glutes A', title: 'Hip Thrust · RDL · Bulgarian',
+    day: 'Monday · Glutes A', title: 'Hip Thrust · RDL · Bulgarian · Squat',
     sub: '30–40 min strength · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 lifts · in this order.'),
+      H('🍑 Main Workout', '3 lifts + squat finisher · in order.'),
       { name: '1. Barbell Hip Thrust', detail: '4 × 8–12 reps · barbell or dumbbell · rest 90–120 sec · full hip extension, squeeze at the top' },
       { name: '2. Romanian Deadlift (RDL)', detail: '3 × 8–12 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
       { name: '3. Bulgarian Split Squat', detail: '3 × 8–10 reps each leg · rest 60–90 sec · lean slightly forward for the glutes' },
+      { name: '4. Squat — finisher', detail: '2 × 15 reps · bodyweight or a light dumbbell · slow, full depth' },
       ...walk('30–60'),
     ],
-    noteAfter: { type: 'gold', text: '📋 Same 3 lifts. Add a rep each week; at the top of the range, add a little weight.' },
+    noteAfter: { type: 'gold', text: '📋 Same lifts. Add a rep each week; at the top of the range, add a little weight.' },
     trackLifts: true,
     meals: DAILY_MEALS,
   },
@@ -922,17 +923,18 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Friday · Glutes B', title: 'Step-Up · Goblet Squat · Abduction',
+    day: 'Friday · Glutes B', title: 'Kickback · Abduction · Step-Up · Squat',
     sub: '25–35 min strength · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 lifts · in this order.'),
-      { name: '1. Dumbbell Step-Up', detail: '3 × 8–12 reps each leg · rest 60–90 sec · drive through the working leg' },
-      { name: '2. Goblet Squat', detail: '3 × 8–12 reps · goblet or dumbbell squat · rest 90 sec · comfortable stance, slow and controlled' },
-      { name: '3. Hip Abduction (machine or band)', detail: '3 × 15–25 reps · machine, band or cable · rest 45–60 sec' },
+      H('🍑 Main Workout', '3 lifts + squat finisher · in order.'),
+      { name: '1. Cable Kickback', detail: '3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec · a band round the ankle works at home' },
+      { name: '2. Hip Abduction (machine or band)', detail: '3 × 15–25 reps · machine, band or cable · rest 45–60 sec' },
+      { name: '3. Dumbbell Step-Up', detail: '3 × 8–12 reps each leg · rest 60–90 sec · drive through the working leg' },
+      { name: '4. Squat — finisher', detail: '2 × 15 reps · bodyweight or a light dumbbell · slow, full depth' },
       ...walk('30–60'),
     ],
-    noteAfter: { type: 'gold', text: '📋 Same 3 lifts. Add a rep each week; at the top of the range, add a little weight.' },
+    noteAfter: { type: 'gold', text: '📋 Same lifts. Add a rep each week; at the top of the range, add a little weight.' },
     trackLifts: true,
     meals: DAILY_MEALS,
   },

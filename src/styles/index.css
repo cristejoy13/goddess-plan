@@ -10325,3 +10325,42 @@ body {
   .wk-goal-stats b { font-size: 16px; }
 }
 .wk-ms li:last-child { grid-column: 1 / -1; font-size: 15px; }
+
+/* ── goals with a number, inside G ─────────────────────────────────────────
+   One line with a bar when closed; the chart and the add box when open. */
+.goals-kg { display: flex; flex-direction: column; gap: 8px; }
+.goals-panel .wk-goal { margin: 0; max-width: none; box-shadow: none; }
+.goals-num { flex-direction: column; align-items: stretch; gap: 8px; }
+.goals-num-top { display: flex; align-items: center; gap: 8px; }
+.goals-num-main {
+  flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: center;
+  padding: 4px 0; border: 0; background: none; font-family: inherit; text-align: left; cursor: pointer; min-height: 44px;
+}
+.goals-num-count { font-size: 13px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.goals-num-bar { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.goals-num-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--rose), var(--gold)); }
+.goals-num.goals-item-done .goals-text { text-decoration: none; color: var(--gold-light); }
+.goals-num-body { display: flex; flex-direction: column; gap: 10px; padding: 2px 2px 4px; }
+.goals-num-add { display: flex; gap: 8px; }
+.goals-num-add input {
+  flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border-radius: 10px;
+  border: 1px solid rgba(240,204,96,0.3); background: rgba(0,0,0,0.25);
+  color: var(--text); font-family: inherit; font-size: 16px;
+}
+.goals-num-add button {
+  min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(240,204,96,0.5); background: rgba(240,204,96,0.16);
+  color: var(--gold); font-family: inherit; font-weight: 700; font-size: 13px;
+}
+.goals-num-add button:disabled { opacity: 0.4; cursor: default; }
+.goals-num-log { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.goals-num-log li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-mid); }
+.goals-num-log li span { flex: 1; }
+.goals-num-log li b { color: var(--wt); font-variant-numeric: tabular-nums; }
+.kg-goal-line { stroke: var(--wt); }
+.kg-goal-text { fill: var(--wt); }
+.kg-line { stroke: var(--wt); }
+.kg-dot { fill: var(--wt-avg); }
+[data-mode="light"] .goals-num-bar { background: rgba(0,0,0,0.08); }
+[data-mode="light"] .goals-num-add input { background: #fff; }
+[data-mode="light"] .goals-num-count { color: #7a5000; }

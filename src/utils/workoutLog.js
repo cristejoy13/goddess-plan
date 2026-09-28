@@ -172,3 +172,9 @@ export function cumulativeIn(log, fromKey, toKey) {
   }
   return { before, points };
 }
+
+// The date of the 1,000th workout, once there is one.
+export function goalReachedOn(log) {
+  const dates = Object.keys(log.days).sort();
+  return dates.length >= WORKOUT_GOAL ? dates[WORKOUT_GOAL - 1] : null;
+}

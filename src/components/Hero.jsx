@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WORKOUT_DAYS } from '../data/workouts';
 import { mergeNotebookBlobs } from '../utils/mergeNotebook';
-import { GoalsToggle, GoalsPanel, KgGoalCard } from './Goals';
+import { GoalsToggle, GoalsPanel } from './Goals';
 import { useGoalsData } from '../utils/useGoalsData';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
@@ -1146,7 +1146,6 @@ export default function Hero({ onNavigate }) {
         ))}
       </div>
 
-      <KgGoalCard plan={goalsData.plan} onOpen={() => setGoalsOpen(true)} onNavigate={onNavigate} />
       {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 
       <div className="hero-goal-ribbon splash-item">🎯 Flat tummy · Small waist · Round glutes · Healthy gut · Glow</div>
