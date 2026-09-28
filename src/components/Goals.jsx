@@ -220,6 +220,21 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
   }
 
   const open = goals.items.filter(g => !g.done);
+  const achievedIds = new Set(achieved.map(a => a.id));
+
+  // Taking a goal back out of Achieved. A number goal loses its last entry,
+  // which drops it under the target; a plain goal is simply unticked.
+  function notYet(id) {
+    const g = goals.items.find(x => x.id === id);
+    if (!g) return;
+    const last = [...(g.progress || [])].sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+    if (goalTarget(g.text) && last) {
+      if (!window.confirm(`Take +${last.amount} (${prettyDate(last.date)}) off “${g.text}” and move it back to Goals?`)) return;
+      saveGoals(removeProgress(goals, g.id, last.id));
+    } else {
+      toggle(g);
+    }
+  }
   // Earned but not yet claimed — the number on the Rewards tab.
   const toClaim = achieved.filter(a => a.reward && !goals.rewards?.[a.id]?.claimed).length;
 
@@ -253,14 +268,14 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
         </div>
 
         {tab === 'goals' && <>
-        <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
-        <WorkoutGoalCard />
+        {/* Only goals still being worked on. A reached goal moves to the
+            Achieved tab; its data stays exactly as it was. */}
+        {!plan?.reached && <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />}
+        {!achievedIds.has(WORKOUT_GOAL_ID) && <WorkoutGoalCard />}
 
-        {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a bar.</div>}
+        {open.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a bar.</div>}
         <ul className="goals-list">
-          {/* One list, open goals first. A single array keeps each row's key,
-              so a number goal that is reached moves down without shutting. */}
-          {[...open, ...goals.items.filter(g => g.done)].map(g => goalTarget(g.text) && (!g.done || g.progress?.length) ? (
+          {open.map(g => goalTarget(g.text) ? (
             <NumberGoal key={g.id} goals={goals} g={g} onRemove={remove} />
           ) : (
             <li key={g.id} className={`goals-item${g.done ? ' goals-item-done' : ''}`}>
@@ -310,7 +325,12 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
                       <b>{a.text}</b>
                       {a.reward && <span className="gw-reward">🎁 {a.reward}</span>}
                     </div>
-                    <small>{prettyDate(a.at)}</small>
+                    <div className="gw-side">
+                      <small>{prettyDate(a.at)}</small>
+                      {goals.items.some(g => g.id === a.id) && (
+                        <button type="button" className="gw-undo" onClick={() => notYet(a.id)}>↶ Not yet</button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
