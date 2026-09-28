@@ -10,7 +10,7 @@ import {
 } from '../utils/goals';
 import { loadWorkouts, goalReachedOn, WORKOUTS_CHANGED } from '../utils/workoutLog';
 import WorkoutGoalCard from './WorkoutTracker';
-import { ProgressChart, WeightChart } from './GoalChart';
+import { ProgressChart } from './GoalChart';
 
 // ─── GOALS ─────────────────────────────────────────────────────────────────
 // The button left of the title (the notebook is on the right), the page it
@@ -186,29 +186,8 @@ function NumberGoal({ goals, g, onRemove }) {
   );
 }
 
-// The 40 kg card with its chart folded underneath.
-function KgGoalWithChart({ plan, log, onNavigate }) {
-  const [open, setOpen] = useState(false);
-  const weighIns = Object.entries(log?.weights || {})
-    .filter(([, w]) => typeof w?.kg === 'number' && Number.isFinite(w.kg))
-    .map(([date, w]) => ({ date, kg: w.kg }));
-  return (
-    <div className="goals-kg">
-      <KgGoalCard plan={plan} onNavigate={onNavigate} />
-      <div className={`ex-sec${open ? ' is-open' : ''}`}>
-        <button className="ex-sec-pill" onClick={() => setOpen(v => !v)} aria-expanded={open}>
-          <span className="ex-sec-name">📉 Weight chart</span>
-          <span className="ex-sec-count">{weighIns.length}</span>
-          <span className="ex-sec-caret">▾</span>
-        </button>
-        {open && <div className="ex-sec-body"><WeightChart weighIns={weighIns} target={TARGET_KG} /></div>}
-      </div>
-    </div>
-  );
-}
-
 export function GoalsPanel({ data, onClose, onNavigate }) {
-  const { goals, plan, achieved, log } = data;
+  const { goals, plan, achieved } = data;
   const [text, setText] = useState('');
   const [reward, setRewardDraft] = useState('');
   // Three tabs instead of one long page — each fits a phone screen, so there
@@ -283,7 +262,7 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
         </div>
 
         {tab === 'goals' && <>
-        <KgGoalWithChart plan={plan} log={log} onNavigate={p => { onClose(); onNavigate(p); }} />
+        <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
         <WorkoutGoalCard />
 
         {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a chart.</div>}

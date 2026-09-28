@@ -1,11 +1,8 @@
 import { useState } from 'react';
 
 // ─── GOAL CHARTS ───────────────────────────────────────────────────────────
-// Every goal with a number gets a picture inside G. Two shapes:
-//   ProgressChart — a running total climbing toward a target (workouts,
-//                   and any goal she writes with a number in it).
-//   WeightChart   — the scale, heading DOWN toward 40 kg.
-// Both start empty and draw only what she has actually logged.
+// A goal she writes with a number in it gets a running total climbing toward
+// its target, inside G. It starts empty and draws only what she has logged.
 
 const W = 320, H = 170, PAD_L = 38, PAD_R = 10, PAD_T = 16, PAD_B = 24;
 const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
@@ -126,50 +123,6 @@ export function ProgressChart({ entries, target, milestones, unit = '', empty = 
         ))}
       </svg>
       {entries.length === 0 && <div className="wk-empty">{empty}</div>}
-    </div>
-  );
-}
-
-// weighIns: [{ date, kg }]. The target line sits BELOW the start: the goal is
-// reached by going down.
-export function WeightChart({ weighIns, target }) {
-  const [view, setView] = useState('all');
-  const [offset, setOffset] = useState(0);
-  const sorted = [...weighIns].sort((a, b) => (a.date < b.date ? -1 : 1));
-  const { from, to, label } = rangeFor(view, offset, sorted[0]?.date);
-  const shown = sorted.filter(w => w.date >= from && w.date <= to);
-  const all = [target, ...shown.map(w => w.kg)];
-  const lo = Math.floor(Math.min(...all) - 0.5), hi = Math.ceil(Math.max(...all, target + 2) + 0.5);
-  const t0 = parseDay(from).getTime(), span = Math.max(1, parseDay(to).getTime() - t0);
-  const x = key => PAD_L + ((parseDay(key).getTime() - t0) / span) * (W - PAD_L - PAD_R);
-  const y = v => PAD_T + (1 - (v - lo) / (hi - lo)) * (H - PAD_T - PAD_B);
-  const d = shown.map((w, i) => `${i ? 'L' : 'M'}${x(w.date)},${y(w.kg)}`).join(' ');
-  const change = shown.length > 1 ? Math.round((shown.at(-1).kg - shown[0].kg) * 10) / 10 : null;
-  const summary = shown.length
-    ? (change === null ? `${fmt(shown[0].kg)} kg` : `${change > 0 ? '+' : ''}${fmt(change)} kg`)
-    : 'no weigh-ins';
-  const mid = Math.round((lo + hi) / 2);
-
-  return (
-    <div className="wk-graph">
-      <ViewTabs view={view} setView={setView} offset={offset} setOffset={setOffset} label={label} summary={summary} />
-      <svg className="wk-graph-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Weight over ${label}`}>
-        {[hi, mid].map(v => (
-          <g key={v}>
-            <line className="wk-grid" x1={PAD_L} x2={W - PAD_R} y1={y(v)} y2={y(v)} />
-            <text className="wk-axis" x={PAD_L - 5} y={y(v) + 3} textAnchor="end">{v}</text>
-          </g>
-        ))}
-        <line className="wk-goal-line kg-goal-line" x1={PAD_L} x2={W - PAD_R} y1={y(target)} y2={y(target)} />
-        <text className="wk-goal-text kg-goal-text" x={W - PAD_R} y={y(target) - 4} textAnchor="end">🎯 {target} kg</text>
-        <text className="wk-axis" x={PAD_L - 5} y={y(target) + 3} textAnchor="end">{target}</text>
-        {shown.length > 1 && <path d={d} className="wk-line kg-line" />}
-        {shown.map(w => <circle key={w.date} className="wk-dot kg-dot" cx={x(w.date)} cy={y(w.kg)} r="2.8" />)}
-        {ticksFor(view, from, to).map(t => (
-          <text key={t.key} className="wk-axis" x={x(t.key)} y={H - 7} textAnchor={t.anchor || 'middle'}>{t.text}</text>
-        ))}
-      </svg>
-      {weighIns.length === 0 && <div className="wk-empty">Weigh yourself in Meal to start the line.</div>}
     </div>
   );
 }

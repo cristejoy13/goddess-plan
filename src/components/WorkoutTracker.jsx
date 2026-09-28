@@ -1,12 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ProgressChart } from './GoalChart';
-import {
-  WORKOUT_GOAL, MILESTONES, dayKey,
-  loadWorkouts, saveWorkouts, editWorkout, numbered,
-} from '../utils/workoutLog';
-import {
-  DONE_EVENT, fmt, longDate, useWorkouts, markWorkout, unmarkWorkout,
-} from '../utils/useWorkouts';
+import { useState, useEffect } from 'react';
+import { WORKOUT_GOAL } from '../utils/workoutLog';
+import { DONE_EVENT, fmt, useWorkouts } from '../utils/useWorkouts';
 
 export function WorkoutToast() {
   const [toast, setToast] = useState(null);
@@ -29,118 +23,11 @@ export function WorkoutToast() {
   );
 }
 
-// ── milestones ───────────────────────────────────────────────────────────
-function Milestones({ total }) {
-  const next = MILESTONES.find(m => m > total);
-  return (
-    <ul className="wk-ms">
-      {MILESTONES.map(m => {
-        const hit = total >= m;
-        return (
-          <li key={m} className={hit ? 'hit' : m === next ? 'next' : ''}>
-            <span className="wk-ms-mark">{hit ? '✓' : '○'}</span>
-            <span className="wk-ms-num">{fmt(m)}</span>
-            {m === next && <span className="wk-ms-left">{m - total} to go</span>}
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-// ── history ──────────────────────────────────────────────────────────────
-function HistoryRow({ w }) {
-  const [editing, setEditing] = useState(false);
-  const [mins, setMins] = useState(w.duration ?? '');
-  const [notes, setNotes] = useState(w.notes || '');
-  const save = () => {
-    const n = parseInt(mins, 10);
-    saveWorkouts(editWorkout(loadWorkouts(), w.date, { duration: n > 0 ? n : null, notes: notes.trim() }));
-    setEditing(false);
-  };
-  return (
-    <li className="wk-hist-row">
-      <button className="wk-hist-main" onClick={() => setEditing(v => !v)} aria-expanded={editing}>
-        <span className="wk-hist-n">#{fmt(w.n)}</span>
-        <span className="wk-hist-body">
-          <span className="wk-hist-date">{longDate(w.date)}</span>
-          <span className="wk-hist-type">{w.type} · Completed ✓</span>
-          {(w.duration || w.notes) ? (
-            <span className="wk-hist-extra">
-              {w.duration ? `⏱ ${w.duration} min` : ''}{w.duration && w.notes ? ' · ' : ''}{w.notes}
-            </span>
-          ) : !editing && <span className="wk-hist-add">＋ time &amp; notes</span>}
-        </span>
-      </button>
-      {editing && (
-        <div className="wk-hist-edit">
-          <label>
-            <span>Minutes</span>
-            <input type="number" inputMode="numeric" min="1" value={mins}
-              onChange={e => setMins(e.target.value)} />
-          </label>
-          <label className="wk-hist-notes">
-            <span>Notes</span>
-            <input type="text" value={notes} maxLength={200}
-              onChange={e => setNotes(e.target.value)} />
-          </label>
-          <div className="wk-hist-btns">
-            <button className="wk-btn-save" onClick={save}>Save</button>
-            <button className="wk-btn-remove" onClick={() => unmarkWorkout(w.date)}>Remove</button>
-          </div>
-        </div>
-      )}
-    </li>
-  );
-}
-
-function History({ log }) {
-  const [shown, setShown] = useState(10);
-  const [adding, setAdding] = useState(false);
-  const [date, setDate] = useState('');
-  const all = numbered(log).reverse();
-  const today = dayKey();
-  const addPast = () => {
-    if (!date || date > today || log.days[date]) return;
-    markWorkout(date);
-    setAdding(false); setDate('');
-  };
-  return (
-    <div className="wk-hist">
-      {adding ? (
-        <div className="wk-hist-past">
-          <input type="date" max={today} value={date} onChange={e => setDate(e.target.value)} />
-          <button className="wk-btn-save" disabled={!date || date > today || !!log.days[date]} onClick={addPast}>Add</button>
-          <button className="wk-btn-plain" onClick={() => { setAdding(false); setDate(''); }}>Cancel</button>
-          {date && log.days[date] && <span className="wk-hist-warn">Already counted.</span>}
-        </div>
-      ) : (
-        <button className="wk-btn-plain wk-hist-addpast" onClick={() => setAdding(true)}>＋ Add a missed day</button>
-      )}
-      {all.length === 0 && <div className="wk-empty">No workouts yet.</div>}
-      <ul className="wk-hist-list">
-        {all.slice(0, shown).map(w => <HistoryRow key={`${w.date}-${w.updatedAt}`} w={w} />)}
-      </ul>
-      {all.length > shown && (
-        <button className="wk-btn-plain" onClick={() => setShown(s => s + 20)}>Show more ({all.length - shown})</button>
-      )}
-    </div>
-  );
-}
-
 // ── the card ─────────────────────────────────────────────────────────────
+// The count, the bar and the streaks, nothing more — she asked for the bar
+// alone to be the picture. Every workout is still stored with its date.
 export default function WorkoutGoalCard() {
-  const { log, stats } = useWorkouts();
-  const [open, setOpen] = useState(null);
-  const toggle = useCallback(id => setOpen(o => (o === id ? null : id)), []);
-  const reached = MILESTONES.filter(m => stats.total >= m).length;
-
-  const pills = [
-    { id: 'graph', label: '📈 Progress graph' },
-    { id: 'ms', label: '🏅 Milestones', count: `${reached}/${MILESTONES.length}` },
-    { id: 'hist', label: '📜 History', count: fmt(stats.total) },
-  ];
-
+  const { stats } = useWorkouts();
   return (
     <div className="wk-goal">
       <div className="wk-goal-tag">🏆 1,000 Workout Goal</div>
@@ -160,31 +47,6 @@ export default function WorkoutGoalCard() {
         <div><b>🏅 {stats.next ? fmt(stats.next) : '✓'}</b><span>Next</span></div>
       </div>
 
-
-      <div className="wk-pills">
-        {pills.map(p => (
-          <div key={p.id} className={`ex-sec${open === p.id ? ' is-open' : ''}`}>
-            <button className="ex-sec-pill" onClick={() => toggle(p.id)} aria-expanded={open === p.id}>
-              <span className="ex-sec-name">{p.label}</span>
-              {p.count && <span className="ex-sec-count">{p.count}</span>}
-              <span className="ex-sec-caret">▾</span>
-            </button>
-            {open === p.id && (
-              <div className="ex-sec-body">
-                {p.id === 'graph' && (
-                  <ProgressChart
-                    entries={Object.keys(log.days).map(date => ({ date, amount: 1 }))}
-                    target={WORKOUT_GOAL} milestones={MILESTONES}
-                    empty="Your line starts with workout #1."
-                  />
-                )}
-                {p.id === 'ms' && <Milestones total={stats.total} />}
-                {p.id === 'hist' && <History log={log} />}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
