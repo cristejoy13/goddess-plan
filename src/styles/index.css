@@ -10180,3 +10180,148 @@ body {
   .goals-add-2 { grid-template-columns: minmax(0, 1fr); }
   .goals-add-2 button { width: 100%; }
 }
+
+/* ── 1,000-workout goal ─────────────────────────────────────────────────────
+   Top of the Workouts page. The count and the bar are the picture; the graph,
+   milestones and history fold into pills below so the card stays one glance. */
+.wk-goal {
+  margin: 0 auto 18px; max-width: 640px;
+  padding: 18px 18px 14px; border-radius: 22px;
+  background: linear-gradient(145deg, rgba(240,204,96,0.12), rgba(255,92,157,0.08) 60%, rgba(196,166,255,0.06));
+  border: 1px solid rgba(240,204,96,0.32);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  text-align: center;
+}
+.wk-goal-tag { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+.wk-goal-count { margin-top: 4px; line-height: 1; }
+.wk-goal-count b {
+  font-family: 'Cormorant Garamond', serif; font-size: 58px; font-weight: 700;
+  color: var(--gold-light); font-variant-numeric: tabular-nums;
+}
+.wk-goal-count span { font-size: 15px; color: var(--text-mid); font-weight: 600; }
+.wk-goal-bar {
+  height: 16px; margin: 12px 0 8px; border-radius: 999px; overflow: hidden;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(240,204,96,0.2);
+}
+.wk-goal-bar span {
+  display: block; height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, var(--rose), var(--gold));
+  box-shadow: 0 0 14px rgba(240,204,96,0.55);
+  transition: width 0.6s ease;
+}
+.wk-goal-pct { font-size: 13.5px; color: var(--text-mid); }
+.wk-goal-pct b { color: var(--gold); }
+.wk-goal-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; }
+.wk-goal-stats div {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 9px 4px; border-radius: 14px; background: rgba(255,255,255,0.05);
+}
+.wk-goal-stats b { font-size: 18px; color: var(--text); font-variant-numeric: tabular-nums; }
+.wk-goal-stats span { font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
+
+.wk-done-btn {
+  width: 100%; min-height: 50px; border-radius: 999px; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 800;
+  border: 1px solid rgba(240,204,96,0.6);
+  background: linear-gradient(90deg, var(--rose-deep), var(--rose));
+  color: #fff; box-shadow: 0 6px 20px rgba(255,92,157,0.3);
+  -webkit-tap-highlight-color: transparent;
+}
+.wk-done-btn:active { transform: scale(0.98); }
+.wk-done-btn.is-done {
+  background: rgba(110,231,200,0.12); border-color: rgba(110,231,200,0.5);
+  color: var(--wt); box-shadow: none;
+}
+.wk-done-day { display: block; max-width: 640px; margin: 16px auto; }
+
+.wk-pills { display: flex; flex-direction: column; gap: 7px; margin-top: 12px; text-align: left; }
+.wk-pills .ex-sec-body { padding: 10px 4px 4px; }
+
+.wk-toast b { font-size: 24px; }
+.wk-toast-ms { font-style: normal; font-weight: 700; color: var(--gold); font-size: 14px; }
+
+/* graph */
+.wk-graph-tabs { display: flex; gap: 6px; justify-content: center; }
+.wk-graph-tabs button, .wk-graph-nav button {
+  min-height: 36px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05);
+  color: var(--text-mid); font-family: inherit; font-size: 12.5px; font-weight: 700;
+}
+.wk-graph-tabs button.active { background: rgba(240,204,96,0.18); border-color: rgba(240,204,96,0.5); color: var(--gold); }
+.wk-graph-nav { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; margin: 8px 0 2px; }
+.wk-graph-nav button { padding: 0; width: 44px; min-height: 40px; font-size: 18px; }
+.wk-graph-nav button:disabled { opacity: 0.3; cursor: default; }
+.wk-graph-label { text-align: center; font-size: 13px; color: var(--text-mid); }
+.wk-graph-label b { color: var(--gold); }
+.wk-graph-svg { display: block; width: 100%; height: auto; max-height: 260px; overflow: visible; }
+.wk-grid { stroke: rgba(255,255,255,0.08); stroke-width: 1; }
+.wk-goal-line { stroke: var(--gold); stroke-width: 1.2; stroke-dasharray: 4 4; opacity: 0.7; }
+.wk-goal-text { fill: var(--gold); font-size: 10px; font-weight: 700; }
+.wk-axis { fill: var(--text-soft); font-size: 9.5px; }
+.wk-line { fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.wk-dot { fill: var(--rose); }
+.wk-empty { text-align: center; font-size: 13px; color: var(--text-soft); padding: 6px 0; }
+
+/* milestones */
+.wk-ms { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 7px; }
+.wk-ms li {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px 6px;
+  min-height: 44px; padding: 6px 8px; border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,0.16); color: var(--text-soft); font-size: 13px;
+}
+.wk-ms li.hit { border-style: solid; border-color: rgba(240,204,96,0.55); background: rgba(240,204,96,0.12); color: var(--gold-light); }
+.wk-ms li.next { border-style: solid; border-color: rgba(255,92,157,0.55); color: var(--text); }
+.wk-ms-mark { font-weight: 800; }
+.wk-ms-num { font-weight: 700; font-variant-numeric: tabular-nums; }
+.wk-ms-left { flex-basis: 100%; text-align: center; font-size: 10.5px; color: var(--rose); }
+
+/* history */
+.wk-hist { display: flex; flex-direction: column; gap: 8px; }
+.wk-hist-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.wk-hist-row { border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+.wk-hist-main {
+  width: 100%; display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px;
+  border: 0; background: none; color: var(--text); font-family: inherit; text-align: left; cursor: pointer;
+}
+.wk-hist-n { flex: none; min-width: 44px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
+.wk-hist-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wk-hist-date { font-size: 14px; font-weight: 700; }
+.wk-hist-type { font-size: 12.5px; color: var(--wt); }
+.wk-hist-extra { font-size: 12.5px; color: var(--text-mid); overflow-wrap: anywhere; }
+.wk-hist-add { font-size: 12px; color: var(--text-soft); }
+.wk-hist-edit { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 12px 12px; }
+.wk-hist-edit label { display: flex; flex-direction: column; gap: 3px; flex: 0 0 90px; font-size: 11px; color: var(--text-soft); }
+.wk-hist-edit label.wk-hist-notes { flex: 1 1 180px; }
+.wk-hist-edit input, .wk-hist-past input {
+  min-height: 42px; padding: 0 10px; border-radius: 10px; min-width: 0;
+  border: 1px solid rgba(240,204,96,0.3); background: rgba(0,0,0,0.25);
+  color: var(--text); font-family: inherit; font-size: 16px;
+}
+.wk-hist-btns { display: flex; gap: 8px; flex-basis: 100%; }
+.wk-btn-save, .wk-btn-remove, .wk-btn-plain {
+  min-height: 42px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+}
+.wk-btn-save { border: 1px solid rgba(240,204,96,0.5); background: rgba(240,204,96,0.16); color: var(--gold); }
+.wk-btn-save:disabled { opacity: 0.4; cursor: default; }
+.wk-btn-remove { border: 1px solid rgba(255,92,157,0.4); background: none; color: var(--rose); margin-left: auto; }
+.wk-btn-plain { border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); color: var(--text-mid); }
+.wk-hist-addpast { align-self: flex-start; }
+.wk-hist-past { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.wk-hist-past input { flex: 1 1 150px; color-scheme: dark; }
+.wk-hist-warn { flex-basis: 100%; font-size: 12px; color: var(--rose); }
+
+[data-mode="light"] .wk-goal { background: linear-gradient(145deg, rgba(240,180,40,0.14), rgba(255,92,157,0.08)); border-color: rgba(180,130,20,0.35); }
+[data-mode="light"] .wk-goal-count b { color: #8a5a00; }
+[data-mode="light"] .wk-goal-tag, [data-mode="light"] .wk-goal-pct b, [data-mode="light"] .wk-goal-text { color: #7a5000; fill: #7a5000; }
+[data-mode="light"] .wk-goal-bar, [data-mode="light"] .wk-goal-stats div, [data-mode="light"] .wk-hist-row { background: rgba(0,0,0,0.05); }
+[data-mode="light"] .wk-hist-edit input, [data-mode="light"] .wk-hist-past input { background: #fff; color-scheme: light; }
+[data-mode="light"] .wk-ms li.hit { color: #7a5000; }
+[data-mode="light"] .wk-grid { stroke: rgba(0,0,0,0.1); }
+
+@media (max-width: 380px) {
+  .wk-goal { padding: 16px 12px 12px; }
+  .wk-goal-count b { font-size: 48px; }
+  .wk-goal-stats b { font-size: 16px; }
+}
+.wk-ms li:last-child { grid-column: 1 / -1; font-size: 15px; }

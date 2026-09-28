@@ -6,6 +6,7 @@
 // it now arrives after the UI is already interactive.
 import { mergeNotebookBlobs } from './mergeNotebook.js';
 import { mergeMealLogBlobs } from './mergeMealLog.js';
+import { mergeWorkoutBlobs } from './workoutLog.js';
 
 let fb = null;
 
@@ -37,7 +38,7 @@ const MEAL_KEYS = [
   'gp_meal_day-thursday', 'gp_meal_day-friday', 'gp_meal_day-saturday',
   'gp_meal_day-sunday',
 ];
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', 'gp_goals', ...MEAL_KEYS];
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', 'gp_goals', 'gp_workouts', ...MEAL_KEYS];
 // Keys that USED to sync and no longer exist in the app. They are cleared from
 // this device and deleted from the shared cloud document once, so the doc does
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key
@@ -52,7 +53,7 @@ const RETIRED_KEYS = ['gp_challenges_custom', 'gp_daily', 'gp_done', 'gp_purpose
 // single small value where newest-wins is right; the notebook is a whole
 // collection under one key, so newest-wins silently deleted whichever gadget
 // wrote second. See mergeNotebook.js for why and how.
-const MERGERS = { gp_daily_notebook: mergeNotebookBlobs, gp_meal_log: mergeMealLogBlobs };
+const MERGERS = { gp_daily_notebook: mergeNotebookBlobs, gp_meal_log: mergeMealLogBlobs, gp_workouts: mergeWorkoutBlobs };
 
 // v2: bumped when gp_purposes joined RETIRED_KEYS, so every device runs the
 // remote purge once more and the retired goals leave the shared document too.

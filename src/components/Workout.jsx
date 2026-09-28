@@ -2,6 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { WORKOUT_DAYS, MEAL_SLOTS, RECOMMENDED_MEALS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
+import WorkoutGoalCard from './WorkoutTracker';
+import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
+import { numberOf, dayKey } from '../utils/workoutLog';
 import { loadLifts, isTrackable } from '../utils/lifts';
 import {
   dateKeyOf, loadLog, saveLog, addPlannedMeal, removePlannedMeal,
@@ -304,6 +307,22 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 }
 
 
+// The whole session is one workout, so the day page has one button for it,
+// under the exercises. Only on today: a past day is added from the history.
+function TodayDoneButton() {
+  const { log, stats } = useWorkouts();
+  return (
+    <button
+      className={`wk-done-btn wk-done-day${stats.doneToday ? ' is-done' : ''}`}
+      onClick={() => (stats.doneToday ? unmarkWorkout() : markWorkout())}
+    >
+      {stats.doneToday
+        ? `✓ Workout #${numberOf(log, dayKey()).toLocaleString('en-US')} done today`
+        : '✓ Mark today’s workout done'}
+    </button>
+  );
+}
+
 function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId }) {
   // The whole lift log for every exercise, held once for the page so each row
   // does not re-read localStorage on every render.
@@ -406,6 +425,7 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
         })}
       </div>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
+      {isToday && <TodayDoneButton />}
       <MealBuilder dayId={id} dayIndex={dayIndex} baseMeals={day.meals} />
     </div>
   );
@@ -546,6 +566,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
         <h2 className="s-title">Movement <em>&amp;</em> Meals</h2>
         <p className="s-desc">Tap a day to open its full workout and meal plan.</p>
       </div>
+
+      <WorkoutGoalCard />
 
       <div className="today-banner splash-item">
         <span className="today-badge">Today</span>

@@ -4,6 +4,8 @@ import { WORKOUT_DAYS } from '../data/workouts';
 import { mergeNotebookBlobs } from '../utils/mergeNotebook';
 import { GoalsToggle, GoalsPanel, KgGoalCard } from './Goals';
 import { useGoalsData } from '../utils/useGoalsData';
+import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
+import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -934,8 +936,26 @@ function DailyNotebook() {
   );
 }
 
+// A workout ticked today before the 1,000-workout record existed is still
+// real: carry it over once, quietly, so today is not lost from the count.
+function loadChecksCarryingWorkout(today) {
+  const checks = loadChecks();
+  if (!checks.workout) return checks;
+  const log = loadWorkouts();
+  const key = workoutDayKey();
+  if (!log.days[key]) saveWorkouts(logWorkout(log, key, today.day?.split(' · ')[1] || today.title));
+  const next = { ...checks };
+  delete next.workout;
+  try { localStorage.setItem('gp_today_checks', JSON.stringify({ date: todayKey(), checked: next })); } catch { /* optional */ }
+  return next;
+}
+
 function TodayDashboard({ today, todayDayId, onNavigate }) {
-  const [checked, setChecked] = useState(loadChecks);
+  const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
+  // The workout tick is the 1,000-workout record, not a daily check that is
+  // forgotten at midnight. The walk stays an ordinary check: it never counts.
+  const { stats: workoutStats } = useWorkouts();
+
 
   // Refresh from storage when another gadget ticks something off, instead of
   // relying on the whole screen being rebuilt.
@@ -946,6 +966,10 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
   }, []);
 
   function toggle(id) {
+    if (id === 'workout') {
+      if (workoutStats.doneToday) unmarkWorkout(); else markWorkout();
+      return;
+    }
     setChecked(prev => {
       const next = { ...prev, [id]: !prev[id] };
       try {
@@ -992,8 +1016,9 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
     { id: 'pm-skin', icon: '🌙', title: 'Night routine · PM skincare', note: 'Double cleanse · Treatment · Repair', nav: ['skincare', 'pm'] },
   ];
 
+  const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
   const taskRows = rows.filter(r => !r.divider);
-  const done = taskRows.filter(r => checked[r.id]).length;
+  const done = taskRows.filter(r => isChecked(r.id)).length;
 
   return (
     <div className="today-dashboard splash-item">
@@ -1012,7 +1037,7 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
           r.divider ? (
             <div key={r.id} className="tl-section">{r.label}</div>
           ) : (
-          <div key={r.id} className={`tl-row${checked[r.id] ? ' is-done' : ''}`}>
+          <div key={r.id} className={`tl-row${isChecked(r.id) ? ' is-done' : ''}`}>
             <button className="tl-check" aria-label={`Mark ${r.title} done`} onClick={() => toggle(r.id)}>
               <span className="tl-ring" />
             </button>
