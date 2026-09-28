@@ -10364,3 +10364,14 @@ body {
 [data-mode="light"] .goals-num-bar { background: rgba(0,0,0,0.08); }
 [data-mode="light"] .goals-num-add input { background: #fff; }
 [data-mode="light"] .goals-num-count { color: #7a5000; }
+
+/* A goal she typed with a number: the same card as the 1,000 workouts. */
+.goal-card { position: relative; list-style: none; }
+.goal-card .wk-goal-tag { padding: 0 34px; overflow-wrap: anywhere; }
+.goal-card-del { position: absolute; top: 10px; right: 10px; }
+.goal-card .goals-num-add { margin-top: 12px; }
+.goal-card-undo {
+  margin-top: 8px; min-height: 36px; padding: 0 10px; border: 0; background: none; cursor: pointer;
+  font-family: inherit; font-size: 12px; color: var(--text-soft);
+}
+.goal-card-done { border-color: rgba(240,204,96,0.6); }

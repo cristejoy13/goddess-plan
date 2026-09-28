@@ -10,7 +10,6 @@ import {
 } from '../utils/goals';
 import { loadWorkouts, goalReachedOn, WORKOUTS_CHANGED } from '../utils/workoutLog';
 import WorkoutGoalCard from './WorkoutTracker';
-import { ProgressChart } from './GoalChart';
 
 // ─── GOALS ─────────────────────────────────────────────────────────────────
 // The button left of the title (the notebook is on the right), the page it
@@ -126,61 +125,53 @@ export function KgGoalCard({ plan, onOpen, onNavigate }) {
   );
 }
 
-// A goal she wrote with a number in it. Closed, it is one line with a bar;
-// open, it shows the chart, a box to add what she did, and what she added.
+// A goal she wrote with a number in it, drawn like the 1,000-workout card: the
+// count, the bar, how far to go. A box adds what she did today; the last
+// entry can be taken back if it was a mistake.
 function NumberGoal({ goals, g, onRemove }) {
-  const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState('');
   const target = goalTarget(g.text);
   const total = goalTotal(g);
-  const pct = Math.min(100, (total / target) * 100);
-  const entries = [...(g.progress || [])].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const pct = Math.round(Math.min(100, (total / target) * 100) * 10) / 10;
+  const left = Math.max(0, Math.round((target - total) * 100) / 100);
+  const last = [...(g.progress || [])].sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+  const n = v => v.toLocaleString('en-US');
 
   function add(e) {
     e.preventDefault();
-    const n = Number(String(amount).replace(/,/g, ''));
-    if (!(n > 0)) return;
-    saveGoals(addProgress(goals, g.id, n));
+    const v = Number(String(amount).replace(/,/g, ''));
+    if (!(v > 0)) return;
+    saveGoals(addProgress(goals, g.id, v));
     setAmount('');
   }
-  function removeEntry(p) {
-    if (!window.confirm(`Take ${p.amount} (${prettyDate(p.date)}) off “${g.text}”?`)) return;
-    saveGoals(removeProgress(goals, g.id, p.id));
+  function undo() {
+    if (!window.confirm(`Take +${n(last.amount)} (${prettyDate(last.date)}) off “${g.text}”?`)) return;
+    saveGoals(removeProgress(goals, g.id, last.id));
   }
 
   return (
-    <li className={`goals-item goals-num${g.done ? ' goals-item-done' : ''}${open ? ' is-open' : ''}`}>
-      <div className="goals-num-top">
-        <button type="button" className="goals-num-main" onClick={() => setOpen(v => !v)} aria-expanded={open}>
-          <span className="goals-text">{g.done ? '✓ ' : ''}{g.text}</span>
-          <span className="goals-num-count">{total.toLocaleString('en-US')} / {target.toLocaleString('en-US')}</span>
-          <span className="goals-num-bar"><span style={{ width: `${Math.max(total ? 2 : 0, pct)}%` }} /></span>
-        </button>
-        <button type="button" className="ml-icon-btn ml-del" onClick={() => onRemove(g)} aria-label={`Delete ${g.text}`}>🗑</button>
+    <li className={`wk-goal goal-card${g.done ? ' goal-card-done' : ''}`}>
+      <button type="button" className="ml-icon-btn ml-del goal-card-del" onClick={() => onRemove(g)} aria-label={`Delete ${g.text}`}>🗑</button>
+      <div className="wk-goal-tag">🎯 {g.text}</div>
+      <div className="wk-goal-count"><b>{n(total)}</b><span> / {n(target)}</span></div>
+      <div className="wk-goal-bar" role="progressbar" aria-valuemin={0} aria-valuemax={target} aria-valuenow={total}>
+        <span style={{ width: `${Math.max(total ? 1.5 : 0, pct)}%` }} />
       </div>
-      {open && (
-        <div className="goals-num-body">
-          <ProgressChart entries={entries} target={target} />
-          <form className="goals-num-add" onSubmit={add}>
-            <input
-              type="number" inputMode="decimal" min="0" step="any"
-              value={amount} onChange={e => setAmount(e.target.value)}
-              placeholder="How much today?" aria-label={`Add to ${g.text}`}
-            />
-            <button type="submit" disabled={!(Number(amount) > 0)}>＋ Add</button>
-          </form>
-          {entries.length > 0 && (
-            <ul className="goals-num-log">
-              {entries.map(p => (
-                <li key={p.id}>
-                  <span>{prettyDate(p.date)}</span>
-                  <b>+{p.amount.toLocaleString('en-US')}</b>
-                  <button type="button" className="ml-icon-btn ml-del" onClick={() => removeEntry(p)} aria-label="Remove this entry">🗑</button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+      <div className="wk-goal-pct">
+        {g.done ? <b>🎉 Reached!</b> : <><b>{pct}%</b> complete · {n(left)} to go</>}
+      </div>
+      <form className="goals-num-add" onSubmit={add}>
+        <input
+          type="number" inputMode="decimal" min="0" step="any"
+          value={amount} onChange={e => setAmount(e.target.value)}
+          placeholder="How much today?" aria-label={`Add to ${g.text}`}
+        />
+        <button type="submit" disabled={!(Number(amount) > 0)}>＋ Add</button>
+      </form>
+      {last && (
+        <button type="button" className="goal-card-undo" onClick={undo}>
+          Last: +{n(last.amount)} · {prettyDate(last.date)} · ↶ Undo
+        </button>
       )}
     </li>
   );
@@ -265,7 +256,7 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
         <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
         <WorkoutGoalCard />
 
-        {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a chart.</div>}
+        {goals.items.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a bar.</div>}
         <ul className="goals-list">
           {/* One list, open goals first. A single array keeps each row's key,
               so a number goal that is reached moves down without shutting. */}
@@ -302,7 +293,7 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
           />
           <button type="submit" disabled={!text.trim() || !reward.trim()}>＋ Add</button>
         </form>
-        <div className="goals-lock-note">🔒 The reward locks in. A number in the goal gets a chart.</div>
+        <div className="goals-lock-note">🔒 The reward locks in. A number in the goal gets a bar.</div>
 
         </>}
 
