@@ -8,6 +8,7 @@ import Skincare from './components/Skincare';
 import Settings from './components/Settings';
 import { GoalWatcher } from './components/Goals';
 import { WorkoutToast } from './components/WorkoutTracker';
+import { SignInGate } from './components/SignIn';
 import { getAvatarByProfile } from './avatars';
 import './styles/index.css';
 
@@ -385,6 +386,7 @@ export default function App() {
       <InstallBanner />
       <GoalWatcher />
       <WorkoutToast />
+      <SignInGate />
 
       <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`} ref={topbarRef}>
         <div className="topbar-row">

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import { calcTDEE, generatePlan } from '../utils/planGenerator';
+import { AccountCard } from './SignIn';
+import { relinkIfSignedIn } from '../utils/account';
 import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, getSyncHealth, getThisDeviceId, isSyncActive, onDevices, onSyncHealth, onSyncStatus } from '../utils/sync';
 
 /* ─── Helpers ─── */
@@ -450,9 +452,12 @@ function DeviceSyncSection() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  function connectCode() {
+  async function connectCode() {
     setError('');
     if (adoptSyncCode(input)) {
+      // Signed in? The account follows the new code, so a reinstall brings
+      // back this data rather than the old code's.
+      await relinkIfSignedIn(input.trim().toUpperCase());
       window.location.reload();
       return;
     }
@@ -584,6 +589,7 @@ export default function Settings({
         <p className="s-desc">Manage your local profile and appearance.</p>
       </div>
 
+      <AccountCard />
       <DeviceSyncSection />
 
       <div className="settings-pills-list splash-item">

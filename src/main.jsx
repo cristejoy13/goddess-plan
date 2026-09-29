@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App, { ErrorBoundary } from './App.jsx'
 import { initSync, initSyncStorage } from './utils/sync'
 import { initSwUpdates } from './utils/swUpdate'
+import { initAccount } from './utils/account'
 
 // Stamp-tracking for local edits must be live before anything can be edited,
 // so this runs first and synchronously. It touches no network and loads no
@@ -26,6 +27,13 @@ function startBackgroundServices() {
     initSync()?.catch(() => {})
   } catch {
     // Sync must not block app startup.
+  }
+
+  // Sign-in waits for sync to start Firebase, then shares it.
+  try {
+    initAccount()?.catch(() => {})
+  } catch {
+    // Sign-in must not block app startup.
   }
 
   try {

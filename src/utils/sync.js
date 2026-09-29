@@ -10,6 +10,14 @@ import { mergeWorkoutBlobs } from './workoutLog.js';
 
 let fb = null;
 
+// Sign-in (account.js) needs the same Firebase app and database this module
+// starts, so it waits on this rather than starting a second copy.
+let resolveReady;
+const firebaseReady = new Promise(resolve => { resolveReady = resolve; });
+export function whenFirebaseReady() {
+  return firebaseReady;
+}
+
 async function loadFirebase() {
   if (fb) return fb;
   const [appMod, storeMod] = await Promise.all([
@@ -22,7 +30,13 @@ async function loadFirebase() {
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAsWJPYWcwJ5XtnJPOV_PRmL7dyt5eJems',
-  authDomain: 'goddess-plan.firebaseapp.com',
+  // Google sign-in runs through the app's own address on the live site (Vercel
+  // forwards /__/auth to Firebase — see vercel.json). Safari blocks the
+  // sign-in from finishing when it happens on a different site, which is what
+  // firebaseapp.com is; anywhere else (local testing) that address is fine.
+  authDomain: typeof location !== 'undefined' && location.hostname === 'goddess-plan.vercel.app'
+    ? 'goddess-plan.vercel.app'
+    : 'goddess-plan.firebaseapp.com',
   projectId: 'goddess-plan',
   storageBucket: 'goddess-plan.firebasestorage.app',
   messagingSenderId: '225308869833',
@@ -856,6 +870,7 @@ export async function initSync() {
       db = fb.getFirestore(app);
     }
     dbRef = fb.doc(db, 'sync', code);
+    resolveReady({ fb, app, db });
     registerFlushHandlers();
     // Subscribe BEFORE the first presence write: presence creates the doc, and
     // the data bootstrap must never be skipped because presence got there first.

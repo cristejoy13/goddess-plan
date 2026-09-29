@@ -10380,3 +10380,48 @@ body {
   min-height: 32px; padding: 0 4px; border: 0; background: none; cursor: pointer;
   font-family: inherit; font-size: 11.5px; color: var(--text-soft);
 }
+
+/* ── sign in ────────────────────────────────────────────────────────────────
+   One calm screen over the app: her logo, one line, one Google button. */
+.si-overlay {
+  position: fixed; inset: 0; z-index: 4000;
+  display: flex; align-items: center; justify-content: center;
+  padding: max(24px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+  background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255,92,157,0.16), transparent 70%), #07040f;
+  overflow-y: auto;
+}
+.si-card {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
+}
+.si-logo { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 10px 40px rgba(255,92,157,0.3); }
+.si-title { margin: 6px 0 0; font-family: 'Cormorant Garamond', serif; font-size: 34px; line-height: 1.1; color: var(--text); text-wrap: balance; }
+.si-title em { color: var(--rose); }
+.si-text { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text-mid); max-width: 32ch; }
+.si-google {
+  width: 100%; min-height: 54px; margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  border-radius: 999px; border: 1px solid #dadce0; background: #fff; color: #1f1f1f;
+  font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.si-google:disabled { opacity: 0.7; }
+.si-google:focus-visible, .si-later:focus-visible, .si-signout:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.si-g { width: 22px; height: 22px; flex: none; }
+.si-later {
+  min-height: 44px; padding: 0 16px; border: 0; background: none; cursor: pointer;
+  font-family: inherit; font-size: 14px; color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px;
+}
+.si-error { margin: 0; font-size: 13.5px; color: var(--rose); }
+.si-form { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.si-input { text-align: center; font-size: 17px; letter-spacing: 0.08em; min-height: 52px; }
+.si-primary { min-height: 52px; font-size: 15px; }
+.si-hint { margin: 0; font-size: 12.5px; color: var(--text-soft); }
+.si-account { display: flex; flex-direction: column; gap: 10px; }
+.si-who { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text); overflow-wrap: anywhere; }
+.si-signout {
+  align-self: flex-start; min-height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05);
+  color: var(--text-mid); font-family: inherit; font-size: 13px; font-weight: 600;
+}
+.si-account .si-google { margin-top: 0; }
