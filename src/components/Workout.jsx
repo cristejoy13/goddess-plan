@@ -56,6 +56,12 @@ function groupExercises(exercises = []) {
   return groups;
 }
 
+// A bold title with a line through it, so each day reads as two parts:
+// WORKOUT, then MEALS.
+function SectionTitle({ children }) {
+  return <h2 className="day-sec-title"><span>{children}</span></h2>;
+}
+
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
@@ -102,7 +108,7 @@ function useDayMeals(dayId) {
 // a record. Either would break the one promise this record makes: that
 // everything in it is true. On any other day the plan still works exactly as
 // before, and the day simply says so.
-function MealBuilder({ dayId, dayIndex, baseMeals }) {
+function MealBuilder({ dayId, dayIndex }) {
   const [chosen, saveChosen] = useDayMeals(dayId);
   const isToday = dayIndex === todayIndex;
   const slotTime = (m) => MEAL_SLOTS.find(sl => sl.id === m.slot)?.t24 || '12:00';
@@ -159,12 +165,7 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 
   return (
     <div className="meal-builder">
-      <div className="meal-plan-head">
-        <div className="meal-plan-label">{baseMeals.label}</div>
-        <div className="meal-plan-hint">
-          Two meals only. Brunch at 12: Meal A or Meal B, never both. At 5, apple and yogurt or a smoothie.
-        </div>
-      </div>
+      <SectionTitle>Meals</SectionTitle>
 
       <div className="two-meters">
         <div className={`protein-meter${hitTarget ? ' hit' : ''}`}>
@@ -458,6 +459,8 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
       {isToday && <TodayDoneButton />}
       {day.exercises.some(e => e.log) && <CardioSummary day={day} dayIndex={dayIndex} />}
 
+      <SectionTitle>Workout</SectionTitle>
+
       {/* Visual stat chips */}
       <div className="dd-stats">
         {duration   && <div className="dd-stat dd-stat-time"><span>⏱</span>{duration}</div>}
@@ -521,8 +524,7 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
           );
         })}
       </div>
-      {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      <MealBuilder dayId={id} dayIndex={dayIndex} baseMeals={day.meals} />
+      <MealBuilder dayId={id} dayIndex={dayIndex} />
     </div>
   );
 }

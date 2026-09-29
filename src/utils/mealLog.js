@@ -122,7 +122,12 @@ export function weekWeightAvg(state, year, monthIdx, day) {
   return { avg: counted ? Math.round((sum / counted) * 10) / 10 : null, counted };
 }
 
-// Calories burned on a day — optional, typed by her, never estimated. Whole
+// Her own average burn, which she asked to have filled in for her on
+// 2026-09-30 so she does not type it every day. It shows on today and on any
+// past day she logged meals on, until she types that day's real number.
+export const AVERAGE_BURN = 1433;
+
+// Calories burned on a day — typed by her, or her average above. Whole
 // numbers, and only a figure a day could plausibly burn, for the same reason
 // the weight refuses a typo: a wrong number here flips "deficit" into "gained".
 export const MIN_BURN = 1;

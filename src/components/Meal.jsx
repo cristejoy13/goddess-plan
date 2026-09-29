@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
-  parseBurn, burnOn, setBurn, MAX_BURN, MIN_BURN,
+  parseBurn, burnOn, setBurn, MAX_BURN, MIN_BURN, AVERAGE_BURN,
   parseGoal, setGoal, weekStartKey, goalForWeek, goalOn, calsLeft, MIN_GOAL, MAX_GOAL,
 } from '../utils/mealLog';
 
@@ -296,13 +296,14 @@ function GoalForm({ cal, weekLabel, onSave }) {
 // putting it in the form would ask her for it again with every meal she wrote.
 //
 // Beside it, the day's sum: the weight, what she ate, minus what she burned,
-// and whether that left a deficit or a gain. "Burned" is optional and its line
-// only appears once she has typed one — without it there is no deficit to
-// speak of, and eaten-minus-nothing labelled "gained" would be a false alarm.
+// and whether that left a deficit or a gain. "Burned" starts at her average
+// (AVERAGE_BURN) and she types over it on a day she knows the real number.
+// Emptying the box goes back to the average.
 //
-// Nothing is ever filled in for her. A day she did not weigh stays empty, and
+// Nothing else is ever filled in for her. A day she did not weigh stays empty, and
 // an empty day is left out of the week's average rather than counted as zero.
-function WeightForm({ kg, burn, eaten, onSave }) {
+function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
+  const burn = typedBurnCal ?? average;
   const kgText = kg != null ? formatKg(kg) : '';
   const burnText = burn != null ? String(burn) : '';
   const [draft, setDraft] = useState(kgText);
@@ -323,15 +324,16 @@ function WeightForm({ kg, burn, eaten, onSave }) {
   // a typo look like no change at all, greyed the button out, and left her
   // with no way to find out why it would not save.
   const kgChanged = typed !== kgText;
-  const burnChanged = typedBurn !== burnText;
+  // An emptied box on a day still at the average is no change at all.
+  const burnChanged = typedBurn !== burnText && !(typedBurn === '' && typedBurnCal == null);
   const unchanged = !kgChanged && !burnChanged;
   const clearingKg = kgChanged && typed === '' && kg != null;
-  const clearingBurn = burnChanged && typedBurn === '' && burn != null;
+  const clearingBurn = burnChanged && typedBurn === '' && typedBurnCal != null;
   const onlyClearing = (clearingKg || !kgChanged) && (clearingBurn || !burnChanged) && !unchanged;
 
   function submit(e) {
     e.preventDefault();
-    if (unchanged) return;
+    if (unchanged) { setBurnDraft(burnText); return; }
     const patch = {};
     if (kgChanged && typed !== '') {
       const parsed = parseKg(typed);
@@ -347,7 +349,8 @@ function WeightForm({ kg, burn, eaten, onSave }) {
       clearingKg && `your weight of ${formatKg(kg)} kg`,
       clearingBurn && `${burn.toLocaleString()} calories burned`,
     ].filter(Boolean);
-    if (gone.length && !window.confirm(`Remove ${gone.join(' and ')} for this day? This cannot be undone.`)) return;
+    const back = clearingBurn && average != null ? ` Burned goes back to your average, ${average.toLocaleString()}.` : '';
+    if (gone.length && !window.confirm(`Remove ${gone.join(' and ')} for this day?${back}${clearingKg ? ' This cannot be undone.' : ''}`)) return;
     if (clearingKg) patch.kg = null;
     if (clearingBurn) patch.burn = null;
     setWarn('');
@@ -383,7 +386,7 @@ function WeightForm({ kg, burn, eaten, onSave }) {
             </div>
           </label>
           <label className="ml-wt-wrap">
-            <span className="ml-time-lbl">🔥 Burned <span className="ml-wt-opt">(optional)</span></span>
+            <span className="ml-time-lbl">🔥 Burned{typedBurnCal == null && average != null && <span className="ml-wt-opt"> (average)</span>}</span>
             <div className="ml-wt-field">
               <input
                 className="ml-wt-input ml-burn-input"
@@ -394,14 +397,14 @@ function WeightForm({ kg, burn, eaten, onSave }) {
                 step="any"
                 value={burnDraft}
                 onChange={e => { setBurnDraft(e.target.value); setWarn(''); }}
-                placeholder="—"
+                placeholder={average != null ? String(average) : '—'}
                 aria-label="Calories burned today"
               />
               <span className="ml-wt-unit ml-burn-unit">cal</span>
             </div>
           </label>
           <button type="submit" className="ml-wt-btn" disabled={unchanged}>
-            {onlyClearing ? 'Remove' : kg != null || burn != null ? 'Save' : '＋ Add'}
+            {onlyClearing ? 'Remove' : kg != null || typedBurnCal != null ? 'Save' : '＋ Add'}
           </button>
         </div>
 
@@ -468,7 +471,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 }
 
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekLabel, left,
+function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg, goal, weekLabel, left,
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
@@ -541,7 +544,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, weekAvg, goal, weekL
 
       <div className="ml-bold-rule" aria-hidden="true" />
 
-      <WeightForm kg={kg} burn={burn} eaten={total} onSave={onWeight} />
+      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
         <div className="ml-wt-week">
@@ -822,6 +825,9 @@ export default function Meal() {
           entries={days[openKey] || []}
           kg={weightOn(state, openKey)}
           burn={burnOn(state, openKey)}
+          /* Her average fills today and any past day she ate on. A future
+             day, or an empty old one, gets no made-up deficit. */
+          averageBurn={openKey === dateKeyOf() || (openKey < dateKeyOf() && (days[openKey] || []).length > 0) ? AVERAGE_BURN : null}
           /* The average belongs to the week, so it is shown where the week
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
