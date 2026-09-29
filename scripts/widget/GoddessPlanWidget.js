@@ -1,3 +1,4 @@
+// VERSION 7 - Goddess Plan widget, 29 Sep 2026 (tick box, no calories)
 // Goddess Plan widget for iPhone. Runs in the free Scriptable app.
 // Shows today's workout, a box to tick it done, and the count toward 1,000.
 // Put the sync code (GP-...) in the widget's Parameter box.
