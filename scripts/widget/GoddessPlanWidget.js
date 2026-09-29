@@ -1,92 +1,100 @@
-// Goddess Plan — home-screen widget for iPhone, run by the free Scriptable app.
+// Goddess Plan widget for iPhone. Runs in the free Scriptable app.
+// Shows today's workout, the count toward 1,000 workouts, and calories today.
+// Put the sync code (GP-...) in the widget's Parameter box.
 //
-// Shows three things: today's workout (and whether it is done), the count
-// toward 1,000 workouts, and the calories eaten today against 1,000.
-//
-// Setup: paste this whole file into a new Scriptable script named
-// "Goddess Plan", add a Scriptable widget (medium size works best), choose this
-// script, and type the sync code (GP-…) into the widget's Parameter box.
-//
-// Numbers only: her logo is already on the app icon next to it.
-//
-// It reads the same cloud copy the app syncs to — read only, it never writes.
-// iOS decides when widgets refresh (roughly every 15–30 minutes), so a tick
-// made in the app shows up on the next refresh, not instantly.
+// Written in the plainest JavaScript on purpose: no arrow functions, no
+// template strings, no special symbols in the code. Copying through a phone
+// can change characters like those, and one changed character stops the
+// whole script. Read only: it never writes to her data.
 //
 // Today's workout names are copied from src/data/workouts.js. If the weekly
 // plan changes, change PLAN below to match.
 
-const APP_URL = 'https://goddess-plan.vercel.app';
-const FIRESTORE = 'https://firestore.googleapis.com/v1/projects/goddess-plan/databases/(default)/documents/sync/';
-const API_KEY = 'AIzaSyAsWJPYWcwJ5XtnJPOV_PRmL7dyt5eJems';
-const WORKOUT_GOAL = 1000;
-const CALORIE_TARGET = 1000;
+var APP_URL = "https://goddess-plan.vercel.app";
+var FIRESTORE = "https://firestore.googleapis.com/v1/projects/goddess-plan/databases/(default)/documents/sync/";
+var API_KEY = "AIzaSyAsWJPYWcwJ5XtnJPOV_PRmL7dyt5eJems";
+var GOAL = 1000;
 
 // Monday first, like the app.
-const PLAN = [
-  { emoji: '🍑', name: 'Glutes A' },
-  { emoji: '🧘', name: 'Pilates or Yoga' },
-  { emoji: '💪', name: 'Upper Body & Core' },
-  { emoji: '🏃', name: 'Zone 2 Run' },
-  { emoji: '✨', name: 'Glutes B' },
-  { emoji: '🌿', name: 'Gentle Pilates or Yoga' },
-  { emoji: '🏊', name: 'Swimming' },
+var PLAN = [
+  "Glutes A",
+  "Pilates or Yoga",
+  "Upper Body and Core",
+  "Zone 2 Run",
+  "Glutes B",
+  "Gentle Pilates or Yoga",
+  "Swimming"
 ];
 
-const COLORS = {
-  bg: '#07040f', gold: '#f0cc60', rose: '#ff5c9d', text: '#f8eed4', soft: '#c090b8', mint: '#6ee7c8', track: '#2a1a33',
-};
+var BG = "#07040f";
+var GOLD = "#f0cc60";
+var ROSE = "#ff5c9d";
+var TEXT = "#f8eed4";
+var SOFT = "#c090b8";
+var MINT = "#6ee7c8";
+var TRACK = "#2a1a33";
 
-const pad = n => String(n).padStart(2, '0');
-// Local date, like the app — never the UTC date.
-const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+function two(n) {
+  return n < 10 ? "0" + n : "" + n;
+}
+
+// Local date, like the app, never the UTC date.
+function dayKey(d) {
+  return d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate());
+}
 
 function parseJSON(s) {
-  try { return JSON.parse(s); } catch (e) { return null; }
+  try {
+    return JSON.parse(s);
+  } catch (err) {
+    return null;
+  }
 }
 
-// Everything the widget shows, worked out from the synced copy. Kept apart
-// from the drawing so it can be checked on its own.
+function withCommas(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// Everything the widget shows, worked out from the synced copy.
 function summarize(data, now) {
-  const today = dayKey(now);
-  const js = now.getDay();
-  const plan = PLAN[js === 0 ? 6 : js - 1];
+  var today = dayKey(now);
+  var js = now.getDay();
+  var name = PLAN[js === 0 ? 6 : js - 1];
 
-  const workouts = parseJSON(data.gp_workouts) || {};
-  const days = workouts.days || {};
-  const total = Object.keys(days).length;
+  var workouts = parseJSON(data.gp_workouts) || {};
+  var days = workouts.days || {};
+  var total = Object.keys(days).length;
 
-  const log = parseJSON(data.gp_meal_log) || {};
-  const entries = (log.days && log.days[today]) || [];
-  const cal = entries
-    .filter(e => e && typeof e.cal === 'number' && e.cal > 0)
-    .reduce((sum, e) => sum + e.cal, 0);
+  var log = parseJSON(data.gp_meal_log) || {};
+  var entries = (log.days && log.days[today]) || [];
+  var cal = 0;
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i];
+    if (e && typeof e.cal === "number" && e.cal > 0) cal += e.cal;
+  }
 
-  return {
-    plan,
-    doneToday: Boolean(days[today]),
-    total,
-    pct: Math.round((Math.min(total, WORKOUT_GOAL) / WORKOUT_GOAL) * 1000) / 10,
-    cal,
-  };
+  return { name: name, done: Boolean(days[today]), total: total, cal: cal };
 }
 
-// Firestore sends each field wrapped in its type; the app stores every key
-// as a string of JSON.
+// Firestore wraps each field in its type; the app stores every key as a
+// string of JSON.
 function unwrap(doc) {
-  const fields = doc && doc.fields && doc.fields.data && doc.fields.data.mapValue && doc.fields.data.mapValue.fields;
-  const out = {};
-  for (const [k, v] of Object.entries(fields || {})) {
-    if (v && typeof v.stringValue === 'string') out[k] = v.stringValue;
+  var out = {};
+  var fields = doc && doc.fields && doc.fields.data && doc.fields.data.mapValue && doc.fields.data.mapValue.fields;
+  if (!fields) return out;
+  var keys = Object.keys(fields);
+  for (var i = 0; i < keys.length; i++) {
+    var v = fields[keys[i]];
+    if (v && typeof v.stringValue === "string") out[keys[i]] = v.stringValue;
   }
   return out;
 }
 
 async function load(code) {
-  const req = new Request(`${FIRESTORE}${encodeURIComponent(code)}?key=${API_KEY}`);
-  const doc = await req.loadJSON();
+  var req = new Request(FIRESTORE + encodeURIComponent(code) + "?key=" + API_KEY);
+  var doc = await req.loadJSON();
   if (doc && doc.error) {
-    const err = new Error(doc.error.message || 'Could not read');
+    var err = new Error(doc.error.message || "Could not read");
     err.notFound = doc.error.code === 404;
     throw err;
   }
@@ -94,30 +102,32 @@ async function load(code) {
 }
 
 function bar(widget, fraction, color) {
-  const W = 130, H = 6;
-  const ctx = new DrawContext();
+  var W = 130;
+  var H = 6;
+  var ctx = new DrawContext();
   ctx.size = new Size(W, H);
   ctx.opaque = false;
   ctx.respectScreenScale = true;
-  const track = new Path();
+  var track = new Path();
   track.addRoundedRect(new Rect(0, 0, W, H), 3, 3);
   ctx.addPath(track);
-  ctx.setFillColor(new Color(COLORS.track));
+  ctx.setFillColor(new Color(TRACK));
   ctx.fillPath();
-  const w = Math.max(fraction > 0 ? H : 0, Math.min(1, fraction) * W);
+  var w = Math.min(1, fraction) * W;
+  if (fraction > 0 && w < H) w = H;
   if (w > 0) {
-    const fill = new Path();
+    var fill = new Path();
     fill.addRoundedRect(new Rect(0, 0, w, H), 3, 3);
     ctx.addPath(fill);
     ctx.setFillColor(new Color(color));
     ctx.fillPath();
   }
-  const img = widget.addImage(ctx.getImage());
+  var img = widget.addImage(ctx.getImage());
   img.imageSize = new Size(W, H);
 }
 
 function line(stack, text, size, color, bold) {
-  const t = stack.addText(text);
+  var t = stack.addText(text);
   t.font = bold ? Font.boldSystemFont(size) : Font.systemFont(size);
   t.textColor = new Color(color);
   t.lineLimit = 1;
@@ -126,49 +136,49 @@ function line(stack, text, size, color, bold) {
 }
 
 function build(s) {
-  const w = new ListWidget();
-  w.backgroundColor = new Color(COLORS.bg);
+  var w = new ListWidget();
+  w.backgroundColor = new Color(BG);
   w.url = APP_URL;
   w.setPadding(12, 14, 12, 14);
   w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
-  const col = w;
 
-  line(col, `${s.plan.emoji} ${s.plan.name}`, 14, COLORS.text, true);
-  line(col, s.doneToday ? '✓ Done today' : 'Not done yet', 11, s.doneToday ? COLORS.mint : COLORS.soft, false);
-  col.addSpacer(8);
+  line(w, s.name, 15, TEXT, true);
+  line(w, s.done ? "Done today" : "Not done yet", 11, s.done ? MINT : SOFT, false);
+  w.addSpacer(8);
 
-  line(col, `🏆 ${s.total.toLocaleString('en-US')} / 1,000`, 13, COLORS.gold, true);
-  bar(col, s.total / WORKOUT_GOAL, COLORS.gold);
-  col.addSpacer(8);
+  line(w, withCommas(s.total) + " / 1,000 workouts", 13, GOLD, true);
+  bar(w, s.total / GOAL, GOLD);
+  w.addSpacer(8);
 
-  line(col, `🔥 ${s.cal.toLocaleString('en-US')} / 1,000 cal`, 13, s.cal > CALORIE_TARGET ? COLORS.rose : COLORS.text, true);
-  bar(col, s.cal / CALORIE_TARGET, s.cal > CALORIE_TARGET ? COLORS.rose : COLORS.mint);
+  var over = s.cal > GOAL;
+  line(w, withCommas(s.cal) + " / 1,000 cal today", 13, over ? ROSE : TEXT, true);
+  bar(w, s.cal / GOAL, over ? ROSE : MINT);
   return w;
 }
 
 function message(text) {
-  const w = new ListWidget();
-  w.backgroundColor = new Color(COLORS.bg);
+  var w = new ListWidget();
+  w.backgroundColor = new Color(BG);
   w.url = APP_URL;
-  line(w, '🌸 Goddess Plan', 14, COLORS.gold, true);
+  line(w, "Goddess Plan", 14, GOLD, true);
   w.addSpacer(6);
-  const t = line(w, text, 12, COLORS.soft, false);
+  var t = line(w, text, 12, SOFT, false);
   t.lineLimit = 4;
   return w;
 }
 
 async function main() {
-  const code = String(args.widgetParameter || '').trim().toUpperCase();
-  let widget;
+  var code = String(args.widgetParameter || "").trim().toUpperCase();
+  var widget;
   if (!/^GP-[A-Z2-9]{9,}$/.test(code)) {
-    widget = message('Long-press this widget → Edit Widget → type your sync code (GP-…) in Parameter.');
+    widget = message("Hold this widget, choose Edit Widget, and put your sync code (GP-...) in Parameter.");
   } else {
     try {
       widget = build(summarize(await load(code), new Date()));
-    } catch (e) {
-      widget = message(e.notFound
-        ? 'That sync code was not found. Check it in the app under the 🌸 flower.'
-        : 'Could not reach your plan. It will try again soon.');
+    } catch (err) {
+      widget = message(err.notFound
+        ? "That sync code was not found. Check it in the app under the flower."
+        : "Could not reach your plan. It will try again soon.");
     }
   }
   if (config.runsInWidget) Script.setWidget(widget);
@@ -176,13 +186,12 @@ async function main() {
   Script.complete();
 }
 
-// If anything unexpected breaks, say what on the widget itself, so the exact
-// words can be read off the home screen.
+// If anything unexpected breaks, show the reason on the widget itself.
 try {
   await main();
-} catch (e) {
-  const w = message(`Something went wrong: ${e && e.message ? e.message : e}`);
-  if (config.runsInWidget) Script.setWidget(w);
-  else await w.presentMedium();
+} catch (err) {
+  var fail = message("Something went wrong: " + (err && err.message ? err.message : err));
+  if (config.runsInWidget) Script.setWidget(fail);
+  else await fail.presentMedium();
   Script.complete();
 }
