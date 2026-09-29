@@ -4,6 +4,7 @@ import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { numberOf, dayKey } from '../utils/workoutLog';
+import { loadCardio, saveCardio, setMinutes, cardioStats, dateFor, CARDIO_CHANGED } from '../utils/cardioLog';
 import { loadLifts, isTrackable } from '../utils/lifts';
 import {
   dateKeyOf, loadLog, saveLog, addPlannedMeal, removePlannedMeal,
@@ -60,17 +61,25 @@ function NoteBox({ type, text }) {
 }
 
 // Per-day meal selection — the meals you'll eat today, saved locally per day.
+function readDayMeals(key) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(key) || '[]');
+    // Legacy entries were objects {name,...}; keep only recognisable meal names.
+    return Array.isArray(raw)
+      ? raw.map(x => (typeof x === 'string' ? x : x?.name)).filter(Boolean)
+      : [];
+  } catch { return []; }
+}
+
 function useDayMeals(dayId) {
   const key = `gp_meal_${dayId}`;
-  const [items, setItems] = useState(() => {
-    try {
-      const raw = JSON.parse(localStorage.getItem(key) || '[]');
-      // Legacy entries were objects {name,...}; keep only recognisable meal names.
-      return Array.isArray(raw)
-        ? raw.map(x => (typeof x === 'string' ? x : x?.name)).filter(Boolean)
-        : [];
-    } catch { return []; }
-  });
+  const [items, setItems] = useState(() => readDayMeals(key));
+  // Picks made on another gadget arrive here without closing the day.
+  useEffect(() => {
+    const refresh = () => setItems(readDayMeals(key));
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => window.removeEventListener('gp-remote-sync', refresh);
+  }, [key]);
   const save = useCallback((next) => {
     setItems(next);
     try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
@@ -306,12 +315,12 @@ function MealBuilder({ dayId, dayIndex, baseMeals }) {
 
 
 // The whole session is one workout, so the day page has one button for it,
-// under the exercises. Only on today: a past day is added from the history.
+// at the top where she sees it first. Only on today.
 function TodayDoneButton() {
   const { log, stats } = useWorkouts();
   return (
     <button
-      className={`wk-done-btn wk-done-day${stats.doneToday ? ' is-done' : ''}`}
+      className={`wk-done-btn wk-done-day wk-done-top${stats.doneToday ? ' is-done' : ''}`}
       onClick={() => (stats.doneToday ? unmarkWorkout() : markWorkout())}
     >
       {stats.doneToday
@@ -321,10 +330,98 @@ function TodayDoneButton() {
   );
 }
 
+// ── Run and bike minutes ────────────────────────────────────────────────
+// Saturday's Zone 2 run and Sunday's bike each keep her minutes. Her goal is
+// to hold her time or beat it, so the day shows the last time and the best,
+// and the best moves up by itself when she beats it.
+const CARDIO_LABEL = { run: { icon: '🏃', name: 'Run' }, bike: { icon: '🚲', name: 'Bike' } };
+
+function useCardio() {
+  const [log, setLog] = useState(loadCardio);
+  useEffect(() => {
+    const refresh = () => setLog(loadCardio());
+    window.addEventListener(CARDIO_CHANGED, refresh);
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => {
+      window.removeEventListener(CARDIO_CHANGED, refresh);
+      window.removeEventListener('gp-remote-sync', refresh);
+    };
+  }, []);
+  return log;
+}
+
+function CardioSummary({ day, dayIndex }) {
+  const log = useCardio();
+  const kinds = [...new Set(day.exercises.filter(e => e.log).map(e => e.log))];
+  return (
+    <div className="cardio-summary">
+      {kinds.map(kind => {
+        const { last, best } = cardioStats(log, kind);
+        const L = CARDIO_LABEL[kind];
+        return (
+          <div key={kind} className="cardio-row">
+            <span className="cardio-row-name">{L.icon} {L.name}</span>
+            <span className="cardio-row-nums">
+              {best ? <>Last <b>{last.min} min</b> · Best <b>{best.min} min</b> 🏅</> : 'No time yet'}
+            </span>
+            <CardioNote kind={kind} dayIndex={dayIndex} compact />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CardioNote({ kind, dayIndex, compact }) {
+  const log = useCardio();
+  const date = dateFor(dayIndex);
+  const saved = log[kind]?.[date]?.min || null;
+  const { best } = cardioStats(log, kind);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+  const [msg, setMsg] = useState('');
+  function save(e) {
+    e.preventDefault();
+    const n = Math.round(Number(value));
+    const before = best?.min || 0;
+    saveCardio(setMinutes(loadCardio(), kind, date, n > 0 ? n : null));
+    setOpen(false);
+    setMsg(n > before && before > 0 ? `New best: ${n} min! 🏅` : n > 0 && before === 0 ? 'First time logged 🏅' : '');
+  }
+  return (
+    <span className={`cardio-note${compact ? ' compact' : ''}`}>
+      {!open && (
+        <button
+          type="button"
+          className="cardio-note-btn"
+          onClick={() => { setValue(saved ? String(saved) : ''); setOpen(true); setMsg(''); }}
+        >📝 {saved ? `${saved} min` : 'Log min'}</button>
+      )}
+      {open && (
+        <form className="cardio-note-form" onSubmit={save}>
+          <input
+            type="number" inputMode="numeric" min="0" autoFocus
+            value={value} onChange={e => setValue(e.target.value)}
+            placeholder="Minutes" aria-label={`${CARDIO_LABEL[kind].name} minutes`}
+          />
+          <button type="submit">Save</button>
+          {best && <span className="cardio-note-goal">Beat {best.min}</span>}
+        </form>
+      )}
+      {msg && <span className="cardio-note-msg">{msg}</span>}
+    </span>
+  );
+}
+
 function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId }) {
   // The whole lift log for every exercise, held once for the page so each row
   // does not re-read localStorage on every render.
   const [lifts, setLifts] = useState(loadLifts);
+  useEffect(() => {
+    const refresh = () => setLifts(loadLifts());
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => window.removeEventListener('gp-remote-sync', refresh);
+  }, []);
   // Every section starts closed so the whole day is one screen — that is the
   // point of the pills. More than one can be open at a time: doing a session
   // means keeping the part you are on open while you look ahead to the next.
@@ -357,6 +454,9 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
           {day.sub && <div className="day-detail-sub">{day.sub}</div>}
         </div>
       </div>
+
+      {isToday && <TodayDoneButton />}
+      {day.exercises.some(e => e.log) && <CardioSummary day={day} dayIndex={dayIndex} />}
 
       {/* Visual stat chips */}
       <div className="dd-stats">
@@ -408,6 +508,7 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
                           rel="noopener noreferrer"
                         >{ex.url ? '▶ ' : ''}{ex.name}</a>
                         {ex.detail ? <>{' '}— {ex.detail}</> : null}
+                        {ex.log && <CardioNote kind={ex.log} dayIndex={dayIndex} />}
                         {day.trackLifts && isTrackable(ex) && (
                           <LiftTracker exercise={ex} lifts={lifts} onChange={setLifts} />
                         )}
@@ -421,7 +522,6 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
         })}
       </div>
       {day.noteAfter && <NoteBox type={day.noteAfter.type} text={day.noteAfter.text} />}
-      {isToday && <TodayDoneButton />}
       <MealBuilder dayId={id} dayIndex={dayIndex} baseMeals={day.meals} />
     </div>
   );

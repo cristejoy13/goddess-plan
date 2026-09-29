@@ -943,7 +943,7 @@ export const WORKOUT_DAYS = [
     cardio: cardio('Easy evening walk — if recovered', '20–45 min'),
     exercises: [
       H('🏃 Main Workout · Zone 2 Run', 'Easy. You can talk in short sentences.'),
-      { name: 'Zone 2 Run', detail: '20–30 min · build toward 30–45 min over the weeks · no tempo, no sprints' },
+      { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · build toward 30–45 min over the weeks · no tempo, no sprints' },
       { name: 'Too hard to run nonstop?', detail: '3–5 min easy jog, 1–2 min walk, repeat' },
       H('🌙 Evening · Easy Walk', 'Only if you feel recovered.'),
       { name: 'Easy Walk', detail: '20–45 min · easy pace' },
@@ -957,7 +957,7 @@ export const WORKOUT_DAYS = [
     cardio: cardio('Optional evening walk', '20–40 min, if recovered'),
     exercises: [
       H('🚲 Main Workout · Biking', 'Steady and easy.'),
-      { name: 'Biking', detail: '45–60 min · steady easy pace' },
+      { name: 'Biking', log: 'bike', detail: '45–60 min · steady easy pace' },
       H('🏊 5 PM · Swimming', 'After the bike. Enjoyable, mostly moderate.'),
       { name: 'Warm-Up Swim', detail: '5–10 min · easy' },
       { name: 'Main Swim', detail: '15–25 min · comfortable · mix strokes, rest when needed' },

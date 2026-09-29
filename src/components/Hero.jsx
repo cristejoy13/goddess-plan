@@ -1113,7 +1113,6 @@ export default function Hero({ onNavigate }) {
   return (
     <div className="hero hero-dashboard">
       <div className="hero-brand">
-        <div className="hero-brand-tag">🌸 Run before · Lift · Rope or walk after 🌸</div>
         {/* Goals on the left, the notebook on the right, the title between —
             the two side columns are equal, so the title sits dead centre. */}
         <div className="hero-title-row">
@@ -1125,7 +1124,6 @@ export default function Hero({ onNavigate }) {
             <DailyNotebook />
           </div>
         </div>
-        <div className="hero-brand-sub">Flat Tummy · Small Waist · Round Glutes · Glow</div>
       </div>
 
       <div className="hero-date splash-item">{todayLabel()}</div>
@@ -1146,7 +1144,6 @@ export default function Hero({ onNavigate }) {
 
       {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 
-      <div className="hero-goal-ribbon splash-item">🎯 Flat tummy · Small waist · Round glutes · Healthy gut · Glow</div>
 
       <TodayDashboard today={today} todayDayId={todayDayId} onNavigate={onNavigate} />
 

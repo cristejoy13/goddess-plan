@@ -465,7 +465,11 @@ export default function App() {
             half-typed. Its two stateful pieces listen for gp-remote-sync and
             refresh themselves in place instead. */}
         {active === 'home'       && <Hero onNavigate={navigate} />}
-        {active === 'workout'    && <Workout key={`${navMeta.key}-${syncEpoch}`} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
+        {/* Workouts is not keyed on syncEpoch either: a sync landing while a
+            day was open threw her back to the week (2026-09-30). Its saved
+            pieces — lifts, meal picks, workouts, run and bike minutes —
+            refresh themselves on gp-remote-sync. */}
+        {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
         {active === 'meal'       && <Meal key={syncEpoch} />}
         {active === 'nutrition'  && <Nutrition key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && <Skincare  key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} />}
