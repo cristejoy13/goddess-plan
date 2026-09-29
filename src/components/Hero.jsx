@@ -18,15 +18,13 @@ function todayLabel() {
   return `${DAYS_LONG[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
-const WEEK_PILLS = [
-  { label: 'Mon', emoji: '🍑', dayId: 'day-monday'    },
-  { label: 'Tue', emoji: '💪', dayId: 'day-tuesday'   },
-  { label: 'Wed', emoji: '🔥', dayId: 'day-wednesday' },
-  { label: 'Thu', emoji: '🎯', dayId: 'day-thursday'  },
-  { label: 'Fri', emoji: '✨', dayId: 'day-friday'    },
-  { label: 'Sat', emoji: '🏃', dayId: 'day-saturday'  },
-  { label: 'Sun', emoji: '⚡', dayId: 'day-sunday'    },
-];
+// The day pills under the title take their picture from the plan itself, so
+// changing a day in src/data/workouts.js changes its pill too.
+const WEEK_PILLS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label, i) => ({
+  label,
+  emoji: WORKOUT_DAYS[i].emoji,
+  dayId: ['day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday', 'day-friday', 'day-saturday', 'day-sunday'][i],
+}));
 
 const RULE_BOARDS = [
   {

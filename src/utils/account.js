@@ -130,6 +130,18 @@ async function linkSignedIn(user) {
   }
 }
 
+async function recheck() {
+  const user = auth?.currentUser;
+  if (!user || state.status === 'linking') return;
+  try {
+    const saved = await readNote(user.uid);
+    if (saved) switchTo(saved);
+    else if (state.status === 'signed-in' && !gadgetHasData()) set({ status: 'choose' });
+  } catch {
+    // Offline: the next time the app comes to the front tries again.
+  }
+}
+
 export async function initAccount() {
   if (started) return;
   started = true;
@@ -155,6 +167,13 @@ export async function initAccount() {
     authMod.onAuthStateChanged(auth, user => {
       if (!user) { set({ status: 'signed-out', email: '' }); return; }
       linkSignedIn(user);
+    });
+    // A gadget left open in the background never restarts, so it would miss
+    // a link made on another gadget meanwhile (her iPad did, 2026-09-30).
+    // Every time the app comes back to the front, check the account's code
+    // again and move to it if it changed.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') recheck();
     });
   } catch {
     set({ status: 'unavailable' });

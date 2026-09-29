@@ -63,17 +63,20 @@
   --card:       rgba(255, 248, 253, 0.97);
   --text:       #1a0a28;
   --text-mid:   #8a3068;
-  --text-soft:  #9a3a78;
+  /* Deep enough to read at small sizes on every light surface in the app:
+     each of these passes 4.5:1 on the pale pink cards (checked by
+     scripts/contrast-check.mjs). The earlier values sat just under it. */
+  --text-soft:  #7e2a62;
   /* Override dark-mode colours that are unreadable on white backgrounds */
-  --rose:       #c8176e;
-  --rose-deep:  #a00050;
-  --gold:       #9a6800;
-  --gold-light: #7d5200;
-  --gold-shine: #9a6800;
+  --rose:       #a8105c;
+  --rose-deep:  #8a0048;
+  --gold:       #7a5300;
+  --gold-light: #6a4500;
+  --gold-shine: #7a5300;
   --border-g:   rgba(154,104,0,0.28);
   --border-r:   rgba(200,23,110,0.28);
   /* Mint and lavender go dark enough to read on white. */
-  --wt:         #0b7a62;
+  --wt:         #07614e;
   --wt-avg:     #5b35c4;
 }
 [data-mode="light"] body { background: #fff5fb; }
@@ -10425,3 +10428,52 @@ body {
   color: var(--text-mid); font-family: inherit; font-size: 13px; font-weight: 600;
 }
 .si-account .si-google { margin-top: 0; }
+
+/* ── Readable in both modes (2026-09-30) ────────────────────────────────────
+   Light text on light backgrounds and dark on dark, found by
+   scripts/contrast-check.mjs across every screen. Rule of the house: text
+   takes its colour from the theme tokens, never a fixed light or dark value,
+   and is never faded with opacity below readable. Re-run the check after any
+   change to colours. */
+
+/* Faded with opacity: hints and small labels were see-through. */
+.bs-hint, .ep-profile-email, .wg-tap-hint, .tx-badge,
+.protein-meter-num em, .ml-legend .ml-day-dot, .ml-legend .ml-day-week { opacity: 1; }
+.protein-meter-num em { color: var(--text-mid); }
+
+/* "Synced" was always cream, whatever the mode. */
+.sync-hero.ok { color: var(--text); }
+
+/* The week pills on Home stayed near-black in light mode. */
+[data-mode="light"] .hero-week-pill { background: rgba(255,255,255,0.8); border-color: rgba(122,83,0,0.25); }
+[data-mode="light"] .hero-week-pill.is-today { background: rgba(168,16,92,0.1); }
+
+/* White letters on the bright pink: the pink goes deeper so they read. */
+.today-badge, .rule-mini-letter { background: #c01d61; }
+.rule-column-yes .rule-mini-letter { background: #8a5d00; }
+.sf-dot.is-on { background: linear-gradient(135deg, #c01d61, #a0104f); border-color: #c01d61; }
+.sf-btn-next { background: linear-gradient(135deg, #c01d61, #a0104f); color: #fff; }
+.wk-done-btn { background: linear-gradient(90deg, #a0104f, #c01d61); }
+.wk-done-btn.is-done { background: rgba(110,231,200,0.12); }
+
+/* The sign-in screen follows the mode like everything else. */
+[data-mode="light"] .si-overlay {
+  background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(168,16,92,0.10), transparent 70%), #fff8fc;
+}
+
+/* Brand names keep their own colour (set per card as --brand), mixed darker
+   on a light card so a pale gold or green brand still reads. */
+.pc-brand { color: color-mix(in srgb, var(--brand, var(--gold)) 55%, #ffffff); }
+[data-mode="light"] .pc-brand { color: color-mix(in srgb, var(--brand, var(--gold)) 45%, #1a0a28); }
+
+/* Selected goals tab: dark letters on the gold-to-pink fill in both modes. */
+[data-mode="light"] .goals-tab.on { color: #1a0c12; }
+
+/* Section counts on the rose "core" pills. */
+.ex-sec-core .ex-sec-count { color: var(--text); }
+
+/* The sample swatches under the Meal calendar: marked as samples by their
+   label, not by being too faint to read. */
+.ml-legend .ml-day-wt { opacity: 1; }
+[data-mode="light"] .sf-dot.is-on { color: #fff; }
+[data-mode="light"] .ex-sec-all { color: var(--gold-light); opacity: 1; }

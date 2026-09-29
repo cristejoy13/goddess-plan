@@ -69,7 +69,7 @@ function ProductCard({ brand, name, badges = [], why, primary = false }) {
         <span className={`pc-star ${primary ? 'primary' : 'alt'}`}>
           {primary ? '★ Recommended' : '✦ Alternative'}
         </span>
-        <div className="pc-brand" style={{ color }}>{brand}</div>
+        <div className="pc-brand" style={{ '--brand': color }}>{brand}</div>
         <div className="pc-name">{name}</div>
         {badges.length > 0 && (
           <div className="pc-badges">{badges.map((b, i) => <span key={i} className="pc-badge">{b}</span>)}</div>
