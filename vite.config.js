@@ -10,7 +10,6 @@ export default defineConfig({
       srcDir: 'src',
       filename: 'sw.js',
       registerType: 'autoUpdate',
-      includeAssets: ['icon-192.png', 'icon-512.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'The Goddess Plan',
         short_name: 'Goddess Plan',
@@ -22,12 +21,17 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         icons: [
-          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          // Her logo, unaltered. One large square image; phones scale it down.
+          { src: 'app-icon.png', sizes: '1254x1254', type: 'image/png', purpose: 'any' },
+          { src: 'app-icon.png', sizes: '1254x1254', type: 'image/png', purpose: 'maskable' },
         ],
       },
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Her logo is kept at full size and never shrunk, so it is over the
+        // offline-cache limit. The phone fetches it when the app is added to
+        // the home screen; it does not need to live in the offline copy.
+        globIgnores: ['**/app-icon.png'],
       },
     }),
   ],

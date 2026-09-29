@@ -60,7 +60,7 @@ onBackgroundMessage(messaging, payload => {
   const { title = 'Goddess Plan 🌸', body = '' } = payload.notification ?? {};
   self.registration.showNotification(title, {
     body,
-    icon: '/icon-192.png',
+    icon: '/app-icon.png',
     badge: '/icon-192.png',
     tag: payload.data?.tag ?? 'gp-reminder',
     data: { url: '/' },
