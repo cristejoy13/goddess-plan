@@ -7,6 +7,10 @@
 // "Goddess Plan", add a Scriptable widget (medium size works best), choose this
 // script, and type the sync code (GP-…) into the widget's Parameter box.
 //
+// Logo first, numbers on a swipe: iOS widgets cannot slide sideways inside
+// themselves, but a Smart Stack can hold two widgets. Make a second one with
+// Parameter "logo", drag it onto the first, and swipe up or down between them.
+//
 // It reads the same cloud copy the app syncs to — read only, it never writes.
 // iOS decides when widgets refresh (roughly every 15–30 minutes), so a tick
 // made in the app shows up on the next refresh, not instantly.
@@ -15,6 +19,7 @@
 // plan changes, change PLAN below to match.
 
 const APP_URL = 'https://goddess-plan.vercel.app';
+const LOGO_URL = `${APP_URL}/app-icon.png`;
 const FIRESTORE = 'https://firestore.googleapis.com/v1/projects/goddess-plan/databases/(default)/documents/sync/';
 const API_KEY = 'AIzaSyAsWJPYWcwJ5XtnJPOV_PRmL7dyt5eJems';
 const WORKOUT_GOAL = 1000;
@@ -155,11 +160,50 @@ function message(text) {
   return w;
 }
 
+// Her logo, full size, saved on the phone after the first download so the
+// widget does not fetch 2 MB on every refresh.
+async function loadLogo() {
+  const fm = FileManager.local();
+  const path = fm.joinPath(fm.documentsDirectory(), 'goddess-plan-logo.png');
+  if (fm.fileExists(path)) return fm.readImage(path);
+  const img = await new Request(LOGO_URL).loadImage();
+  fm.writeImage(path, img);
+  return img;
+}
+
+// The logo only, whole and centred. A medium widget is wide, so filling it
+// would cut off the top and bottom of a square logo; it sits in the middle
+// on the app's own dark violet instead. Drawn smaller for the widget; the
+// image itself is not changed.
+async function logoWidget() {
+  const w = new ListWidget();
+  w.backgroundColor = new Color(COLORS.bg);
+  w.url = APP_URL;
+  w.setPadding(6, 6, 6, 6);
+  try {
+    const img = await loadLogo();
+    const ctx = new DrawContext();
+    ctx.size = new Size(600, 600);
+    ctx.drawImageInRect(img, new Rect(0, 0, 600, 600));
+    const row = w.addStack();
+    row.addSpacer();
+    const pic = row.addImage(ctx.getImage());
+    pic.imageSize = new Size(150, 150);
+    pic.cornerRadius = 18;
+    row.addSpacer();
+  } catch (e) {
+    line(w, '🌸 Goddess Plan', 14, COLORS.gold, true);
+  }
+  return w;
+}
+
 async function main() {
   const code = String(args.widgetParameter || '').trim().toUpperCase();
   let widget;
-  if (!/^GP-[A-Z2-9]{9,}$/.test(code)) {
-    widget = message('Long-press this widget → Edit Widget → type your sync code (GP-…) in Parameter.');
+  if (code === 'LOGO') {
+    widget = await logoWidget();
+  } else if (!/^GP-[A-Z2-9]{9,}$/.test(code)) {
+    widget = message('Long-press this widget → Edit Widget → type your sync code (GP-…), or logo, in Parameter.');
   } else {
     try {
       widget = build(summarize(await load(code), new Date()), config.widgetFamily);
