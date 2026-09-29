@@ -3,12 +3,12 @@
 //   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat, squat finisher
 //   Tue  Pilates or yoga (Jessica Diễm or Nicole) + jump rope
 //   Wed  Upper body & core — Pilates by Izzy + jump rope
-//   Thu  Zone 2 run
+//   Thu  Pilates or yoga (Jessica Diễm or Nicole) + jump rope, same as Tue
 //   Fri  Glutes B — cable kickback, hip abduction, step-up, squat finisher
-//   Sat  Gentle Pilates or yoga (Jessica Diễm or Nicole) + jump rope
-//   Sun  Swimming
+//   Sat  Zone 2 run
+//   Sun  Biking, then swimming at 5 PM
 // An easy walk every evening. Jump rope ONLY after the main workout on Tue,
-// Wed and Sat. The glute days keep three main lifts each, never shared, and the
+// Wed and Thu. The glute days keep three main lifts each, never shared, and the
 // same light squat to finish; they progress by reps first, then a little weight — never by adding
 // exercises. Consistency over volume: nothing extra is added on its own.
 //
@@ -908,16 +908,14 @@ export const WORKOUT_DAYS = [
     meals: DAILY_MEALS,
   },
   {
-    emoji: '🏃', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Thursday · Zone 2 Run', title: 'Easy Run',
-    sub: '20–30 min run · evening walk if recovered',
-    cardio: cardio('Easy evening walk — if recovered', '20–45 min'),
+    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Thursday · Pilates or Yoga', title: 'One video · Jump Rope',
+    sub: '20–40 min video · jump rope · evening walk',
+    cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🏃 Main Workout · Zone 2 Run', 'Easy. You can talk in short sentences.'),
-      { name: 'Zone 2 Run', detail: '20–30 min · build toward 30–45 min over the weeks · no tempo, no sprints' },
-      { name: 'Too hard to run nonstop?', detail: '3–5 min easy jog, 1–2 min walk, repeat' },
-      H('🌙 Evening · Easy Walk', 'Only if you feel recovered.'),
-      { name: 'Easy Walk', detail: '20–45 min · easy pace' },
+      ...PILATES_OR_YOGA,
+      ...rope('5–15', 'moderate pace'),
+      ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
   },
@@ -939,25 +937,28 @@ export const WORKOUT_DAYS = [
     meals: DAILY_MEALS,
   },
   {
-    emoji: '🌿', emojiBg: 'rgba(253,245,208,0.4)',
-    day: 'Saturday · Gentle Pilates or Yoga', title: 'One video · Jump Rope',
-    sub: '20–40 min video · jump rope · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
-    noteBefore: { type: 'gold', text: '🌿 Keep it gentle. Friday was glutes.' },
+    emoji: '🏃', emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Saturday · Zone 2 Run', title: 'Easy Run',
+    sub: '20–30 min run · evening walk if recovered',
+    cardio: cardio('Easy evening walk — if recovered', '20–45 min'),
     exercises: [
-      ...PILATES_OR_YOGA,
-      ...rope('5–10', 'easy to moderate · less or skip if legs are sore'),
-      ...walk('30–60'),
+      H('🏃 Main Workout · Zone 2 Run', 'Easy. You can talk in short sentences.'),
+      { name: 'Zone 2 Run', detail: '20–30 min · build toward 30–45 min over the weeks · no tempo, no sprints' },
+      { name: 'Too hard to run nonstop?', detail: '3–5 min easy jog, 1–2 min walk, repeat' },
+      H('🌙 Evening · Easy Walk', 'Only if you feel recovered.'),
+      { name: 'Easy Walk', detail: '20–45 min · easy pace' },
     ],
     meals: DAILY_MEALS,
   },
   {
-    emoji: '🏊', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Swimming', title: 'Easy Swim',
-    sub: '30–45 min swim · optional evening walk',
+    emoji: '🚲', emojiBg: 'rgba(252,228,239,0.4)',
+    day: 'Sunday · Biking & Swim', title: 'Bike · Swim at 5 PM',
+    sub: '45–60 min bike · 30–45 min swim at 5 PM · optional evening walk',
     cardio: cardio('Optional evening walk', '20–40 min, if recovered'),
     exercises: [
-      H('🏊 Main Workout · Swimming', 'Enjoyable, mostly moderate.'),
+      H('🚲 Main Workout · Biking', 'Steady and easy.'),
+      { name: 'Biking', detail: '45–60 min · steady easy pace' },
+      H('🏊 5 PM · Swimming', 'After the bike. Enjoyable, mostly moderate.'),
       { name: 'Warm-Up Swim', detail: '5–10 min · easy' },
       { name: 'Main Swim', detail: '15–25 min · comfortable · mix strokes, rest when needed' },
       { name: 'Cool-Down Swim', detail: '5 min · very easy' },

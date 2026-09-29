@@ -25,10 +25,10 @@ const GRID_DAYS = [
   { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian · Squat', color: 'pr' },
   { lbl: 'Tue', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope', color: 'py' },
   { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope', color: 'py' },
-  { lbl: 'Thu', emoji: '🏃', name: 'Zone 2 Run',      focus: 'Easy run', color: 'py' },
+  { lbl: 'Thu', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope', color: 'py' },
   { lbl: 'Fri', emoji: '✨', name: 'Glutes B',        focus: 'Kickback · Abduction · Step-Up · Squat', color: 'pr' },
-  { lbl: 'Sat', emoji: '🌿', name: 'Gentle Pilates',  focus: 'Jessica or Nicole · Rope', color: 'py' },
-  { lbl: 'Sun', emoji: '🏊', name: 'Swimming',        focus: 'Easy swim', color: 'py' },
+  { lbl: 'Sat', emoji: '🏃', name: 'Zone 2 Run',      focus: 'Easy run', color: 'py' },
+  { lbl: 'Sun', emoji: '🚲', name: 'Bike & Swim',     focus: 'Bike · Swim 5 PM', color: 'py' },
 ];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
@@ -590,7 +590,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           seven times in the focus lines above. */}
       <div className="wg-every-day splash-item">
         <span>🚶 Every evening: an easy walk.</span>
-        <span>🪢 Jump rope only Tue · Wed · Sat, after the workout.</span>
+        <span>🪢 Jump rope only Tue · Wed · Thu, after the workout.</span>
       </div>
 
       {/* The five explainers used to sit open on this screen, which is the first
@@ -608,7 +608,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {showWhy && (
         <>
           <div className="g-card splash-item why-card">
-            <strong>Your week:</strong> glutes Mon · Fri, Pilates or yoga Tue · Sat, upper body &amp; core Wed, Zone 2 run Thu, swim Sun. An easy walk every evening.
+            <strong>Your week:</strong> glutes Mon · Fri, Pilates or yoga Tue · Thu, upper body &amp; core Wed, Zone 2 run Sat, bike then swim at 5 PM Sun. An easy walk every evening.
           </div>
           <div className="g-card splash-item why-card">
             <strong>Getting stronger:</strong> same lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.
@@ -617,7 +617,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
             <strong>Cardio:</strong> go longer, not harder. Zone 2 stays easy. Jump rope never gets in the way of glute recovery.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Tired or sore?</strong> 1. Less jump rope. 2. Shorter walks. 3. Gentler Saturday. Keep Monday and Friday.
+            <strong>Tired or sore?</strong> 1. Less jump rope. 2. Shorter walks. 3. Gentler video days. Keep Monday and Friday.
           </div>
         </>
       )}

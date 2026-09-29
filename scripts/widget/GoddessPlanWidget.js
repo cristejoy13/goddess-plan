@@ -24,10 +24,10 @@ var PLAN = [
   { day: "Monday", emoji: "\ud83c\udf51", name: "Glutes A", title: "Hip Thrust \u00b7 RDL \u00b7 Bulgarian \u00b7 Squat" },
   { day: "Tuesday", emoji: "\ud83e\uddd8", name: "Pilates or Yoga", title: "One video \u00b7 Jump Rope" },
   { day: "Wednesday", emoji: "\ud83d\udcaa", name: "Upper Body & Core", title: "Pilates by Izzy \u00b7 Jump Rope" },
-  { day: "Thursday", emoji: "\ud83c\udfc3", name: "Zone 2 Run", title: "Easy Run" },
+  { day: "Thursday", emoji: "\ud83e\uddd8", name: "Pilates or Yoga", title: "One video \u00b7 Jump Rope" },
   { day: "Friday", emoji: "\u2728", name: "Glutes B", title: "Kickback \u00b7 Abduction \u00b7 Step-Up \u00b7 Squat" },
-  { day: "Saturday", emoji: "\ud83c\udf3f", name: "Gentle Pilates or Yoga", title: "One video \u00b7 Jump Rope" },
-  { day: "Sunday", emoji: "\ud83c\udfca", name: "Swimming", title: "Easy Swim" }
+  { day: "Saturday", emoji: "\ud83c\udfc3", name: "Zone 2 Run", title: "Easy Run" },
+  { day: "Sunday", emoji: "\ud83d\udeb2", name: "Biking & Swim", title: "Bike \u00b7 Swim at 5 PM" }
 ];
 // PLAN-END
 

@@ -44,15 +44,15 @@ const NAV_ITEMS = [
 ];
 
 const SEARCH_INDEX = [
-  // Monday to Sunday: glutes Mon/Fri, Pilates or yoga Tue/Sat, Izzy Wed,
-  // Zone 2 Thu, swim Sun. An easy walk every evening.
+  // Monday to Sunday: glutes Mon/Fri, Pilates or yoga Tue/Thu, Izzy Wed,
+  // Zone 2 Sat, bike then swim Sun. An easy walk every evening.
   { label: 'Monday — Glutes A', hint: 'Workouts · Hip Thrust · RDL · Bulgarian Split Squat · Squat', section: 'workout', scrollTo: 'day-monday'    },
   { label: 'Tuesday — Pilates or Yoga', hint: 'Workouts · Jessica Diễm or Nicole · jump rope', section: 'workout', scrollTo: 'day-tuesday'   },
   { label: 'Wednesday — Upper Body & Core', hint: 'Workouts · Pilates by Izzy · jump rope', section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Thursday — Zone 2 Run', hint: 'Workouts · easy conversational run', section: 'workout', scrollTo: 'day-thursday'  },
+  { label: 'Thursday — Pilates or Yoga', hint: 'Workouts · Jessica Diễm or Nicole · jump rope', section: 'workout', scrollTo: 'day-thursday'  },
   { label: 'Friday — Glutes B', hint: 'Workouts · Cable Kickback · Hip Abduction · Step-Up · Squat', section: 'workout', scrollTo: 'day-friday'    },
-  { label: 'Saturday — Gentle Pilates or Yoga', hint: 'Workouts · Jessica Diễm or Nicole · jump rope', section: 'workout', scrollTo: 'day-saturday'  },
-  { label: 'Sunday — Swimming', hint: 'Workouts · easy 30–45 min swim', section: 'workout', scrollTo: 'day-sunday'  },
+  { label: 'Saturday — Zone 2 Run', hint: 'Workouts · easy conversational run', section: 'workout', scrollTo: 'day-saturday'  },
+  { label: 'Sunday — Biking & Swim', hint: 'Workouts · bike, then swim at 5 PM', section: 'workout', scrollTo: 'day-sunday'  },
 
   { label: 'Barbell Hip Thrust',      hint: 'Workouts → Monday Glutes A', section: 'workout', scrollTo: 'day-monday' },
   { label: 'Romanian Deadlift (RDL)', hint: 'Workouts → Monday Glutes A', section: 'workout', scrollTo: 'day-monday' },
@@ -61,13 +61,14 @@ const SEARCH_INDEX = [
   { label: 'Squat — finisher',        hint: 'Workouts → Monday & Friday, last', section: 'workout', scrollTo: 'day-monday' },
   { label: 'Cable Kickback',          hint: 'Workouts → Friday Glutes B', section: 'workout', scrollTo: 'day-friday' },
   { label: 'Hip Abduction',           hint: 'Workouts → Friday Glutes B', section: 'workout', scrollTo: 'day-friday' },
-  { label: 'Jump Rope',               hint: 'Workouts → Tue · Wed · Sat, after the main workout', section: 'workout', scrollTo: 'day-tuesday' },
-  { label: 'Zone 2 Run',              hint: 'Workouts → Thursday', section: 'workout', scrollTo: 'day-thursday' },
-  { label: 'Swimming',                hint: 'Workouts → Sunday', section: 'workout', scrollTo: 'day-sunday' },
+  { label: 'Jump Rope',               hint: 'Workouts → Tue · Wed · Thu, after the main workout', section: 'workout', scrollTo: 'day-tuesday' },
+  { label: 'Zone 2 Run',              hint: 'Workouts → Saturday', section: 'workout', scrollTo: 'day-saturday' },
+  { label: 'Biking',                  hint: 'Workouts → Sunday', section: 'workout', scrollTo: 'day-sunday' },
+  { label: 'Swimming',                hint: 'Workouts → Sunday, 5 PM', section: 'workout', scrollTo: 'day-sunday' },
 
-  { label: 'Jessica Diễm — Pilates & yoga', hint: 'Workouts → Tuesday & Saturday · one video', section: 'workout', scrollTo: 'day-tuesday' },
+  { label: 'Jessica Diễm — Pilates & yoga', hint: 'Workouts → Tuesday & Thursday · one video', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Pilates by Izzy', hint: 'Workouts → Wednesday · upper body & core', section: 'workout', scrollTo: 'day-wednesday' },
-  { label: 'Move With Nicole — Pilates & yoga', hint: 'Workouts → Tuesday & Saturday · one video', section: 'workout', scrollTo: 'day-tuesday' },
+  { label: 'Move With Nicole — Pilates & yoga', hint: 'Workouts → Tuesday & Thursday · one video', section: 'workout', scrollTo: 'day-tuesday' },
   { label: 'Overnight Yogurt Bowl',   hint: 'Nutrition → Recipes · yogurt, protein, psyllium, blueberries', section: 'nutrition', tab: 'recipes' },
   { label: 'Meal Times — the daily clock',     hint: 'Nutrition → Daily Clock · 12 PM the big brunch, 5 PM apple & yogurt', section: 'nutrition', tab: 'daily' },
   { label: 'Evening Walk', hint: 'Workouts → every evening · easy pace', section: 'workout', scrollTo: 'day-monday' },
