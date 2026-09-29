@@ -31,7 +31,9 @@ export default defineConfig({
         // Her logo is kept at full size and never shrunk, so it is over the
         // offline-cache limit. The phone fetches it when the app is added to
         // the home screen; it does not need to live in the offline copy.
-        globIgnores: ['**/app-icon.png'],
+        // The old icon names carry the same image, for any gadget that
+        // remembers them, so they are left out too.
+        globIgnores: ['**/app-icon.png', '**/apple-touch-icon.png', '**/icon-192.png', '**/icon-512.png', '**/favicon.ico'],
       },
     }),
   ],
