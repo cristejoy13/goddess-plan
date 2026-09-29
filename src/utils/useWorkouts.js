@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ask } from './ask';
 import { WORKOUT_DAYS } from '../data/workouts';
 import { fireConfetti } from './confetti';
 import {
@@ -57,13 +58,13 @@ export function markWorkout(key = dayKey()) {
 }
 
 // Taking a day off the record loses its time and notes, so it always asks.
-export function unmarkWorkout(key = dayKey()) {
+export async function unmarkWorkout(key = dayKey()) {
   const log = loadWorkouts();
   const x = log.days[key];
   if (!x) return true;
   const what = `Workout #${numberOf(log, key)} (${longDate(key)})`;
   const extra = x.notes || x.duration ? ' Its time and notes go too.' : '';
-  if (!window.confirm(`Take ${what} off your count?${extra}`)) return false;
+  if (!(await ask(`Take ${what} off your count?${extra}`, { yes: 'Take it off', danger: true }))) return false;
   saveWorkouts(removeWorkout(log, key));
   return true;
 }

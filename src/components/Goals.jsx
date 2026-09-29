@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { ask } from '../utils/ask';
 import { createPortal } from 'react-dom';
 import { loadLog, formatKg } from '../utils/mealLog';
 import { fireConfetti } from '../utils/confetti';
@@ -144,8 +145,8 @@ function NumberGoal({ goals, g, onRemove }) {
     saveGoals(addProgress(goals, g.id, v));
     setAmount('');
   }
-  function undo() {
-    if (!window.confirm(`Take +${n(last.amount)} (${prettyDate(last.date)}) off “${g.text}”?`)) return;
+  async function undo() {
+    if (!(await ask(`Take +${n(last.amount)} (${prettyDate(last.date)}) off “${g.text}”?`, { yes: 'Take it off' }))) return;
     saveGoals(removeProgress(goals, g.id, last.id));
   }
 
@@ -207,15 +208,15 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
     inputRef.current?.focus();
   }
 
-  function toggle(g) {
-    if (g.done && !window.confirm(`Mark “${g.text}” as not achieved yet?`)) return;
+  async function toggle(g) {
+    if (g.done && !(await ask(`Mark “${g.text}” as not achieved yet?`, { yes: 'Not yet' }))) return;
     const now = new Date().toISOString();
     saveGoals({ ...goals, items: goals.items.map(x => (x.id === g.id ? { ...x, done: x.done ? null : now, updatedAt: now } : x)) });
   }
 
-  function remove(g) {
+  async function remove(g) {
     const r = rewardText(goals, g.id);
-    if (!window.confirm(`Delete the goal “${g.text}”${r ? ` and its reward “${r}”` : ''}? This cannot be undone.`)) return;
+    if (!(await ask(`Delete the goal “${g.text}”${r ? ` and its reward “${r}”` : ''}? This cannot be undone.`, { yes: 'Delete', danger: true }))) return;
     saveGoals(setReward({ ...goals, items: goals.items.filter(x => x.id !== g.id) }, g.id, ''));
   }
 
@@ -224,12 +225,12 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
 
   // Taking a goal back out of Achieved. A number goal loses its last entry,
   // which drops it under the target; a plain goal is simply unticked.
-  function notYet(id) {
+  async function notYet(id) {
     const g = goals.items.find(x => x.id === id);
     if (!g) return;
     const last = [...(g.progress || [])].sort((a, b) => (a.at < b.at ? 1 : -1))[0];
     if (goalTarget(g.text) && last) {
-      if (!window.confirm(`Take +${last.amount} (${prettyDate(last.date)}) off “${g.text}” and move it back to Goals?`)) return;
+      if (!(await ask(`Take +${last.amount} (${prettyDate(last.date)}) off “${g.text}” and move it back to Goals?`, { yes: 'Move it back' }))) return;
       saveGoals(removeProgress(goals, g.id, last.id));
     } else {
       toggle(g);
@@ -350,11 +351,11 @@ function RewardRow({ goals, id, goalText, earned }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(reward || '');
 
-  function save(e) {
+  async function save(e) {
     e.preventDefault();
     const t = draft.trim();
     if (!t) return;
-    if (!window.confirm(`Lock in “${t}” as the reward for “${goalText}”? You can't change it later.`)) return;
+    if (!(await ask(`Lock in “${t}” as the reward for “${goalText}”? You can’t change it later.`, { yes: 'Lock in' }))) return;
     saveGoals(setReward(goals, id, t));
     setEditing(false);
   }
@@ -388,8 +389,8 @@ function RewardRow({ goals, id, goalText, earned }) {
         <button
           type="button"
           className={`rw-claim${claimed ? ' on' : ''}`}
-          onClick={() => {
-            if (claimed && !window.confirm(`Mark “${reward}” as not claimed yet?`)) return;
+          onClick={async () => {
+            if (claimed && !(await ask(`Mark “${reward}” as not claimed yet?`, { yes: 'Not claimed' }))) return;
             saveGoals(claimReward(goals, id, !claimed));
           }}
         >

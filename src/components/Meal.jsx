@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
+import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -220,11 +221,11 @@ function GoalForm({ cal, weekLabel, onSave }) {
   const clearing = typed === '' && cal != null;
   const unchanged = typed === (cal != null ? String(cal) : '');
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
     if (typed === '') {
       if (cal == null) return;
-      if (!window.confirm(`Remove your goal of ${cal.toLocaleString()} calories a day for ${weekLabel}? The calendar will stop showing calories left for those seven days.`)) return;
+      if (!(await ask(`Remove your goal of ${cal.toLocaleString()} calories a day for ${weekLabel}? The calendar will stop showing calories left for those seven days.`, { yes: 'Remove', danger: true }))) return;
       setWarn(''); onSave(null); setOpen(false);
       return;
     }
@@ -331,7 +332,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
   const clearingBurn = burnChanged && typedBurn === '' && typedBurnCal != null;
   const onlyClearing = (clearingKg || !kgChanged) && (clearingBurn || !burnChanged) && !unchanged;
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
     if (unchanged) { setBurnDraft(burnText); return; }
     const patch = {};
@@ -350,7 +351,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
       clearingBurn && `${burn.toLocaleString()} calories burned`,
     ].filter(Boolean);
     const back = clearingBurn && average != null ? ` Burned goes back to your average, ${average.toLocaleString()}.` : '';
-    if (gone.length && !window.confirm(`Remove ${gone.join(' and ')} for this day?${back}${clearingKg ? ' This cannot be undone.' : ''}`)) return;
+    if (gone.length && !(await ask(`Remove ${gone.join(' and ')} for this day?${back}${clearingKg ? ' This cannot be undone.' : ''}`, { yes: 'Remove', danger: true }))) return;
     if (clearingKg) patch.kg = null;
     if (clearingBurn) patch.burn = null;
     setWarn('');
@@ -611,8 +612,8 @@ export default function Meal() {
 
   // A deleted line leaves a tombstone, or the other gadget's copy would put it
   // straight back on the next sync.
-  const deleteEntry = (dayNum, entry) => {
-    if (!window.confirm(`Delete “${entry.text}” at ${prettyTime(entry.time)}? This cannot be undone.`)) return;
+  const deleteEntry = async (dayNum, entry) => {
+    if (!(await ask(`Delete “${entry.text}” at ${prettyTime(entry.time)}? This cannot be undone.`, { yes: 'Delete', danger: true }))) return;
     const key = dateKey(year, monthIdx, dayNum);
     commit(prev => {
       const left = (prev.days[key] || []).filter(e => e.id !== entry.id);

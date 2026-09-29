@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ask } from '../utils/ask';
 import {
   onAccount, signInWithGoogle, signInLater, saidLater,
   bringBack, startFresh, signOutAccount,
@@ -125,8 +126,8 @@ export function AccountCard() {
           <button
             type="button"
             className="si-signout"
-            onClick={() => {
-              if (window.confirm('Sign out of Google on this gadget? Your things stay on this gadget and stay saved online.')) signOutAccount();
+            onClick={async () => {
+              if (await ask('Sign out of Google on this gadget? Your things stay on this gadget and stay saved online.', { yes: 'Sign out' })) signOutAccount();
             }}
           >Sign out</button>
         </>

@@ -10527,3 +10527,37 @@ body {
 .day-sec-title::after { background: linear-gradient(90deg, var(--gold, #d4a843), transparent); }
 .day-sec-title span { flex: none; }
 .meal-builder > .day-sec-title { margin-top: 30px; }
+
+/* ─── The app's own question box (replaces the browser's pop-up) ───────── */
+.ask-backdrop {
+  position: fixed; inset: 0; z-index: 5000;
+  display: flex; align-items: center; justify-content: center;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  background: rgba(7, 4, 15, 0.62);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: ask-fade 0.15s ease-out;
+}
+.ask-card {
+  width: 100%; max-width: 380px;
+  display: flex; flex-direction: column; gap: 18px;
+  padding: 24px 20px 18px; border-radius: 22px;
+  background: var(--blush); border: 1px solid var(--border-r);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  text-align: center; font-family: 'Outfit', sans-serif;
+  animation: ask-pop 0.18s ease-out;
+}
+.ask-text { margin: 0; font-size: 16px; line-height: 1.45; color: var(--text); text-wrap: balance; overflow-wrap: anywhere; }
+.ask-btns { display: flex; gap: 10px; }
+.ask-btns button {
+  flex: 1; min-height: 48px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  -webkit-tap-highlight-color: transparent;
+}
+.ask-no { border: 1px solid var(--border-r); background: transparent; color: var(--text); }
+.ask-yes { border: 0; background: var(--rose-deep); color: #fff; }
+.ask-yes.ask-danger { background: #c0283c; }
+.ask-btns button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+[data-mode="light"] .ask-backdrop { background: rgba(60, 20, 50, 0.32); }
+[data-mode="light"] .ask-card { background: #fff; box-shadow: 0 18px 50px rgba(90, 20, 70, 0.22); }
+@keyframes ask-fade { from { opacity: 0; } }
+@keyframes ask-pop { from { transform: scale(0.94); opacity: 0; } }

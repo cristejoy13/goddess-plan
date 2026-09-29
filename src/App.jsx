@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, Component } from 'react';
+import AskHost from './components/Ask';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
@@ -387,6 +388,7 @@ export default function App() {
       <GoalWatcher />
       <WorkoutToast />
       <SignInGate />
+      <AskHost />
 
       <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`} ref={topbarRef}>
         <div className="topbar-row">
