@@ -7,9 +7,8 @@
 // "Goddess Plan", add a Scriptable widget (medium size works best), choose this
 // script, and type the sync code (GP-…) into the widget's Parameter box.
 //
-// Logo first, numbers on a swipe: iOS widgets cannot slide sideways inside
-// themselves, but a Smart Stack can hold two widgets. Make a second one with
-// Parameter "logo", drag it onto the first, and swipe up or down between them.
+// On the medium size her logo sits on the left and the numbers on the right.
+// (Parameter "logo" still shows the logo alone, for anyone who wants that.)
 //
 // It reads the same cloud copy the app syncs to — read only, it never writes.
 // iOS decides when widgets refresh (roughly every 15–30 minutes), so a tick
@@ -128,24 +127,38 @@ function line(stack, text, size, color, bold) {
   return t;
 }
 
-function build(s, family) {
+// One widget, both halves: on the medium size her logo sits on the left and
+// the numbers on the right. The small size has no room for both, so it shows
+// the numbers alone.
+function build(s, family, logo) {
   const w = new ListWidget();
   w.backgroundColor = new Color(COLORS.bg);
   w.url = APP_URL;
   w.setPadding(12, 14, 12, 14);
   w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
 
-  line(w, `${s.plan.emoji} ${s.plan.name}`, 14, COLORS.text, true);
-  line(w, s.doneToday ? '✓ Done today' : 'Not done yet', 11, s.doneToday ? COLORS.mint : COLORS.soft, false);
-  w.addSpacer(8);
+  let col = w;
+  if (logo && family !== 'small') {
+    const row = w.addStack();
+    row.centerAlignContent();
+    const pic = row.addImage(logo);
+    pic.imageSize = new Size(118, 118);
+    pic.cornerRadius = 16;
+    row.addSpacer(14);
+    col = row.addStack();
+    col.layoutVertically();
+  }
 
-  line(w, `🏆 ${s.total.toLocaleString('en-US')} / 1,000`, 13, COLORS.gold, true);
-  bar(w, s.total / WORKOUT_GOAL, COLORS.gold);
-  if (family !== 'small') line(w, `${s.pct}% complete`, 10, COLORS.soft, false);
-  w.addSpacer(8);
+  line(col, `${s.plan.emoji} ${s.plan.name}`, 14, COLORS.text, true);
+  line(col, s.doneToday ? '✓ Done today' : 'Not done yet', 11, s.doneToday ? COLORS.mint : COLORS.soft, false);
+  col.addSpacer(8);
 
-  line(w, `🔥 ${s.cal.toLocaleString('en-US')} / 1,000 cal`, 13, s.cal > CALORIE_TARGET ? COLORS.rose : COLORS.text, true);
-  bar(w, s.cal / CALORIE_TARGET, s.cal > CALORIE_TARGET ? COLORS.rose : COLORS.mint);
+  line(col, `🏆 ${s.total.toLocaleString('en-US')} / 1,000`, 13, COLORS.gold, true);
+  bar(col, s.total / WORKOUT_GOAL, COLORS.gold);
+  col.addSpacer(8);
+
+  line(col, `🔥 ${s.cal.toLocaleString('en-US')} / 1,000 cal`, 13, s.cal > CALORIE_TARGET ? COLORS.rose : COLORS.text, true);
+  bar(col, s.cal / CALORIE_TARGET, s.cal > CALORIE_TARGET ? COLORS.rose : COLORS.mint);
   return w;
 }
 
@@ -206,7 +219,17 @@ async function main() {
     widget = message('Long-press this widget → Edit Widget → type your sync code (GP-…), or logo, in Parameter.');
   } else {
     try {
-      widget = build(summarize(await load(code), new Date()), config.widgetFamily);
+      const data = await load(code);
+      // The logo is a nice-to-have: if it cannot be fetched, the numbers
+      // still show.
+      let logo = null;
+      try {
+        const ctx = new DrawContext();
+        ctx.size = new Size(360, 360);
+        ctx.drawImageInRect(await loadLogo(), new Rect(0, 0, 360, 360));
+        logo = ctx.getImage();
+      } catch (e) { logo = null; }
+      widget = build(summarize(data, new Date()), config.widgetFamily, logo);
     } catch (e) {
       widget = message(e.notFound
         ? 'That sync code was not found. Check it in the app under the 🌸 flower.'
