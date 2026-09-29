@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AVATARS, getAvatarByProfile } from '../avatars';
 import { calcTDEE, generatePlan } from '../utils/planGenerator';
 import { AccountCard } from './SignIn';
-import { relinkIfSignedIn } from '../utils/account';
+import { relinkIfSignedIn, onAccount } from '../utils/account';
 import { adoptSyncCode, forceSyncFromThisDevice, getSyncCode, getSyncHealth, getThisDeviceId, isSyncActive, onDevices, onSyncHealth, onSyncStatus } from '../utils/sync';
 
 /* ─── Helpers ─── */
@@ -379,6 +379,10 @@ function relTime(ts, now) {
 
 function DeviceSyncSection() {
   const [active, setActive] = useState(isSyncActive());
+  // Signed in with Google, the code and QR are never needed: another gadget
+  // just signs in. They stay only for a gadget that chose "Not now".
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => onAccount(a => setSignedIn(a.status === 'signed-in' || a.status === 'linking')), []);
   const [code] = useState(getSyncCode);
   const [qrUrl, setQrUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -514,7 +518,11 @@ function DeviceSyncSection() {
         })}
       </div>
       {otherCount === 0 && (
-        <div className="sync-note">No other gadgets yet. Scan the QR code on another phone or tablet.</div>
+        <div className="sync-note">
+          {signedIn
+            ? 'No other gadgets yet. Sign in with Google on another phone or tablet.'
+            : 'No other gadgets yet. Scan the QR code on another phone or tablet.'}
+        </div>
       )}
 
       <button
@@ -531,29 +539,35 @@ function DeviceSyncSection() {
       <div className="sync-note">Use this on the gadget with the data you want everywhere. The others will match it.</div>
 
       <div className="settings-section-title">Add another gadget</div>
-      <button className="sync-code-row" type="button" onClick={copyCode}>
-        <code ref={codeRef}>{code}</code>
-        <span>{copied ? 'Copied ✓' : 'Tap to copy'}</span>
-      </button>
-      {qrUrl && <img className="sync-qr" src={qrUrl} alt="Sync QR code" />}
-      <div className="sync-help">
-        <div className="sync-help-title">How to connect a new gadget</div>
-        <p>On the new phone or tablet, scan this QR code. It opens the linked app.</p>
-        <p><strong>Using the installed app icon?</strong> Scanning opens the browser, which has separate data. Open the installed app, go to Settings, and type the code below.</p>
-        <p>If scanning does not work, copy the code and type it on the other gadget.</p>
-      </div>
-      <div className="sync-join-row">
-        <input
-          className="ob-input"
-          type="text"
-          value={input}
-          onChange={e => { setInput(e.target.value); setError(''); }}
-          placeholder="GP-XXXXXXXXXXXX"
-        />
-        <button className="ob-btn-primary" type="button" onClick={connectCode}>Connect</button>
-      </div>
-      {error && <div className="sync-note">{error}</div>}
-      <div className="sync-note">Connecting replaces this gadget&apos;s data with the synced data.</div>
+      {signedIn ? (
+        <div className="sync-note si-other-gadget">On another gadget, just sign in with Google.</div>
+      ) : (
+        <>
+        <button className="sync-code-row" type="button" onClick={copyCode}>
+          <code ref={codeRef}>{code}</code>
+          <span>{copied ? 'Copied ✓' : 'Tap to copy'}</span>
+        </button>
+        {qrUrl && <img className="sync-qr" src={qrUrl} alt="Sync QR code" />}
+        <div className="sync-help">
+          <div className="sync-help-title">How to connect a new gadget</div>
+          <p>On the new phone or tablet, scan this QR code. It opens the linked app.</p>
+          <p><strong>Using the installed app icon?</strong> Scanning opens the browser, which has separate data. Open the installed app, go to Settings, and type the code below.</p>
+          <p>If scanning does not work, copy the code and type it on the other gadget.</p>
+        </div>
+        <div className="sync-join-row">
+          <input
+            className="ob-input"
+            type="text"
+            value={input}
+            onChange={e => { setInput(e.target.value); setError(''); }}
+            placeholder="GP-XXXXXXXXXXXX"
+          />
+          <button className="ob-btn-primary" type="button" onClick={connectCode}>Connect</button>
+        </div>
+        {error && <div className="sync-note">{error}</div>}
+        <div className="sync-note">Connecting replaces this gadget&apos;s data with the synced data.</div>
+        </>
+      )}
     </div>
   );
 }
