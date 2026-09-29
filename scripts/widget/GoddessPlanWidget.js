@@ -7,9 +7,8 @@
 // "Goddess Plan", add a Scriptable widget (medium size works best), choose this
 // script, and type the sync code (GP-…) into the widget's Parameter box.
 //
-// Logo first, numbers on a swipe: a widget cannot slide inside itself, but a
-// Smart Stack holds two widgets in one spot. Make a second widget with
-// Parameter "logo", drag it onto the numbers widget, and swipe up or down.
+// One widget: on the medium size her logo sits on the left and the numbers on
+// the right. (iOS does not let a single widget slide between pages.)
 //
 // It reads the same cloud copy the app syncs to — read only, it never writes.
 // iOS decides when widgets refresh (roughly every 15–30 minutes), so a tick
@@ -128,15 +127,27 @@ function line(stack, text, size, color, bold) {
   return t;
 }
 
-// The numbers page. In her Smart Stack the logo is the page before it, so
-// the logo is not repeated here.
-function build(s, family) {
+// One widget, both halves: on the medium size her logo sits on the left and
+// the numbers on the right. The small size has no room for both, so it shows
+// the numbers alone.
+function build(s, family, logo) {
   const w = new ListWidget();
   w.backgroundColor = new Color(COLORS.bg);
   w.url = APP_URL;
   w.setPadding(12, 14, 12, 14);
   w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
-  const col = w;
+
+  let col = w;
+  if (logo && family !== 'small') {
+    const row = w.addStack();
+    row.centerAlignContent();
+    const pic = row.addImage(logo);
+    pic.imageSize = new Size(118, 118);
+    pic.cornerRadius = 16;
+    row.addSpacer(14);
+    col = row.addStack();
+    col.layoutVertically();
+  }
 
   line(col, `${s.plan.emoji} ${s.plan.name}`, 14, COLORS.text, true);
   line(col, s.doneToday ? '✓ Done today' : 'Not done yet', 11, s.doneToday ? COLORS.mint : COLORS.soft, false);
@@ -208,7 +219,17 @@ async function main() {
     widget = message('Long-press this widget → Edit Widget → type your sync code (GP-…), or logo, in Parameter.');
   } else {
     try {
-      widget = build(summarize(await load(code), new Date()), config.widgetFamily);
+      const data = await load(code);
+      // The logo is a nice-to-have: if it cannot be fetched, the numbers
+      // still show.
+      let logo = null;
+      try {
+        const ctx = new DrawContext();
+        ctx.size = new Size(360, 360);
+        ctx.drawImageInRect(await loadLogo(), new Rect(0, 0, 360, 360));
+        logo = ctx.getImage();
+      } catch (e) { logo = null; }
+      widget = build(summarize(data, new Date()), config.widgetFamily, logo);
     } catch (e) {
       widget = message(e.notFound
         ? 'That sync code was not found. Check it in the app under the 🌸 flower.'
@@ -220,4 +241,13 @@ async function main() {
   Script.complete();
 }
 
-await main();
+// If anything unexpected breaks, say what on the widget itself, so the exact
+// words can be read off the home screen.
+try {
+  await main();
+} catch (e) {
+  const w = message(`Something went wrong: ${e && e.message ? e.message : e}`);
+  if (config.runsInWidget) Script.setWidget(w);
+  else await w.presentMedium();
+  Script.complete();
+}
