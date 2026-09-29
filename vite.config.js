@@ -33,7 +33,10 @@ export default defineConfig({
         // the home screen; it does not need to live in the offline copy.
         // The old icon names carry the same image, for any gadget that
         // remembers them, so they are left out too.
-        globIgnores: ['**/app-icon.png', '**/apple-touch-icon.png', '**/icon-192.png', '**/icon-512.png', '**/favicon.ico'],
+        globIgnores: ['**/app-icon.png', '**/apple-touch-icon.png', '**/icon-192.png', '**/icon-512.png', '**/favicon.ico',
+          // Her own pictures, kept in public/ for later. Too big for the
+          // offline copy, and nothing in the app uses them yet.
+          '**/Background 2.png', '**/Lotus.png', '**/Lotus 1.png'],
       },
     }),
   ],
