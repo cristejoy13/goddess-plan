@@ -122,21 +122,38 @@ export const CALORIE_TARGET = 1000;
 // choose at 8 AM. Every fruit plate that used to live there moved to 5 PM,
 // where a small plate belongs now. Nothing was thrown away — the coffee in
 // those plates became tea, because coffee at five is a bad trade against sleep.
+//
+// 2026-10-01 — she swapped the two times. The small plate (apple & yogurt)
+// is now the 12 PM snack and the real meal is at 5 PM. The ids still did not
+// change: `noon` is the 12 PM snack and `post` is the 5 PM plate, so every
+// meal already saved stays in its list.
 const SLOT_DEFS = {
-  post: { id: 'post', time: '12:00 PM', t24: '12:00', emoji: '🍽️' },
-  noon: { id: 'noon', time: '5:00 PM',  t24: '17:00', emoji: '🍏' },
+  noon: { id: 'noon', time: '12:00 PM', t24: '12:00', emoji: '🍏' },
+  post: { id: 'post', time: '5:00 PM',  t24: '17:00', emoji: '🍽️' },
 };
 
+// Her default 5 PM plate: chicken on the two butt days, eggs on the rest.
+// The 12 PM snack is apple and yogurt every day. Every other plate stays one
+// tap away as an alternative.
+export const GLUTE_DAYS = [0, 4];
+export const DEFAULT_SNACK = 'Apple Sticks & Greek Yogurt';
+export const CHICKEN_DEFAULT = 'Chicken, Sweet Potato & Veggies';
+export const EGG_DEFAULT = '1 Egg, 2 Egg Whites & Sweet Potato';
+export function defaultMeal(slotId, dayIndex = 0) {
+  if (slotId === 'noon') return DEFAULT_SNACK;
+  return GLUTE_DAYS.includes(dayIndex) ? CHICKEN_DEFAULT : EGG_DEFAULT;
+}
+
 // The same two slots every day, in clock order.
-export function mealSlots() {
+export function mealSlots(dayIndex = 0) {
   return [
-    { ...SLOT_DEFS.post, label: 'Brunch · Meal A or Meal B', hint: 'ONE of the two · A eggs, B beef or chicken · big meal of the day' },
-    { ...SLOT_DEFS.noon, label: 'Apple & Yogurt or Smoothie', hint: 'Apple slices with yogurt · or a smoothie: 2–3 fruits with chia, granola on top' },
+    { ...SLOT_DEFS.noon, label: 'Snack · Apple & Yogurt', hint: 'Apple slices with yogurt · or a smoothie' },
+    { ...SLOT_DEFS.post, label: defaultMeal('post', dayIndex), hint: 'Or pick another plate below' },
   ];
 }
 
 // Flat list, only for looking a meal's clock time up by its slot id.
-export const MEAL_SLOTS = [SLOT_DEFS.post, SLOT_DEFS.noon];
+export const MEAL_SLOTS = [SLOT_DEFS.noon, SLOT_DEFS.post];
 
 // Every meal you can pick, grouped by slot. Oil-free and salt-free by default.
 export const RECOMMENDED_MEALS = [
@@ -157,6 +174,27 @@ export const RECOMMENDED_MEALS = [
   // Greek yogurt in ONE meal instead of both, and take one whole egg instead
   // of two. That lands the day near 980 with about 81 g of protein.
 
+  // ══ HER DEFAULT 5 PM PLATES (2026-10-01) ══════════════════════════════
+  { emoji: '🍗', slot: 'post', main: true, protein: 'chicken', name: 'Chicken, Sweet Potato & Veggies', cal: 335, pro: 36,
+    ingredients: '100 g chicken breast · 1 medium sweet potato · spinach · 1 bell pepper · 1 tomato · ½ cucumber',
+    steps: [
+      'Boil or bake the sweet potato until a fork slides straight through.',
+      'Pat the chicken dry with kitchen paper.',
+      'Sear it 4–5 min a side in a hot dry pan, until the juices run clear.',
+      'Add the bell pepper and spinach to the pan for the last two minutes.',
+      'Plate with the sliced tomato and cucumber.',
+      'Butt-day default. Nothing after but water and tea.',
+    ] },
+  { emoji: '🥚', slot: 'post', main: true, protein: 'egg', name: '1 Egg, 2 Egg Whites & Sweet Potato', cal: 220, pro: 15,
+    ingredients: '1 whole egg · 2 egg whites · 1 medium sweet potato',
+    steps: [
+      'Boil or bake the sweet potato until a fork slides straight through.',
+      'Whisk the whole egg with the two whites.',
+      'Fold them gently in a dry non-stick pan over low heat.',
+      'Plate the eggs beside the sweet potato.',
+      'Everyday default. Nothing after but water and tea.',
+    ] },
+
   { emoji: '🍳', slot: 'post', main: true, protein: 'egg', name: 'Meal A · Egg Plate', cal: 630, pro: 50,
     ingredients: '2 whole eggs · 3 egg whites · spinach · kimchi · 1 sweet potato · 1 cup papaya · 1 tbsp chia · 1 tbsp pumpkin or sesame seeds · a small bowl of Greek yogurt',
     steps: [
@@ -174,7 +212,7 @@ export const RECOMMENDED_MEALS = [
       'Boil or bake the sweet potato.',
       'Wilt the spinach, then fold in the egg and whites.',
       'Plate with the kimchi and papaya, and scatter the chia and seeds over.',
-      'Use this when you want more room at 5 PM. Saves 190 calories; costs 21 g of protein.',
+      'The lighter plate. Saves 190 calories; costs 21 g of protein.',
     ] },
 
   { emoji: '🥩', slot: 'post', main: true, protein: 'beef', name: 'Meal B · Beef Plate', cal: 565, pro: 56,
@@ -482,7 +520,7 @@ export const RECOMMENDED_MEALS = [
       'The no-fish version of the double-protein plate.',
     ] },
 
-  // ── 5:00 PM · her three fruits ─────────────────────────────────────────
+  // ── 12:00 PM snack · her three fruits ─────────────────────────────────────────
   // Banana, berries or papaya — those three, nothing else needed. These used to
   // be the 8 AM plates; there is no 8 AM meal any more, so they live here, at
   // the end of the day, where a small plate belongs now. Tea rather than
@@ -493,7 +531,7 @@ export const RECOMMENDED_MEALS = [
       'A cup of berries, fresh or thawed from frozen.',
       'Tea alongside — no milk, no sugar. Keep coffee for morning.',
       'Lightest plate, at about 70 calories.',
-      'Smallest close. Nothing after but water.',
+      'The smallest snack.',
     ] },
   { emoji: '🍈', slot: 'noon', name: 'Papaya & Tea', cal: 57, pro: 1,
     ingredients: '1 cup papaya · tea',
@@ -501,7 +539,7 @@ export const RECOMMENDED_MEALS = [
       'Scoop the papaya, discarding the seeds.',
       'Tea alongside.',
       'Gentle on your stomach, about 55 calories.',
-      'Good after a big brunch.',
+      'A light snack.',
     ] },
   { emoji: '🍌', slot: 'noon', name: 'Banana, Berries & Papaya', cal: 230, pro: 3,
     ingredients: '1 banana · ½ cup berries · ½ cup papaya · tea',
@@ -512,7 +550,7 @@ export const RECOMMENDED_MEALS = [
       'Eat slowly. Twenty minutes, not five.',
     ] },
 
-  // ── 5:00 PM · fruit, and not much of it ────────────────────────────────
+  // ── 12:00 PM snack · fruit, and not much of it ────────────────────────────────
   // Small on purpose. A banana is genuinely enough to close a day. Nothing here
   // costs more than 260 calories, because the 12 PM plate takes most of them.
   { emoji: '🍌', slot: 'noon', name: 'Banana & Tea', cal: 100, pro: 1,
@@ -521,7 +559,7 @@ export const RECOMMENDED_MEALS = [
       'Ripe and spotted tastes sweeter for the same calories.',
       'Tea alongside, no milk, no sugar.',
       'About 100 calories.',
-      'Simplest close.',
+      'The simplest snack.',
     ] },
   { emoji: '🍌', slot: 'noon', name: 'Two Bananas & Tea', cal: 190, pro: 3,
     ingredients: '2 bananas · tea',
@@ -537,12 +575,12 @@ export const RECOMMENDED_MEALS = [
       'The night before: stir protein powder into the yogurt until smooth.',
       'Add the psyllium husk and mix straight away.',
       'Drop the 10 blueberries on top, cover, and leave it in the fridge overnight.',
-      'Eat it cold at 5 PM. Drink a full glass of water with it.',
+      'Eat it cold at 12 PM. Drink a full glass of water with it.',
     ] },
   { emoji: '🍠', slot: 'noon', name: 'Sweet Potato & Tea', cal: 180, pro: 2,
     ingredients: '1 small sweet potato (cooked earlier) · tea',
     steps: [
-      'Boil or steam it while you cook your brunch and leave it in the fridge.',
+      'Boil or steam it the night before and leave it in the fridge.',
       'Eat it cold or warmed.',
       'Slower carbs than a banana.',
       'Good when fruit is not enough.',
@@ -556,7 +594,7 @@ export const RECOMMENDED_MEALS = [
       'Eat it slowly. End there.',
     ] },
 
-  // ── THE BIG BOWLS · 5:00 PM · the filling end of the day ───────────────
+  // ── THE BIG BOWLS · 12:00 PM snack · the filling ones ───────────────
   // These are the biggest 5 PM choices, 360–480 calories. With a full brunch at
   // 12 they will put you close to the ceiling, so take one on an evening you
   // are genuinely hungry and a smaller brunch on the day you plan it.
@@ -715,7 +753,7 @@ export const RECOMMENDED_MEALS = [
     steps: [
       'Nothing blended — just cut it all onto one large plate.',
       'Start with the watermelon while it is coldest; it digests fastest.',
-      'Biggest evening plate. Eat until full — still only 260 calories.',
+      'The biggest snack plate. Eat until full — still only 260 calories.',
       'Water or green tea alongside, nothing sweetened.',
     ] },
   { emoji: '🥝', slot: 'noon', name: 'Papaya, Mango & Kiwi Plate', cal: 230, pro: 2,
@@ -727,7 +765,7 @@ export const RECOMMENDED_MEALS = [
       'Eat it fresh and alone, no yogurt, no toppings.',
     ] },
 
-  // ── 5:00 PM · apple & Greek yogurt ─────────────────────────────────────
+  // ── 12:00 PM snack · apple & Greek yogurt ─────────────────────────────────────
   // Greek yogurt is strained, so the same small bowl carries roughly twice the
   // protein of plain. That swap alone is 7 grams for 30 calories, which is the
   // best trade in the whole plan. This is the default 5 PM meal.
@@ -737,7 +775,7 @@ export const RECOMMENDED_MEALS = [
       'Core the apple and cut it into thick sticks, skin on.',
       'Spoon the Greek yogurt into a small bowl.',
       'Dip and eat slowly. It should take you twenty minutes, not five.',
-      'Default 5 PM meal. Nothing after but water and tea.',
+      'Default 12 PM snack.',
     ] },
   { emoji: '🥛', slot: 'noon', name: 'Greek Yogurt, Berries & Chia', cal: 230, pro: 18,
     ingredients: 'a bowl of plain Greek yogurt · ½ cup berries · 1 tsp chia · cinnamon',
@@ -745,10 +783,10 @@ export const RECOMMENDED_MEALS = [
       'Stir the chia through the yogurt and leave it five minutes to thicken.',
       'Scatter berries over and add a pinch of cinnamon.',
       'Eat it slowly with a teaspoon.',
-      'Light high-protein close. Nothing after but tea.',
+      'Light, high-protein snack.',
     ] },
 
-  // ── 5:00 PM · the other small options ──────────────────────────────────
+  // ── 12:00 PM snack · the other small options ──────────────────────────────────
   // Plain yogurt instead of Greek, and the two warm options. The sweet potato
   // and the boiled saba are here for an evening you want something warm —
   // take them instead of the apple sticks, not as well as them.
@@ -758,7 +796,7 @@ export const RECOMMENDED_MEALS = [
       'Core the apple and cut it into thick sticks, skin on.',
       'Spoon plain unsweetened yogurt into a small bowl.',
       'Dip and eat slowly. It should take you twenty minutes, not five.',
-      'Nothing after this but tea.',
+      'A light snack.',
     ] },
   { emoji: '🍏', slot: 'noon', name: 'Apple Sticks, Yogurt & Cinnamon', cal: 190, pro: 9,
     ingredients: '1 apple · a small bowl of plain yogurt · cinnamon',
@@ -766,7 +804,7 @@ export const RECOMMENDED_MEALS = [
       'Cut the apple into sticks, skin on.',
       'Stir a good pinch of cinnamon through the yogurt until it goes pale brown.',
       'Cinnamon makes it taste sweet.',
-      'Dip and eat slowly. Nothing after but tea.',
+      'Dip and eat slowly.',
     ] },
   { emoji: '🍏', slot: 'noon', main: true, name: 'Apple Sticks, Yogurt & Chia', cal: 210, pro: 11,
     ingredients: '1 apple · a small bowl of plain yogurt · 1 tsp chia',
@@ -789,7 +827,7 @@ export const RECOMMENDED_MEALS = [
     steps: [
       'Boil it whole 20 min, or bake it at 200°C for 40 min if you have the time.',
       'Split it open and eat it straight out of the skin.',
-      'No butter, no salt. Slow carbs to close the day.',
+      'No butter, no salt. Slow carbs to carry you to 5 PM.',
       'Craving option. Instead of apple sticks, not on top.',
     ] },
   { emoji: '🍠', slot: 'noon', name: 'Sweet Potato Sticks & Yogurt', cal: 260, pro: 10,
@@ -798,7 +836,7 @@ export const RECOMMENDED_MEALS = [
       'Boil or bake the sweet potato until soft, then let it cool enough to handle.',
       'Cut it into sticks the same way you would the apple.',
       'Dip them in the yogurt with a pinch of cinnamon stirred through.',
-      'Craving night plus yogurt. Nothing after but tea.',
+      'Sweet potato plus yogurt.',
     ] },
 ];
 
@@ -818,6 +856,13 @@ export function slotMeals(slotId) {
 // the same meals never land two days in a row. Everything else stays one tap
 // away behind "more choices".
 export function suggestMeals(slotId, dayIndex = 0, n = 3) {
+  // Her default for the day always comes first.
+  const first = RECOMMENDED_MEALS.find(m => m.name === defaultMeal(slotId, dayIndex));
+  const rest = rotateMeals(slotId, dayIndex, n + 1).filter(m => m !== first);
+  return first ? [first, ...rest].slice(0, n) : rest.slice(0, n);
+}
+
+function rotateMeals(slotId, dayIndex, n) {
   const list = slotMeals(slotId);
   if (list.length <= n) return list;
   // A slot with featured plates shows those, rotated among themselves, rather
@@ -831,37 +876,43 @@ export function suggestMeals(slotId, dayIndex = 0, n = 3) {
   return Array.from({ length: n }, (_, i) => pool[(start + i) % pool.length]);
 }
 
-// One clock, shared by all seven days. Every day eats the same two meals in
-// the same order, so there is nothing per-day left to compute.
-export const DAILY_MEALS = {
-  clock: '12 PM · 5 PM — two meals, and that is all',
-  label: '🍽️ The same two meals every day · THE BRUNCH at 12 PM · apple & yogurt or a smoothie at 5 PM · nothing after · under 1,000 calories, over 50 g of protein',
-  rows: [
-    { time: 'Before 12:00 PM — water, tea & black coffee', icon: '☕', ingredients: [
-      { name: 'No food before noon. Train on black coffee — it works, and it is free', key: null },
-      { name: 'Water, tea and black coffee, as much as you like', key: null },
-      { name: 'This is the half of the day that keeps you under 1,000 calories', key: null },
-    ]},
-    { time: '12:00 PM — BRUNCH · MEAL A or MEAL B', icon: '🍽️', ingredients: [
-      { name: 'ONE of the two, never both. This is the big meal the day is built around', key: null },
-      { name: 'A — eggs & whites folded with spinach, kimchi, sweet potato, papaya, seeds, yogurt', key: 'egg' },
-      { name: 'B — beef or chicken, sweet potato, spinach, bell pepper, tomato, cucumber, kimchi', key: null, pick: 'protein', slot: 'morning' },
-      { name: 'Greek yogurt and a spoon of pumpkin seeds or chia with either one', key: 'yogurtbowl' },
-      { name: 'No oil — fold the eggs in a dry non-stick pan, sear the meat in a hot dry one', key: null },
-    ]},
-    { time: '5:00 PM — Apple & yogurt, or a smoothie', icon: '🍏', ingredients: [
-      { name: 'Apple cut into slices, skin on, with yogurt to dip them in', key: 'apple' },
-      { name: 'OR a smoothie — two or three fruits blended with chia seeds', key: null, pick: 'fruit', slot: 'lunch' },
-      { name: 'Granola over the top of the smoothie', key: 'chia' },
-      { name: 'Greek yogurt rather than plain if you have it — twice the protein, same bowl', key: 'yogurtbowl' },
-    ]},
-    { time: 'After 5:00 PM — the window shuts', icon: '🍵', ingredients: [
-      { name: 'Water and tea — as much as you like', key: null },
-      { name: 'No food. The closing is what makes the window work', key: null },
-      { name: 'Still hungry? Tomorrow’s 12 PM brunch needs to be bigger, not tonight', key: null },
-    ]},
-  ],
-};
+// The clock. The same times every day; only the 5 PM plate changes, chicken on
+// the two butt days and eggs on the rest.
+function dailyMeals(glute) {
+  const plate = glute
+    ? { title: 'Chicken, sweet potato & veggies', lines: [
+        { name: '100 g chicken breast, seared in a hot dry pan', key: 'chicken' },
+        { name: 'A sweet potato, boiled or baked', key: null },
+        { name: 'Spinach, bell pepper, tomato, cucumber', key: 'salad' },
+      ] }
+    : { title: '1 egg, 2 egg whites & sweet potato', lines: [
+        { name: '1 whole egg and 2 egg whites, folded in a dry pan', key: 'egg' },
+        { name: 'A sweet potato, boiled or baked', key: null },
+        { name: 'Or pick another plate from the list', key: null },
+      ] };
+  return {
+    clock: '12 PM snack · 5 PM meal',
+    rows: [
+      { time: 'Before 12:00 PM — water, tea & black coffee', icon: '☕', ingredients: [
+        { name: 'No food before noon. Train on black coffee', key: null },
+        { name: 'Water, tea and black coffee, as much as you like', key: null },
+      ]},
+      { time: '12:00 PM — Snack · apple & yogurt', icon: '🍏', ingredients: [
+        { name: 'Apple cut into slices, skin on, with yogurt to dip them in', key: 'apple' },
+        { name: 'OR a smoothie — two or three fruits blended with chia seeds', key: null, pick: 'fruit', slot: 'lunch' },
+        { name: 'Greek yogurt rather than plain — twice the protein, same bowl', key: 'yogurtbowl' },
+      ]},
+      { time: `5:00 PM — ${plate.title}`, icon: '🍽️', ingredients: plate.lines },
+      { time: 'After 5:00 PM — the window shuts', icon: '🍵', ingredients: [
+        { name: 'Water and tea — as much as you like', key: null },
+        { name: 'No food. The closing is what makes the window work', key: null },
+        { name: 'Still hungry? Make tomorrow’s 5 PM plate bigger, not tonight', key: null },
+      ]},
+    ],
+  };
+}
+const GLUTE_MEALS = dailyMeals(true);
+const DAILY_MEALS = dailyMeals(false);
 
 export const WORKOUT_DAYS = [
   {
@@ -878,7 +929,7 @@ export const WORKOUT_DAYS = [
       ...walk('30–60'),
     ],
     trackLifts: true,
-    meals: DAILY_MEALS,
+    meals: GLUTE_MEALS,
   },
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
@@ -932,7 +983,7 @@ export const WORKOUT_DAYS = [
       ...walk('30–60'),
     ],
     trackLifts: true,
-    meals: DAILY_MEALS,
+    meals: GLUTE_MEALS,
   },
   {
     emoji: '🏃', emojiBg: 'rgba(253,245,208,0.5)',

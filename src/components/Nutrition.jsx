@@ -3,7 +3,7 @@ import { INGREDIENT_RECIPES } from '../data/ingredients';
 import IngredientDetailPage from './IngredientDetailPage';
 
 export const TABS = [
-  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 12 PM & 5 PM', desc: 'Nothing until noon. Brunch at 12, small meal at 5. Under 1,000 calories, over 50 g of protein.' },
+  { id: 'daily',   icon: '🍽️', title: 'Daily Clock · 12 PM & 5 PM', desc: 'Nothing until noon. Apple & yogurt at 12, the real meal at 5. Under 1,000 calories.' },
   { id: 'recipes', icon: '🥘', title: 'Recipes & Hydration',    desc: 'Prep every food — steamed, boiled, seared dry. Tap for methods.' },
   { id: 'guide',   icon: '📊', title: 'Food Guide',             desc: 'Eat and avoid rules. Keep the gut calm.' },
 ];
@@ -48,20 +48,16 @@ const RECIPE_CATEGORIES = [
   },
 ];
 
-/* ─── THE DAILY CLOCK — brunch at 12, something small at 5, then shut ─── */
+/* ─── THE DAILY CLOCK — a snack at 12, the real plate at 5, then shut ─── */
 export function DailyClock() {
   return (
     <>
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🕒 <strong>Two meals: 12 PM and 5 PM.</strong> Brunch at noon, small meal at 5 PM, nothing after. Before noon: water, tea, and black coffee only.
-      </div>
-
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        ⚖️ <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> Normal days: <strong>845 calories and 66 g</strong> with Meal A, or <strong>780 and 72 g</strong> with Meal B.
+        🕒 <strong>12 PM snack, 5 PM meal.</strong> Apple and yogurt at noon, the real plate at 5 PM, nothing after. Before noon: water, tea, and black coffee only.
       </div>
 
       <div className="note-box note-gold" style={{ marginBottom: 18 }}>
-        🌙 <strong>No morning meal now.</strong> Train on black coffee, eat at noon, and keep the small meal for 5 PM.
+        ⚖️ <strong>1,000 calories is the ceiling.</strong> <strong>50 grams of protein is the floor.</strong> Butt days: <strong>about 550 calories and 52 g</strong>. Other days: <strong>about 435 and 31 g</strong>.
       </div>
 
       <div className="g-card splash-item" style={{ marginBottom: 18 }}>
@@ -76,29 +72,29 @@ export function DailyClock() {
           <div className="hyd-row">
             <div className="hyd-time">12:00 PM</div>
             <div>
-              <div className="hyd-d">BRUNCH — MEAL A or MEAL B, one of the two</div>
-              <div className="hyd-n"><strong>A, the egg plate:</strong> 2 whole eggs and 3 egg whites with spinach in a dry pan, kimchi, sweet potato, papaya, chia, pumpkin or sesame seeds, Greek yogurt. About 630 calories and 50 g of protein.<br /><br /><strong>B, the meat plate:</strong> 100 g of lean beef or chicken breast seared in a hot dry pan, with sweet potato, spinach, bell pepper, tomato, cucumber, kimchi, Greek yogurt and a spoon of seeds. About 565 calories and 56 g. Beef for iron; chicken for fewer calories.</div>
+              <div className="hyd-d">Snack — apple slices &amp; yogurt</div>
+              <div className="hyd-n">Apple with yogurt, or a smoothie with two or three fruits and chia seeds. Around 215–250 calories. Greek yogurt adds more protein.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">5:00 PM</div>
             <div>
-              <div className="hyd-d">Apple slices &amp; yogurt, or a smoothie</div>
-              <div className="hyd-n">Apple with yogurt, or a smoothie with two or three fruits, chia seeds, and granola. Around 215–250 calories. Greek yogurt adds more protein.</div>
+              <div className="hyd-d">The real meal</div>
+              <div className="hyd-n"><strong>Butt days (Mon, Fri):</strong> chicken, sweet potato and veggies. About 335 calories and 36 g of protein.<br /><br /><strong>Every other day:</strong> 1 whole egg, 2 egg whites and a sweet potato. About 220 calories and 15 g.<br /><br />Every other plate is still there to pick instead.</div>
             </div>
           </div>
           <div className="hyd-row">
             <div className="hyd-time">After 5 PM</div>
             <div>
               <div className="hyd-d">The window shuts</div>
-              <div className="hyd-n">Water and tea. No food. Hungry tonight means bigger brunch tomorrow.</div>
+              <div className="hyd-n">Water and tea. No food. Hungry tonight means a bigger 5 PM plate tomorrow.</div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🍽️ <strong>Meal A or Meal B — one of the two, never both.</strong> This is your 12 PM brunch. Eggs give more food; meat gives more protein.
+        🍽️ <strong>One plate at 5 PM.</strong> Chicken on butt days, eggs on the rest, or any other plate from the list.
       </div>
 
       <div className="note-box note-gold">
@@ -187,7 +183,7 @@ export function FoodGuide() {
     { food: 'Kiwi', note: 'Actinidin + high Vitamin C. Low-bloat collagen support.' },
     { food: 'Watermelon', note: 'Hydrating, low calorie. Eat alone; it digests fast.' },
     { food: 'Berries', note: 'Low sugar, high fibre and antioxidants. Gentle any day.' },
-    { food: 'Banana', note: 'One of your three fruits. Use alone at 5 PM, or to thicken a smoothie.' },
+    { food: 'Banana', note: 'One of your fruits. Have it with the 12 PM snack, or to thicken a smoothie.' },
     { food: 'Black coffee', note: 'No milk, no sugar. Morning only: it carries you to noon. Keep it before 12; coffee at five costs sleep.' },
     { food: 'Papaya', note: 'One of your three fruits, also in Meal 1. Gentle and low-calorie.' },
     { food: 'Lean beef', note: 'Meal 2, any day. Iron and zinc. Slice thin across the grain; sear dry.' },
@@ -340,7 +336,7 @@ export default function Nutrition({ initialTab, onNavigate, pushBack, clearInner
       <div className="s-header">
         <div className="s-tag">Fuel Protocol · two meals, 12 PM &amp; 5 PM</div>
         <h2 className="s-title">Nutrition <em>&amp; Recipes</em></h2>
-        <p className="s-desc">Two meals a day. Black coffee until noon, brunch at 12, small meal at 5. Under 1,000 calories, over 50 g of protein.</p>
+        <p className="s-desc">Black coffee until noon, apple and yogurt at 12, the real meal at 5. Under 1,000 calories, over 50 g of protein.</p>
       </div>
       <div className="nutr-landing splash-item">
         {TABS.map(t => (

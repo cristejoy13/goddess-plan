@@ -10569,7 +10569,7 @@ body {
 }
 .rule-pill {
   min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 12px 8px 14px; border-radius: 999px; cursor: pointer;
+  padding: 8px; border-radius: 999px; cursor: pointer;
   border: 1px solid var(--border-g); background: var(--card);
   font-family: inherit; color: var(--text);
   -webkit-tap-highlight-color: transparent;
@@ -10580,7 +10580,7 @@ body {
 .rule-pill:active { transform: scale(0.97); }
 .rule-pill:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 .rule-pill-icon {
-  width: 100%; max-width: 96px; aspect-ratio: 1; border-radius: 50%; object-fit: cover;
+  width: 100%; max-width: 110px; aspect-ratio: 1; border-radius: 50%; object-fit: cover;
   box-shadow: 0 4px 14px rgba(0,0,0,0.22);
 }
 .rule-pill-name {
@@ -10589,7 +10589,7 @@ body {
 }
 @media (min-width: 560px) {
   .rule-pills { grid-template-columns: repeat(3, 148px); justify-content: center; gap: 18px; }
-  .rule-pill { padding: 18px 12px 24px; gap: 10px; }
+  .rule-pill { padding: 10px; }
   .rule-pill-icon { max-width: 112px; }
   .rule-pill-name { font-size: 13px; }
 }

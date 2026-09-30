@@ -94,8 +94,8 @@ function useDayMeals(dayId) {
 }
 
 // The meal plan reads as a clock, and it is the same clock every day: black
-// coffee until noon, the big brunch at 12, apple and yogurt or a smoothie at 5,
-// and then the window shuts. Each time opens with a short list of
+// coffee until noon, apple and yogurt at 12, the real plate at 5 (chicken on
+// butt days, eggs on the rest), and then the window shuts. Each time opens with a short list of
 // picks rotated by the day of the week, and "more choices" reveals the rest of
 // the slot if none of them appeal. Tap a meal for the ingredients, the
 // step-by-step method, and to add it to today.
@@ -115,7 +115,7 @@ function MealBuilder({ dayId, dayIndex }) {
   const [openSlot, setOpenSlot] = useState(null);
   const [showAll, setShowAll]   = useState({});
   const [detail, setDetail]     = useState(null);
-  const slots = mealSlots();
+  const slots = mealSlots(dayIndex);
   const pro   = proteinTotal(chosen);
   const cal   = calorieTotal(chosen);
   // Protein is a floor to get above; calories are a ceiling to stay under.
@@ -195,10 +195,10 @@ function MealBuilder({ dayId, dayIndex }) {
           </div>
           <div className="protein-meter-note">
             {chosen.length === 0
-              ? 'Stay under 1,000. Save most for 12 PM.'
+              ? 'Stay under 1,000. Save most for 5 PM.'
               : overBudget
                 ? `${cal - CALORIE_TARGET} over. Okay on lifting days.`
-                : `${CALORIE_TARGET - cal} left. Eat more at 5 PM if hungry.`}
+                : `${CALORIE_TARGET - cal} left.`}
           </div>
         </div>
       </div>

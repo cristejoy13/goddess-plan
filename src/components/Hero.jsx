@@ -48,7 +48,7 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['P', 'Protein', 'beef, chicken, fish, eggs or tofu — any day'],
-      ['F', 'Fruit', 'banana, berries or papaya · 5 PM'],
+      ['F', 'Fruit', 'apple, banana, berries or papaya · 12 PM'],
       ['B', 'Bland', 'simple food, calm gut'],
       ['S', 'Small', 'steady portions'],
     ],
@@ -60,7 +60,7 @@ const RULE_BOARDS = [
     tone: 'yes',
     items: [
       ['S', 'Small bites', 'put the fork down'],
-      ['L', 'Last meal', '5 PM — apple & yogurt. Nothing after'],
+      ['L', 'Last meal', '5 PM plate. Nothing after'],
       ['O', 'Only 80%', 'light, not stuffed'],
       ['W', 'Walk', 'easy, every evening'],
     ],
@@ -1080,9 +1080,8 @@ function RuleBoard() {
     <div className="rule-board-wrap splash-item">
       <div className="rule-pills">
         {RULE_BOARDS.map(b => (
-          <button key={b.title} type="button" className={`rule-pill rule-pill-${b.tone}`} onClick={() => setOpen(b.title)}>
+          <button key={b.title} type="button" className={`rule-pill rule-pill-${b.tone}`} onClick={() => setOpen(b.title)} aria-label={b.title}>
             <img className="rule-pill-icon" src={b.icon} alt="" />
-            <span className="rule-pill-name">{b.title}</span>
           </button>
         ))}
       </div>
