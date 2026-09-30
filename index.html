@@ -17,8 +17,13 @@
          tab shows the see-through lotus; the home-screen app keeps the one
          with its starry background. -->
     <link rel="apple-touch-icon" href="/app-icon.png" />
-    <link rel="icon" type="image/png" sizes="1254x1254" href="/logo-transparent.png" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <!-- Browser tab: the see-through lotus, in small sizes every browser takes
+         (phones, iPads, laptops, desktops). The installed app keeps the
+         starry icon above and in the manifest. -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
   </head>
   <body>
     <div id="root"></div>

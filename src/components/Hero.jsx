@@ -29,6 +29,7 @@ const WEEK_PILLS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label,
 const RULE_BOARDS = [
   {
     title: 'No GODSSS',
+    icon: '/rules/no-godsss.jpg',
     emoji: '🚫',
     tone: 'no',
     items: [
@@ -42,6 +43,7 @@ const RULE_BOARDS = [
   },
   {
     title: 'PFBS',
+    icon: '/rules/pfbs.jpg',
     emoji: '✨',
     tone: 'yes',
     items: [
@@ -53,6 +55,7 @@ const RULE_BOARDS = [
   },
   {
     title: 'SLOW',
+    icon: '/rules/slow.jpg',
     emoji: '🐢',
     tone: 'yes',
     items: [
@@ -1058,34 +1061,40 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
   );
 }
 
+// Three big pills, each with her own icon. Clicking one opens its page with
+// what every letter stands for.
 function RuleBoard() {
-  const [activeCol, setActiveCol] = useState(0);
-  const scrollRef = useRef(null);
+  const [open, setOpen] = useState(null);
+  const board = RULE_BOARDS.find(b => b.title === open);
 
-  function handleScroll() {
-    const el = scrollRef.current;
-    if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    if (max <= 0) { setActiveCol(0); return; }
-    setActiveCol(Math.round((el.scrollLeft / max) * (RULE_BOARDS.length - 1)));
-  }
+  useEffect(() => {
+    if (!board) return;
+    const onKey = e => { if (e.key === 'Escape') setOpen(null); };
+    window.addEventListener('keydown', onKey);
+    const was = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = was; };
+  }, [board]);
 
   return (
     <div className="rule-board-wrap splash-item">
-      <div
-        className="rule-board"
-        ref={scrollRef}
-        onScroll={handleScroll}
-        /* Swiping the board must not trigger the app's edge-swipe-back gesture on .main */
-        onTouchStart={e => e.stopPropagation()}
-        onTouchEnd={e => e.stopPropagation()}
-      >
-        {RULE_BOARDS.map(board => (
-          <div key={board.title} className={`rule-column rule-column-${board.tone}`}>
-            <div className="rule-column-title">{board.emoji} {board.title}</div>
+      <div className="rule-pills">
+        {RULE_BOARDS.map(b => (
+          <button key={b.title} type="button" className={`rule-pill rule-pill-${b.tone}`} onClick={() => setOpen(b.title)}>
+            <img className="rule-pill-icon" src={b.icon} alt="" />
+            <span className="rule-pill-name">{b.title}</span>
+          </button>
+        ))}
+      </div>
+
+      {board && createPortal(
+        <div className="rule-sheet-backdrop" onClick={() => setOpen(null)}>
+          <div className={`rule-sheet rule-column-${board.tone}`} role="dialog" aria-modal="true" aria-label={board.title} onClick={e => e.stopPropagation()}>
+            <button type="button" className="rule-sheet-x" onClick={() => setOpen(null)} aria-label="Close">✕</button>
+            <img className="rule-sheet-icon" src={board.icon} alt={board.title} />
             <div className="rule-cards">
               {board.items.map(([letter, title, note]) => (
-                <div key={`${board.title}-${letter}-${title}`} className="rule-mini-card">
+                <div key={`${letter}-${title}`} className="rule-mini-card">
                   <span className="rule-mini-letter">{letter}</span>
                   <span className="rule-mini-copy">
                     <strong>{title}</strong>
@@ -1095,11 +1104,9 @@ function RuleBoard() {
               ))}
             </div>
           </div>
-        ))}
-      </div>
-      <div className="rule-dots" aria-hidden="true">
-        {RULE_BOARDS.map((b, i) => <span key={b.title} className={`rule-dot${i === activeCol ? ' active' : ''}`} />)}
-      </div>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }
