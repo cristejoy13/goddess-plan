@@ -10628,3 +10628,8 @@ body {
 [data-mode="light"] .rule-sheet-backdrop { background: rgba(60, 20, 50, 0.32); }
 [data-mode="light"] .rule-sheet.rule-column-no, [data-mode="light"] .rule-sheet.rule-column-yes { background: #fff; box-shadow: 0 18px 50px rgba(90,20,70,0.22); }
 [data-mode="light"] .rule-sheet .rule-mini-card { background: var(--blush); border-color: var(--border-r); }
+
+/* A reward can be changed: its text with a pencil beside it. */
+.rw-text-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.rw-text-row .rw-text { min-width: 0; }
+.rw-edit-btn { flex: none; min-width: 36px; min-height: 36px; }

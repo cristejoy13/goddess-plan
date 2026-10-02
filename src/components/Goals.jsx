@@ -197,12 +197,12 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
     e.preventDefault();
     const t = text.trim();
     const r = reward.trim();
-    if (!t || !r) return;
-    // The reward is chosen with the goal and locked in from here — it cannot
-    // be edited, only earned (or lost by deleting the goal).
+    if (!t) return;
+    // The reward is optional here; she can add or change it on the Rewards tab.
     const now = new Date().toISOString();
     const id = newGoalId();
-    saveGoals(setReward({ ...goals, items: [...goals.items, { id, text: t, done: null, createdAt: now, updatedAt: now }] }, id, r));
+    const next = { ...goals, items: [...goals.items, { id, text: t, done: null, createdAt: now, updatedAt: now }] };
+    saveGoals(r ? setReward(next, id, r) : next);
     setText('');
     setRewardDraft('');
     inputRef.current?.focus();
@@ -303,13 +303,13 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
           <input
             value={reward}
             onChange={e => setRewardDraft(e.target.value)}
-            placeholder="🎁 Its reward…"
+            placeholder="🎁 Reward (optional)…"
             maxLength={120}
             aria-label="Reward for this goal"
           />
-          <button type="submit" disabled={!text.trim() || !reward.trim()}>＋ Add</button>
+          <button type="submit" disabled={!text.trim()}>＋ Add</button>
         </form>
-        <div className="goals-lock-note">🔒 The reward locks in. A number in the goal gets a bar.</div>
+        <div className="goals-lock-note">A number in the goal gets a bar. Rewards can be added or changed in 🎁 Rewards.</div>
 
         </>}
 
@@ -343,8 +343,9 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
 }
 
 // ─── rewards ───────────────────────────────────────────────────────────────
-// One row per goal, the 40 kg goal first. She writes each reward herself.
-// Locked until its goal is reached; then it can be claimed.
+// One row per goal, the 40 kg goal first. She writes each reward herself and
+// can change it any time (2026-10-02: "what if I make mistakes?"). It waits
+// until its goal is reached; then it can be claimed.
 function RewardRow({ goals, id, goalText, earned }) {
   const reward = rewardText(goals, id);
   const claimed = Boolean(goals.rewards?.[id]?.claimed);
@@ -354,8 +355,12 @@ function RewardRow({ goals, id, goalText, earned }) {
   async function save(e) {
     e.preventDefault();
     const t = draft.trim();
-    if (!t) return;
-    if (!(await ask(`Lock in “${t}” as the reward for “${goalText}”? You can’t change it later.`, { yes: 'Lock in' }))) return;
+    if (t === (reward || '')) { setEditing(false); return; }
+    // Emptying the box takes the reward away, so that one asks first.
+    if (!t) {
+      if (!reward) { setEditing(false); return; }
+      if (!(await ask(`Remove the reward “${reward}” from “${goalText}”?`, { yes: 'Remove', danger: true }))) return;
+    }
     saveGoals(setReward(goals, id, t));
     setEditing(false);
   }
@@ -375,12 +380,14 @@ function RewardRow({ goals, id, goalText, earned }) {
               maxLength={120}
               aria-label={`Reward for ${goalText}`}
             />
-            <button type="submit" disabled={!draft.trim()}>Lock in</button>
-            <button type="button" className="rw-cancel" onClick={() => { setEditing(false); setDraft(''); }}>Cancel</button>
+            <button type="submit" disabled={!reward && !draft.trim()}>Save</button>
+            <button type="button" className="rw-cancel" onClick={() => { setEditing(false); setDraft(reward || ''); }}>Cancel</button>
           </form>
         ) : reward ? (
-          // Locked in: shown, never edited.
-          <span className="rw-text">{reward}</span>
+          <span className="rw-text-row">
+            <span className="rw-text">{reward}</span>
+            <button type="button" className="ml-icon-btn rw-edit-btn" onClick={() => { setDraft(reward); setEditing(true); }} aria-label={`Change the reward for ${goalText}`}>✏️</button>
+          </span>
         ) : (
           <button type="button" className="rw-add" onClick={() => { setDraft(''); setEditing(true); }}>＋ Add a reward</button>
         )}
