@@ -71,5 +71,17 @@ ok('re-merging an old save adds no duplicates', P(twice).checklists[0].items.len
 ok('an empty gadget cannot wipe a full one', P(mergeNotebookBlobs(nb({}), modern)).pages.length === 1);
 ok('and the other way round', P(mergeNotebookBlobs(modern, nb({}))).pages.length === 1);
 
+// Albums: made on one gadget, they reach the other with their pages inside.
+const album = (id, title, t) => ({ id, title, createdAt: '2026-10-01T00:00:00.000Z', updatedAt: t });
+const inAlbum = { ...page('p1','shared','2026-10-06T12:00:00.000Z'), albumId: 'a1' };
+const J = nb({ pages: [inAlbum], albums: [album('a1','Trip','2026-10-06T12:00:00.000Z')] });
+const K = nb({ pages: [page('p1','shared','2026-09-14T10:00:00.000Z')] });
+const am = P(mergeNotebookBlobs(J, K));
+ok('an album reaches the other gadget', am.albums.length === 1 && am.albums[0].title === 'Trip');
+ok('its page stays inside it', am.pages[0].albumId === 'a1');
+ok('album merge is commutative', mergeNotebookBlobs(J,K) === mergeNotebookBlobs(K,J));
+const L = nb({ pages: [inAlbum], deleted: { a1: '2026-10-06T13:00:00.000Z' } });
+ok('a removed album stays removed', P(mergeNotebookBlobs(J, L)).albums.length === 0);
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

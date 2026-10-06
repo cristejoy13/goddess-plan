@@ -179,6 +179,11 @@ export function mergeNotebookBlobs(localRaw, remoteRaw) {
     withIds(local.checklists, 'list'), withIds(remote.checklists, 'list'),
     deleted, pageStamp, combineChecklists(deleted),
   );
+  // Albums are named stacks of diary pages. A page points at its album with
+  // `albumId`, so moving a page in or out is a page edit and merges as one.
+  const albums = mergeLists(
+    withIds(local.albums, 'album'), withIds(remote.albums, 'album'), deleted, pageStamp,
+  );
 
   // The scalars — which page is open, the date stamp — come as a set from
   // whichever copy was touched last, so both gadgets choose the same one.
@@ -193,6 +198,7 @@ export function mergeNotebookBlobs(localRaw, remoteRaw) {
     activeChecklistId: has(checklists, lead.activeChecklistId)
       ? lead.activeChecklistId
       : (checklists[0]?.id || ''),
+    albums,
     deleted,
     updatedAt: str(local.updatedAt) > str(remote.updatedAt)
       ? str(local.updatedAt)

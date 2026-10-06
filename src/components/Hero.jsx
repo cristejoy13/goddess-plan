@@ -6,6 +6,7 @@ import { GoalsToggle, GoalsPanel } from './Goals';
 import { useGoalsData } from '../utils/useGoalsData';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
+import { ask } from '../utils/ask';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -130,6 +131,7 @@ function createNotebookPage(seed = {}) {
     note: seed.note || '',
     images: Array.isArray(seed.images) ? seed.images : [],
     mood: seed.mood || '',
+    albumId: seed.albumId || '',
     userCreated: Boolean(seed.userCreated),
     createdAt: seed.createdAt || now,
     updatedAt: seed.updatedAt || seed.createdAt || now,
@@ -158,12 +160,24 @@ function createChecklist(seed = {}) {
   };
 }
 
+// An album is a named stack of diary pages. Pages point at it by albumId.
+function createAlbum(seed = {}) {
+  const now = new Date().toISOString();
+  return {
+    id: seed.id || makeNotebookId('album'),
+    title: seed.title ?? '',
+    createdAt: seed.createdAt || now,
+    updatedAt: seed.updatedAt || seed.createdAt || now,
+  };
+}
+
 function createEmptyNotebook() {
   return {
     pages: [],
     activePageId: '',
     checklists: [],
     activeChecklistId: '',
+    albums: [],
     deleted: {},
     updatedAt: '',
   };
@@ -227,6 +241,7 @@ function normalizeNotebookData(raw = {}) {
     activePageId,
     checklists,
     activeChecklistId,
+    albums: Array.isArray(raw.albums) ? raw.albums.map(createAlbum) : [],
     deleted: (raw.deleted && typeof raw.deleted === 'object') ? raw.deleted : {},
     updatedAt: raw.updatedAt || '',
   };
@@ -318,6 +333,23 @@ function groupChecklistByCategory(items) {
     }));
 }
 
+// Small line icons for the notebook's buttons. They take the button's colour.
+function NbIcon({ name }) {
+  const paths = {
+    trash: <><path d="M4 7h16" /><path d="M9 7V4.5h6V7" /><path d="M6.5 7l1 12.5h9l1-12.5" /><path d="M10 11v5.5M14 11v5.5" /></>,
+    album: <><rect x="4" y="8" width="16" height="12" rx="2.5" /><path d="M6.5 5h11M9 2.5h6" /></>,
+    select: <><circle cx="12" cy="12" r="8.5" /><path d="M8.3 12.2l2.5 2.5 5-5.2" /></>,
+    close: <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
+    ungroup: <><rect x="3.5" y="9" width="10" height="10" rx="2" /><path d="M10.5 5h8a2 2 0 0 1 2 2v8" /></>,
+    out: <><path d="M14 4.5h4.5A1.5 1.5 0 0 1 20 6v12a1.5 1.5 0 0 1-1.5 1.5H14" /><path d="M4 12h10M8.5 7.5L4 12l4.5 4.5" /></>,
+  };
+  return (
+    <svg className="nb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths[name]}
+    </svg>
+  );
+}
+
 function DailyNotebook() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('notes');
@@ -333,6 +365,12 @@ function DailyNotebook() {
   const longPressRef = useRef({ timer: null, fired: false });
   const [armedListId, setArmedListId] = useState(null);
   const [armedItemId, setArmedItemId] = useState(null);
+  // Diary: hold an entry (or tap the select icon) to pick several at once,
+  // then delete them or stack them into an album.
+  const [selecting, setSelecting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [openAlbumId, setOpenAlbumId] = useState('');
+  const [albumMenuOpen, setAlbumMenuOpen] = useState(false);
 
   // While the notebook is open, only the notebook scrolls — not the homepage.
   useEffect(() => {
@@ -455,7 +493,7 @@ function DailyNotebook() {
   }
 
   function addNotebookPage() {
-    const page = createNotebookPage({ userCreated: true });
+    const page = createNotebookPage({ userCreated: true, albumId: openAlbumId });
     setData(prev => stampNotebookUpdate({
       ...prev,
       pages: [...prev.pages, page],
@@ -477,8 +515,10 @@ function DailyNotebook() {
     setChecklistEditorOpen(false);
   }
 
-  function deleteCurrentPage() {
+  async function deleteCurrentPage() {
     if (!currentPage) return;
+    const name = currentPage.title ? `"${currentPage.title}"` : 'this entry';
+    if (!(await ask(`Delete ${name}? This cannot be undone.`, { yes: 'Delete', danger: true }))) return;
     setData(prev => {
       const pages = prev.pages.filter(page => page.id !== prev.activePageId);
       return stampNotebookUpdate({
@@ -573,6 +613,122 @@ function DailyNotebook() {
     setArmedItemId(null);
   }
 
+  // ── Selecting diary entries, and albums ──
+  function stopSelecting() {
+    setSelecting(false);
+    setSelectedIds([]);
+    setAlbumMenuOpen(false);
+  }
+
+  function toggleSelected(id) {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }
+
+  // Hold an entry to start selecting, with that entry already picked.
+  function startEntryPress(id) {
+    if (selecting) return;
+    clearTimeout(longPressRef.current.timer);
+    longPressRef.current.fired = false;
+    longPressRef.current.timer = setTimeout(() => {
+      longPressRef.current.fired = true;
+      setSelecting(true);
+      setSelectedIds([id]);
+      try { navigator.vibrate?.(15); } catch { /* haptics optional */ }
+    }, 500);
+  }
+
+  function tapEntry(id) {
+    if (consumedLongPress()) return;
+    if (selecting) toggleSelected(id);
+    else selectNotebookPage(id);
+  }
+
+  // Move pages in or out of an album. Each moved page is stamped so the move
+  // reaches the other gadgets.
+  function setPagesAlbum(prev, ids, albumId) {
+    const now = new Date().toISOString();
+    return prev.pages.map(page => ids.includes(page.id) ? { ...page, albumId, updatedAt: now } : page);
+  }
+
+  async function deleteSelected() {
+    const n = selectedIds.length;
+    if (!n) return;
+    const what = n === 1 ? 'this entry' : `these ${n} entries`;
+    if (!(await ask(`Delete ${what}? This cannot be undone.`, { yes: 'Delete', danger: true }))) return;
+    const ids = selectedIds;
+    setData(prev => {
+      const pages = prev.pages.filter(page => !ids.includes(page.id));
+      return stampNotebookUpdate({
+        ...prev,
+        pages,
+        deleted: tombstone(prev, ...ids),
+        activePageId: pages.some(page => page.id === prev.activePageId) ? prev.activePageId : (pages[0]?.id || ''),
+      });
+    });
+    stopSelecting();
+  }
+
+  function makeAlbumFromSelected() {
+    if (!selectedIds.length) return;
+    const album = createAlbum();
+    const ids = selectedIds;
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      albums: [...(prev.albums || []), album],
+      pages: setPagesAlbum(prev, ids, album.id),
+    }));
+    stopSelecting();
+    setOpenAlbumId(album.id);
+  }
+
+  function addSelectedToAlbum(albumId) {
+    if (!selectedIds.length) return;
+    const ids = selectedIds;
+    const now = new Date().toISOString();
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      albums: prev.albums.map(album => album.id === albumId ? { ...album, updatedAt: now } : album),
+      pages: setPagesAlbum(prev, ids, albumId),
+    }));
+    stopSelecting();
+    setOpenAlbumId(albumId);
+  }
+
+  async function takeSelectedOutOfAlbum() {
+    const n = selectedIds.length;
+    if (!n) return;
+    const what = n === 1 ? 'this entry' : `these ${n} entries`;
+    if (!(await ask(`Take ${what} out of the album? They stay in your diary.`, { yes: 'Take out' }))) return;
+    const ids = selectedIds;
+    setData(prev => stampNotebookUpdate({ ...prev, pages: setPagesAlbum(prev, ids, '') }));
+    stopSelecting();
+  }
+
+  function renameAlbum(id, title) {
+    const now = new Date().toISOString();
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      albums: prev.albums.map(album => album.id === id ? { ...album, title, updatedAt: now } : album),
+    }));
+  }
+
+  async function ungroupAlbum(id) {
+    const album = data.albums.find(a => a.id === id);
+    const name = album?.title ? `"${album.title}"` : 'this album';
+    if (!(await ask(`Remove ${name}? The entries inside stay in your diary.`, { yes: 'Remove album', danger: true }))) return;
+    setData(prev => {
+      const inside = prev.pages.filter(page => page.albumId === id).map(page => page.id);
+      return stampNotebookUpdate({
+        ...prev,
+        albums: prev.albums.filter(a => a.id !== id),
+        pages: setPagesAlbum(prev, inside, ''),
+        deleted: tombstone(prev, id),
+      });
+    });
+    stopSelecting();
+    setOpenAlbumId('');
+  }
+
   function updateChecklistTitle(title) {
     setData(prev => {
       const activeId = prev.checklists.some(list => list.id === prev.activeChecklistId)
@@ -637,6 +793,14 @@ function DailyNotebook() {
     updateActiveChecklist(items => items.filter(item => item.id !== id));
   }
 
+  const albums = data.albums || [];
+  const openAlbum = albums.find(album => album.id === openAlbumId) || null;
+  const albumIds = new Set(albums.map(album => album.id));
+  const visibleAlbums = openAlbum ? [] : albums;
+  const visiblePages = openAlbum
+    ? data.pages.filter(page => page.albumId === openAlbum.id)
+    : data.pages.filter(page => !albumIds.has(page.albumId));
+
   const checklistItems = currentChecklist?.items || [];
   const checkedCount = checklistItems.filter(item => item.done).length;
   const checklistGroups = groupChecklistByCategory(checklistItems);
@@ -653,6 +817,7 @@ function DailyNotebook() {
         onClick={() => {
           setOpen(true);
           closeEditor();
+          stopSelecting();
         }}
         aria-label="Open daily notebook"
       >
@@ -687,7 +852,7 @@ function DailyNotebook() {
                 <div className="daily-plan-label">Daily Notebook</div>
                 <div className="daily-notebook-title">
                   {mode === 'notes'
-                    ? (diaryEditorOpen ? (currentPage?.title || 'Title') : 'Diary')
+                    ? (diaryEditorOpen ? (currentPage?.title || 'Title') : (openAlbum ? (openAlbum.title || 'Album') : 'Diary'))
                     : (checklistEditorOpen ? (currentChecklist?.title || 'Untitled list') : 'Checklists')}
                 </div>
               </div>
@@ -703,6 +868,7 @@ function DailyNotebook() {
                 onClick={() => {
                   setMode('notes');
                   closeEditor();
+                  stopSelecting();
                 }}
               >
                 <span>Diary</span>
@@ -714,6 +880,7 @@ function DailyNotebook() {
                 onClick={() => {
                   setMode('checklist');
                   closeEditor();
+                  stopSelecting();
                 }}
               >
                 <span>Checklist</span>
@@ -724,26 +891,120 @@ function DailyNotebook() {
             {mode === 'notes' ? (
               <div className="daily-note-panel">
                 <div className={`daily-note-workspace${diaryEditorOpen ? ' editor-open' : ' pages-only'}`}>
-                  <aside className="daily-pages-board" aria-label="Diary entries">
+                  <aside className={`daily-pages-board${selecting ? ' is-selecting' : ''}`} aria-label="Diary entries">
+                    {openAlbum && !selecting && (
+                      <div className="nb-album-head">
+                        <button type="button" className="nb-icon-btn" onClick={() => setOpenAlbumId('')} aria-label="Back to all entries">
+                          <span aria-hidden="true">‹</span>
+                        </button>
+                        <input
+                          className="nb-album-title"
+                          type="text"
+                          value={openAlbum.title}
+                          onChange={e => renameAlbum(openAlbum.id, e.target.value)}
+                          placeholder="Album name"
+                          autoFocus={!openAlbum.title}
+                          aria-label="Album name"
+                        />
+                        <button type="button" className="nb-icon-btn danger" onClick={() => ungroupAlbum(openAlbum.id)} aria-label="Remove album, keep its entries" title="Remove album">
+                          <NbIcon name="ungroup" />
+                        </button>
+                      </div>
+                    )}
                     <div className="daily-pages-board-top">
-                      <span>Entries</span>
-                      <button type="button" className="daily-page-add" onClick={addNotebookPage} aria-label="Add new entry">
-                        +
-                      </button>
+                      {selecting ? (
+                        <>
+                          <span>{selectedIds.length} selected</span>
+                          <div className="nb-actions">
+                            {openAlbum ? (
+                              <button type="button" className="nb-icon-btn" onClick={takeSelectedOutOfAlbum} disabled={!selectedIds.length} aria-label="Take out of album" title="Take out of album">
+                                <NbIcon name="out" />
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                className={`nb-icon-btn${albumMenuOpen ? ' is-on' : ''}`}
+                                onClick={() => { if (data.albums.length) setAlbumMenuOpen(o => !o); else makeAlbumFromSelected(); }}
+                                disabled={!selectedIds.length}
+                                aria-label="Put in an album"
+                                aria-expanded={data.albums.length ? albumMenuOpen : undefined}
+                                title="Put in an album"
+                              >
+                                <NbIcon name="album" />
+                              </button>
+                            )}
+                            <button type="button" className="nb-icon-btn danger" onClick={deleteSelected} disabled={!selectedIds.length} aria-label="Delete selected" title="Delete">
+                              <NbIcon name="trash" />
+                            </button>
+                            <button type="button" className="nb-icon-btn" onClick={stopSelecting} aria-label="Stop selecting" title="Done">
+                              <NbIcon name="close" />
+                            </button>
+                          </div>
+                          {albumMenuOpen && (
+                            <div className="nb-album-menu" role="menu" aria-label="Choose an album">
+                              <button type="button" role="menuitem" onClick={makeAlbumFromSelected}>＋ New album</button>
+                              {data.albums.map(album => (
+                                <button key={album.id} type="button" role="menuitem" onClick={() => addSelectedToAlbum(album.id)}>
+                                  {album.title || 'Untitled album'}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <span>{openAlbum ? `${visiblePages.length} ${visiblePages.length === 1 ? 'entry' : 'entries'}` : 'Entries'}</span>
+                          <div className="nb-actions">
+                            {visiblePages.length > 0 && (
+                              <button type="button" className="nb-icon-btn" onClick={() => { setSelecting(true); setSelectedIds([]); }} aria-label="Select entries" title="Select">
+                                <NbIcon name="select" />
+                              </button>
+                            )}
+                            <button type="button" className="daily-page-add" onClick={addNotebookPage} aria-label="Add new entry">
+                              +
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="daily-page-list">
-                      {data.pages.length === 0 && (
-                        <div className="daily-page-empty">No entries yet — tap ＋ to write one.</div>
+                      {visiblePages.length === 0 && visibleAlbums.length === 0 && (
+                        <div className="daily-page-empty">
+                          {openAlbum ? 'This album is empty — tap ＋ to write in it.' : 'No entries yet — tap ＋ to write one.'}
+                        </div>
                       )}
-                      {data.pages.map(page => {
+                      {visibleAlbums.map(album => {
+                        const count = data.pages.filter(page => page.albumId === album.id).length;
+                        return (
+                          <button
+                            key={album.id}
+                            type="button"
+                            className="daily-page-card nb-album-card"
+                            onClick={() => setOpenAlbumId(album.id)}
+                          >
+                            <strong>{album.title || 'Untitled album'}</strong>
+                            <span><NbIcon name="album" /> {count} {count === 1 ? 'entry' : 'entries'}</span>
+                            <small>{formatNotebookSavedAt(album.updatedAt)}</small>
+                          </button>
+                        );
+                      })}
+                      {visiblePages.map(page => {
                         const mood = MOOD_CHOICES.find(choice => choice.id === page.mood);
+                        const picked = selectedIds.includes(page.id);
                         return (
                           <button
                             key={page.id}
                             type="button"
-                            className={`daily-page-card${page.id === data.activePageId ? ' active' : ''}`}
-                            onClick={() => selectNotebookPage(page.id)}
+                            className={`daily-page-card${!selecting && page.id === data.activePageId ? ' active' : ''}${picked ? ' is-picked' : ''}`}
+                            onClick={() => tapEntry(page.id)}
+                            onPointerDown={() => startEntryPress(page.id)}
+                            onPointerUp={cancelLongPress}
+                            onPointerLeave={cancelLongPress}
+                            onPointerCancel={cancelLongPress}
+                            onContextMenu={e => e.preventDefault()}
+                            aria-pressed={selecting ? picked : undefined}
                           >
+                            {selecting && <span className="nb-tick" aria-hidden="true">{picked ? '✓' : ''}</span>}
                             <strong>{page.title || 'Title'}</strong>
                             <span>{mood ? `${mood.emoji} ${mood.label}` : 'No mood yet'}</span>
                             <small>{formatNotebookSavedAt(page.updatedAt)}</small>
@@ -755,9 +1016,14 @@ function DailyNotebook() {
 
                   {diaryEditorOpen && currentPage && (
                   <section className="daily-note-editor">
-                    <button type="button" className="daily-note-back" onClick={closeEditor}>
-                      ‹ Back
-                    </button>
+                    <div className="nb-editor-top">
+                      <button type="button" className="daily-note-back" onClick={closeEditor}>
+                        ‹ Back
+                      </button>
+                      <button type="button" className="nb-icon-btn danger" onClick={deleteCurrentPage} aria-label="Delete this entry" title="Delete entry">
+                        <NbIcon name="trash" />
+                      </button>
+                    </div>
 
                     <div className="daily-note-title-row">
                       <input
@@ -795,12 +1061,6 @@ function DailyNotebook() {
                           </button>
                         ))}
                       </div>
-                    )}
-
-                    {data.pages.length > 0 && (
-                      <button type="button" className="daily-note-btn danger daily-delete-page-btn" onClick={deleteCurrentPage}>
-                        Delete page
-                      </button>
                     )}
 
                     <textarea
