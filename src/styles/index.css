@@ -10867,3 +10867,45 @@ body {
   .daily-pages-board-top .daily-page-add { width: 38px; height: 38px; min-height: 38px; }
   .daily-pages-board-top .nb-actions { gap: 4px; }
 }
+
+/* Holding a list, item or entry must never select its words (the blue
+   copy-and-paste highlight); it should only bring up the delete option. */
+.daily-page-card,
+.daily-page-card *,
+.daily-page-card-wrap,
+.daily-check-item,
+.daily-check-item * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── G: choose Checklist or Chart before making a goal ── */
+.goals-kind { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.goals-kind-btn {
+  min-height: 52px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px;
+  padding: 8px 12px; border-radius: 12px;
+  border: 1px solid rgba(240,204,96,0.22); background: rgba(0,0,0,0.18);
+  color: var(--text); font-family: inherit; font-size: 13.5px; font-weight: 700; text-align: left;
+  cursor: pointer;
+}
+.goals-kind-btn small { font-size: 11px; font-weight: 500; color: var(--text-soft); }
+.goals-kind-btn.on { border-color: var(--gold); background: rgba(240,204,96,0.14); box-shadow: inset 0 0 0 1px rgba(240,204,96,0.4); }
+[data-mode="light"] .goals-kind-btn { background: rgba(255,240,248,0.72); border-color: rgba(154,104,0,0.22); }
+[data-mode="light"] .goals-kind-btn.on { background: rgba(154,104,0,0.12); border-color: #9a6800; }
+.goals-add-2.goals-add-chart { grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr) minmax(0, 1fr) auto; }
+@media (max-width: 520px) {
+  .goals-add-2.goals-add-chart { grid-template-columns: minmax(0, 1fr); }
+}
+/* The built-in goals get the same corner trash icon as her own. */
+.goal-builtin { position: relative; }
+.goal-builtin .kg-head { padding-right: 38px; }
+.goal-builtin .wk-goal-tag { padding: 0 34px; }
+.goals-restore { display: flex; flex-wrap: wrap; gap: 8px; }
+.goals-restore button {
+  min-height: 36px; padding: 0 12px; border-radius: 999px;
+  border: 1px dashed rgba(240,204,96,0.35); background: transparent;
+  color: var(--text-soft); font-family: inherit; font-size: 12px; cursor: pointer;
+}

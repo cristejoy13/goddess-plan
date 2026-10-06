@@ -7,7 +7,8 @@ import {
   loadGoals, saveGoals, newGoalId, achievedGoals,
   loadCelebrated, saveCelebrated, TARGET_KG, KG_PER_WEEK,
   KG_GOAL_ID, WORKOUT_GOAL_ID, rewardText, setReward, claimReward,
-  goalTarget, goalTotal, addProgress, removeProgress,
+  goalTarget, goalTargetOf, goalTotal, addProgress, removeProgress,
+  isGoalHidden, setGoalHidden,
 } from '../utils/goals';
 import { loadWorkouts, goalReachedOn, WORKOUTS_CHANGED } from '../utils/workoutLog';
 import WorkoutGoalCard from './WorkoutTracker';
@@ -131,7 +132,7 @@ export function KgGoalCard({ plan, onOpen, onNavigate }) {
 // entry can be taken back if it was a mistake.
 function NumberGoal({ goals, g, onRemove }) {
   const [amount, setAmount] = useState('');
-  const target = goalTarget(g.text);
+  const target = goalTargetOf(g);
   const total = goalTotal(g);
   const pct = Math.round(Math.min(100, (total / target) * 100) * 10) / 10;
   const left = Math.max(0, Math.round((target - total) * 100) / 100);
@@ -182,6 +183,10 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
   const { goals, plan, achieved } = data;
   const [text, setText] = useState('');
   const [reward, setRewardDraft] = useState('');
+  // Chosen before a goal is made: a chart goal counts up to a number, a
+  // checklist goal is simply ticked when done.
+  const [kind, setKind] = useState('check');
+  const [targetDraft, setTargetDraft] = useState('');
   // Three tabs instead of one long page — each fits a phone screen, so there
   // is nothing to scroll through to reach the part she wants.
   const [tab, setTab] = useState('goals');
@@ -198,15 +203,35 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
     const t = text.trim();
     const r = reward.trim();
     if (!t) return;
+    const target = kind === 'chart' ? chartTarget : null;
+    if (kind === 'chart' && !target) return;
     // The reward is optional here; she can add or change it on the Rewards tab.
     const now = new Date().toISOString();
     const id = newGoalId();
-    const next = { ...goals, items: [...goals.items, { id, text: t, done: null, createdAt: now, updatedAt: now }] };
+    const goal = { id, text: t, kind, done: null, createdAt: now, updatedAt: now };
+    if (target) goal.target = target;
+    const next = { ...goals, items: [...goals.items, goal] };
     saveGoals(r ? setReward(next, id, r) : next);
     setText('');
     setRewardDraft('');
+    setTargetDraft('');
     inputRef.current?.focus();
   }
+
+  // The chart target: the number box, or else the first number in the words.
+  const typedTarget = Number(String(targetDraft).replace(/,/g, ''));
+  const chartTarget = typedTarget > 0 ? typedTarget : goalTarget(text);
+  const canAdd = Boolean(text.trim()) && (kind === 'check' || Boolean(chartTarget));
+
+  async function hideBuiltIn(id, name) {
+    if (!(await ask(`Delete the ${name} goal from G? Your records stay saved, and you can bring it back.`, { yes: 'Delete', danger: true }))) return;
+    saveGoals(setGoalHidden(goals, id, true));
+  }
+  function showBuiltIn(id) {
+    saveGoals(setGoalHidden(goals, id, false));
+  }
+  const kgHidden = isGoalHidden(goals, KG_GOAL_ID);
+  const workoutsHidden = isGoalHidden(goals, WORKOUT_GOAL_ID);
 
   async function toggle(g) {
     if (g.done && !(await ask(`Mark “${g.text}” as not achieved yet?`, { yes: 'Not yet' }))) return;
@@ -229,7 +254,7 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
     const g = goals.items.find(x => x.id === id);
     if (!g) return;
     const last = [...(g.progress || [])].sort((a, b) => (a.at < b.at ? 1 : -1))[0];
-    if (goalTarget(g.text) && last) {
+    if (goalTargetOf(g) && last) {
       if (!(await ask(`Take +${last.amount} (${prettyDate(last.date)}) off “${g.text}” and move it back to Goals?`, { yes: 'Move it back' }))) return;
       saveGoals(removeProgress(goals, g.id, last.id));
     } else {
@@ -271,12 +296,22 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
         {tab === 'goals' && <>
         {/* Only goals still being worked on. A reached goal moves to the
             Achieved tab; its data stays exactly as it was. */}
-        {!plan?.reached && <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />}
-        {!achievedIds.has(WORKOUT_GOAL_ID) && <WorkoutGoalCard />}
+        {!plan?.reached && !kgHidden && (
+          <div className="goal-builtin">
+            <KgGoalCard plan={plan} onNavigate={p => { onClose(); onNavigate(p); }} />
+            <button type="button" className="ml-icon-btn ml-del goal-card-del" onClick={() => hideBuiltIn(KG_GOAL_ID, `${TARGET_KG} kg`)} aria-label={`Delete the ${TARGET_KG} kg goal`}>🗑</button>
+          </div>
+        )}
+        {!achievedIds.has(WORKOUT_GOAL_ID) && !workoutsHidden && (
+          <div className="goal-builtin">
+            <WorkoutGoalCard />
+            <button type="button" className="ml-icon-btn ml-del goal-card-del" onClick={() => hideBuiltIn(WORKOUT_GOAL_ID, '1,000 workouts')} aria-label="Delete the 1,000 workouts goal">🗑</button>
+          </div>
+        )}
 
-        {open.length === 0 && <div className="goals-empty">Write a goal below. Put a number in it to get a bar.</div>}
+        {open.length === 0 && <div className="goals-empty">Pick Checklist or Chart, then write a goal below.</div>}
         <ul className="goals-list">
-          {open.map(g => goalTarget(g.text) ? (
+          {open.map(g => goalTargetOf(g) ? (
             <NumberGoal key={g.id} goals={goals} g={g} onRemove={remove} />
           ) : (
             <li key={g.id} className={`goals-item${g.done ? ' goals-item-done' : ''}`}>
@@ -291,7 +326,15 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
             </li>
           ))}
         </ul>
-        <form className="goals-add goals-add-2" onSubmit={add}>
+        <div className="goals-kind" role="radiogroup" aria-label="Kind of goal">
+          <button type="button" role="radio" aria-checked={kind === 'check'} className={`goals-kind-btn${kind === 'check' ? ' on' : ''}`} onClick={() => setKind('check')}>
+            ☑️ Checklist <small>tick when done</small>
+          </button>
+          <button type="button" role="radio" aria-checked={kind === 'chart'} className={`goals-kind-btn${kind === 'chart' ? ' on' : ''}`} onClick={() => setKind('chart')}>
+            📈 Chart <small>count up to a number</small>
+          </button>
+        </div>
+        <form className={`goals-add goals-add-2${kind === 'chart' ? ' goals-add-chart' : ''}`} onSubmit={add}>
           <input
             ref={inputRef}
             value={text}
@@ -300,6 +343,15 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
             maxLength={120}
             aria-label="New goal"
           />
+          {kind === 'chart' && (
+            <input
+              type="number" inputMode="decimal" min="0" step="any"
+              value={targetDraft}
+              onChange={e => setTargetDraft(e.target.value)}
+              placeholder={goalTarget(text) ? `Target: ${goalTarget(text).toLocaleString('en-US')}` : '🔢 Target number'}
+              aria-label="Target number"
+            />
+          )}
           <input
             value={reward}
             onChange={e => setRewardDraft(e.target.value)}
@@ -307,9 +359,15 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
             maxLength={120}
             aria-label="Reward for this goal"
           />
-          <button type="submit" disabled={!text.trim()}>＋ Add</button>
+          <button type="submit" disabled={!canAdd}>＋ Add</button>
         </form>
-        <div className="goals-lock-note">A number in the goal gets a bar. Rewards can be added or changed in 🎁 Rewards.</div>
+        <div className="goals-lock-note">Rewards can be added or changed in 🎁 Rewards.</div>
+        {(kgHidden || workoutsHidden) && (
+          <div className="goals-restore">
+            {kgHidden && <button type="button" onClick={() => showBuiltIn(KG_GOAL_ID)}>↶ Bring back {TARGET_KG} kg goal</button>}
+            {workoutsHidden && <button type="button" onClick={() => showBuiltIn(WORKOUT_GOAL_ID)}>↶ Bring back 1,000 workouts goal</button>}
+          </div>
+        )}
 
         </>}
 
@@ -331,6 +389,16 @@ export function GoalsPanel({ data, onClose, onNavigate }) {
                       {goals.items.some(g => g.id === a.id) && (
                         <button type="button" className="gw-undo" onClick={() => notYet(a.id)}>↶ Not yet</button>
                       )}
+                      <button
+                        type="button"
+                        className="ml-icon-btn ml-del"
+                        onClick={() => {
+                          const g = goals.items.find(x => x.id === a.id);
+                          if (g) remove(g);
+                          else hideBuiltIn(a.id, a.id === KG_GOAL_ID ? `${TARGET_KG} kg` : '1,000 workouts');
+                        }}
+                        aria-label={`Delete ${a.text}`}
+                      >🗑</button>
                     </div>
                   </li>
                 ))}
@@ -410,8 +478,8 @@ function RewardRow({ goals, id, goalText, earned }) {
 
 function Rewards({ goals, achievedIds }) {
   const rows = [
-    { id: KG_GOAL_ID, text: `Reach ${TARGET_KG} kg` },
-    { id: WORKOUT_GOAL_ID, text: 'Complete 1,000 workouts' },
+    ...(isGoalHidden(goals, KG_GOAL_ID) ? [] : [{ id: KG_GOAL_ID, text: `Reach ${TARGET_KG} kg` }]),
+    ...(isGoalHidden(goals, WORKOUT_GOAL_ID) ? [] : [{ id: WORKOUT_GOAL_ID, text: 'Complete 1,000 workouts' }]),
     ...goals.items.map(g => ({ id: g.id, text: g.text })),
   ];
   return (

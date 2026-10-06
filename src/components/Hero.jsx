@@ -508,7 +508,6 @@ function DailyNotebook() {
   // The Save button: writes straight away and says so for a moment.
   const [justSaved, setJustSaved] = useState(false);
   const justSavedTimerRef = useRef(null);
-  const removeTimersRef = useRef({});
   const didMountRef = useRef(false);
   // Long-press (~0.6s) arms a delete option on a checklist card or item.
   const longPressRef = useRef({ timer: null, fired: false });
@@ -607,7 +606,6 @@ function DailyNotebook() {
   }, []);
 
   useEffect(() => () => {
-    Object.values(removeTimersRef.current).forEach(clearTimeout);
     clearTimeout(justSavedTimerRef.current);
   }, []);
 
@@ -955,43 +953,33 @@ function DailyNotebook() {
     setDraftItem('');
   }
 
+  // Ticking crosses an item out and leaves it there. It used to vanish 3
+  // seconds later without being marked as deleted, so another gadget's copy
+  // brought it straight back. Now only her own delete removes an item.
   function toggleChecklistItem(id) {
     const item = currentChecklist?.items.find(entry => entry.id === id);
     if (!item) return;
-
-    if (item.done) {
-      if (removeTimersRef.current[id]) {
-        clearTimeout(removeTimersRef.current[id]);
-        delete removeTimersRef.current[id];
-      }
-      updateActiveChecklist(items => items.map(entry => entry.id === id ? { ...entry, done: false, completedAt: '' } : entry));
-      return;
-    }
-
-    updateActiveChecklist(items => items.map(entry => entry.id === id ? { ...entry, done: true, completedAt: new Date().toISOString() } : entry));
-    if (removeTimersRef.current[id]) clearTimeout(removeTimersRef.current[id]);
-    removeTimersRef.current[id] = setTimeout(() => {
-      // Remove from whichever list still holds it, in case the user switched
-      // lists during the 3s grace period.
-      setData(prev => stampNotebookUpdate({
-        ...prev,
-        checklists: prev.checklists.map(list => ({ ...list, items: list.items.filter(entry => entry.id !== id) })),
-      }));
-      delete removeTimersRef.current[id];
-    }, 3000);
+    const now = new Date().toISOString();
+    updateActiveChecklist(items => items.map(entry => entry.id === id
+      ? { ...entry, done: !entry.done, completedAt: entry.done ? '' : now, updatedAt: now }
+      : entry));
   }
 
   function togglePinChecklistItem(id) {
     updateActiveChecklist(items => items.map(item => item.id === id ? { ...item, pinned: !item.pinned } : item));
   }
 
+  // One change: the item goes from every list and is remembered as deleted,
+  // so no other gadget can bring it back.
   function deleteChecklistItem(id) {
-    if (removeTimersRef.current[id]) {
-      clearTimeout(removeTimersRef.current[id]);
-      delete removeTimersRef.current[id];
-    }
-    setData(prev => stampNotebookUpdate({ ...prev, deleted: tombstone(prev, id) }));
-    updateActiveChecklist(items => items.filter(item => item.id !== id));
+    const now = new Date().toISOString();
+    setData(prev => stampNotebookUpdate({
+      ...prev,
+      deleted: tombstone(prev, id),
+      checklists: prev.checklists.map(list => list.items.some(item => item.id === id)
+        ? { ...list, items: list.items.filter(item => item.id !== id), updatedAt: now }
+        : list),
+    }));
   }
 
   const albums = data.albums || [];

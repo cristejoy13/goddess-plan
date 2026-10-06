@@ -82,10 +82,11 @@ export function loadGoals() {
     const raw = JSON.parse(localStorage.getItem(GOALS_KEY) || 'null');
     if (raw && Array.isArray(raw.items)) {
       const rewards = raw.rewards && typeof raw.rewards === 'object' ? raw.rewards : {};
-      return { items: raw.items, rewards, updatedAt: raw.updatedAt || '' };
+      const hidden = raw.hidden && typeof raw.hidden === 'object' ? raw.hidden : {};
+      return { items: raw.items, rewards, hidden, updatedAt: raw.updatedAt || '' };
     }
   } catch { /* start empty */ }
-  return { items: [], rewards: {}, updatedAt: '' };
+  return { items: [], rewards: {}, hidden: {}, updatedAt: '' };
 }
 
 export function saveGoals(goals) {
@@ -109,11 +110,11 @@ export function newGoalId() {
 // `workoutsReachedOn` is the date of the 1,000th workout, or null.
 export function achievedGoals(log, goals, workoutsReachedOn = null) {
   const out = [];
-  if (workoutsReachedOn) {
+  if (workoutsReachedOn && !isGoalHidden(goals, WORKOUT_GOAL_ID)) {
     out.push({ id: WORKOUT_GOAL_ID, text: 'Completed 1,000 workouts', at: workoutsReachedOn, reward: rewardText(goals, WORKOUT_GOAL_ID) });
   }
   const plan = kgPlan(log);
-  if (plan?.reached) {
+  if (plan?.reached && !isGoalHidden(goals, KG_GOAL_ID)) {
     out.push({ id: KG_GOAL_ID, text: `Reached ${TARGET_KG} kg`, at: plan.reachedOn, reward: rewardText(goals, KG_GOAL_ID) });
   }
   for (const g of goals.items) {
@@ -122,6 +123,20 @@ export function achievedGoals(log, goals, workoutsReachedOn = null) {
     if (g.done) out.push({ id: g.id, text: g.text, at: dateKeyOf(new Date(g.done)), reward: rewardText(goals, g.id) });
   }
   return out.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+}
+
+// The two built-in goals (40 kg, 1,000 workouts) can be taken off the G page.
+// Nothing behind them is touched — weigh-ins and workouts stay recorded — and
+// either can be brought back.
+export function isGoalHidden(goals, id) {
+  return Boolean(goals?.hidden?.[id]);
+}
+
+export function setGoalHidden(goals, id, hidden) {
+  const next = { ...(goals.hidden || {}) };
+  if (hidden) next[id] = new Date().toISOString();
+  else delete next[id];
+  return { ...goals, hidden: next };
 }
 
 export function rewardText(goals, id) {
@@ -170,6 +185,20 @@ export function goalTarget(text) {
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+// A goal's target, by the kind she chose when making it. A checklist goal has
+// none, even with a number in its words. A chart goal uses the number she
+// typed as its target. Goals made before the choice existed keep the old rule:
+// the first number in the words.
+export function goalTargetOf(g) {
+  if (!g) return null;
+  if (g.kind === 'check') return null;
+  if (g.kind === 'chart') {
+    const t = Number(g.target);
+    return Number.isFinite(t) && t > 0 ? t : goalTarget(g.text);
+  }
+  return goalTarget(g.text);
+}
+
 export function goalTotal(g) {
   const t = (g.progress || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
   return Math.round(t * 100) / 100;
@@ -182,7 +211,7 @@ function withProgress(goals, id, progress) {
     items: goals.items.map(g => {
       if (g.id !== id) return g;
       const next = { ...g, progress, updatedAt: now };
-      const target = goalTarget(g.text);
+      const target = goalTargetOf(g);
       const reached = target !== null && goalTotal(next) >= target;
       // Reaching the target ticks it; dropping back under unticks it.
       next.done = reached ? (g.done || now) : null;

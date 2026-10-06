@@ -1,6 +1,6 @@
 // The 40 kg plan and the calories burned. Run with:
 //   node src/utils/__tests__/goals.test.mjs
-import { kgPlan, achievedGoals, setReward, claimReward, rewardText, KG_GOAL_ID, WORKOUT_GOAL_ID, goalTarget, goalTotal, addProgress, removeProgress } from '../goals.js';
+import { goalTargetOf, isGoalHidden, setGoalHidden, kgPlan, achievedGoals, setReward, claimReward, rewardText, KG_GOAL_ID, WORKOUT_GOAL_ID, goalTarget, goalTotal, addProgress, removeProgress } from '../goals.js';
 import { parseBurn, setBurn, burnOn } from '../mealLog.js';
 import { mergeMealLogBlobs } from '../mergeMealLog.js';
 
@@ -62,6 +62,19 @@ ng = removeProgress(ng, 'r', ng.items[0].progress[1].id);
 ok('dropping under the target unticks it', ng.items[0].done === null && goalTotal(ng.items[0]) === 20);
 ok('1,000 workouts is achieved on its date', achievedGoals(log({}), none, '2029-01-01')[0].id === WORKOUT_GOAL_ID);
 ok('no 1,000 yet, no workout goal', !achievedGoals(log({}), none, null).some(a => a.id === WORKOUT_GOAL_ID));
+
+// Checklist or chart, chosen when the goal is made.
+ok('a checklist goal has no bar, even with a number', goalTargetOf({ kind: 'check', text: 'Read 12 books' }) === null);
+ok('a chart goal uses the number she typed', goalTargetOf({ kind: 'chart', text: 'Save up', target: 5000 }) === 5000);
+ok('a chart goal falls back to the number in its words', goalTargetOf({ kind: 'chart', text: 'Run 50 km' }) === 50);
+ok('an older goal keeps the old rule', goalTargetOf({ text: 'Run 50 km' }) === 50);
+const chart = { items: [{ id: 'c', kind: 'chart', text: 'Save up', target: 10, done: null }], rewards: {} };
+ok('a chart goal ticks itself at its target', addProgress(chart, 'c', 10).items[0].done);
+// Deleting a built-in goal hides it from G; nothing behind it is lost.
+const hid = setGoalHidden(none, WORKOUT_GOAL_ID, true);
+ok('a built-in goal can be deleted from G', isGoalHidden(hid, WORKOUT_GOAL_ID));
+ok('a deleted built-in goal is not counted as achieved', !achievedGoals(log({}), hid, '2029-01-01').some(a => a.id === WORKOUT_GOAL_ID));
+ok('and it can be brought back', !isGoalHidden(setGoalHidden(hid, WORKOUT_GOAL_ID, false), WORKOUT_GOAL_ID));
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
