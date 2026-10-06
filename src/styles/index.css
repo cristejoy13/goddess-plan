@@ -10763,3 +10763,27 @@ body {
 [data-mode="light"] .nb-album-menu { background: #fff7fb; border-color: rgba(154,104,0,0.25); box-shadow: 0 12px 26px rgba(120,50,90,0.14); }
 [data-mode="light"] .nb-album-card { background: rgba(154,104,0,0.08); border-color: rgba(154,104,0,0.24); }
 [data-mode="light"] .daily-page-card.is-picked { background: rgba(200,23,110,0.12); border-color: rgba(200,23,110,0.4); }
+
+/* ── Diary: split a page into 2, 3 or 4 columns to compare things ── */
+.nb-cols { display: flex; gap: 6px; }
+.nb-cols .nb-icon-btn { width: 40px; height: 40px; }
+.nb-columns {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(var(--nb-cols, 2), minmax(0, 1fr));
+}
+.nb-columns-2 { --nb-cols: 2; }
+.nb-columns-3 { --nb-cols: 3; }
+.nb-columns-4 { --nb-cols: 4; }
+.nb-columns .daily-note-input { min-height: 220px; font-size: 13.5px; padding: 10px; }
+/* On a phone, four narrow strips are too thin to write in: show two per row
+   instead (3 = two on top, one wide below; 4 = two by two). */
+@media (max-width: 640px) {
+  .nb-columns-3, .nb-columns-4 { --nb-cols: 2; }
+  .nb-columns-3 .daily-note-input:last-child { grid-column: 1 / -1; }
+  .nb-columns .daily-note-input { min-height: 170px; }
+}
+@media (max-width: 360px) {
+  .nb-cols .nb-icon-btn { width: 36px; height: 36px; }
+  .nb-cols { gap: 4px; }
+}

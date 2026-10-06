@@ -132,6 +132,11 @@ function createNotebookPage(seed = {}) {
     images: Array.isArray(seed.images) ? seed.images : [],
     mood: seed.mood || '',
     albumId: seed.albumId || '',
+    // Extra side-by-side columns for comparing things. 1 = plain page.
+    // `note` is always column one; `notes` holds columns two to four, and is
+    // kept even when fewer columns are shown, so nothing written is lost.
+    columns: [2, 3, 4].includes(seed.columns) ? seed.columns : 1,
+    notes: Array.isArray(seed.notes) ? seed.notes.slice(0, 3).map(n => (typeof n === 'string' ? n : '')) : [],
     userCreated: Boolean(seed.userCreated),
     createdAt: seed.createdAt || now,
     updatedAt: seed.updatedAt || seed.createdAt || now,
@@ -190,6 +195,7 @@ function createEmptyNotebook() {
 function pageHasDiaryContent(page) {
   return Boolean(
     (page.note || '').trim() ||
+    (Array.isArray(page.notes) && page.notes.some(n => (n || '').trim())) ||
     (page.title || '').trim() ||
     page.mood ||
     (Array.isArray(page.images) && page.images.length > 0)
@@ -350,6 +356,19 @@ function NbIcon({ name }) {
   );
 }
 
+// A box split into n columns, for the 2 / 3 / 4 column buttons.
+function ColumnsIcon({ n }) {
+  const w = 16 / n;
+  return (
+    <svg className="nb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      {Array.from({ length: n - 1 }, (_, i) => (
+        <path key={i} d={`M${4 + w * (i + 1)} 5v14`} />
+      ))}
+    </svg>
+  );
+}
+
 function DailyNotebook() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('notes');
@@ -490,6 +509,19 @@ function DailyNotebook() {
 
   function updateNote(note) {
     updateCurrentPage({ note });
+  }
+
+  // Column 2, 3 or 4 of a page split for comparing.
+  function updateColumnNote(index, text) {
+    const notes = [...(currentPage?.notes || [])];
+    while (notes.length < index) notes.push('');
+    notes[index - 1] = text;
+    updateCurrentPage({ notes });
+  }
+
+  // Tap 2, 3 or 4 to split the page; tap the lit one again to go back to one.
+  function pickColumns(n) {
+    updateCurrentPage({ columns: currentPage?.columns === n ? 1 : n });
   }
 
   function addNotebookPage() {
@@ -1020,9 +1052,26 @@ function DailyNotebook() {
                       <button type="button" className="daily-note-back" onClick={closeEditor}>
                         ‹ Back
                       </button>
-                      <button type="button" className="nb-icon-btn danger" onClick={deleteCurrentPage} aria-label="Delete this entry" title="Delete entry">
-                        <NbIcon name="trash" />
-                      </button>
+                      <div className="nb-actions">
+                        <div className="nb-cols" role="group" aria-label="Columns">
+                          {[2, 3, 4].map(n => (
+                            <button
+                              key={n}
+                              type="button"
+                              className={`nb-icon-btn${currentPage?.columns === n ? ' is-on' : ''}`}
+                              onClick={() => pickColumns(n)}
+                              aria-pressed={currentPage?.columns === n}
+                              aria-label={`${n} columns`}
+                              title={`${n} columns`}
+                            >
+                              <ColumnsIcon n={n} />
+                            </button>
+                          ))}
+                        </div>
+                        <button type="button" className="nb-icon-btn danger" onClick={deleteCurrentPage} aria-label="Delete this entry" title="Delete entry">
+                          <NbIcon name="trash" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className="daily-note-title-row">
@@ -1063,12 +1112,34 @@ function DailyNotebook() {
                       </div>
                     )}
 
-                    <textarea
-                      className="daily-note-input"
-                      value={currentPage?.note || ''}
-                      onChange={e => updateNote(e.target.value)}
-                      placeholder="Write your diary here..."
-                    />
+                    {(currentPage?.columns || 1) > 1 ? (
+                      <div className={`nb-columns nb-columns-${currentPage.columns}`}>
+                        <textarea
+                          className="daily-note-input"
+                          value={currentPage.note || ''}
+                          onChange={e => updateNote(e.target.value)}
+                          placeholder="Column 1"
+                          aria-label="Column 1"
+                        />
+                        {Array.from({ length: currentPage.columns - 1 }, (_, i) => i + 1).map(i => (
+                          <textarea
+                            key={i}
+                            className="daily-note-input"
+                            value={currentPage.notes?.[i - 1] || ''}
+                            onChange={e => updateColumnNote(i, e.target.value)}
+                            placeholder={`Column ${i + 1}`}
+                            aria-label={`Column ${i + 1}`}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <textarea
+                        className="daily-note-input"
+                        value={currentPage?.note || ''}
+                        onChange={e => updateNote(e.target.value)}
+                        placeholder="Write your diary here..."
+                      />
+                    )}
                   </section>
                   )}
                 </div>
