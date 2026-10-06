@@ -68,15 +68,140 @@ const RULE_BOARDS = [
   },
 ];
 
+// Her original eight come first so entries already saved keep their mood.
+// Then every face and reaction, then the hearts. `group` splits the picker.
 const MOOD_CHOICES = [
-  { id: 'happy', emoji: '😊', label: 'Happy' },
-  { id: 'horny', emoji: '😘', label: 'Horny' },
-  { id: 'angry', emoji: '😡', label: 'Angry' },
-  { id: 'sad', emoji: '😢', label: 'Sad' },
-  { id: 'scared', emoji: '😨', label: 'Scared' },
-  { id: 'confused', emoji: '😵‍💫', label: 'Confused' },
-  { id: 'calm', emoji: '🌙', label: 'Calm' },
-  { id: 'delusional', emoji: '🦄', label: 'Delusional' },
+  { id: 'happy', emoji: '😊', label: 'Happy', group: 'face' },
+  { id: 'horny', emoji: '😘', label: 'Horny', group: 'face' },
+  { id: 'angry', emoji: '😡', label: 'Angry', group: 'face' },
+  { id: 'sad', emoji: '😢', label: 'Sad', group: 'face' },
+  { id: 'scared', emoji: '😨', label: 'Scared', group: 'face' },
+  { id: 'confused', emoji: '😵‍💫', label: 'Confused', group: 'face' },
+  { id: 'calm', emoji: '🌙', label: 'Calm', group: 'face' },
+  { id: 'delusional', emoji: '🦄', label: 'Delusional', group: 'face' },
+  { id: 'grinning', emoji: '😀', label: 'Grinning', group: 'face' },
+  { id: 'big-smile', emoji: '😃', label: 'Big smile', group: 'face' },
+  { id: 'smiling-eyes', emoji: '😄', label: 'Smiling eyes', group: 'face' },
+  { id: 'beaming', emoji: '😁', label: 'Beaming', group: 'face' },
+  { id: 'laughing', emoji: '😆', label: 'Laughing', group: 'face' },
+  { id: 'relieved-sweat', emoji: '😅', label: 'Relieved sweat', group: 'face' },
+  { id: 'rolling-laughing', emoji: '🤣', label: 'Rolling laughing', group: 'face' },
+  { id: 'tears-of-joy', emoji: '😂', label: 'Tears of joy', group: 'face' },
+  { id: 'slight-smile', emoji: '🙂', label: 'Slight smile', group: 'face' },
+  { id: 'upside-down', emoji: '🙃', label: 'Upside down', group: 'face' },
+  { id: 'melting', emoji: '🫠', label: 'Melting', group: 'face' },
+  { id: 'winking', emoji: '😉', label: 'Winking', group: 'face' },
+  { id: 'angel', emoji: '😇', label: 'Angel', group: 'face' },
+  { id: 'in-love', emoji: '🥰', label: 'In love', group: 'face' },
+  { id: 'heart-eyes', emoji: '😍', label: 'Heart eyes', group: 'face' },
+  { id: 'star-struck', emoji: '🤩', label: 'Star struck', group: 'face' },
+  { id: 'kissing', emoji: '😗', label: 'Kissing', group: 'face' },
+  { id: 'content', emoji: '☺️', label: 'Content', group: 'face' },
+  { id: 'kiss', emoji: '😚', label: 'Kiss', group: 'face' },
+  { id: 'kiss-smile', emoji: '😙', label: 'Kiss smile', group: 'face' },
+  { id: 'happy-tear', emoji: '🥲', label: 'Happy tear', group: 'face' },
+  { id: 'yummy', emoji: '😋', label: 'Yummy', group: 'face' },
+  { id: 'tongue-out', emoji: '😛', label: 'Tongue out', group: 'face' },
+  { id: 'cheeky', emoji: '😜', label: 'Cheeky', group: 'face' },
+  { id: 'zany', emoji: '🤪', label: 'Zany', group: 'face' },
+  { id: 'silly', emoji: '😝', label: 'Silly', group: 'face' },
+  { id: 'money', emoji: '🤑', label: 'Money', group: 'face' },
+  { id: 'hugging', emoji: '🤗', label: 'Hugging', group: 'face' },
+  { id: 'giggle', emoji: '🤭', label: 'Giggle', group: 'face' },
+  { id: 'gasp', emoji: '🫢', label: 'Gasp', group: 'face' },
+  { id: 'peeking', emoji: '🫣', label: 'Peeking', group: 'face' },
+  { id: 'shush', emoji: '🤫', label: 'Shush', group: 'face' },
+  { id: 'thinking', emoji: '🤔', label: 'Thinking', group: 'face' },
+  { id: 'salute', emoji: '🫡', label: 'Salute', group: 'face' },
+  { id: 'zipped', emoji: '🤐', label: 'Zipped', group: 'face' },
+  { id: 'doubtful', emoji: '🤨', label: 'Doubtful', group: 'face' },
+  { id: 'neutral', emoji: '😐', label: 'Neutral', group: 'face' },
+  { id: 'blank', emoji: '😑', label: 'Blank', group: 'face' },
+  { id: 'speechless', emoji: '😶', label: 'Speechless', group: 'face' },
+  { id: 'invisible', emoji: '🫥', label: 'Invisible', group: 'face' },
+  { id: 'foggy', emoji: '😶‍🌫️', label: 'Foggy', group: 'face' },
+  { id: 'smirk', emoji: '😏', label: 'Smirk', group: 'face' },
+  { id: 'unamused', emoji: '😒', label: 'Unamused', group: 'face' },
+  { id: 'eye-roll', emoji: '🙄', label: 'Eye roll', group: 'face' },
+  { id: 'awkward', emoji: '😬', label: 'Awkward', group: 'face' },
+  { id: 'exhale', emoji: '😮‍💨', label: 'Exhale', group: 'face' },
+  { id: 'lying', emoji: '🤥', label: 'Lying', group: 'face' },
+  { id: 'shaking', emoji: '🫨', label: 'Shaking', group: 'face' },
+  { id: 'relieved', emoji: '😌', label: 'Relieved', group: 'face' },
+  { id: 'pensive', emoji: '😔', label: 'Pensive', group: 'face' },
+  { id: 'sleepy', emoji: '😪', label: 'Sleepy', group: 'face' },
+  { id: 'drooling', emoji: '🤤', label: 'Drooling', group: 'face' },
+  { id: 'sleeping', emoji: '😴', label: 'Sleeping', group: 'face' },
+  { id: 'sick', emoji: '😷', label: 'Sick', group: 'face' },
+  { id: 'fever', emoji: '🤒', label: 'Fever', group: 'face' },
+  { id: 'hurt', emoji: '🤕', label: 'Hurt', group: 'face' },
+  { id: 'nauseous', emoji: '🤢', label: 'Nauseous', group: 'face' },
+  { id: 'throwing-up', emoji: '🤮', label: 'Throwing up', group: 'face' },
+  { id: 'sneezing', emoji: '🤧', label: 'Sneezing', group: 'face' },
+  { id: 'hot', emoji: '🥵', label: 'Hot', group: 'face' },
+  { id: 'cold', emoji: '🥶', label: 'Cold', group: 'face' },
+  { id: 'woozy', emoji: '🥴', label: 'Woozy', group: 'face' },
+  { id: 'dizzy', emoji: '😵', label: 'Dizzy', group: 'face' },
+  { id: 'mind-blown', emoji: '🤯', label: 'Mind blown', group: 'face' },
+  { id: 'cowgirl', emoji: '🤠', label: 'Cowgirl', group: 'face' },
+  { id: 'party', emoji: '🥳', label: 'Party', group: 'face' },
+  { id: 'disguised', emoji: '🥸', label: 'Disguised', group: 'face' },
+  { id: 'cool', emoji: '😎', label: 'Cool', group: 'face' },
+  { id: 'nerdy', emoji: '🤓', label: 'Nerdy', group: 'face' },
+  { id: 'curious', emoji: '🧐', label: 'Curious', group: 'face' },
+  { id: 'unsure', emoji: '😕', label: 'Unsure', group: 'face' },
+  { id: 'meh', emoji: '🫤', label: 'Meh', group: 'face' },
+  { id: 'worried', emoji: '😟', label: 'Worried', group: 'face' },
+  { id: 'frowning', emoji: '🙁', label: 'Frowning', group: 'face' },
+  { id: 'down', emoji: '☹️', label: 'Down', group: 'face' },
+  { id: 'surprised', emoji: '😮', label: 'Surprised', group: 'face' },
+  { id: 'hushed', emoji: '😯', label: 'Hushed', group: 'face' },
+  { id: 'astonished', emoji: '😲', label: 'Astonished', group: 'face' },
+  { id: 'flushed', emoji: '😳', label: 'Flushed', group: 'face' },
+  { id: 'pleading', emoji: '🥺', label: 'Pleading', group: 'face' },
+  { id: 'holding-tears', emoji: '🥹', label: 'Holding tears', group: 'face' },
+  { id: 'shocked', emoji: '😦', label: 'Shocked', group: 'face' },
+  { id: 'anguished', emoji: '😧', label: 'Anguished', group: 'face' },
+  { id: 'anxious', emoji: '😰', label: 'Anxious', group: 'face' },
+  { id: 'disappointed', emoji: '😥', label: 'Disappointed', group: 'face' },
+  { id: 'crying', emoji: '😭', label: 'Crying', group: 'face' },
+  { id: 'screaming', emoji: '😱', label: 'Screaming', group: 'face' },
+  { id: 'confounded', emoji: '😖', label: 'Confounded', group: 'face' },
+  { id: 'persevering', emoji: '😣', label: 'Persevering', group: 'face' },
+  { id: 'let-down', emoji: '😞', label: 'Let down', group: 'face' },
+  { id: 'stressed', emoji: '😓', label: 'Stressed', group: 'face' },
+  { id: 'weary', emoji: '😩', label: 'Weary', group: 'face' },
+  { id: 'tired', emoji: '😫', label: 'Tired', group: 'face' },
+  { id: 'yawning', emoji: '🥱', label: 'Yawning', group: 'face' },
+  { id: 'frustrated', emoji: '😤', label: 'Frustrated', group: 'face' },
+  { id: 'mad', emoji: '😠', label: 'Mad', group: 'face' },
+  { id: 'cursing', emoji: '🤬', label: 'Cursing', group: 'face' },
+  { id: 'naughty', emoji: '😈', label: 'Naughty', group: 'face' },
+  { id: 'furious', emoji: '👿', label: 'Furious', group: 'face' },
+  { id: 'love', emoji: '❤️', label: 'Love', group: 'heart' },
+  { id: 'pink-heart', emoji: '🩷', label: 'Pink heart', group: 'heart' },
+  { id: 'orange-heart', emoji: '🧡', label: 'Orange heart', group: 'heart' },
+  { id: 'yellow-heart', emoji: '💛', label: 'Yellow heart', group: 'heart' },
+  { id: 'green-heart', emoji: '💚', label: 'Green heart', group: 'heart' },
+  { id: 'light-blue-heart', emoji: '🩵', label: 'Light blue heart', group: 'heart' },
+  { id: 'blue-heart', emoji: '💙', label: 'Blue heart', group: 'heart' },
+  { id: 'purple-heart', emoji: '💜', label: 'Purple heart', group: 'heart' },
+  { id: 'brown-heart', emoji: '🤎', label: 'Brown heart', group: 'heart' },
+  { id: 'black-heart', emoji: '🖤', label: 'Black heart', group: 'heart' },
+  { id: 'grey-heart', emoji: '🩶', label: 'Grey heart', group: 'heart' },
+  { id: 'white-heart', emoji: '🤍', label: 'White heart', group: 'heart' },
+  { id: 'sparkling-heart', emoji: '💖', label: 'Sparkling heart', group: 'heart' },
+  { id: 'growing-heart', emoji: '💗', label: 'Growing heart', group: 'heart' },
+  { id: 'beating-heart', emoji: '💓', label: 'Beating heart', group: 'heart' },
+  { id: 'revolving-hearts', emoji: '💞', label: 'Revolving hearts', group: 'heart' },
+  { id: 'two-hearts', emoji: '💕', label: 'Two hearts', group: 'heart' },
+  { id: 'cupid', emoji: '💘', label: 'Cupid', group: 'heart' },
+  { id: 'heart-gift', emoji: '💝', label: 'Heart gift', group: 'heart' },
+  { id: 'heart', emoji: '💟', label: 'Heart', group: 'heart' },
+  { id: 'heart-exclamation', emoji: '❣️', label: 'Heart exclamation', group: 'heart' },
+  { id: 'heart-on-fire', emoji: '❤️‍🔥', label: 'Heart on fire', group: 'heart' },
+  { id: 'healing-heart', emoji: '❤️‍🩹', label: 'Healing heart', group: 'heart' },
+  { id: 'broken-heart', emoji: '💔', label: 'Broken heart', group: 'heart' },
 ];
 
 function todayKey() {
@@ -132,6 +257,7 @@ function createNotebookPage(seed = {}) {
     images: Array.isArray(seed.images) ? seed.images : [],
     mood: seed.mood || '',
     albumId: seed.albumId || '',
+    pinned: Boolean(seed.pinned),
     // Extra side-by-side columns for comparing things. 1 = plain page.
     // `note` is always column one; `notes` holds columns two to four, and is
     // kept even when fewer columns are shown, so nothing written is lost.
@@ -347,6 +473,7 @@ function NbIcon({ name }) {
     select: <><circle cx="12" cy="12" r="8.5" /><path d="M8.3 12.2l2.5 2.5 5-5.2" /></>,
     close: <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
     ungroup: <><rect x="3.5" y="9" width="10" height="10" rx="2" /><path d="M10.5 5h8a2 2 0 0 1 2 2v8" /></>,
+    pin: <><path d="M9 3.5h6l-1 6 3.5 3.5h-11L10 9.5z" /><path d="M12 13v7.5" /></>,
     out: <><path d="M14 4.5h4.5A1.5 1.5 0 0 1 20 6v12a1.5 1.5 0 0 1-1.5 1.5H14" /><path d="M4 12h10M8.5 7.5L4 12l4.5 4.5" /></>,
   };
   return (
@@ -378,6 +505,9 @@ function DailyNotebook() {
   const [data, setData] = useState(loadNotebook);
   const [draftItem, setDraftItem] = useState('');
   const [storageState, setStorageState] = useState('saved');
+  // The Save button: writes straight away and says so for a moment.
+  const [justSaved, setJustSaved] = useState(false);
+  const justSavedTimerRef = useRef(null);
   const removeTimersRef = useRef({});
   const didMountRef = useRef(false);
   // Long-press (~0.6s) arms a delete option on a checklist card or item.
@@ -478,6 +608,7 @@ function DailyNotebook() {
 
   useEffect(() => () => {
     Object.values(removeTimersRef.current).forEach(clearTimeout);
+    clearTimeout(justSavedTimerRef.current);
   }, []);
 
   useEffect(() => {
@@ -646,6 +777,26 @@ function DailyNotebook() {
     setArmedItemId(null);
   }
 
+  // Everything already saves by itself a moment after typing stops. The Save
+  // button writes it this instant and confirms it, so she can see it worked.
+  function saveNow() {
+    flushSave();
+    setJustSaved(true);
+    clearTimeout(justSavedTimerRef.current);
+    justSavedTimerRef.current = setTimeout(() => setJustSaved(false), 2000);
+  }
+
+  const saveButton = (
+    <button
+      type="button"
+      className={`nb-save-btn${justSaved && storageState !== 'error' ? ' is-saved' : ''}${storageState === 'error' ? ' is-error' : ''}`}
+      onClick={saveNow}
+      aria-live="polite"
+    >
+      {storageState === 'error' ? 'Not saved' : (justSaved ? 'Saved ✓' : 'Save')}
+    </button>
+  );
+
   // ── Selecting diary entries, and albums ──
   function stopSelecting() {
     setSelecting(false);
@@ -681,6 +832,23 @@ function DailyNotebook() {
   function setPagesAlbum(prev, ids, albumId) {
     const now = new Date().toISOString();
     return prev.pages.map(page => ids.includes(page.id) ? { ...page, albumId, updatedAt: now } : page);
+  }
+
+  // Pin puts entries at the top. If every picked entry is already pinned,
+  // the same button unpins them.
+  function pinSelected() {
+    if (!selectedIds.length) return;
+    const ids = selectedIds;
+    setData(prev => {
+      const picked = prev.pages.filter(page => ids.includes(page.id));
+      const pinned = !picked.every(page => page.pinned);
+      const now = new Date().toISOString();
+      return stampNotebookUpdate({
+        ...prev,
+        pages: prev.pages.map(page => ids.includes(page.id) ? { ...page, pinned, updatedAt: now } : page),
+      });
+    });
+    stopSelecting();
   }
 
   async function deleteSelected() {
@@ -830,9 +998,38 @@ function DailyNotebook() {
   const openAlbum = albums.find(album => album.id === openAlbumId) || null;
   const albumIds = new Set(albums.map(album => album.id));
   const visibleAlbums = openAlbum ? [] : albums;
-  const visiblePages = openAlbum
+  const shownPages = openAlbum
     ? data.pages.filter(page => page.albumId === openAlbum.id)
     : data.pages.filter(page => !albumIds.has(page.albumId));
+  // Pinned entries sit at the top, before albums and the rest.
+  const pinnedPages = shownPages.filter(page => page.pinned);
+  const visiblePages = [...pinnedPages, ...shownPages.filter(page => !page.pinned)];
+  const pickedPages = data.pages.filter(page => selectedIds.includes(page.id));
+  const allPickedPinned = pickedPages.length > 0 && pickedPages.every(page => page.pinned);
+
+  function renderEntryCard(page) {
+    const mood = MOOD_CHOICES.find(choice => choice.id === page.mood);
+    const picked = selectedIds.includes(page.id);
+    return (
+      <button
+        key={page.id}
+        type="button"
+        className={`daily-page-card${!selecting && page.id === data.activePageId ? ' active' : ''}${picked ? ' is-picked' : ''}`}
+        onClick={() => tapEntry(page.id)}
+        onPointerDown={() => startEntryPress(page.id)}
+        onPointerUp={cancelLongPress}
+        onPointerLeave={cancelLongPress}
+        onPointerCancel={cancelLongPress}
+        onContextMenu={e => e.preventDefault()}
+        aria-pressed={selecting ? picked : undefined}
+      >
+        {selecting && <span className="nb-tick" aria-hidden="true">{picked ? '✓' : ''}</span>}
+        <strong>{page.pinned && <span className="nb-pin-mark" aria-label="Pinned"><NbIcon name="pin" /></span>}{page.title || 'Title'}</strong>
+        <span>{mood ? `${mood.emoji} ${mood.label}` : 'No mood yet'}</span>
+        <small>{formatNotebookSavedAt(page.updatedAt)}</small>
+      </button>
+    );
+  }
 
   const checklistItems = currentChecklist?.items || [];
   const checkedCount = checklistItems.filter(item => item.done).length;
@@ -966,6 +1163,16 @@ function DailyNotebook() {
                                 <NbIcon name="album" />
                               </button>
                             )}
+                            <button
+                              type="button"
+                              className="nb-icon-btn"
+                              onClick={pinSelected}
+                              disabled={!selectedIds.length}
+                              aria-label={allPickedPinned ? 'Unpin' : 'Pin to top'}
+                              title={allPickedPinned ? 'Unpin' : 'Pin to top'}
+                            >
+                              <NbIcon name="pin" />
+                            </button>
                             <button type="button" className="nb-icon-btn danger" onClick={deleteSelected} disabled={!selectedIds.length} aria-label="Delete selected" title="Delete">
                               <NbIcon name="trash" />
                             </button>
@@ -1006,6 +1213,7 @@ function DailyNotebook() {
                           {openAlbum ? 'This album is empty — tap ＋ to write in it.' : 'No entries yet — tap ＋ to write one.'}
                         </div>
                       )}
+                      {pinnedPages.map(page => renderEntryCard(page))}
                       {visibleAlbums.map(album => {
                         const count = data.pages.filter(page => page.albumId === album.id).length;
                         return (
@@ -1021,38 +1229,19 @@ function DailyNotebook() {
                           </button>
                         );
                       })}
-                      {visiblePages.map(page => {
-                        const mood = MOOD_CHOICES.find(choice => choice.id === page.mood);
-                        const picked = selectedIds.includes(page.id);
-                        return (
-                          <button
-                            key={page.id}
-                            type="button"
-                            className={`daily-page-card${!selecting && page.id === data.activePageId ? ' active' : ''}${picked ? ' is-picked' : ''}`}
-                            onClick={() => tapEntry(page.id)}
-                            onPointerDown={() => startEntryPress(page.id)}
-                            onPointerUp={cancelLongPress}
-                            onPointerLeave={cancelLongPress}
-                            onPointerCancel={cancelLongPress}
-                            onContextMenu={e => e.preventDefault()}
-                            aria-pressed={selecting ? picked : undefined}
-                          >
-                            {selecting && <span className="nb-tick" aria-hidden="true">{picked ? '✓' : ''}</span>}
-                            <strong>{page.title || 'Title'}</strong>
-                            <span>{mood ? `${mood.emoji} ${mood.label}` : 'No mood yet'}</span>
-                            <small>{formatNotebookSavedAt(page.updatedAt)}</small>
-                          </button>
-                        );
-                      })}
+                      {visiblePages.filter(page => !page.pinned).map(page => renderEntryCard(page))}
                     </div>
                   </aside>
 
                   {diaryEditorOpen && currentPage && (
                   <section className="daily-note-editor">
                     <div className="nb-editor-top">
-                      <button type="button" className="daily-note-back" onClick={closeEditor}>
-                        ‹ Back
-                      </button>
+                      <div className="nb-editor-left">
+                        <button type="button" className="daily-note-back" onClick={closeEditor}>
+                          ‹ Back
+                        </button>
+                        {saveButton}
+                      </div>
                       <div className="nb-actions">
                         <div className="nb-cols" role="group" aria-label="Columns">
                           {[1, 2, 3, 4].map(n => (
@@ -1098,17 +1287,25 @@ function DailyNotebook() {
                     </div>
 
                     {moodPickerOpen && (
-                      <div className="daily-mood-row" aria-label="Mood choices">
-                        {MOOD_CHOICES.map(mood => (
-                          <button
-                            key={mood.id}
-                            type="button"
-                            className={`daily-mood-chip${currentPage?.mood === mood.id ? ' active' : ''}`}
-                            onClick={() => updateMood(mood.id)}
-                          >
-                            <span>{mood.emoji}</span>
-                            <small>{mood.label}</small>
-                          </button>
+                      <div className="daily-mood-row nb-mood-picker" aria-label="Mood choices">
+                        {[['face', 'Faces'], ['heart', 'Hearts']].map(([group, heading]) => (
+                          <div key={group} className="nb-mood-group">
+                            <div className="nb-mood-heading">{heading}</div>
+                            <div className="nb-mood-grid">
+                              {MOOD_CHOICES.filter(mood => mood.group === group).map(mood => (
+                                <button
+                                  key={mood.id}
+                                  type="button"
+                                  className={`daily-mood-chip${currentPage?.mood === mood.id ? ' active' : ''}`}
+                                  onClick={() => updateMood(mood.id)}
+                                  aria-label={mood.label}
+                                  title={mood.label}
+                                >
+                                  <span>{mood.emoji}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     )}
@@ -1195,9 +1392,14 @@ function DailyNotebook() {
 
                   {checklistEditorOpen && currentChecklist && (
                   <section className="daily-note-editor daily-check-editor">
-                    <button type="button" className="daily-note-back" onClick={closeEditor}>
-                      ‹ Back
-                    </button>
+                    <div className="nb-editor-top">
+                      <div className="nb-editor-left">
+                        <button type="button" className="daily-note-back" onClick={closeEditor}>
+                          ‹ Back
+                        </button>
+                        {saveButton}
+                      </div>
+                    </div>
 
                     <input
                       className="daily-page-title-input"
