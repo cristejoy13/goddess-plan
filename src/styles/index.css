@@ -3342,8 +3342,11 @@ body {
 }
 .daily-check-toggle {
   flex: none;
-  width: 28px;
-  height: 28px;
+  /* The circle is now the only way to tick an item, so give it a
+     thumb-sized tap area without changing how the row looks. */
+  width: 40px;
+  height: 40px;
+  margin: -6px;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -3375,7 +3378,7 @@ body {
   line-height: 1.35;
   text-align: left;
   overflow-wrap: anywhere;
-  cursor: pointer;
+  cursor: default;
 }
 .daily-check-item.done .daily-check-text {
   color: var(--text-soft);

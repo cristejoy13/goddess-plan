@@ -1171,10 +1171,11 @@ function DailyNotebook() {
                                     <button type="button" className="daily-check-toggle" onPointerDown={e => e.stopPropagation()} onClick={() => { if (consumedLongPress()) return; toggleChecklistItem(item.id); }} aria-label={`Toggle ${item.text}`}>
                                       <span />
                                     </button>
-                                    <button type="button" className="daily-check-text" onClick={() => { if (consumedLongPress()) return; toggleChecklistItem(item.id); }}>
+                                    {/* Only the circle ticks an item; tapping or scrolling over the words does nothing. */}
+                                    <span className="daily-check-text">
                                       {item.pinned && <em className="daily-check-pin-mark">Pinned</em>}
                                       {item.text}
-                                    </button>
+                                    </span>
                                     <button type="button" className={`daily-check-pin${item.pinned ? ' active' : ''}`} onPointerDown={e => e.stopPropagation()} onClick={() => { if (consumedLongPress()) return; togglePinChecklistItem(item.id); }} aria-label={`${item.pinned ? 'Unpin' : 'Pin'} ${item.text}`}>
                                       Pin
                                     </button>
