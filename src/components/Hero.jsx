@@ -334,6 +334,14 @@ function DailyNotebook() {
   const [armedListId, setArmedListId] = useState(null);
   const [armedItemId, setArmedItemId] = useState(null);
 
+  // While the notebook is open, only the notebook scrolls — not the homepage.
+  useEffect(() => {
+    if (!open) return undefined;
+    const was = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = was; };
+  }, [open]);
+
   // Writing on every keystroke meant serializing the whole notebook — every
   // page, every list, every photo — between one letter and the next, which is
   // what made typing feel slow. Waiting until she pauses writes once instead
