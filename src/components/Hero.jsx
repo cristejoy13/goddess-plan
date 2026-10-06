@@ -356,7 +356,7 @@ function NbIcon({ name }) {
   );
 }
 
-// A box split into n columns, for the 2 / 3 / 4 column buttons.
+// A box split into n columns, for the 1 / 2 / 3 / 4 column buttons.
 function ColumnsIcon({ n }) {
   const w = 16 / n;
   return (
@@ -519,9 +519,10 @@ function DailyNotebook() {
     updateCurrentPage({ notes });
   }
 
-  // Tap 2, 3 or 4 to split the page; tap the lit one again to go back to one.
+  // 1 is a plain page (the default); 2, 3 or 4 split it for comparing.
   function pickColumns(n) {
-    updateCurrentPage({ columns: currentPage?.columns === n ? 1 : n });
+    if ((currentPage?.columns || 1) === n) return;
+    updateCurrentPage({ columns: n });
   }
 
   function addNotebookPage() {
@@ -1054,15 +1055,15 @@ function DailyNotebook() {
                       </button>
                       <div className="nb-actions">
                         <div className="nb-cols" role="group" aria-label="Columns">
-                          {[2, 3, 4].map(n => (
+                          {[1, 2, 3, 4].map(n => (
                             <button
                               key={n}
                               type="button"
-                              className={`nb-icon-btn${currentPage?.columns === n ? ' is-on' : ''}`}
+                              className={`nb-icon-btn${(currentPage?.columns || 1) === n ? ' is-on' : ''}`}
                               onClick={() => pickColumns(n)}
-                              aria-pressed={currentPage?.columns === n}
-                              aria-label={`${n} columns`}
-                              title={`${n} columns`}
+                              aria-pressed={(currentPage?.columns || 1) === n}
+                              aria-label={n === 1 ? '1 column' : `${n} columns`}
+                              title={n === 1 ? '1 column' : `${n} columns`}
                             >
                               <ColumnsIcon n={n} />
                             </button>

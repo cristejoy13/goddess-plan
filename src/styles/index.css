@@ -10665,7 +10665,7 @@ body {
 .daily-pages-board-top .daily-page-add { width: 42px; padding: 0; }
 
 .nb-editor-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.nb-editor-top .daily-note-back { align-self: center; }
+.nb-editor-top .daily-note-back { align-self: center; white-space: nowrap; flex: none; }
 
 .nb-album-head { display: flex; align-items: center; gap: 8px; }
 .nb-album-title {
@@ -10786,4 +10786,7 @@ body {
 @media (max-width: 360px) {
   .nb-cols .nb-icon-btn { width: 36px; height: 36px; }
   .nb-cols { gap: 4px; }
+  .nb-editor-top { gap: 4px; }
+  .nb-editor-top .daily-note-back { padding: 7px 9px; }
+  .nb-editor-top .nb-actions { gap: 4px; }
 }
