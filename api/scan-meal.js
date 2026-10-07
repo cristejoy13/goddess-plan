@@ -17,8 +17,19 @@ import { GEMINI_MODELS, buildPrompt, parseItems, settleItem } from './_scan.js';
 const MAX_TEXT = 1000;
 const MAX_IMAGE_CHARS = 3_000_000; // ~2.2 MB of photo; the app sends far less
 
+// Nothing may hang: a slow service is cut off and the next option tried.
+async function fetchWithin(ms, url, opts) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { ...opts, signal: ctrl.signal });
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 async function askModel(model, key, parts) {
-  return fetch(
+  return fetchWithin(20000,
     `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,
     {
       method: 'POST',
@@ -38,7 +49,13 @@ async function askGemini({ text, image }) {
   if (image) parts.push({ inline_data: { mime_type: image.type, data: image.data } });
   let busy = false;
   for (const model of models) {
-    const r = await askModel(model, key, parts);
+    let r;
+    try {
+      r = await askModel(model, key, parts);
+    } catch {
+      busy = true;
+      continue;
+    }
     // A bad key fails the same way on every model; say so straight away.
     if (r.status === 400 || r.status === 401) {
       const j = await r.json().catch(() => ({}));
@@ -63,7 +80,7 @@ async function findUsda(query) {
   const keys = own ? [own, own, 'DEMO_KEY'] : ['DEMO_KEY', 'DEMO_KEY'];
   for (const key of keys) {
     try {
-      const r = await fetch(urlFor(key));
+      const r = await fetchWithin(8000, urlFor(key));
       if (r.ok) {
         const j = await r.json();
         return Array.isArray(j.foods) && j.foods.length ? j.foods[0] : null;
@@ -86,6 +103,32 @@ export default async function handler(req, res) {
   }
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+
+  // { check: true } — tells whether each key works, without showing any key.
+  if (body.check === true) {
+    const result = {};
+    const key = String(process.env.GEMINI_API_KEY || '').trim();
+    for (const model of [...new Set([process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean))]) {
+      const t0 = Date.now();
+      try {
+        const r = await askModel(model, key, [{ text: 'Reply with JSON {"ok":true}' }]);
+        const j = await r.json().catch(() => ({}));
+        result[model] = `${r.status} in ${Date.now() - t0} ms${r.ok ? '' : ` — ${String(j.error?.message || '').slice(0, 120)}`}`;
+      } catch (e) {
+        result[model] = `no answer after ${Date.now() - t0} ms (${e.name})`;
+      }
+    }
+    const own = String(process.env.USDA_API_KEY || '').trim();
+    const t1 = Date.now();
+    try {
+      const r = await fetchWithin(8000, `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${encodeURIComponent(own)}&query=banana&pageSize=1`);
+      result.usda = `${r.status} in ${Date.now() - t1} ms`;
+    } catch (e) {
+      result.usda = `no answer after ${Date.now() - t1} ms (${e.name})`;
+    }
+    return res.status(200).json(result);
+  }
+
   const text = String(body.text || '').trim().slice(0, MAX_TEXT);
   const image = body.image && typeof body.image.data === 'string'
     && /^image\/(jpeg|png|webp|heic|heif)$/.test(body.image.type || '')
