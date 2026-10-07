@@ -9455,7 +9455,11 @@ body {
      Two different side widths read as lopsided no matter how even the gutters
      are, which is what "uneven" meant. Fixed rather than minmax so the
      symmetry cannot drift as the panel resizes. */
-  .ml-add-row { grid-template-columns: 124px 1fr 124px; gap: 32px; }
+  /* The meal box now takes a whole spoken meal, which is too long for a
+     middle column: it gets the full width on top, with Time and Calories as a
+     matched pair beneath, the same as on a tablet. */
+  .ml-add-row { grid-template-columns: 1fr 1fr; gap: 22px 32px; }
+  .ml-text-wrap { grid-column: 1 / -1; order: -1; }
   .ml-day-panel { padding: 26px; }
   .ml-day-wt { font-size: 10px; }
   .ml-day-week { font-size: 9px; }
@@ -10933,3 +10937,41 @@ body {
 .nb-col-expand .nb-icon { width: 16px; height: 16px; }
 .nb-col-expand::before { content: ''; position: absolute; inset: -6px; }
 [data-mode="light"] .nb-col-expand { background: rgba(255,248,252,0.95); border-color: rgba(154,104,0,0.26); color: #8a5c00; }
+
+/* ── Meal: talk or type ── */
+.ml-talk-box { position: relative; display: block; }
+.ml-talk-box .ml-text-input {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  max-height: 220px;
+  padding-right: 54px;
+  padding-left: 54px;
+  resize: none;
+  overflow-y: auto;
+  font-family: inherit;
+  line-height: 1.4;
+}
+.ml-mic-btn {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,92,157,0.45);
+  background: rgba(255,92,157,0.12);
+  color: #ff5c9d;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ml-mic-btn.is-on { background: #ff5c9d; border-color: #ff5c9d; color: #fff; animation: ml-mic-pulse 1.3s ease-in-out infinite; }
+.ml-mic-stop { width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
+@keyframes ml-mic-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,92,157,0.45); } 50% { box-shadow: 0 0 0 8px rgba(255,92,157,0); } }
+@media (prefers-reduced-motion: reduce) { .ml-mic-btn.is-on { animation: none; } }
+.ml-mic-note { font-size: 12px; color: var(--text-mid, #c090b8); text-align: center; }
+[data-mode="light"] .ml-mic-btn { background: rgba(200,23,110,0.08); border-color: rgba(200,23,110,0.4); color: #b0105e; }
+[data-mode="light"] .ml-mic-btn.is-on { background: #c8176e; border-color: #c8176e; color: #fff; }
+[data-mode="light"] .ml-mic-note { color: #5a2a4a; }

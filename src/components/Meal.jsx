@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
+import { useDictation } from '../utils/dictation';
 import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
@@ -134,9 +135,38 @@ function MealForm({ initial, onSubmit, onCancel }) {
   const [text, setText] = useState(initial?.text || '');
   const [cal,  setCal]  = useState(() => (initial?.cal != null ? String(initial.cal) : ''));
   const editing = Boolean(initial);
+  // Talk or type. Whatever is said is added after what is already in the box,
+  // and shows as it is heard, so she can read it back and fix any word.
+  const boxRef = useRef(null);
+  const beforeTalkRef = useRef('');
+  const [micNote, setMicNote] = useState('');
+  const mic = useDictation(heard => {
+    const before = beforeTalkRef.current;
+    setText(before && heard ? `${before} ${heard}` : (before || heard));
+  });
+  function toggleMic() {
+    if (mic.listening) { mic.stop(); return; }
+    if (!mic.supported) {
+      setMicNote('Talking is not offered here. Tap the 🎤 on your keyboard instead.');
+      boxRef.current?.focus();
+      return;
+    }
+    setMicNote('');
+    beforeTalkRef.current = text.trim();
+    mic.start();
+  }
+
+  // The box grows with what is in it, so a long meal can be read in full.
+  useLayoutEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight + 3}px`;
+  }, [text]);
 
   function submit(e) {
     e.preventDefault();
+    if (mic.listening) mic.stop();
     const t = text.trim();
     if (!t) return;
     onSubmit({ time: time || nowTime(), text: t, cal: parseCal(cal) });
@@ -161,13 +191,35 @@ function MealForm({ initial, onSubmit, onCancel }) {
         </label>
         <label className="ml-text-wrap">
           <span className="ml-time-lbl">What did you eat?</span>
-          <input
-            className="ml-text-input"
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder="Type it here"
-            autoFocus={editing}
-          />
+          <span className="ml-talk-box">
+            <textarea
+              ref={boxRef}
+              className="ml-text-input"
+              rows={1}
+              value={text}
+              onChange={e => setText(e.target.value)}
+              // Enter still adds the meal, as it did when this was one line.
+              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }}
+              placeholder={mic.listening ? 'Listening… say what you ate' : 'Type or tap 🎤 to talk'}
+              autoFocus={editing}
+            />
+            <button
+              type="button"
+              className={`ml-mic-btn${mic.listening ? ' is-on' : ''}`}
+              onClick={toggleMic}
+              aria-pressed={mic.listening}
+              aria-label={mic.listening ? 'Stop listening' : 'Talk instead of typing'}
+              title={mic.listening ? 'Stop' : 'Talk'}
+            >
+              {mic.listening ? <span className="ml-mic-stop" aria-hidden="true" /> : (
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="9" y="3" width="6" height="11" rx="3" />
+                  <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
+                </svg>
+              )}
+            </button>
+          </span>
+          {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
         </label>
         <label className="ml-cal-wrap">
           <span className="ml-time-lbl">Calories</span>
