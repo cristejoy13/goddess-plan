@@ -1,4 +1,4 @@
-// POST /api/burn  { cal: number, day?: 'yesterday' | 'today', date?: 'YYYY-MM-DD' }
+// POST /api/burn  { cal | (active + resting), day?: 'yesterday' | 'today', date?: 'YYYY-MM-DD' }
 //   → { ok: true, date, cal }
 //
 // Called by her iPhone Shortcut with the day's calories burned from Apple
@@ -40,8 +40,12 @@ export default async function handler(req, res) {
 
   let body = req.body || {};
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
-  // Shortcuts may send the number as text: "1,876.4", "1876.4 kcal".
-  const cal = Math.round(Number((String(body.cal ?? '').replace(/,/g, '').match(/\d+(\.\d+)?/) || [])[0]));
+  // Shortcuts may send the number as text: "1,876.4", "1876.4 kcal". Her
+  // Shortcut sends active and resting energy separately; they are added here
+  // so the phone does not need a sum of its own.
+  const num = v => Number((String(v ?? '').replace(/,/g, '').match(/\d+(\.\d+)?/) || [])[0]);
+  const parts = [num(body.active), num(body.resting)].filter(Number.isFinite);
+  const cal = Math.round(body.cal != null && body.cal !== '' ? num(body.cal) : (parts.length ? parts.reduce((a, b) => a + b, 0) : NaN));
   if (!Number.isFinite(cal) || cal < 1 || cal > 10000) {
     return res.status(400).json({ error: 'Send cal as a number between 1 and 10,000.' });
   }
