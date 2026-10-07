@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
+import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation } from '../utils/dictation';
-import { shrinkPhoto, scanMeal, scanScale, describeItems } from '../utils/mealScan';
+import { shrinkPhoto, scanMeal, scanScale, describeItems, recall } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
@@ -197,10 +197,30 @@ function MealForm({ initial, onSubmit, onCancel }) {
     }
   }
 
+  // A meal worked out before fills in by itself: once she stops typing or
+  // talking, if these exact words were scanned before (on any of her
+  // gadgets), the card appears with no click and no internet. She still
+  // checks it and saves it herself. Cancel means not this time.
+  const dismissedRef = useRef('');
+  useEffect(() => {
+    const words = text.trim();
+    if (editing || scan || photo || mic.listening || words.length < 3 || dismissedRef.current === words) return undefined;
+    const t = setTimeout(() => {
+      const known = recall(words);
+      if (known) setScan({ ...known, from: 'memory' });
+    }, 900);
+    return () => clearTimeout(t);
+  }, [text, editing, scan, photo, mic.listening]);
+
+  function cancelScan() {
+    dismissedRef.current = text.trim();
+    setScan(null);
+  }
+
   function dropItem(i) {
     setScan(prev => {
       const items = prev.items.filter((_, j) => j !== i);
-      return items.length ? { items, total: items.reduce((sum, it) => sum + it.kcal, 0) } : null;
+      return items.length ? { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) } : null;
     });
   }
 
@@ -306,7 +326,11 @@ function MealForm({ initial, onSubmit, onCancel }) {
       </div>
       {scan && (
         <div className="ml-scan-card" role="region" aria-label="Calories found">
-          <div className="ml-scan-head">Check these, then save</div>
+          <div className="ml-scan-head">
+            {scan.from === 'memory' ? 'You had this before — check, then save'
+              : scan.from === 'offline' ? 'Worked out offline — check, then save'
+                : 'Check these, then save'}
+          </div>
           <ul className="ml-scan-list">
             {scan.items.map((it, i) => (
               <li key={`${it.name}-${i}`}>
@@ -315,8 +339,8 @@ function MealForm({ initial, onSubmit, onCancel }) {
                   <small>
                     {[it.amount, it.grams && !new RegExp(`^${it.grams}\\s*g$`, 'i').test(it.amount || '') ? `${it.grams} g` : ''].filter(Boolean).join(' · ')}
                     {' · '}
-                    <em className={it.source === 'usda' ? 'is-usda' : 'is-ai'} title={it.usdaName || ''}>
-                      {it.source === 'usda' ? 'USDA' : 'AI guess'}
+                    <em className={it.source === 'ai' ? 'is-ai' : 'is-usda'} title={it.usdaName || ''}>
+                      {it.source === 'ai' ? 'AI guess' : 'USDA'}
                     </em>
                   </small>
                 </span>
@@ -325,10 +349,15 @@ function MealForm({ initial, onSubmit, onCancel }) {
               </li>
             ))}
           </ul>
+          {scan.missing?.length > 0 && (
+            <div className="ml-scan-missing">
+              Not found: {scan.missing.join(', ')}. Add its calories yourself.
+            </div>
+          )}
           <div className="ml-scan-total"><span>Total</span><b>{scan.total.toLocaleString('en-US')} cal</b></div>
           <div className="ml-form-btns">
             <button type="button" className="ml-add-btn" onClick={saveScan}>Save this meal</button>
-            <button type="button" className="ml-cancel-btn" onClick={() => setScan(null)}>Cancel</button>
+            <button type="button" className="ml-cancel-btn" onClick={cancelScan}>Cancel</button>
           </div>
         </div>
       )}

@@ -41,6 +41,13 @@ function startBackgroundServices() {
   } catch {
     // Update checks must not block app startup.
   }
+
+  // The USDA food list, kept on this gadget for offline calories. A few
+  // seconds after start so it never competes with the first screen, and again
+  // whenever the connection comes back.
+  const fetchFoods = () => import('./utils/foodList').then(m => m.ensureFoodList()).catch(() => {})
+  setTimeout(fetchFoods, 5000)
+  window.addEventListener('online', fetchFoods)
 }
 
 if (typeof requestIdleCallback === 'function') {

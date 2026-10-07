@@ -2,6 +2,8 @@
 // words to /api/scan-meal, and bring back the list for her to check. Nothing
 // is saved here — she sees the numbers first and saves them herself.
 
+import { trimMemory } from './mergeScanMemory.js';
+
 const MAX_SIDE = 800;
 
 // A phone photo is several megabytes. The AI reads an 800-pixel JPEG just as
@@ -31,10 +33,9 @@ export async function shrinkPhoto(file) {
 // the same meal comes back at once, even offline. Photos are not remembered:
 // two photos are never the same meal.
 const MEMORY_KEY = 'gp_scan_memory';
-const MEMORY_MAX = 150;
 const memKey = text => text.toLowerCase().replace(/[^a-z0-9.]+/g, ' ').trim();
 
-function recall(text) {
+export function recall(text) {
   try {
     const all = JSON.parse(localStorage.getItem(MEMORY_KEY) || '{}');
     return all[memKey(text)]?.result || null;
@@ -47,20 +48,42 @@ function remember(text, result) {
   try {
     const all = JSON.parse(localStorage.getItem(MEMORY_KEY) || '{}');
     all[memKey(text)] = { result, at: Date.now() };
-    const keys = Object.keys(all);
-    if (keys.length > MEMORY_MAX) {
-      keys.sort((x, y) => all[x].at - all[y].at).slice(0, keys.length - MEMORY_MAX).forEach(k => delete all[k]);
-    }
-    localStorage.setItem(MEMORY_KEY, JSON.stringify(all));
+    localStorage.setItem(MEMORY_KEY, JSON.stringify(trimMemory(all)));
   } catch { /* memory is a bonus */ }
 }
 
+// Her words worked out from the USDA list kept on this gadget.
+async function offline(text, why) {
+  const { estimateOffline } = await import('./foodList.js');
+  const r = await estimateOffline(text);
+  if (!r) throw new Error(`${why} The food list is not on this gadget yet — open the app once with internet.`);
+  if (!r.items.length) throw new Error(`${why} Could not work out "${text}" offline. Type the calories yourself.`);
+  return { ...r, from: 'offline' };
+}
+
+/**
+ * Words and/or a photo → { items, total, missing?, from? }.
+ *   from: 'memory'  — this meal was worked out before (instant, works offline)
+ *         'offline' — no internet: worked out from the stored USDA list
+ *         (none)    — fresh from the AI and USDA
+ */
 export async function scanMeal({ text, image }) {
   if (!image && text) {
     const known = recall(text);
-    if (known) return known;
+    if (known) return { ...known, from: 'memory' };
   }
-  const result = await post({ text, image: image ? { data: image.data, type: image.type } : undefined });
+  if (navigator.onLine === false) {
+    if (!text) throw new Error('Photos need internet. Type or say what it is instead.');
+    return offline(text, image ? 'No internet, so the photo was left out.' : '');
+  }
+  let result;
+  try {
+    result = await post({ text, image: image ? { data: image.data, type: image.type } : undefined });
+  } catch (err) {
+    // The server could not be reached at all: fall back to the stored list.
+    if (err.unreachable && text) return offline(text, 'Could not reach the scanner, so this was worked out on your phone.');
+    throw err;
+  }
   if (!image && text) remember(text, result);
   return result;
 }
@@ -99,9 +122,9 @@ async function post(payload) {
     }
   }
   if (!r) {
-    throw new Error(navigator.onLine === false
+    throw Object.assign(new Error(navigator.onLine === false
       ? 'No internet. Try again when you are online.'
-      : 'Could not reach the scanner. Try again.');
+      : 'Could not reach the scanner. Try again.'), { unreachable: true });
   }
   let j = {};
   try { j = await r.json(); } catch { /* not JSON */ }
