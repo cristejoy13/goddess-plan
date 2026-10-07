@@ -10780,7 +10780,7 @@ body {
    instead (3 = two on top, one wide below; 4 = two by two). */
 @media (max-width: 640px) {
   .nb-columns-3, .nb-columns-4 { --nb-cols: 2; }
-  .nb-columns-3 .daily-note-input:last-child { grid-column: 1 / -1; }
+  .nb-columns-3:not(.is-expanded) .nb-col:last-child { grid-column: 1 / -1; }
   .nb-columns .daily-note-input { min-height: 170px; }
 }
 @media (max-width: 360px) {
@@ -10909,3 +10909,27 @@ body {
   border: 1px dashed rgba(240,204,96,0.35); background: transparent;
   color: var(--text-soft); font-family: inherit; font-size: 12px; cursor: pointer;
 }
+
+/* Each column has an icon in its corner to open it big; the same icon
+   (now pointing inwards) puts all columns back side by side. */
+.nb-col { position: relative; min-width: 0; display: flex; }
+.nb-col .daily-note-input { padding-right: 40px; }
+.nb-columns.is-expanded { grid-template-columns: minmax(0, 1fr); }
+.nb-columns.is-expanded .daily-note-input { min-height: 320px; max-height: min(60dvh, 560px); font-size: 14px; }
+.nb-col-expand {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(240,204,96,0.24);
+  border-radius: 9px;
+  background: rgba(0,0,0,0.35);
+  color: var(--gold);
+  cursor: pointer;
+}
+.nb-col-expand .nb-icon { width: 16px; height: 16px; }
+.nb-col-expand::before { content: ''; position: absolute; inset: -6px; }
+[data-mode="light"] .nb-col-expand { background: rgba(255,248,252,0.95); border-color: rgba(154,104,0,0.26); color: #8a5c00; }

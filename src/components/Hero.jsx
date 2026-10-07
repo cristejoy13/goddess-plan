@@ -473,6 +473,8 @@ function NbIcon({ name }) {
     select: <><circle cx="12" cy="12" r="8.5" /><path d="M8.3 12.2l2.5 2.5 5-5.2" /></>,
     close: <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
     ungroup: <><rect x="3.5" y="9" width="10" height="10" rx="2" /><path d="M10.5 5h8a2 2 0 0 1 2 2v8" /></>,
+    expand: <><path d="M14 4h6v6" /><path d="M20 4l-6.5 6.5" /><path d="M10 20H4v-6" /><path d="M4 20l6.5-6.5" /></>,
+    shrink: <><path d="M20 10h-6V4" /><path d="M14 10l6.5-6.5" /><path d="M4 14h6v6" /><path d="M10 14l-6.5 6.5" /></>,
     pin: <><path d="M9 3.5h6l-1 6 3.5 3.5h-11L10 9.5z" /><path d="M12 13v7.5" /></>,
     out: <><path d="M14 4.5h4.5A1.5 1.5 0 0 1 20 6v12a1.5 1.5 0 0 1-1.5 1.5H14" /><path d="M4 12h10M8.5 7.5L4 12l4.5 4.5" /></>,
   };
@@ -519,6 +521,8 @@ function DailyNotebook() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [openAlbumId, setOpenAlbumId] = useState('');
   const [albumMenuOpen, setAlbumMenuOpen] = useState(false);
+  // Which column is opened big (0-3), or null for all side by side.
+  const [expandedCol, setExpandedCol] = useState(null);
 
   // While the notebook is open, only the notebook scrolls — not the homepage.
   useEffect(() => {
@@ -651,6 +655,7 @@ function DailyNotebook() {
   // 1 is a plain page (the default); 2, 3 or 4 split it for comparing.
   function pickColumns(n) {
     if ((currentPage?.columns || 1) === n) return;
+    setExpandedCol(null);
     updateCurrentPage({ columns: n });
   }
 
@@ -668,11 +673,13 @@ function DailyNotebook() {
   function selectNotebookPage(id) {
     setData(prev => ({ ...prev, activePageId: id }));
     setMoodPickerOpen(false);
+    setExpandedCol(null);
     setDiaryEditorOpen(true);
   }
 
   function closeEditor() {
     setMoodPickerOpen(false);
+    setExpandedCol(null);
     setDiaryEditorOpen(false);
     setChecklistEditorOpen(false);
   }
@@ -1299,24 +1306,31 @@ function DailyNotebook() {
                     )}
 
                     {(currentPage?.columns || 1) > 1 ? (
-                      <div className={`nb-columns nb-columns-${currentPage.columns}`}>
-                        <textarea
-                          className="daily-note-input"
-                          value={currentPage.note || ''}
-                          onChange={e => updateNote(e.target.value)}
-                          placeholder="Column 1"
-                          aria-label="Column 1"
-                        />
-                        {Array.from({ length: currentPage.columns - 1 }, (_, i) => i + 1).map(i => (
-                          <textarea
-                            key={i}
-                            className="daily-note-input"
-                            value={currentPage.notes?.[i - 1] || ''}
-                            onChange={e => updateColumnNote(i, e.target.value)}
-                            placeholder={`Column ${i + 1}`}
-                            aria-label={`Column ${i + 1}`}
-                          />
-                        ))}
+                      <div className={`nb-columns nb-columns-${currentPage.columns}${expandedCol !== null ? ' is-expanded' : ''}`}>
+                        {Array.from({ length: currentPage.columns }, (_, i) => i).map(i => {
+                          if (expandedCol !== null && expandedCol !== i) return null;
+                          const big = expandedCol === i;
+                          return (
+                            <div key={i} className="nb-col">
+                              <textarea
+                                className="daily-note-input"
+                                value={i === 0 ? (currentPage.note || '') : (currentPage.notes?.[i - 1] || '')}
+                                onChange={e => (i === 0 ? updateNote(e.target.value) : updateColumnNote(i, e.target.value))}
+                                placeholder={`Column ${i + 1}`}
+                                aria-label={`Column ${i + 1}`}
+                              />
+                              <button
+                                type="button"
+                                className="nb-col-expand"
+                                onClick={() => setExpandedCol(big ? null : i)}
+                                aria-label={big ? `Show all columns` : `Make column ${i + 1} bigger`}
+                                title={big ? 'Show all columns' : 'Make bigger'}
+                              >
+                                <NbIcon name={big ? 'shrink' : 'expand'} />
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     ) : (
                       <textarea
