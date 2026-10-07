@@ -14,7 +14,9 @@
 // Tried in order. Google keeps the 2.5 models for accounts that already used
 // them, so a new key needs the 3.x line (checked 2026-10-07, all free tier).
 // If one is busy or not offered to this key, the next is tried.
-export const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite'];
+// On her key (checked live 2026-10-07) 3.5 Flash answers in under 2 s while
+// 3.8 Flash did not answer within 20 s, so 3.5 Flash goes first.
+export const GEMINI_MODELS = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.8-flash'];
 
 export function buildPrompt(text) {
   return [
