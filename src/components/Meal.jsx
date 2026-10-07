@@ -689,12 +689,12 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
         <button className="ml-close" onClick={onClose} aria-label="Close this day">✕</button>
       </div>
 
-      {/* Three parts, a bold line between each: the week's goal, then the
-          meals, then the scale. */}
+      {/* Three boxes, one for each part of the day — the week's goal, the
+          meals and their calories, the scale — so each reads as its own
+          thing without a heading line between them. */}
       <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />
 
-      <div className="ml-bold-rule" aria-hidden="true" />
-
+      <section className="ml-box ml-box-meals" aria-label="Meals and calories">
       <MealForm onSubmit={onAdd} />
 
       {saveFailed && (
@@ -742,8 +742,9 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
         </div>
       )}
 
-      <div className="ml-bold-rule" aria-hidden="true" />
+      </section>
 
+      <section className="ml-box ml-box-weight" aria-label="Weight">
       <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
@@ -755,6 +756,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
           </span>
         </div>
       )}
+      </section>
     </div>
   );
 }

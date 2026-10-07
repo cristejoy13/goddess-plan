@@ -11044,3 +11044,23 @@ body {
 }
 .ml-wt-read .ml-icon-btn { width: 40px; height: 40px; font-size: 16px; }
 [data-mode="light"] .ml-wt-read { color: #0b6b55; }
+
+/* ── The open day as three boxes: goal, meals, weight ──
+   Each part sits in its own box instead of a bold line between them. The
+   goal keeps its gold box; meals get pink, weight gets green. */
+.ml-day-panel .ml-goal { margin-top: 18px; }
+.ml-box {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 14px;
+}
+.ml-box-meals { background: rgba(255,92,157,0.06); border: 1px solid rgba(255,92,157,0.28); }
+.ml-box-weight { background: rgba(110,231,200,0.07); border: 1px solid rgba(110,231,200,0.26); }
+.ml-box > .ml-add:first-child { margin-top: 0; }
+.ml-box-weight > .ml-wt-form { margin-top: 0; padding: 0; background: none; border: 0; border-radius: 0; }
+.ml-box-weight > .ml-wt-week { margin-top: 14px; }
+[data-mode="light"] .ml-box-meals { background: rgba(200,23,110,0.05); border-color: rgba(200,23,110,0.24); }
+[data-mode="light"] .ml-box-weight { background: rgba(11,122,98,0.06); border-color: rgba(11,122,98,0.25); }
+@media (max-width: 559px) {
+  .ml-box { padding: 13px; }
+}
