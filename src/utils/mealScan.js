@@ -52,12 +52,13 @@ function remember(text, result) {
   } catch { /* memory is a bonus */ }
 }
 
-// Her words worked out from the USDA list kept on this gadget.
-async function offline(text, why) {
+// Her words worked out from the USDA list kept on this gadget. `noList` is
+// what to say when the list has not arrived on this gadget yet.
+async function offline(text, noList) {
   const { estimateOffline } = await import('./foodList.js');
   const r = await estimateOffline(text);
-  if (!r) throw new Error(`${why} The food list is not on this gadget yet — open the app once with internet.`);
-  if (!r.items.length) throw new Error(`${why} Could not work out "${text}" offline. Type the calories yourself.`);
+  if (!r) throw new Error(noList);
+  if (!r.items.length) throw new Error(`Could not work out "${text}" without the scanner. Type the calories yourself.`);
   return { ...r, from: 'offline' };
 }
 
@@ -74,14 +75,14 @@ export async function scanMeal({ text, image }) {
   }
   if (navigator.onLine === false) {
     if (!text) throw new Error('Photos need internet. Type or say what it is instead.');
-    return offline(text, image ? 'No internet, so the photo was left out.' : '');
+    return offline(text, 'No internet, and the food list is not on this phone yet. Open the app once with internet.');
   }
   let result;
   try {
     result = await post({ text, image: image ? { data: image.data, type: image.type } : undefined });
   } catch (err) {
     // The server could not be reached at all: fall back to the stored list.
-    if (err.unreachable && text) return offline(text, 'Could not reach the scanner, so this was worked out on your phone.');
+    if (err.unreachable && text) return offline(text, 'Could not reach the scanner. Try again.');
     throw err;
   }
   noteGroq(result);

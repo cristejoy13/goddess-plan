@@ -243,8 +243,67 @@ function MealForm({ initial, onSubmit, onCancel }) {
     // noValidate for the same reason as the weigh-in below: step="1" on the
     // calorie box made the browser swallow the submit whole if she typed a
     // decimal, so the meal was simply never added and nothing said so.
-    <form className={`ml-add${editing ? ' ml-add-editing' : ''}`} noValidate onSubmit={submit}>
-      <div className="ml-add-row">
+    <form className={`ml-add ml-add-tidy${editing ? ' ml-add-editing' : ''}`} noValidate onSubmit={submit}>
+      {/* Top to bottom, one thing per line: what she ate (type or talk), the
+          three actions side by side, then time and calories. */}
+      <label className="ml-text-wrap">
+        <span className="ml-time-lbl">What did you eat?</span>
+        <span className="ml-talk-box">
+          <textarea
+            ref={boxRef}
+            className="ml-text-input"
+            rows={1}
+            value={text}
+            onChange={e => setText(e.target.value)}
+            // Enter still adds the meal, as it did when this was one line.
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }}
+            placeholder={mic.listening ? 'Listening… say what you ate' : 'Type or tap 🎤 to talk'}
+            autoFocus={editing}
+          />
+          <button
+            type="button"
+            className={`ml-mic-btn${mic.listening ? ' is-on' : ''}`}
+            onClick={toggleMic}
+            aria-pressed={mic.listening}
+            aria-label={mic.listening ? 'Stop listening' : 'Talk instead of typing'}
+            title={mic.listening ? 'Stop' : 'Talk'}
+          >
+            {mic.listening ? <span className="ml-mic-stop" aria-hidden="true" /> : (
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="9" y="3" width="6" height="11" rx="3" />
+                <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
+              </svg>
+            )}
+          </button>
+        </span>
+      </label>
+      {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
+
+      {!editing && !scan && (
+        <div className="ml-pills">
+          <input ref={fileRef} type="file" accept="image/*" className="ml-scan-file" onChange={pickPhoto} tabIndex={-1} aria-hidden="true" />
+          {photo ? (
+            <span className="ml-pill ml-pill-photo-on">
+              <img src={photo.preview} alt="Your meal" />
+              <button type="button" className="ml-pill-x" onClick={() => { setPhoto(null); setScan(null); }} aria-label="Delete photo" title="Delete photo">🗑</button>
+            </span>
+          ) : (
+            <button type="button" className="ml-pill ml-pill-photo" onClick={() => fileRef.current?.click()}>📷 Photo</button>
+          )}
+          <button
+            type="button"
+            className="ml-pill ml-pill-scan ml-scan-go"
+            onClick={runScan}
+            disabled={scanning || (!text.trim() && !photo)}
+          >
+            {scanning ? 'Working…' : '✨ Calories'}
+          </button>
+          <button type="submit" className="ml-pill ml-pill-add" disabled={!text.trim()}>＋ Add</button>
+        </div>
+      )}
+      {scanError && <span className="ml-mic-note ml-scan-error" role="alert">{scanError}</span>}
+
+      <div className="ml-tc-row">
         <label className="ml-time-wrap">
           <span className="ml-time-lbl">Time</span>
           <input
@@ -254,60 +313,6 @@ function MealForm({ initial, onSubmit, onCancel }) {
             onChange={e => setTime(e.target.value)}
             aria-label="Time you ate"
           />
-        </label>
-        <label className="ml-text-wrap">
-          <span className="ml-time-lbl">What did you eat?</span>
-          <span className="ml-talk-box">
-            <textarea
-              ref={boxRef}
-              className="ml-text-input"
-              rows={1}
-              value={text}
-              onChange={e => setText(e.target.value)}
-              // Enter still adds the meal, as it did when this was one line.
-              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }}
-              placeholder={mic.listening ? 'Listening… say what you ate' : 'Type or tap 🎤 to talk'}
-              autoFocus={editing}
-            />
-            <button
-              type="button"
-              className={`ml-mic-btn${mic.listening ? ' is-on' : ''}`}
-              onClick={toggleMic}
-              aria-pressed={mic.listening}
-              aria-label={mic.listening ? 'Stop listening' : 'Talk instead of typing'}
-              title={mic.listening ? 'Stop' : 'Talk'}
-            >
-              {mic.listening ? <span className="ml-mic-stop" aria-hidden="true" /> : (
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <rect x="9" y="3" width="6" height="11" rx="3" />
-                  <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
-                </svg>
-              )}
-            </button>
-          </span>
-          {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
-          {!editing && (
-            <span className="ml-scan-row">
-              <input ref={fileRef} type="file" accept="image/*" className="ml-scan-file" onChange={pickPhoto} tabIndex={-1} aria-hidden="true" />
-              {photo ? (
-                <span className="ml-scan-thumb">
-                  <img src={photo.preview} alt="Your meal" />
-                  <button type="button" className="ml-icon-btn ml-del" onClick={() => { setPhoto(null); setScan(null); }} aria-label="Delete photo" title="Delete photo">🗑</button>
-                </span>
-              ) : (
-                <button type="button" className="ml-scan-btn" onClick={() => fileRef.current?.click()}>📷 Photo</button>
-              )}
-              <button
-                type="button"
-                className="ml-scan-btn ml-scan-go"
-                onClick={runScan}
-                disabled={scanning || (!text.trim() && !photo)}
-              >
-                {scanning ? 'Working it out…' : '✨ Find calories'}
-              </button>
-            </span>
-          )}
-          {scanError && <span className="ml-mic-note ml-scan-error" role="alert">{scanError}</span>}
         </label>
         <label className="ml-cal-wrap">
           <span className="ml-time-lbl">Calories</span>
@@ -361,11 +366,9 @@ function MealForm({ initial, onSubmit, onCancel }) {
           </div>
         </div>
       )}
-      {!scan && <div className="ml-form-btns">
-        <button type="submit" className="ml-add-btn" disabled={!text.trim()}>
-          {editing ? 'Save' : '＋ Add this meal'}
-        </button>
-        {editing && <button type="button" className="ml-cancel-btn" onClick={onCancel}>Cancel</button>}
+      {editing && <div className="ml-form-btns">
+        <button type="submit" className="ml-add-btn" disabled={!text.trim()}>Save</button>
+        <button type="button" className="ml-cancel-btn" onClick={onCancel}>Cancel</button>
       </div>}
     </form>
   );
@@ -564,7 +567,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
   }
 
   const net = burn != null ? eaten - burn : null;
-  const saveLabel = onlyClearing ? 'Remove' : kg != null || typedBurnCal != null ? 'Save' : '＋ Add';
+  const saveLabel = onlyClearing ? 'Remove' : 'Save';
 
   return (
     // noValidate on purpose. With min/max/step left to the browser, a reading
@@ -575,7 +578,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
       <div className="ml-wt-split">
         <div className="ml-wt-row">
           <label className="ml-wt-wrap">
-            <span className="ml-time-lbl">⚖️ Weight today</span>
+            <span className="ml-time-lbl">⚖️ kg</span>
             <div className="ml-wt-field">
               <input
                 className="ml-wt-input"
@@ -602,7 +605,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
             </div>
           </label>
           <label className="ml-wt-wrap">
-            <span className="ml-time-lbl">🔥 Burned{typedBurnCal == null && average != null && <span className="ml-wt-opt"> (average)</span>}</span>
+            <span className="ml-time-lbl">🔥 {typedBurnCal == null && average != null ? 'avg cal' : 'cal'} burned</span>
             <div className="ml-wt-field">
               <input
                 className="ml-wt-input ml-burn-input"
@@ -625,8 +628,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
         </div>
 
         <div className="ml-sum" aria-label="This day in numbers">
-          <div className="ml-sum-kg">{kg != null ? formatKg(kg) : '—'} <span>kg</span></div>
-          <div className="ml-sum-rule" aria-hidden="true" />
+
           <div className="ml-sum-row">
             <span>Total calories eaten</span>
             <b>{eaten.toLocaleString()}</b>
@@ -720,8 +722,15 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
+  // One box at a time (chosen 2026-10-07): three tabs, Meals open first. A
+  // green tick on a tab means that part of the day is filled in — the week's
+  // goal set, at least one meal written, the weight saved — so what is still
+  // missing shows at a glance.
+  const [tab, setTab] = useState('meals');
+  const show = part => tab === part;
+  const done = { goal: goal != null, meals: entries.length > 0, weight: kg != null };
   return (
-    <div className="ml-day-panel splash-item">
+    <div className="ml-day-panel splash-item ml-day-tabs">
       <div className="ml-day-head">
         <div>
           <div className="ml-day-date">{DAY_NAMES[dow]}, {day} {MONTH_NAMES[monthIdx]} {year}</div>
@@ -737,9 +746,25 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
       {/* Three boxes, one for each part of the day — the week's goal, the
           meals and their calories, the scale — so each reads as its own
           thing without a heading line between them. */}
-      <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />
+      <div className="ml-tabs" role="tablist" aria-label="Part of the day">
+        {[['goal', '🎯 Goal'], ['meals', '🍽️ Meals'], ['weight', '⚖️ Weight']].map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={tab === id}
+            aria-label={`${label.slice(label.indexOf(' ') + 1)}${done[id] ? ', filled in' : ', not filled in yet'}`}
+            className={`ml-tab${tab === id ? ' on' : ''}${done[id] ? ' is-done' : ''}`}
+            onClick={() => setTab(id)}
+          >
+            {label}
+            {done[id] && <span className="ml-tab-tick" aria-hidden="true">✓</span>}
+          </button>
+        ))}
+      </div>
+      {show('goal') && <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />}
 
-      <section className="ml-box ml-box-meals" aria-label="Meals and calories">
+      {show('meals') && <section className="ml-box ml-box-meals" aria-label="Meals and calories">
       <GroqReminder />
       <MealForm onSubmit={onAdd} />
 
@@ -788,9 +813,9 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
         </div>
       )}
 
-      </section>
+      </section>}
 
-      <section className="ml-box ml-box-weight" aria-label="Weight">
+      {show('weight') && <section className="ml-box ml-box-weight" aria-label="Weight">
       <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
@@ -802,7 +827,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
           </span>
         </div>
       )}
-      </section>
+      </section>}
     </div>
   );
 }

@@ -11074,3 +11074,115 @@ body {
 .ml-groq-note a { color: #f0cc60; font-weight: 700; }
 [data-mode="light"] .ml-groq-note { background: rgba(154,104,0,0.08); border-color: rgba(154,104,0,0.35); }
 [data-mode="light"] .ml-groq-note a { color: #6b4a00; }
+
+/* ── The open day, tidied (2026-10-07) ──────────────────────────────────────
+   Meals box, top to bottom: what she ate (type or talk) · three small pills
+   side by side (Photo, Calories, Add) · Time and Calories with a gap between ·
+   the meals · a thin line · the day's total. Weight box: kg, burned and Save
+   on one line, the sum beneath. */
+.ml-add-tidy { margin-top: 0; gap: 14px; }
+.ml-add-tidy .ml-text-wrap { gap: 8px; }
+.ml-pills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ml-pill {
+  min-height: 40px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(240,204,96,0.4);
+  background: rgba(240,204,96,0.1);
+  color: var(--gold, #f0cc60);
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  cursor: pointer; touch-action: manipulation;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.ml-pill:disabled { opacity: 0.45; cursor: not-allowed; }
+.ml-pill-scan { border-color: rgba(255,92,157,0.5); background: rgba(255,92,157,0.12); color: #ff5c9d; }
+.ml-pill-add { border-color: #ff5c9d; background: #ff5c9d; color: #fff; }
+.ml-pill-photo-on { padding: 0 4px 0 4px; cursor: default; justify-content: space-between; }
+.ml-pill-photo-on img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.ml-pill-x { width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(0,0,0,0.25); font-size: 14px; cursor: pointer; }
+.ml-tc-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.ml-add-tidy .ml-time-input, .ml-add-tidy .ml-cal-input { padding: 10px 12px; }
+.ml-box-meals .ml-entries { margin-top: 16px; }
+/* The total: a thin line, then the numbers — no second box inside the box. */
+.ml-box-meals .ml-total {
+  margin-top: 14px; padding: 12px 2px 0;
+  background: none; border: 0; border-radius: 0;
+  border-top: 1px solid rgba(255,255,255,0.18);
+}
+[data-mode="light"] .ml-box-meals .ml-total { background: none; border-top-color: rgba(90,42,74,0.22); }
+[data-mode="light"] .ml-pill { background: rgba(154,104,0,0.08); border-color: rgba(154,104,0,0.35); color: #6b4a00; }
+[data-mode="light"] .ml-pill-scan { background: rgba(200,23,110,0.08); border-color: rgba(200,23,110,0.4); color: #b0105e; }
+[data-mode="light"] .ml-pill-add { background: #c8176e; border-color: #c8176e; color: #fff; }
+
+.ml-box-weight .ml-wt-split { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.ml-box-weight .ml-wt-row,
+.ml-box-weight .ml-wt-split .ml-wt-row {
+  flex-direction: row; flex-wrap: nowrap; align-items: flex-end; justify-content: center; gap: 12px;
+}
+.ml-box-weight .ml-wt-wrap { align-items: center; gap: 6px; }
+.ml-box-weight .ml-wt-unit { display: none; }
+.ml-box-weight .ml-wt-input { width: 86px; padding: 10px 6px; }
+.ml-box-weight .ml-wt-btn,
+.ml-box-weight .ml-wt-split .ml-wt-btn { min-width: 0; width: auto; padding: 0 18px; min-height: 44px; height: 44px; }
+.ml-box-weight .ml-wt-field { gap: 6px; }
+@media (max-width: 420px) {
+  .ml-box-weight .ml-wt-row { gap: 8px; }
+  .ml-box-weight .ml-wt-input { width: 70px; }
+  .ml-box-weight .ml-wt-btn { padding: 0 12px; }
+}
+@media (max-width: 350px) {
+  .ml-box-weight .ml-wt-input { width: 58px; font-size: 15px; }
+  .ml-box-weight .ml-wt-snap { width: 36px; height: 36px; }
+  .ml-pill { font-size: 12px; }
+}
+/* Weight line, round two: three columns that shrink together, the camera
+   inside the kg box, and the sum as a thin line plus numbers. */
+.ml-box-weight .ml-wt-row,
+.ml-box-weight .ml-wt-split .ml-wt-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: end; gap: 12px;
+}
+.ml-box-weight .ml-wt-wrap { min-width: 0; }
+.ml-box-weight .ml-wt-wrap .ml-time-lbl { white-space: nowrap; font-size: 12px; }
+.ml-box-weight .ml-wt-field { position: relative; width: 100%; }
+.ml-box-weight .ml-wt-input { width: 100%; min-height: 44px; }
+.ml-box-weight .ml-wt-field:has(.ml-wt-snap) .ml-wt-input { padding-right: 40px; }
+.ml-box-weight .ml-wt-snap { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; font-size: 16px; border: 0; background: transparent; }
+.ml-box-weight .ml-sum { padding: 12px 2px 0; background: none; border: 0; border-radius: 0; border-top: 1px solid rgba(255,255,255,0.18); }
+[data-mode="light"] .ml-box-weight .ml-sum { background: none; border-top-color: rgba(90,42,74,0.22); }
+.ml-add-tidy .ml-talk-box .ml-text-input { padding-left: 14px; text-align: left; }
+.ml-add-tidy .ml-talk-box .ml-text-input::placeholder { text-align: left; }
+@media (max-width: 420px) {
+  .ml-box-weight .ml-wt-row { gap: 8px; }
+  .ml-box-weight .ml-wt-input { width: 100%; }
+}
+@media (max-width: 350px) {
+  .ml-box-weight .ml-wt-input { width: 100%; }
+}
+/* The open day, one box at a time: Goal · Meals · Weight. A green tick
+   marks each part already filled in. */
+.ml-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 16px; padding: 4px; border-radius: 999px; background: rgba(0,0,0,0.25); border: 1px solid rgba(240,204,96,0.2); }
+.ml-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; padding: 0 6px; min-height: 42px; border: 0; border-radius: 999px; background: transparent; color: var(--text-mid, #d4a0b8); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.ml-tab.on { background: linear-gradient(135deg, var(--gold, #f0cc60), #ff5c9d); color: #1a0a14; }
+.ml-day-tabs .ml-goal, .ml-day-tabs .ml-box { margin-top: 14px; }
+[data-mode="light"] .ml-tabs { background: rgba(255,240,248,0.8); border-color: rgba(154,104,0,0.2); }
+[data-mode="light"] .ml-tab { color: #6a3a5c; }
+
+.ml-tab-tick {
+  flex: none; width: 18px; height: 18px; border-radius: 50%;
+  display: inline-grid; place-items: center;
+  background: #22c55e; color: #fff; font-size: 11px; font-weight: 900; line-height: 1;
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
+}
+[data-mode="light"] .ml-tab-tick { background: #15803d; box-shadow: 0 0 0 2px rgba(21,128,61,0.2); }
+@media (max-width: 360px) { .ml-tab { font-size: 12px; gap: 4px; } .ml-tab-tick { width: 16px; height: 16px; font-size: 10px; } }
+[data-mode="light"] .ml-tab.on { background: linear-gradient(135deg, #9a6800, #c8176e); color: #fff; }
+@media (max-width: 420px) {
+  .ml-box-weight .ml-wt-row,
+  .ml-box-weight .ml-wt-split .ml-wt-row { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 6px; }
+  .ml-box-weight .ml-wt-btn,
+  .ml-box-weight .ml-wt-split .ml-wt-btn { padding: 0 12px; }
+  .ml-box-weight .ml-wt-field:has(.ml-wt-snap) .ml-wt-input { padding-right: 32px; padding-left: 4px; }
+  .ml-box-weight .ml-wt-snap { width: 30px; right: 2px; font-size: 15px; }
+}
