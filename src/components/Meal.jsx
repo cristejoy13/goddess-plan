@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation } from '../utils/dictation';
+import { loadGarmin, garminBurnOn } from '../utils/garmin';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
@@ -483,7 +484,8 @@ function GoalForm({ cal, weekLabel, onSave }) {
 //
 // Nothing else is ever filled in for her. A day she did not weigh stays empty, and
 // an empty day is left out of the week's average rather than counted as zero.
-function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
+function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'average', onSave }) {
+  const fromWatch = averageFrom === 'garmin';
   const burn = typedBurnCal ?? average;
   const kgText = kg != null ? formatKg(kg) : '';
   const burnText = burn != null ? String(burn) : '';
@@ -557,7 +559,9 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
       clearingKg && `your weight of ${formatKg(kg)} kg`,
       clearingBurn && `${burn.toLocaleString()} calories burned`,
     ].filter(Boolean);
-    const back = clearingBurn && average != null ? ` Burned goes back to your average, ${average.toLocaleString()}.` : '';
+    const back = clearingBurn && average != null
+      ? ` Burned goes back to ${fromWatch ? 'your Garmin number' : 'your average'}, ${average.toLocaleString()}.`
+      : '';
     if (gone.length && !(await ask(`Remove ${gone.join(' and ')} for this day?${back}${clearingKg ? ' This cannot be undone.' : ''}`, { yes: 'Remove', danger: true }))) return;
     if (clearingKg) patch.kg = null;
     if (clearingBurn) patch.burn = null;
@@ -605,7 +609,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
             </div>
           </label>
           <label className="ml-wt-wrap">
-            <span className="ml-time-lbl">🔥 {typedBurnCal == null && average != null ? 'avg cal' : 'cal'} burned</span>
+            <span className="ml-time-lbl">{typedBurnCal == null && average != null ? (fromWatch ? '⌚ Garmin cal' : '🔥 avg cal') : '🔥 cal'} burned</span>
             <div className="ml-wt-field">
               <input
                 className="ml-wt-input ml-burn-input"
@@ -718,7 +722,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 }
 
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg, goal, weekLabel, left,
+function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFrom, weekAvg, goal, weekLabel, left,
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
@@ -816,7 +820,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
       </section>}
 
       {show('weight') && <section className="ml-box ml-box-weight" aria-label="Weight">
-      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} onSave={onWeight} />
+      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
         <div className="ml-wt-week">
@@ -834,6 +838,8 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
 
 export default function Meal() {
   const [state, setState] = useState(loadLog);
+  // The page remounts when a sync lands, so reading once is enough.
+  const [garmin] = useState(loadGarmin);
   // Read once and hold it: "today" must not shift under her while the page is
   // open, or the ring would jump to a different square at midnight mid-edit.
   const today = useMemo(() => todayParts(), []);
@@ -1100,7 +1106,10 @@ export default function Meal() {
           burn={burnOn(state, openKey)}
           /* Her average fills today and any past day she ate on. A future
              day, or an empty old one, gets no made-up deficit. */
-          averageBurn={openKey === dateKeyOf() || (openKey < dateKeyOf() && (days[openKey] || []).length > 0) ? AVERAGE_BURN : null}
+          averageBurn={garminBurnOn(garmin, openKey) ?? (openKey === dateKeyOf() || (openKey < dateKeyOf() && (days[openKey] || []).length > 0) ? AVERAGE_BURN : null)}
+          /* Her watch's number, when the Shortcut has sent one for this day,
+             stands in for the average. What she types still wins over both. */
+          burnFrom={garminBurnOn(garmin, openKey) != null ? 'garmin' : 'average'}
           /* The average belongs to the week, so it is shown where the week
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
