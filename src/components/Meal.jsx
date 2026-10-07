@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation } from '../utils/dictation';
-import { shrinkPhoto, scanMeal, scanScale, describeItems, recall } from '../utils/mealScan';
+import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
@@ -664,6 +664,22 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
   );
 }
 
+// Her Groq key ends on 6 Oct 2027. From two weeks before — or the moment
+// Groq refuses it — this tells her to make a new one. Scanning keeps working
+// meanwhile on Gemini, only slower.
+function GroqReminder() {
+  const r = groqKeyReminder();
+  if (!r) return null;
+  const date = new Date(`${r.ends}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  return (
+    <div className="ml-groq-note" role="status">
+      {r.ended ? `🔑 Your Groq key has ended (${date}). ` : `🔑 Your Groq key ends on ${date}. `}
+      Make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">console.groq.com/keys</a>,
+      then put it in Vercel as GROQ_API_KEY. Scanning still works meanwhile, only slower.
+    </div>
+  );
+}
+
 // One written meal. The two actions are icons only — a pencil and a bin — so
 // the row stays the meal rather than the buttons around it.
 function EntryRow({ entry, onEdit, onDelete }) {
@@ -724,6 +740,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, weekAvg
       <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />
 
       <section className="ml-box ml-box-meals" aria-label="Meals and calories">
+      <GroqReminder />
       <MealForm onSubmit={onAdd} />
 
       {saveFailed && (

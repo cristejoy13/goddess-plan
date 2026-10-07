@@ -84,13 +84,41 @@ export async function scanMeal({ text, image }) {
     if (err.unreachable && text) return offline(text, 'Could not reach the scanner, so this was worked out on your phone.');
     throw err;
   }
+  noteGroq(result);
   if (!image && text) remember(text, result);
   return result;
 }
 
+// ── The Groq key reminder ────────────────────────────────────────────────
+// Her Groq key was made on 2026-10-07 and ends on 2027-10-06. Two weeks
+// before, and any time Groq refuses the key, the Meal page tells her to make
+// a new one. Change GROQ_KEY_ENDS when she makes a new key.
+export const GROQ_KEY_ENDS = '2027-10-06';
+const GROQ_REFUSED_KEY = 'gp_groq_refused';
+
+function noteGroq(result) {
+  try {
+    if (result?.groqKeyRefused) localStorage.setItem(GROQ_REFUSED_KEY, new Date().toISOString());
+    else if (result) localStorage.removeItem(GROQ_REFUSED_KEY);
+  } catch { /* the reminder is a bonus */ }
+}
+
+// null, or { ended: boolean, ends: '2027-10-06' } when she should be told.
+export function groqKeyReminder(now = new Date()) {
+  let refused = false;
+  try { refused = Boolean(localStorage.getItem(GROQ_REFUSED_KEY)); } catch { /* no storage */ }
+  const ends = new Date(`${GROQ_KEY_ENDS}T00:00:00`);
+  const days = (ends - now) / 86400000;
+  if (refused || days <= 0) return { ended: true, ends: GROQ_KEY_ENDS };
+  if (days <= 14) return { ended: false, ends: GROQ_KEY_ENDS };
+  return null;
+}
+
 // A photo of the scale → { kg }. She checks the number and saves it herself.
 export async function scanScale(image) {
-  return post({ kind: 'scale', image: { data: image.data, type: image.type } });
+  const result = await post({ kind: 'scale', image: { data: image.data, type: image.type } });
+  noteGroq(result);
+  return result;
 }
 
 const wait = ms => new Promise(r => setTimeout(r, ms));

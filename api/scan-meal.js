@@ -98,12 +98,20 @@ async function tryGroq(prompt, image, read, outer) {
 // Ask every fast AI at once and take the first good answer; the others are
 // stopped. Google's free plan swings between half a second and fifteen, so
 // racing two or three keeps the wait near the fastest one.
+// Set when Groq refuses the key (expired or wrong), so the app can tell her.
+let groqRefused = false;
+
 async function askAI({ text, image, prompt, read = parseItems }) {
   const p = prompt || buildPrompt(text);
   const outer = new AbortController();
   const good = v => (Array.isArray(v) ? v.length > 0 : v != null);
   const runners = [];
-  if (process.env.GROQ_API_KEY) runners.push(() => tryGroq(p, image, read, outer.signal));
+  if (process.env.GROQ_API_KEY) {
+    runners.push(() => tryGroq(p, image, read, outer.signal).catch(e => {
+      if (e.code === 'groqkey') groqRefused = true;
+      throw e;
+    }));
+  }
   const gemini = [...new Set([process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean))];
   // The two quick Gemini models race; the slow one is only a last resort.
   for (const model of gemini.slice(0, 2)) runners.push(() => tryGemini(model, p, image, read, outer.signal));
@@ -147,6 +155,7 @@ async function findUsda(query) {
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
+  groqRefused = false;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST.' });
   if (!process.env.GEMINI_API_KEY || !process.env.SCAN_CODE) {
     return res.status(503).json({ error: 'The scanner is not set up yet.', code: 'setup' });
@@ -211,7 +220,7 @@ export default async function handler(req, res) {
       return res.status(502).json({ error: e.code === 'busy' ? 'The free AI is busy. Try again in a minute.' : 'The AI could not read that. Try again.' });
     }
     if (kg == null) return res.status(422).json({ error: 'Could not read the number. Try a closer, sharper photo of the display.' });
-    return res.status(200).json({ kg });
+    return res.status(200).json({ kg, ...(groqRefused && { groqKeyRefused: true }) });
   }
 
   if (!text && !image) return res.status(400).json({ error: 'Say, type or snap your meal first.' });
@@ -232,5 +241,5 @@ export default async function handler(req, res) {
   const foods = await Promise.all(items.map(it => findUsda(it.usda)));
   const settled = items.map((it, i) => settleItem(it, foods[i])).filter(Boolean);
   const total = settled.reduce((s, it) => s + it.kcal, 0);
-  return res.status(200).json({ items: settled, total });
+  return res.status(200).json({ items: settled, total, ...(groqRefused && { groqKeyRefused: true }) });
 }
