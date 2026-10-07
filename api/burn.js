@@ -43,11 +43,21 @@ export default async function handler(req, res) {
   // Shortcuts may send the number as text: "1,876.4", "1876.4 kcal". Her
   // Shortcut sends active and resting energy separately; they are added here
   // so the phone does not need a sum of its own.
-  const num = v => Number((String(v ?? '').replace(/,/g, '').match(/\d+(\.\d+)?/) || [])[0]);
+  // Thousands may come as "1,394" or "1 394" (some iPhones use a thin space).
+  const num = v => {
+    if (typeof v === 'number') return v;
+    const t = String(v ?? '').replace(/(\d)[,\s\u00a0\u202f\u2009](?=\d{3}\b)/g, '$1');
+    return Number((t.match(/\d+(\.\d+)?/) || [])[0]);
+  };
   const parts = [num(body.active), num(body.resting)].filter(Number.isFinite);
   const cal = Math.round(body.cal != null && body.cal !== '' ? num(body.cal) : (parts.length ? parts.reduce((a, b) => a + b, 0) : NaN));
   if (!Number.isFinite(cal) || cal < 1 || cal > 10000) {
-    return res.status(400).json({ error: 'Send cal as a number between 1 and 10,000.' });
+    // Say what arrived, so a Shortcut set up wrong can be put right.
+    const seen = v => (v == null ? 'nothing' : JSON.stringify(v).slice(0, 80));
+    return res.status(400).json({
+      error: 'No calorie number found. Check the two Sum bubbles in the Shortcut.',
+      got: { active: seen(body.active), resting: seen(body.resting), cal: seen(body.cal) },
+    });
   }
   const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date || ''))
     ? body.date
