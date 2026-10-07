@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
 import { useDictation } from '../utils/dictation';
+import { shrinkPhoto, scanMeal, describeItems } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
@@ -164,6 +165,51 @@ function MealForm({ initial, onSubmit, onCancel }) {
     el.style.height = `${el.scrollHeight + 3}px`;
   }, [text]);
 
+  // ── Scan: her words and/or a photo → each food with its calories. The
+  // numbers are shown to her first; nothing is saved until she says so.
+  const fileRef = useRef(null);
+  const [photo, setPhoto] = useState(null);
+  const [scan, setScan] = useState(null);       // { items, total } waiting for her
+  const [scanning, setScanning] = useState(false);
+  const [scanError, setScanError] = useState('');
+
+  async function pickPhoto(e) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setScanError('');
+    try { setPhoto(await shrinkPhoto(file)); } catch { setScanError('Could not open that photo. Try another.'); }
+  }
+
+  async function runScan() {
+    if (mic.listening) mic.stop();
+    const words = text.trim();
+    if (!words && !photo) return;
+    setScanning(true);
+    setScanError('');
+    try {
+      const result = await scanMeal({ text: words, image: photo });
+      setScan(result);
+    } catch (err) {
+      setScanError(err.message);
+    } finally {
+      setScanning(false);
+    }
+  }
+
+  function dropItem(i) {
+    setScan(prev => {
+      const items = prev.items.filter((_, j) => j !== i);
+      return items.length ? { items, total: items.reduce((sum, it) => sum + it.kcal, 0) } : null;
+    });
+  }
+
+  function saveScan() {
+    if (!scan) return;
+    onSubmit({ time: time || nowTime(), text: text.trim() || describeItems(scan.items), cal: scan.total });
+    setScan(null); setPhoto(null); setText(''); setCal(''); setTime(nowTime());
+  }
+
   function submit(e) {
     e.preventDefault();
     if (mic.listening) mic.stop();
@@ -220,6 +266,28 @@ function MealForm({ initial, onSubmit, onCancel }) {
             </button>
           </span>
           {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
+          {!editing && (
+            <span className="ml-scan-row">
+              <input ref={fileRef} type="file" accept="image/*" className="ml-scan-file" onChange={pickPhoto} tabIndex={-1} aria-hidden="true" />
+              {photo ? (
+                <span className="ml-scan-thumb">
+                  <img src={photo.preview} alt="Your meal" />
+                  <button type="button" onClick={() => setPhoto(null)} aria-label="Remove photo">×</button>
+                </span>
+              ) : (
+                <button type="button" className="ml-scan-btn" onClick={() => fileRef.current?.click()}>📷 Photo</button>
+              )}
+              <button
+                type="button"
+                className="ml-scan-btn ml-scan-go"
+                onClick={runScan}
+                disabled={scanning || (!text.trim() && !photo)}
+              >
+                {scanning ? 'Working it out…' : '✨ Find calories'}
+              </button>
+            </span>
+          )}
+          {scanError && <span className="ml-mic-note ml-scan-error" role="alert">{scanError}</span>}
         </label>
         <label className="ml-cal-wrap">
           <span className="ml-time-lbl">Calories</span>
@@ -236,12 +304,40 @@ function MealForm({ initial, onSubmit, onCancel }) {
           />
         </label>
       </div>
-      <div className="ml-form-btns">
+      {scan && (
+        <div className="ml-scan-card" role="region" aria-label="Calories found">
+          <div className="ml-scan-head">Check these, then save</div>
+          <ul className="ml-scan-list">
+            {scan.items.map((it, i) => (
+              <li key={`${it.name}-${i}`}>
+                <span className="ml-scan-name">
+                  <b>{it.name}</b>
+                  <small>
+                    {[it.amount, it.grams && !new RegExp(`^${it.grams}\\s*g$`, 'i').test(it.amount || '') ? `${it.grams} g` : ''].filter(Boolean).join(' · ')}
+                    {' · '}
+                    <em className={it.source === 'usda' ? 'is-usda' : 'is-ai'} title={it.usdaName || ''}>
+                      {it.source === 'usda' ? 'USDA' : 'AI guess'}
+                    </em>
+                  </small>
+                </span>
+                <span className="ml-scan-kcal">{it.kcal.toLocaleString('en-US')}</span>
+                <button type="button" className="ml-scan-drop" onClick={() => dropItem(i)} aria-label={`Take ${it.name} off`}>×</button>
+              </li>
+            ))}
+          </ul>
+          <div className="ml-scan-total"><span>Total</span><b>{scan.total.toLocaleString('en-US')} cal</b></div>
+          <div className="ml-form-btns">
+            <button type="button" className="ml-add-btn" onClick={saveScan}>Save this meal</button>
+            <button type="button" className="ml-cancel-btn" onClick={() => setScan(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+      {!scan && <div className="ml-form-btns">
         <button type="submit" className="ml-add-btn" disabled={!text.trim()}>
           {editing ? 'Save' : '＋ Add this meal'}
         </button>
         {editing && <button type="button" className="ml-cancel-btn" onClick={onCancel}>Cancel</button>}
-      </div>
+      </div>}
     </form>
   );
 }
