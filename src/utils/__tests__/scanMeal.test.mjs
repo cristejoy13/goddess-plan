@@ -1,6 +1,6 @@
 // The meal scanner's sums, without a network.
 // Run with:  node src/utils/__tests__/scanMeal.test.mjs
-import { parseItems, kcalPer100g, settleItem } from '../../../api/_scan.js';
+import { parseItems, kcalPer100g, settleItem, parseScale } from '../../../api/_scan.js';
 let pass = 0, fail = 0;
 const ok = (name, cond) => { cond ? pass++ : fail++; console.log((cond ? '  ok   ' : '  FAIL ') + name); };
 
@@ -21,6 +21,14 @@ ok('a wrong USDA match (milk powder) falls back to the AI guess', m.kcal === 61 
 const n = settleItem({ name: 'Mystery', amount: '', grams: 50, usda: 'x', kcal: 120 }, null);
 ok('no USDA match shows the AI guess, marked', n.kcal === 120 && n.source === 'ai');
 ok('nothing to go on gives no line', settleItem({ name: 'X', grams: NaN, kcal: NaN }, null) === null);
+
+// The scale.
+ok('kilos are read as shown', parseScale('{"value": 52.4, "unit": "kg"}') === 52.4);
+ok('pounds become kilos', parseScale({ value: 115.5, unit: 'lb' }) === 52.4);
+ok('stone becomes kilos', parseScale({ value: 8.25, unit: 'st' }) === 52.4);
+ok('no unit means kilos', parseScale({ value: 60 }) === 60);
+ok('an unreadable display gives no number, not a guess', parseScale({ value: null, unit: 'kg' }) === null);
+ok('nonsense gives no number', parseScale('cannot see') === null);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

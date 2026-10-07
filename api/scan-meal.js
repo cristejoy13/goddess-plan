@@ -12,7 +12,7 @@
 //   SCAN_CODE        her sync code, e.g. GP-XXXXXXXXXXXX
 //   GEMINI_MODEL     optional; tried before the built-in GEMINI_MODELS list
 
-import { GEMINI_MODELS, buildPrompt, parseItems, settleItem } from './_scan.js';
+import { GEMINI_MODELS, buildPrompt, parseItems, settleItem, buildScalePrompt, parseScale } from './_scan.js';
 
 const MAX_TEXT = 1000;
 const MAX_IMAGE_CHARS = 3_000_000; // ~2.2 MB of photo; the app sends far less
@@ -42,10 +42,10 @@ async function askModel(model, key, parts) {
   );
 }
 
-async function askGemini({ text, image }) {
+async function askGemini({ text, image, prompt, read = parseItems }) {
   const key = String(process.env.GEMINI_API_KEY || '').trim();
   const models = [...new Set([process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean))];
-  const parts = [{ text: buildPrompt(text) }];
+  const parts = [{ text: prompt || buildPrompt(text) }];
   if (image) parts.push({ inline_data: { mime_type: image.type, data: image.data } });
   let busy = false;
   for (const model of models) {
@@ -66,7 +66,7 @@ async function askGemini({ text, image }) {
     if (!r.ok) throw Object.assign(new Error(`gemini ${r.status}`), { code: 'ai' });
     const j = await r.json();
     const out = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
-    return parseItems(out);
+    return read(out);
   }
   throw Object.assign(new Error('no model'), { code: busy ? 'busy' : 'ai' });
 }
@@ -135,6 +135,19 @@ export default async function handler(req, res) {
     && body.image.data.length <= MAX_IMAGE_CHARS
     ? { data: body.image.data, type: body.image.type }
     : null;
+  // { kind: 'scale', image } — read the weight off a photo of the scale.
+  if (body.kind === 'scale') {
+    if (!image) return res.status(400).json({ error: 'Take a photo of your scale first.' });
+    let kg;
+    try {
+      kg = await askGemini({ image, prompt: buildScalePrompt(), read: parseScale });
+    } catch (e) {
+      return res.status(502).json({ error: e.code === 'busy' ? 'The free AI is busy. Try again in a minute.' : 'The AI could not read that. Try again.' });
+    }
+    if (kg == null) return res.status(422).json({ error: 'Could not read the number. Try a closer, sharper photo of the display.' });
+    return res.status(200).json({ kg });
+  }
+
   if (!text && !image) return res.status(400).json({ error: 'Say, type or snap your meal first.' });
 
   let items;

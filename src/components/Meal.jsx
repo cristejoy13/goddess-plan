@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
 import { useDictation } from '../utils/dictation';
-import { shrinkPhoto, scanMeal, describeItems } from '../utils/mealScan';
+import { shrinkPhoto, scanMeal, scanScale, describeItems } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
@@ -466,6 +466,33 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
     setSeen(`${kgText}|${burnText}`); setDraft(kgText); setBurnDraft(burnText); setWarn('');
   }
 
+  // Snap the scale: the number it reads goes into the box for her to check,
+  // and is only kept when she clicks Save.
+  const scaleRef = useRef(null);
+  const [reading, setReading] = useState(false);
+  const [readNote, setReadNote] = useState('');
+  async function readScale(e) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setWarn('');
+    setReadNote('');
+    setReading(true);
+    try {
+      const { kg: seen } = await scanScale(await shrinkPhoto(file));
+      if (seen < MIN_KG || seen > MAX_KG) {
+        setWarn(`The photo read ${seen} kg, which does not look right. Type it instead.`);
+      } else {
+        setDraft(formatKg(seen));
+        setReadNote(`Read from your photo: ${formatKg(seen)} kg.`);
+      }
+    } catch (err) {
+      setWarn(err.message);
+    } finally {
+      setReading(false);
+    }
+  }
+
   const typed = draft.trim();
   const typedBurn = burnDraft.trim();
   // Compared as TEXT, not as parsed numbers. A refused number parses to null,
@@ -503,10 +530,12 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
     if (clearingKg) patch.kg = null;
     if (clearingBurn) patch.burn = null;
     setWarn('');
+    setReadNote('');
     onSave(patch);
   }
 
   const net = burn != null ? eaten - burn : null;
+  const saveLabel = onlyClearing ? 'Remove' : kg != null || typedBurnCal != null ? 'Save' : '＋ Add';
 
   return (
     // noValidate on purpose. With min/max/step left to the browser, a reading
@@ -527,11 +556,20 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
                 max={MAX_KG}
                 step="any"
                 value={draft}
-                onChange={e => { setDraft(e.target.value); setWarn(''); }}
+                onChange={e => { setDraft(e.target.value); setWarn(''); setReadNote(''); }}
                 placeholder="—"
                 aria-label="Your weight today, in kilos"
               />
               <span className="ml-wt-unit">kg</span>
+              <input ref={scaleRef} type="file" accept="image/*" className="ml-scan-file" onChange={readScale} tabIndex={-1} aria-hidden="true" />
+              <button
+                type="button"
+                className="ml-icon-btn ml-wt-snap"
+                onClick={() => scaleRef.current?.click()}
+                disabled={reading}
+                aria-label="Snap your scale"
+                title="Snap your scale"
+              >{reading ? '…' : '📷'}</button>
             </div>
           </label>
           <label className="ml-wt-wrap">
@@ -553,7 +591,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
             </div>
           </label>
           <button type="submit" className="ml-wt-btn" disabled={unchanged}>
-            {onlyClearing ? 'Remove' : kg != null || typedBurnCal != null ? 'Save' : '＋ Add'}
+            {saveLabel}
           </button>
         </div>
 
@@ -579,6 +617,19 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, onSave }) {
           </>}
         </div>
       </div>
+      {readNote && (
+        <div className="ml-wt-read" role="status">
+          <span>{readNote} Check it, then click {saveLabel.replace('＋ ', '')}.</span>
+          <button
+            type="button"
+            className="ml-icon-btn ml-del"
+            onClick={() => { setDraft(kgText); setReadNote(''); }}
+            aria-label="Delete the number read from the photo"
+            title="Delete"
+          >🗑</button>
+        </div>
+      )}
+      {reading && <div className="ml-wt-read" role="status"><span>Reading your scale…</span></div>}
       {warn && <div className="ml-wt-warn">{warn}</div>}
     </form>
   );

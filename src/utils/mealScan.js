@@ -28,6 +28,15 @@ export async function shrinkPhoto(file) {
 }
 
 export async function scanMeal({ text, image }) {
+  return post({ text, image: image ? { data: image.data, type: image.type } : undefined });
+}
+
+// A photo of the scale → { kg }. She checks the number and saves it herself.
+export async function scanScale(image) {
+  return post({ kind: 'scale', image: { data: image.data, type: image.type } });
+}
+
+async function post(payload) {
   let code = '';
   try { code = localStorage.getItem('gp_sync_code') || ''; } catch { /* no storage */ }
   let r;
@@ -35,7 +44,7 @@ export async function scanMeal({ text, image }) {
     r = await fetch('/api/scan-meal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-GP-Code': code },
-      body: JSON.stringify({ text, image: image ? { data: image.data, type: image.type } : undefined }),
+      body: JSON.stringify(payload),
     });
   } catch {
     throw new Error('No internet. Try again when you are online.');

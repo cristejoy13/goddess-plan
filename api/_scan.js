@@ -94,3 +94,30 @@ function base(item) {
     grams: Number.isFinite(item.grams) && item.grams > 0 ? Math.round(item.grams) : null,
   };
 }
+
+// ── the scale ────────────────────────────────────────────────────────────
+export function buildScalePrompt() {
+  return [
+    'This is a photo of a bathroom scale display.',
+    'Read the weight number shown on the display exactly as shown, including any decimal.',
+    'Say which unit the display shows: "kg", "lb" or "st" (stone). If no unit is visible, use "kg".',
+    'If you cannot clearly read a number, use null. Never guess a number you cannot see.',
+    'Reply with JSON only: {"value": 0.0, "unit": "kg"}',
+  ].join('\n');
+}
+
+// Gemini's reply → kilos, rounded to 0.1, or null. Pounds and stone are
+// converted, because the app keeps every weight in kilos.
+export function parseScale(raw) {
+  let data = raw;
+  if (typeof raw === 'string') {
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (!m) return null;
+    try { data = JSON.parse(m[0]); } catch { return null; }
+  }
+  const v = Number(data?.value);
+  if (!Number.isFinite(v) || v <= 0) return null;
+  const unit = String(data?.unit || 'kg').toLowerCase();
+  const kg = unit.startsWith('lb') ? v * 0.45359237 : unit.startsWith('st') ? v * 6.35029318 : v;
+  return Math.round(kg * 10) / 10;
+}
