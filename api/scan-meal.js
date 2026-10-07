@@ -10,19 +10,15 @@
 //   GEMINI_API_KEY   free key from Google AI Studio
 //   USDA_API_KEY     free key from api.data.gov (DEMO_KEY works, slowly)
 //   SCAN_CODE        her sync code, e.g. GP-XXXXXXXXXXXX
-//   GEMINI_MODEL     optional; defaults to GEMINI_DEFAULT_MODEL
+//   GEMINI_MODEL     optional; tried before the built-in GEMINI_MODELS list
 
-import { GEMINI_DEFAULT_MODEL, buildPrompt, parseItems, settleItem } from './_scan.js';
+import { GEMINI_MODELS, buildPrompt, parseItems, settleItem } from './_scan.js';
 
 const MAX_TEXT = 1000;
 const MAX_IMAGE_CHARS = 3_000_000; // ~2.2 MB of photo; the app sends far less
 
-async function askGemini({ text, image }) {
-  const key = process.env.GEMINI_API_KEY;
-  const model = process.env.GEMINI_MODEL || GEMINI_DEFAULT_MODEL;
-  const parts = [{ text: buildPrompt(text) }];
-  if (image) parts.push({ inline_data: { mime_type: image.type, data: image.data } });
-  const r = await fetch(
+async function askModel(model, key, parts) {
+  return fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,
     {
       method: 'POST',
@@ -33,21 +29,41 @@ async function askGemini({ text, image }) {
       }),
     },
   );
-  if (r.status === 429) throw Object.assign(new Error('busy'), { code: 'busy' });
-  if (!r.ok) throw Object.assign(new Error(`gemini ${r.status}`), { code: 'ai' });
-  const j = await r.json();
-  const out = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
-  return parseItems(out);
+}
+
+async function askGemini({ text, image }) {
+  const key = String(process.env.GEMINI_API_KEY || '').trim();
+  const models = [...new Set([process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean))];
+  const parts = [{ text: buildPrompt(text) }];
+  if (image) parts.push({ inline_data: { mime_type: image.type, data: image.data } });
+  let busy = false;
+  for (const model of models) {
+    const r = await askModel(model, key, parts);
+    // A bad key fails the same way on every model; say so straight away.
+    if (r.status === 400 || r.status === 401) {
+      const j = await r.json().catch(() => ({}));
+      if (/api key/i.test(j.error?.message || '')) throw Object.assign(new Error('key'), { code: 'key' });
+    }
+    if (r.status === 429) { busy = true; continue; }
+    if (r.status === 403 || r.status === 404 || r.status >= 500) continue;
+    if (!r.ok) throw Object.assign(new Error(`gemini ${r.status}`), { code: 'ai' });
+    const j = await r.json();
+    const out = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+    return parseItems(out);
+  }
+  throw Object.assign(new Error('no model'), { code: busy ? 'busy' : 'ai' });
 }
 
 async function findUsda(query) {
-  const key = process.env.USDA_API_KEY || 'DEMO_KEY';
-  const url = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${encodeURIComponent(key)}`
+  const own = String(process.env.USDA_API_KEY || '').trim();
+  const urlFor = key => `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${encodeURIComponent(key)}`
     + `&query=${encodeURIComponent(query)}&dataType=${encodeURIComponent('Foundation,SR Legacy,Survey (FNDDS)')}&pageSize=3`;
-  // One retry: the USDA service now and then drops a request.
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  // Her key first; if it is refused, the shared DEMO_KEY (slower, but the
+  // same food list). One retry each: the USDA service now and then drops one.
+  const keys = own ? [own, own, 'DEMO_KEY'] : ['DEMO_KEY', 'DEMO_KEY'];
+  for (const key of keys) {
     try {
-      const r = await fetch(url);
+      const r = await fetch(urlFor(key));
       if (r.ok) {
         const j = await r.json();
         return Array.isArray(j.foods) && j.foods.length ? j.foods[0] : null;
@@ -63,7 +79,9 @@ export default async function handler(req, res) {
   if (!process.env.GEMINI_API_KEY || !process.env.SCAN_CODE) {
     return res.status(503).json({ error: 'The scanner is not set up yet.', code: 'setup' });
   }
-  if (req.headers['x-gp-code'] !== process.env.SCAN_CODE) {
+  // Spaces or a lowercase letter pasted into Vercel must not lock her out.
+  const norm = v => String(v || '').trim().toUpperCase();
+  if (!norm(req.headers['x-gp-code']) || norm(req.headers['x-gp-code']) !== norm(process.env.SCAN_CODE)) {
     return res.status(403).json({ error: 'This gadget is not linked to your account.', code: 'code' });
   }
 
@@ -82,7 +100,9 @@ export default async function handler(req, res) {
   } catch (e) {
     const msg = e.code === 'busy'
       ? 'The free AI is busy. Try again in a minute.'
-      : 'The AI could not read that. Try again.';
+      : e.code === 'key'
+        ? 'The Gemini key in Vercel is not right. Check GEMINI_API_KEY.'
+        : 'The AI could not read that. Try again.';
     return res.status(502).json({ error: msg, code: e.code || 'ai' });
   }
   if (!items.length) return res.status(422).json({ error: 'No food found. Add a few words about what it is.' });

@@ -11,7 +11,10 @@
 //      be), or nothing matched, Gemini's own estimate is used instead and the
 //      line is marked as an AI guess, so she knows which numbers to trust.
 
-export const GEMINI_DEFAULT_MODEL = 'gemini-2.5-flash';
+// Tried in order. Google keeps the 2.5 models for accounts that already used
+// them, so a new key needs the 3.x line (checked 2026-10-07, all free tier).
+// If one is busy or not offered to this key, the next is tried.
+export const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite'];
 
 export function buildPrompt(text) {
   return [
