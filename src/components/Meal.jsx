@@ -272,7 +272,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
               {photo ? (
                 <span className="ml-scan-thumb">
                   <img src={photo.preview} alt="Your meal" />
-                  <button type="button" onClick={() => setPhoto(null)} aria-label="Remove photo">×</button>
+                  <button type="button" className="ml-icon-btn ml-del" onClick={() => { setPhoto(null); setScan(null); }} aria-label="Delete photo" title="Delete photo">🗑</button>
                 </span>
               ) : (
                 <button type="button" className="ml-scan-btn" onClick={() => fileRef.current?.click()}>📷 Photo</button>
@@ -321,7 +321,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
                   </small>
                 </span>
                 <span className="ml-scan-kcal">{it.kcal.toLocaleString('en-US')}</span>
-                <button type="button" className="ml-scan-drop" onClick={() => dropItem(i)} aria-label={`Take ${it.name} off`}>×</button>
+                <button type="button" className="ml-icon-btn ml-del ml-scan-drop" onClick={() => dropItem(i)} aria-label={`Delete ${it.name}`} title="Delete">🗑</button>
               </li>
             ))}
           </ul>
