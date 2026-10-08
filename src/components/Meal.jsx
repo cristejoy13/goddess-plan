@@ -7,7 +7,7 @@ import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
   parseBurn, burnOn, setBurn, MAX_BURN, MIN_BURN, AVERAGE_BURN,
-  parseGoal, setGoal, weekStartKey, goalForWeek, goalOn, calsLeft, MIN_GOAL, MAX_GOAL,
+  parseGoal, setGoal, weekStartKey, goalForWeek, calsLeft, MIN_GOAL, MAX_GOAL,
 } from '../utils/mealLog';
 
 // ─── MEAL ──────────────────────────────────────────────────────────────────
@@ -60,26 +60,6 @@ function monthWeeks(year, monthIdx) {
   return weeks;
 }
 
-// The seven days ending on a given Sunday, added up.
-//
-// Real dates, walked backwards with a Date — NOT the row of the grid. A grid
-// row can be a stub of three days at the start of a month, and a week total
-// that quietly dropped the four days sitting in the previous month would be
-// wrong in exactly the way a total must never be. This crosses the month edge
-// and, when the log holds those days, counts them.
-function weekTotalEnding(days, year, monthIdx, day) {
-  let total = 0;
-  let counted = 0;
-  // new Date(y, m, 0) and below rolls into the previous month on its own, so
-  // day - back needs no special case at the start of a month.
-  for (let back = 6; back >= 0; back--) {
-    const t = calTotals(days[dateKeyOf(new Date(year, monthIdx, day - back))] || []);
-    total += t.total;
-    counted += t.counted;
-  }
-  return { total, counted };
-}
-
 // The week's number on the Sunday square, in whichever currency the day
 // squares are using.
 //
@@ -91,9 +71,24 @@ function weekTotalEnding(days, year, monthIdx, day) {
 // Sunday's pink pill is always what she ATE that week, goal or no goal — she
 // asked for it that way on 2026-09-25. The day pill above it already counts
 // down from the goal, so the week pill does not need to as well.
-function weekNumberEnding(state, year, monthIdx, day) {
-  const eaten = weekTotalEnding(state.days || {}, year, monthIdx, day);
-  return { value: eaten.total, show: eaten.counted > 0, over: false };
+// Changed 2026-10-08: Sunday now shows the calories she LOST that week — each
+// day's real deficit (burned − eaten), added up over the seven days ending on
+// that Sunday. Burned is what she typed, else her Garmin number, else her
+// average. Only days with calories written down count: a day with nothing
+// written has no "eaten" to subtract. Works for every past week too, since it
+// is worked out from what is stored.
+function weekLostEnding(state, garmin, year, monthIdx, day) {
+  let lost = 0;
+  let counted = 0;
+  for (let back = 6; back >= 0; back--) {
+    const key = dateKeyOf(new Date(year, monthIdx, day - back));
+    const t = calTotals(state.days?.[key] || []);
+    if (!t.counted) continue;
+    const burned = burnOn(state, key) ?? garminBurnOn(garmin, key) ?? AVERAGE_BURN;
+    lost += burned - t.total;
+    counted += 1;
+  }
+  return { value: lost, show: counted > 0, over: lost < 0 };
 }
 
 // "14:05" → "2:05 PM". She thinks in 12-hour clock, and the plan is written in
@@ -1069,13 +1064,6 @@ export default function Meal() {
   const daysWritten = Object.keys(days).filter(k => k.startsWith(`${year}-${pad(monthIdx + 1)}-`)).length;
   const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
 
-  // Does any week on screen carry a goal? The legend has to name what the
-  // squares are showing, and that changes with the month she is looking at.
-  const anyGoal = useMemo(
-    () => weeks.some(wk => wk.some(d => d && goalOn(state, dateKey(year, monthIdx, d)))),
-    [weeks, state, year, monthIdx],
-  );
-
   const openKey = openDay ? dateKey(year, monthIdx, openDay) : null;
   const openIsSunday = openDay ? new Date(year, monthIdx, openDay).getDay() === 0 : false;
   const openMonday = openDay ? weekStartKey(year, monthIdx, openDay) : null;
@@ -1125,7 +1113,7 @@ export default function Meal() {
               // Column 6 is Sunday — the grid runs Mo…Su — and Sunday is where
               // the week closes, so that is where its total belongs.
               const isSunday = di === 6;
-              const week = isSunday ? weekNumberEnding(state, year, monthIdx, day) : null;
+              const week = isSunday ? weekLostEnding(state, garmin, year, monthIdx, day) : null;
               const showWeek = Boolean(week && week.show);
               // What she came to the calendar to find out: how much is left of
               // today. Only a week with a goal has an answer; without one the
@@ -1157,8 +1145,8 @@ export default function Meal() {
                           : `${total} calories`
                   }${showWeek
                     ? (week.over
-                        ? `, ${Math.abs(week.value)} calories over for the week`
-                        : `, ${week.value} calories eaten this week`)
+                        ? `, ${Math.abs(week.value)} calories gained this week`
+                        : `, ${week.value} calories lost this week`)
                     : ''}${
                     kg != null ? `, ${formatKg(kg)} kilos` : ''
                   }${avg != null ? `, ${formatKg(avg)} kilos on average this week` : ''}`}
@@ -1184,8 +1172,8 @@ export default function Meal() {
                         </span>
                       )}
                   {showWeek && (
-                    <span className={`ml-day-week${week.over ? ' ml-day-over' : ''}`}>
-                      {week.over ? `−${Math.abs(week.value)}` : week.value}
+                    <span className={`ml-day-week ml-day-lost${week.over ? ' ml-day-over' : ''}`}>
+                      {week.over ? `+${Math.abs(week.value).toLocaleString('en-US')}` : `🔥${week.value.toLocaleString('en-US')}`}
                     </span>
                   )}
                 </button>
@@ -1198,22 +1186,11 @@ export default function Meal() {
       <div className="ml-summary splash-item">
         🍽️ {daysWritten} of {daysInMonth} days written down in {MONTH_NAMES[monthIdx]}
       </div>
-      {/* Two bare numbers stacked in one square would be a guess without this
-          one line. It is the only words the grid gets. */}
-      <div className="ml-legend splash-item">
-        {anyGoal ? (
-          <>
-            <span className="ml-legend-item"><span className="ml-day-dot ml-day-left">000</span> calories left, the day</span>
-            <span className="ml-legend-item"><span className="ml-day-week">000</span> calories eaten, the week</span>
-          </>
-        ) : (
-          <>
-            <span className="ml-legend-item"><span className="ml-day-dot">000</span> calories eaten, the day</span>
-            <span className="ml-legend-item"><span className="ml-day-week">000</span> calories eaten, the week</span>
-          </>
-        )}
-        <span className="ml-legend-item"><span className="ml-day-wt"><span className="ml-wt-day">00</span></span> kilos, the day</span>
-        <span className="ml-legend-item"><span className="ml-day-wt"><span className="ml-wt-avg">00</span></span> kilos, the week</span>
+      {/* Few words, more picture (2026-10-08): what the Sunday number is, and
+          what it adds up to. */}
+      <div className="ml-legend ml-legend-simple splash-item">
+        <span className="ml-legend-item"><span className="ml-day-week ml-day-lost">🔥</span> Sunday = calories lost that week</span>
+        <span className="ml-legend-item ml-legend-fact">1 kg fat = 7,700 cal</span>
       </div>
 
       {openDay && (

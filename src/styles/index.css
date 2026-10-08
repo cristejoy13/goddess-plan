@@ -11292,3 +11292,30 @@ body {
 .ml-pill:disabled { opacity: 0.75; }
 [data-mode="light"] .ml-pill-scan { color: #9e0f55; border-color: rgba(176,16,94,0.55); background: rgba(200,23,110,0.1); }
 .ml-pill-scan:disabled { opacity: 1; }
+
+/* Sunday: calories lost that week (mint); gained shows pink. */
+.ml-day-week.ml-day-lost { background: rgba(110,231,200,0.18); color: #6ee7c8; border-color: rgba(110,231,200,0.45); }
+.ml-day-week.ml-day-lost.ml-day-over { background: rgba(255,92,157,0.16); color: #ff8fbb; border-color: rgba(255,92,157,0.45); }
+[data-mode="light"] .ml-day-week.ml-day-lost { background: rgba(11,122,98,0.12); color: #0b6b55; border-color: rgba(11,122,98,0.35); }
+[data-mode="light"] .ml-day-week.ml-day-lost.ml-day-over { background: rgba(200,23,110,0.1); color: #a00050; border-color: rgba(200,23,110,0.35); }
+.ml-legend-simple { gap: 8px 16px; }
+.ml-legend-fact { font-weight: 800; color: var(--gold, #f0cc60); }
+[data-mode="light"] .ml-legend-fact { color: #6b4a00; }
+
+/* Diary: a mic in the bottom corner of each writing box. */
+.nb-col-single { display: block; }
+.nb-col-single .daily-note-input { width: 100%; }
+.nb-col .daily-note-input { padding-bottom: 48px; }
+.nb-mic {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1.5px solid rgba(255,92,157,0.5); background: rgba(255,92,157,0.14); color: #ff5c9d;
+  cursor: pointer; touch-action: manipulation;
+}
+.nb-mic.is-on { background: #ff5c9d; border-color: #ff5c9d; color: #fff; animation: ml-mic-pulse 1.3s ease-in-out infinite; }
+.nb-mic-stop { width: 12px; height: 12px; border-radius: 3px; background: currentColor; }
+@media (prefers-reduced-motion: reduce) { .nb-mic.is-on { animation: none; } }
+.nb-talk-note { font-size: 12px; text-align: center; color: var(--text-soft); }
+[data-mode="light"] .nb-mic { background: rgba(200,23,110,0.08); border-color: rgba(200,23,110,0.4); color: #b0105e; }
+[data-mode="light"] .nb-mic.is-on { background: #c8176e; border-color: #c8176e; color: #fff; }

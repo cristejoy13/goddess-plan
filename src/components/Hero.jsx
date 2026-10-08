@@ -7,6 +7,7 @@ import { useGoalsData } from '../utils/useGoalsData';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
 import { ask } from '../utils/ask';
+import { useDictation } from '../utils/dictation';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -523,6 +524,36 @@ function DailyNotebook() {
   const [albumMenuOpen, setAlbumMenuOpen] = useState(false);
   // Which column is opened big (0-3), or null for all side by side.
   const [expandedCol, setExpandedCol] = useState(null);
+  // Talk instead of type (2026-10-08): each writing box has a mic. What she
+  // says is added after what is already in that box, as she says it. It uses
+  // the same one listening session as Meals, so the phone asks at most once
+  // while the app is open.
+  const [talkCol, setTalkCol] = useState(null);
+  const [talkNote, setTalkNote] = useState('');
+  const talkBaseRef = useRef('');
+  const talkColRef = useRef(0);
+  const talk = useDictation(heard => {
+    const base = talkBaseRef.current;
+    const next = base && heard ? `${base} ${heard}` : (base || heard);
+    if (talkColRef.current === 0) updateNote(next);
+    else updateColumnNote(talkColRef.current, next);
+  });
+  function toggleTalk(i, currentText) {
+    if (talk.listening) {
+      talk.stop();
+      if (talkCol === i) return;
+    }
+    if (!talk.supported) {
+      setTalkNote('Talking is not offered here. Tap the 🎤 on your keyboard instead.');
+      return;
+    }
+    setTalkNote('');
+    talkColRef.current = i;
+    talkBaseRef.current = String(currentText || '').trim();
+    setTalkCol(i);
+    talk.start();
+  }
+
 
   // While the notebook is open, only the notebook scrolls — not the homepage.
   useEffect(() => {
@@ -678,6 +709,7 @@ function DailyNotebook() {
   }
 
   function closeEditor() {
+    if (talk.listening) talk.stop();
     setMoodPickerOpen(false);
     setExpandedCol(null);
     setDiaryEditorOpen(false);
@@ -1328,18 +1360,51 @@ function DailyNotebook() {
                               >
                                 <NbIcon name={big ? 'shrink' : 'expand'} />
                               </button>
+                              <button
+                                type="button"
+                                className={`nb-mic${talk.listening && talkCol === i ? ' is-on' : ''}`}
+                                onClick={() => toggleTalk(i, i === 0 ? currentPage.note : currentPage.notes?.[i - 1])}
+                                aria-pressed={talk.listening && talkCol === i}
+                                aria-label={talk.listening && talkCol === i ? 'Stop listening' : 'Talk instead of typing'}
+                                title={talk.listening && talkCol === i ? 'Stop' : 'Talk'}
+                              >
+                                {talk.listening && talkCol === i ? <span className="nb-mic-stop" aria-hidden="true" /> : (
+                                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <rect x="9" y="3" width="6" height="11" rx="3" />
+                                    <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
+                                  </svg>
+                                )}
+                              </button>
                             </div>
                           );
                         })}
                       </div>
                     ) : (
-                      <textarea
-                        className="daily-note-input"
-                        value={currentPage?.note || ''}
-                        onChange={e => updateNote(e.target.value)}
-                        placeholder="Write your diary here..."
-                      />
+                      <div className="nb-col nb-col-single">
+                        <textarea
+                          className="daily-note-input"
+                          value={currentPage?.note || ''}
+                          onChange={e => updateNote(e.target.value)}
+                          placeholder={talk.listening ? 'Listening… say what is on your mind' : 'Write or tap 🎤 to talk...'}
+                        />
+                        <button
+                                type="button"
+                                className={`nb-mic${talk.listening && talkCol === 0 ? ' is-on' : ''}`}
+                                onClick={() => toggleTalk(0, currentPage?.note)}
+                                aria-pressed={talk.listening && talkCol === 0}
+                                aria-label={talk.listening && talkCol === 0 ? 'Stop listening' : 'Talk instead of typing'}
+                                title={talk.listening && talkCol === 0 ? 'Stop' : 'Talk'}
+                              >
+                                {talk.listening && talkCol === 0 ? <span className="nb-mic-stop" aria-hidden="true" /> : (
+                                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <rect x="9" y="3" width="6" height="11" rx="3" />
+                                    <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
+                                  </svg>
+                                )}
+                              </button>
+                      </div>
                     )}
+                    {(talk.error || talkNote) && <div className="nb-talk-note" role="status">{talk.error || talkNote}</div>}
                   </section>
                   )}
                 </div>
