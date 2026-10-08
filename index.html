@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- maximum-scale=1 stops iPhone/iPad zooming in every time she taps a
+         text box (diary, meals) and leaving the page zoomed (2026-10-09).
+         iOS still lets her pinch-zoom by hand; it ignores this for that. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
     <title>The Goddess Plan</title>
 
     <!-- PWA / installability -->
