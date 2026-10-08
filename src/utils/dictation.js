@@ -11,29 +11,64 @@ import { useEffect, useRef, useState } from 'react';
 
 // Tidy what was heard (2026-10-09): the phone hands back pieces of speech
 // with no space between them and punctuation hugging the next word
-// ("good day.I went"). One space after . , ! ? ; : — none before — a capital
-// at the start of each sentence, and numbers like 3.5 or 1,000 left alone.
+// ("good day.I went"). One space after . , ! ? ; : — none before — and numbers
+// like 3.5 or 1,000 left alone. Saying "new paragraph" starts a new paragraph
+// (an empty line between); "new line" starts a new line.
+//
+// Capitals: only at the start of a sentence (after a full stop, ? or !, or a
+// new paragraph) and on names. The phone capitalises the first word every
+// time she starts talking again; that is undone for everyday words, so a
+// pause mid-sentence does not leave a stray capital. A word that is not an
+// everyday word (Cebu, Garmin, Joy) keeps its capital.
+const EVERYDAY_WORDS = new Set(`a about after again all also am an and any are as at back be because been before being both but by can could day did do does done down each even every for from get go going good got had has have he her here him his how if in into is it its just know last like made make many me more most much my need never new next no not now of off on once one only or other our out over really right said same see she should since so some still such take than that the their them then there these they thing think this those though through time to today tomorrow too two under up us very was way we well went were what when where which while who why will with would yes yet you your went felt feel ate eat had have walked worked work slept sleep did tonight morning evening night later also maybe still just almost`.split(/\s+/));
+
+const cap = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+// Lower the first word when it is an everyday word the phone capitalised.
+function unCapFirst(str) {
+  return str.replace(/^([A-Z][a-z']*)/, (w) => (EVERYDAY_WORDS.has(w.toLowerCase()) && w !== 'I' && !/^I'/.test(w) ? w.toLowerCase() : w));
+}
+
+const endsSentence = (str) => /([.!?]|\n)\s*$/.test(str);
+
 export function tidySpeech(text, { capStart = true } = {}) {
-  const out = String(text || '')
-    .replace(/\s+([.,!?;:])/g, '$1')
-    .replace(/([.,!?;:])(?=[^\s\d.,!?;:)\]"'’])/g, '$1 ')
-    .replace(/\s{2,}/g, ' ')
-    .replace(/([.!?]\s+)([a-z])/g, (m, p, c) => p + c.toUpperCase())
+  let out = String(text || '')
+    .replace(/[ \t]*\bnew paragraph\b[ \t]*[.,]?[ \t]*/gi, '\n\n')
+    .replace(/[ \t]*\bnew line\b[ \t]*[.,]?[ \t]*/gi, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]+([.,!?;:])/g, '$1')
+    .replace(/([.,!?;:])(?=[^\s\d.,!?;:)\]"'’”])/g, '$1 ')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/([.!?][ \t]+|\n[ \t]*)([a-z])/g, (m, p, c) => p + c.toUpperCase())
     .replace(/\bi\b/g, 'I')
-    .trim();
-  return capStart ? out.charAt(0).toUpperCase() + out.slice(1) : out;
+    .replace(/^[ \t]+|[ \t]+$/g, '');
+  out = capStart ? cap(out) : unCapFirst(out);
+  return out;
+}
+
+// The pieces of one go of talking, joined: each piece the phone began with a
+// capital is lowered unless it starts a sentence.
+export function joinPieces(parts) {
+  let out = '';
+  for (const raw of parts) {
+    const piece = String(raw || '').trim();
+    if (!piece) continue;
+    if (!out) { out = piece; continue; }
+    out = `${out} ${endsSentence(out) ? piece : unCapFirst(piece)}`;
+  }
+  return out;
 }
 
 // Put the spoken words after what was already in the box. Only the spoken
 // part is tidied — what she typed (a web address, "e.g.") is left exactly as
-// it is. A new sentence after her full stop starts with a capital.
+// it is.
 export function joinSpeech(before, heard) {
-  const a = String(before || '').replace(/\s+$/, '');
-  if (!a) return tidySpeech(heard);
-  // Mid-sentence, the first spoken word keeps the case the phone gave it, so
-  // a name ("I live in Cebu") stays a name.
-  let b = tidySpeech(heard, { capStart: /[.!?]$/.test(a) });
+  const a = String(before || '').replace(/[ \t]+$/, '');
+  if (!a.trim()) return tidySpeech(heard);
+  let b = tidySpeech(heard, { capStart: endsSentence(a) });
   if (!b) return a;
+  if (/^\n/.test(b)) return `${a.replace(/\s+$/, '')}${b}`;
+  if (/\n$/.test(a)) return `${a}${cap(b)}`;
   if (/^[.,!?;:]/.test(b)) {
     b = b.replace(/^([.!?])\s*([a-z])/, (m, p, c) => `${p} ${c.toUpperCase()}`);
     return `${a}${b}`;
@@ -85,7 +120,8 @@ export function useDictation(onText) {
     rec.onresult = e => {
       const parts = [];
       for (let i = 0; i < e.results.length; i += 1) parts.push(e.results[i][0].transcript);
-      onTextRef.current(tidySpeech(parts.join(' ')));
+      // Raw pieces joined; the caller tidies them as it adds them to the box.
+      onTextRef.current(joinPieces(parts));
     };
     rec.onerror = e => {
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
