@@ -7,7 +7,7 @@ import { useGoalsData } from '../utils/useGoalsData';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
 import { ask } from '../utils/ask';
-import { useDictation, joinSpeech } from '../utils/dictation';
+import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -532,11 +532,19 @@ function DailyNotebook() {
   const [talkNote, setTalkNote] = useState('');
   const talkBaseRef = useRef('');
   const talkColRef = useRef(0);
+  const colRefs = useRef([]);
   const talk = useDictation(heard => {
     const next = joinSpeech(talkBaseRef.current, heard);
     if (talkColRef.current === 0) updateNote(next);
     else updateColumnNote(talkColRef.current, next);
   });
+  const talkingText = talk.listening
+    ? (talkCol === 0 ? currentPage?.note : currentPage?.notes?.[(talkCol || 1) - 1]) : null;
+  useEffect(() => {
+    if (talkCol == null) return;
+    showCursorAtEnd(colRefs.current[talkCol], talk.listening);
+  }, [talkingText, talk.listening, talkCol]);
+
   function toggleTalk(i, currentText) {
     if (talk.listening) {
       talk.stop();
@@ -548,8 +556,9 @@ function DailyNotebook() {
     }
     setTalkNote('');
     talkColRef.current = i;
-    talkBaseRef.current = String(currentText || '').trim();
+    talkBaseRef.current = String(currentText || '').replace(/[ \t]+$/, '');
     setTalkCol(i);
+    showCursorAtEnd(colRefs.current[i], true);
     talk.start();
   }
 
@@ -1344,6 +1353,7 @@ function DailyNotebook() {
                           return (
                             <div key={i} className="nb-col">
                               <textarea
+                                ref={el => { colRefs.current[i] = el; }}
                                 className="daily-note-input"
                                 value={i === 0 ? (currentPage.note || '') : (currentPage.notes?.[i - 1] || '')}
                                 onChange={e => (i === 0 ? updateNote(e.target.value) : updateColumnNote(i, e.target.value))}
@@ -1381,6 +1391,7 @@ function DailyNotebook() {
                     ) : (
                       <div className="nb-col nb-col-single">
                         <textarea
+                          ref={el => { colRefs.current[0] = el; }}
                           className="daily-note-input"
                           value={currentPage?.note || ''}
                           onChange={e => updateNote(e.target.value)}

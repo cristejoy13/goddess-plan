@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
-import { useDictation, joinSpeech } from '../utils/dictation';
+import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
@@ -200,10 +200,13 @@ function MealForm({ initial, onSubmit, onCancel }) {
       return;
     }
     setMicNote('');
-    beforeTalkRef.current = text.trim();
+    beforeTalkRef.current = text.replace(/[ \t]+$/, '');
     heardRef.current = false;
+    showCursorAtEnd(boxRef.current, true);
     mic.start();
   }
+  // The blinking cursor follows her words while she talks.
+  useEffect(() => { showCursorAtEnd(boxRef.current, mic.listening); }, [text, mic.listening]);
 
   // The box grows with what is in it, so a long meal can be read in full.
   useLayoutEffect(() => {

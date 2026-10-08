@@ -76,6 +76,26 @@ export function joinSpeech(before, heard) {
   return `${a} ${b}`;
 }
 
+// The blinking cursor (2026-10-09): while she talks, the box she is talking
+// into shows its cursor at the end, where the words are going, so she can see
+// where she is. inputMode 'none' keeps the keyboard from popping up over her
+// writing while she talks; it comes back as soon as she stops.
+export function showCursorAtEnd(el, talking) {
+  if (!el) return;
+  try {
+    if (talking) {
+      el.inputMode = 'none';
+      if (document.activeElement !== el) el.focus({ preventScroll: true });
+      const end = el.value.length;
+      el.setSelectionRange(end, end);
+      // Keep the newest words in view in a long entry.
+      el.scrollTop = el.scrollHeight;
+    } else {
+      el.inputMode = '';
+    }
+  } catch { /* the words still arrive; only the cursor is a bonus */ }
+}
+
 // One recogniser for the whole time the app is open. iPhones ask for
 // permission again for every NEW recogniser, so making a fresh one on each
 // tap of the mic meant the pop-up came back every time. Reused, it asks once
