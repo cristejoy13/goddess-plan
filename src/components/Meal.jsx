@@ -142,10 +142,22 @@ function MealForm({ initial, onSubmit, onCancel }) {
   const boxRef = useRef(null);
   const beforeTalkRef = useRef('');
   const [micNote, setMicNote] = useState('');
+  // Three seconds of quiet ends the listening, and the calories are then
+  // found by themselves (see the effect below). The ✨ Calories pill stays
+  // for typed meals.
+  const SILENCE_MS = 3000;
+  const silenceRef = useRef(null);
+  const heardRef = useRef(false);
+  const stopMicRef = useRef(() => {});
   const mic = useDictation(heard => {
     const before = beforeTalkRef.current;
     setText(before && heard ? `${before} ${heard}` : (before || heard));
+    if (heard) heardRef.current = true;
+    clearTimeout(silenceRef.current);
+    silenceRef.current = setTimeout(() => stopMicRef.current(), SILENCE_MS);
   });
+  stopMicRef.current = mic.stop;
+  useEffect(() => () => clearTimeout(silenceRef.current), []);
   function toggleMic() {
     if (mic.listening) { mic.stop(); return; }
     if (!mic.supported) {
@@ -155,6 +167,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
     }
     setMicNote('');
     beforeTalkRef.current = text.trim();
+    heardRef.current = false;
     mic.start();
   }
 
@@ -179,17 +192,22 @@ function MealForm({ initial, onSubmit, onCancel }) {
     e.target.value = '';
     if (!file) return;
     setScanError('');
-    try { setPhoto(await shrinkPhoto(file)); } catch { setScanError('Could not open that photo. Try another.'); }
+    let shrunk;
+    try { shrunk = await shrinkPhoto(file); } catch { setScanError('Could not open that photo. Try another.'); return; }
+    setPhoto(shrunk);
+    // The calories start as soon as the photo is in, with any words typed.
+    if (!editing) runScan({ image: shrunk });
   }
 
-  async function runScan() {
+  async function runScan(override = {}) {
     if (mic.listening) mic.stop();
     const words = text.trim();
-    if (!words && !photo) return;
+    const image = override.image ?? photo;
+    if (!words && !image) return;
     setScanning(true);
     setScanError('');
     try {
-      const result = await scanMeal({ text: words, image: photo });
+      const result = await scanMeal({ text: words, image });
       setScan(result);
     } catch (err) {
       setScanError(err.message);
@@ -212,6 +230,24 @@ function MealForm({ initial, onSubmit, onCancel }) {
     }, 900);
     return () => clearTimeout(t);
   }, [text, editing, scan, photo, mic.listening]);
+
+  // When listening ends — three seconds of quiet, her tap on stop, or the
+  // phone ending it — and something was heard, find the calories by itself.
+  const [autoScan, setAutoScan] = useState(0);
+  const wasListeningRef = useRef(false);
+  useEffect(() => {
+    if (wasListeningRef.current && !mic.listening && heardRef.current) {
+      heardRef.current = false;
+      clearTimeout(silenceRef.current);
+      setAutoScan(n => n + 1);
+    }
+    wasListeningRef.current = mic.listening;
+  }, [mic.listening]);
+  useEffect(() => {
+    if (autoScan && !editing && !scan && text.trim()) runScan();
+    // runScan reads the latest words; only a new end of listening re-runs this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoScan]);
 
   function cancelScan() {
     dismissedRef.current = text.trim();
@@ -855,45 +891,41 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
         </div>
       )}
 
-      <ul className="ml-entries">
-        {entries.map(en => (
-          <EntryRow
-            key={en.id}
-            entry={en}
-            onEdit={(fields) => onEdit(en, fields)}
-            onDelete={() => onDelete(en)}
-          />
-        ))}
-        {entries.length === 0 && (
-          <li className="ml-entry-empty">Write the first meal of this day above.</li>
+      {/* The day as a receipt: every meal in one box, a line, what she has
+          eaten so far; then, on its own and highlighted, what is left. */}
+      <div className="ml-receipt">
+        <ul className="ml-entries">
+          {entries.map(en => (
+            <EntryRow
+              key={en.id}
+              entry={en}
+              onEdit={(fields) => onEdit(en, fields)}
+              onDelete={() => onDelete(en)}
+            />
+          ))}
+          {entries.length === 0 && (
+            <li className="ml-entry-empty">Write the first meal of this day above.</li>
+          )}
+        </ul>
+        {entries.length > 0 && (
+          <div className="ml-receipt-total">
+            <span>Eaten so far</span>
+            <b>{total.toLocaleString()} cal</b>
+          </div>
         )}
-      </ul>
+        {missing > 0 && (
+          <div className="ml-receipt-note">
+            {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
+          </div>
+        )}
+      </div>
 
-      {(entries.length > 0 || goal != null) && (
-        <div className="ml-total">
-          {goal != null && (
-            <div className={`ml-total-row ml-left-row${left < 0 ? ' ml-left-over' : ''}`}>
-              <span className="ml-total-lbl">{left < 0 ? 'Over your goal by' : 'Left to eat today'}</span>
-              <span className="ml-left-num">{Math.abs(left).toLocaleString()} cal</span>
-            </div>
-          )}
-          {entries.length > 0 && (
-            <div className="ml-total-row">
-              <span className="ml-total-lbl">{goal != null ? 'Eaten so far' : 'Total for this day'}</span>
-              <span className="ml-total-num">{total.toLocaleString()} cal</span>
-            </div>
-          )}
-          {goal != null && (
-            <div className="ml-total-note">Your goal for this week is {goal.toLocaleString()} a day.</div>
-          )}
-          {missing > 0 && (
-            <div className="ml-total-note">
-              {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
-            </div>
-          )}
+      {goal != null && (
+        <div className={`ml-left-box${left < 0 ? ' is-over' : ''}`}>
+          <span>{left < 0 ? 'Over your goal by' : 'Left to eat today'}</span>
+          <b>{Math.abs(left).toLocaleString()} cal</b>
         </div>
       )}
-
       </section>}
 
       {show('weight') && <section className="ml-box ml-box-weight" aria-label="Weight">

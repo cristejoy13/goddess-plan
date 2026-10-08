@@ -27,6 +27,38 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Safety net (2026-10-08, after her iPad sat on a blank loading screen):
+         if the app has not drawn anything 12 seconds after opening, and the
+         device is online, the saved copy of the app's FILES is cleared once
+         and the page reloads, fetching the current version. Her data lives in
+         localStorage and the sync database, which this never touches. Runs at
+         most once per session, and never offline, where the saved copy is
+         the only way the app can open. -->
+    <script>
+      (function () {
+        try {
+          setTimeout(function () {
+            var root = document.getElementById('root');
+            if (!root || root.children.length || navigator.onLine === false) return;
+            if (sessionStorage.getItem('gp_boot_retry')) return;
+            sessionStorage.setItem('gp_boot_retry', '1');
+            var go = function () { location.reload(); };
+            var jobs = [];
+            if ('serviceWorker' in navigator) {
+              jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+                return Promise.all(rs.map(function (r) { return r.unregister(); }));
+              }));
+            }
+            if (window.caches) {
+              jobs.push(caches.keys().then(function (ks) {
+                return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+              }));
+            }
+            Promise.all(jobs).then(go, go);
+          }, 12000);
+        } catch (e) { /* the app still loads normally */ }
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

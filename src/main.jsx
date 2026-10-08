@@ -20,6 +20,10 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
+// The app started, so the boot safety net in index.html may run again in a
+// later session if it is ever needed.
+setTimeout(() => { try { sessionStorage.removeItem('gp_boot_retry') } catch { /* fine */ } }, 15000)
+
 function startBackgroundServices() {
   // initSync is async now (Firebase is fetched on demand), so a rejection has
   // to be caught on the promise — a try/catch around the call would miss it.

@@ -11203,3 +11203,56 @@ body {
 .ml-scan-item .ml-scan-name { gap: 0; }
 [data-mode="light"] .ml-scan-field input { background: #fff; border-color: rgba(120,60,100,0.3); color: #3a1030; }
 [data-mode="light"] .ml-scan-edit { color: #5a2a4a; }
+
+/* ── The day's meals as a receipt ─────────────────────────────────────────
+   One box holds every meal (time · food · calories · edit · delete), a
+   dashed line, then "Eaten so far". Below it, alone and highlighted, what is
+   left to eat today. */
+.ml-receipt {
+  margin-top: 16px; padding: 12px 12px 14px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+.ml-box-meals .ml-receipt .ml-entries { margin-top: 0; gap: 0; }
+.ml-receipt .ml-entry {
+  background: none; border: 0; border-radius: 0;
+  padding: 10px 2px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.ml-receipt .ml-entry:last-child { border-bottom: 0; }
+.ml-receipt .ml-entry-empty { padding: 6px 2px; }
+.ml-receipt-total {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  margin-top: 8px; padding: 12px 2px 0;
+  border-top: 2px dashed rgba(255,255,255,0.28);
+  font-size: 14px; font-weight: 700; color: var(--text);
+}
+.ml-receipt-total b { font-size: 18px; font-variant-numeric: tabular-nums; }
+.ml-receipt-note { margin-top: 8px; font-size: 12px; color: var(--text-mid, #c090b8); text-align: center; }
+.ml-left-box {
+  margin-top: 14px; padding: 14px 16px;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(110,231,200,0.22), rgba(110,231,200,0.1));
+  border: 1.5px solid rgba(110,231,200,0.6);
+  color: var(--text);
+}
+.ml-left-box span { font-size: 14px; font-weight: 800; }
+.ml-left-box b { font-family: 'Cormorant Garamond', serif; font-size: 28px; line-height: 1; color: #6ee7c8; font-variant-numeric: tabular-nums; }
+.ml-left-box.is-over { background: linear-gradient(135deg, rgba(255,92,157,0.24), rgba(255,92,157,0.1)); border-color: rgba(255,92,157,0.65); }
+.ml-left-box.is-over b { color: #ff7fb0; }
+[data-mode="light"] .ml-receipt { background: rgba(255,255,255,0.85); border-color: rgba(120,60,100,0.2); }
+[data-mode="light"] .ml-receipt .ml-entry { border-bottom-color: rgba(120,60,100,0.12); }
+[data-mode="light"] .ml-receipt-total { border-top-color: rgba(120,60,100,0.35); color: #3a1030; }
+[data-mode="light"] .ml-receipt-note { color: #5a2a4a; }
+[data-mode="light"] .ml-left-box { background: rgba(11,122,98,0.1); border-color: rgba(11,122,98,0.5); color: #1e3a33; }
+[data-mode="light"] .ml-left-box b { color: #0b6b55; }
+[data-mode="light"] .ml-left-box.is-over { background: rgba(200,23,110,0.08); border-color: rgba(200,23,110,0.45); }
+[data-mode="light"] .ml-left-box.is-over b { color: #b0105e; }
+.ml-left-box b { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; white-space: nowrap; }
+.ml-left-box span { min-width: 0; }
+[data-mode="light"] .ml-left-box { background: linear-gradient(135deg, rgba(11,122,98,0.18), rgba(11,122,98,0.08)); border-color: #0b7a62; }
+@media (max-width: 360px) { .ml-left-box { padding: 12px 14px; } .ml-left-box b { font-size: 21px; } .ml-left-box span { font-size: 13px; } }
+[data-mode="light"] .ml-left-box { background: #d7f3ea; }
+[data-mode="light"] .ml-left-box.is-over { background: #fde0ec; }
