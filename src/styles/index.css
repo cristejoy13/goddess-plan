@@ -11256,3 +11256,31 @@ body {
 @media (max-width: 360px) { .ml-left-box { padding: 12px 14px; } .ml-left-box b { font-size: 21px; } .ml-left-box span { font-size: 13px; } }
 [data-mode="light"] .ml-left-box { background: #d7f3ea; }
 [data-mode="light"] .ml-left-box.is-over { background: #fde0ec; }
+
+/* ── Burned and the real deficit, under the meals (2026-10-08) ──
+   Weight tab: kg and Save only. Meals tab, under "Left to eat today":
+   calories burned + Save on one line, then eaten / burned / real deficit. */
+.ml-box-weight .ml-wt-part-kg .ml-wt-row,
+.ml-box-weight .ml-wt-split .ml-wt-part-kg .ml-wt-row,
+.ml-box-weight .ml-wt-part-kg.ml-wt-form .ml-wt-row { grid-template-columns: minmax(0, 1fr) auto; }
+.ml-burn-panel .ml-wt-form {
+  margin-top: 12px; padding: 14px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,170,110,0.32);
+}
+.ml-burn-panel .ml-wt-split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.ml-burn-panel .ml-wt-row,
+.ml-burn-panel .ml-wt-split .ml-wt-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 10px;
+}
+.ml-burn-panel .ml-wt-wrap { min-width: 0; align-items: stretch; gap: 6px; }
+.ml-burn-panel .ml-wt-wrap .ml-time-lbl { text-align: left; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ml-burn-panel .ml-wt-field { width: 100%; }
+.ml-burn-panel .ml-wt-unit { display: none; }
+.ml-burn-panel .ml-wt-input { width: 100%; min-height: 44px; }
+.ml-burn-panel .ml-wt-btn,
+.ml-burn-panel .ml-wt-split .ml-wt-btn { min-width: 0; width: auto; height: 44px; min-height: 44px; padding: 0 18px; }
+.ml-burn-panel .ml-sum { padding: 12px 2px 0; background: none; border: 0; border-radius: 0; border-top: 1px solid rgba(255,255,255,0.18); }
+[data-mode="light"] .ml-burn-panel .ml-wt-form { background: rgba(255,255,255,0.8); border-color: rgba(179,90,18,0.3); }
+[data-mode="light"] .ml-burn-panel .ml-sum { background: none; border-top-color: rgba(90,42,74,0.22); }

@@ -597,7 +597,12 @@ function GoalForm({ cal, weekLabel, onSave }) {
 //
 // Nothing else is ever filled in for her. A day she did not weigh stays empty, and
 // an empty day is left out of the week's average rather than counted as zero.
-function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'average', onSave }) {
+// `part` splits it across the tabs (2026-10-08): 'kg' is the Weight tab — the
+// scale reading alone; 'burn' sits under the meals — calories burned, what she
+// ate, and her real deficit.
+function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'average', part = 'both', onSave }) {
+  const showKg = part !== 'burn';
+  const showBurn = part !== 'kg';
   const fromWatch = averageFrom === 'garmin';
   const burn = typedBurnCal ?? average;
   const kgText = kg != null ? formatKg(kg) : '';
@@ -691,10 +696,10 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
     // like 62.53 fails the step check, the submit event never fires at all,
     // and the number she typed vanishes with no message. The checking is done
     // in parseKg instead, which can say what is wrong in words she can read.
-    <form className="ml-wt-form" noValidate onSubmit={submit}>
+    <form className={`ml-wt-form ml-wt-part-${part}`} noValidate onSubmit={submit}>
       <div className="ml-wt-split">
         <div className="ml-wt-row">
-          <label className="ml-wt-wrap">
+          {showKg && <label className="ml-wt-wrap">
             <span className="ml-time-lbl">⚖️ kg</span>
             <div className="ml-wt-field">
               <input
@@ -720,8 +725,8 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
                 title="Snap your scale"
               >{reading ? '…' : '📷'}</button>
             </div>
-          </label>
-          <label className="ml-wt-wrap">
+          </label>}
+          {showBurn && <label className="ml-wt-wrap">
             <span className="ml-time-lbl">{typedBurnCal == null && average != null ? (fromWatch ? '⌚ Garmin cal' : '🔥 avg cal') : '🔥 cal'} burned</span>
             <div className="ml-wt-field">
               <input
@@ -738,13 +743,13 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
               />
               <span className="ml-wt-unit ml-burn-unit">cal</span>
             </div>
-          </label>
+          </label>}
           <button type="submit" className="ml-wt-btn" disabled={unchanged}>
             {saveLabel}
           </button>
         </div>
 
-        <div className="ml-sum" aria-label="This day in numbers">
+        {showBurn && <div className="ml-sum" aria-label="This day in numbers">
 
           <div className="ml-sum-row">
             <span>Total calories eaten</span>
@@ -759,11 +764,11 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
           {net != null && <>
             <div className="ml-sum-rule" aria-hidden="true" />
             <div className={`ml-sum-row ml-sum-net${net > 0 ? ' ml-sum-gain' : ' ml-sum-deficit'}`}>
-              <span>{net > 0 ? 'Gained' : net < 0 ? 'Deficit' : 'Even'}</span>
+              <span>{net > 0 ? 'Gained' : net < 0 ? 'Real deficit' : 'Even'}</span>
               <b>{Math.abs(net).toLocaleString()} cal</b>
             </div>
           </>}
-        </div>
+        </div>}
       </div>
       {readNote && (
         <div className="ml-wt-read" role="status">
@@ -926,10 +931,16 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
           <b>{Math.abs(left).toLocaleString()} cal</b>
         </div>
       )}
+
+      {/* Under it: calories burned (her watch, her own number, or her
+          average), what she ate, and the real deficit. */}
+      <div className="ml-burn-panel">
+        <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="burn" onSave={onWeight} />
+      </div>
       </section>}
 
       {show('weight') && <section className="ml-box ml-box-weight" aria-label="Weight">
-      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} onSave={onWeight} />
+      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="kg" onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
         <div className="ml-wt-week">
