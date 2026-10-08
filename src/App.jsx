@@ -262,7 +262,6 @@ export default function App() {
 
   // Touch tracking for swipe-back gesture
   const touchStartRef = useRef({ x: 0, y: 0 });
-  const lastTapRef = useRef({ time: 0, x: 0, y: 0 });
 
   const navigate = (id, tab = null, scrollTo = null) => {
     if (id === 'antiaging') { id = 'skincare'; tab = tab ?? 'antiaging'; }
@@ -348,27 +347,10 @@ export default function App() {
     // Fire when swiping right from the left 220px of screen (covers sidebar + left content edge)
     if (startX < 220 && dx > 80 && dy < 100) {
       goBack();
-      return;
     }
-
-    const target = e.target;
-    const isInteractive = target.closest?.(
-      'button, input, textarea, select, a, [role="button"], .check-item, .ingr-card, .petal-acc, .month-card'
-    );
-    if (isInteractive) return;
-
-    const tap = e.changedTouches[0];
-    const now = Date.now();
-    const last = lastTapRef.current;
-    const distance = Math.hypot(tap.clientX - last.x, tap.clientY - last.y);
-
-    if (now - last.time < 320 && distance < 36) {
-      lastTapRef.current = { time: 0, x: 0, y: 0 };
-      goHome();
-      return;
-    }
-
-    lastTapRef.current = { time: now, x: tap.clientX, y: tap.clientY };
+    // Double-tap to go home was removed (2026-10-08): an accidental double
+    // tap threw her out of a meal she was still writing. Home is the Home
+    // button in the section row.
   }
 
   const background = (

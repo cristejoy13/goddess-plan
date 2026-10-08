@@ -316,7 +316,7 @@ function NavigateScreen({ onBack }) {
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">📱 Touch & Phone Gestures</div>
         <GuideStep num="3" title="Swipe Right to Go Back" desc="Swipe left to right across the screen." />
-        <GuideStep num="4" title="Double-Tap to Go Home" desc="Double-tap any empty area." />
+        <GuideStep num="4" title="Go Home" desc="Tap Home in the row under the top bar." />
       </div>
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">🗂️ Finding Content</div>

@@ -11284,3 +11284,11 @@ body {
 .ml-burn-panel .ml-sum { padding: 12px 2px 0; background: none; border: 0; border-radius: 0; border-top: 1px solid rgba(255,255,255,0.18); }
 [data-mode="light"] .ml-burn-panel .ml-wt-form { background: rgba(255,255,255,0.8); border-color: rgba(179,90,18,0.3); }
 [data-mode="light"] .ml-burn-panel .ml-sum { background: none; border-top-color: rgba(90,42,74,0.22); }
+
+/* ✨ Calories pill: bolder and clear in both modes, even before there is
+   anything to find (it was too faint to read when greyed out). */
+.ml-pill { font-weight: 800; }
+.ml-pill-scan { color: #ff8fbb; border-color: rgba(255,92,157,0.65); background: rgba(255,92,157,0.16); }
+.ml-pill:disabled { opacity: 0.75; }
+[data-mode="light"] .ml-pill-scan { color: #9e0f55; border-color: rgba(176,16,94,0.55); background: rgba(200,23,110,0.1); }
+.ml-pill-scan:disabled { opacity: 1; }
