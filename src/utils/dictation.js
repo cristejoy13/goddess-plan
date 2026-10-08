@@ -9,6 +9,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+// One recogniser for the whole time the app is open. iPhones ask for
+// permission again for every NEW recogniser, so making a fresh one on each
+// tap of the mic meant the pop-up came back every time. Reused, it asks once
+// per app opening (and not at all once she sets the Microphone permission to
+// Allow in Settings).
+let shared = null;
+
 function recognitionClass() {
   if (typeof window === 'undefined') return null;
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
@@ -36,10 +43,13 @@ export function useDictation(onText) {
     const Rec = recognitionClass();
     if (!Rec || recRef.current) return;
     setError('');
-    const rec = new Rec();
-    rec.lang = navigator.language || 'en-US';
-    rec.continuous = true;
-    rec.interimResults = true;
+    if (!shared) {
+      shared = new Rec();
+      shared.lang = navigator.language || 'en-US';
+      shared.continuous = true;
+      shared.interimResults = true;
+    }
+    const rec = shared;
     rec.onresult = e => {
       let heard = '';
       for (let i = 0; i < e.results.length; i += 1) heard += e.results[i][0].transcript;
