@@ -538,13 +538,6 @@ function DailyNotebook() {
     if (talkColRef.current === 0) updateNote(next);
     else updateColumnNote(talkColRef.current, next);
   });
-  const talkingText = talk.listening
-    ? (talkCol === 0 ? currentPage?.note : currentPage?.notes?.[(talkCol || 1) - 1]) : null;
-  useEffect(() => {
-    if (talkCol == null) return;
-    showCursorAtEnd(colRefs.current[talkCol], talk.listening);
-  }, [talkingText, talk.listening, talkCol]);
-
   function toggleTalk(i, currentText) {
     if (talk.listening) {
       talk.stop();
@@ -663,6 +656,15 @@ function DailyNotebook() {
 
   const currentPage = data.pages.find(page => page.id === data.activePageId) || data.pages[0];
   const currentChecklist = data.checklists.find(list => list.id === data.activeChecklistId) || data.checklists[0];
+
+  // The blinking cursor follows her words while she talks (needs currentPage,
+  // so it sits after it).
+  const talkingText = talk.listening
+    ? (talkCol === 0 ? currentPage?.note : currentPage?.notes?.[(talkCol || 1) - 1]) : null;
+  useEffect(() => {
+    if (talkCol == null) return;
+    showCursorAtEnd(colRefs.current[talkCol], talk.listening);
+  }, [talkingText, talk.listening, talkCol]);
 
   function updateCurrentPage(patch) {
     setData(prev => {
