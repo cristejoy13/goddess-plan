@@ -1185,11 +1185,9 @@ export default function Meal() {
       <div className="ml-summary splash-item">
         🍽️ {daysWritten} of {daysInMonth} days written down in {MONTH_NAMES[monthIdx]}
       </div>
-      {/* Few words, more picture (2026-10-08): what the Sunday number is, and
-          what it adds up to. */}
+      {/* One line only, as she asked (2026-10-08). */}
       <div className="ml-legend ml-legend-simple splash-item">
-        <span className="ml-legend-item"><span className="ml-day-week ml-day-lost">🔥</span> Sunday = goal − eaten, the week</span>
-        <span className="ml-legend-item ml-legend-fact">1 kg fat = 7,700 cal</span>
+        <span className="ml-legend-item ml-legend-fact">Lose 1 kg = 7,700 cal</span>
       </div>
 
       {openDay && (
