@@ -71,24 +71,23 @@ function monthWeeks(year, monthIdx) {
 // Sunday's pink pill is always what she ATE that week, goal or no goal — she
 // asked for it that way on 2026-09-25. The day pill above it already counts
 // down from the goal, so the week pill does not need to as well.
-// Changed 2026-10-08: Sunday now shows the calories she LOST that week — each
-// day's real deficit (burned − eaten), added up over the seven days ending on
-// that Sunday. Burned is what she typed, else her Garmin number, else her
-// average. Only days with calories written down count: a day with nothing
-// written has no "eaten" to subtract. Works for every past week too, since it
-// is worked out from what is stored.
-function weekLostEnding(state, garmin, year, monthIdx, day) {
-  let lost = 0;
+// Sunday's number (her rule, 2026-10-08): for each day of the week ending
+// that Sunday, her calorie goal for the week minus what she ate that day —
+// the same "left" each day square shows — added up over the seven days. Only
+// days with calories written down and a goal set count. Worked out from what
+// is stored, so every past week shows it too.
+function weekLostEnding(state, year, monthIdx, day) {
+  let sum = 0;
   let counted = 0;
   for (let back = 6; back >= 0; back--) {
     const key = dateKeyOf(new Date(year, monthIdx, day - back));
-    const t = calTotals(state.days?.[key] || []);
-    if (!t.counted) continue;
-    const burned = burnOn(state, key) ?? garminBurnOn(garmin, key) ?? AVERAGE_BURN;
-    lost += burned - t.total;
+    if (!calTotals(state.days?.[key] || []).counted) continue;
+    const left = calsLeft(state, key);
+    if (left == null) continue;
+    sum += left;
     counted += 1;
   }
-  return { value: lost, show: counted > 0, over: lost < 0 };
+  return { value: sum, show: counted > 0, over: sum < 0 };
 }
 
 // "14:05" → "2:05 PM". She thinks in 12-hour clock, and the plan is written in
@@ -1113,7 +1112,7 @@ export default function Meal() {
               // Column 6 is Sunday — the grid runs Mo…Su — and Sunday is where
               // the week closes, so that is where its total belongs.
               const isSunday = di === 6;
-              const week = isSunday ? weekLostEnding(state, garmin, year, monthIdx, day) : null;
+              const week = isSunday ? weekLostEnding(state, year, monthIdx, day) : null;
               const showWeek = Boolean(week && week.show);
               // What she came to the calendar to find out: how much is left of
               // today. Only a week with a goal has an answer; without one the
@@ -1145,8 +1144,8 @@ export default function Meal() {
                           : `${total} calories`
                   }${showWeek
                     ? (week.over
-                        ? `, ${Math.abs(week.value)} calories gained this week`
-                        : `, ${week.value} calories lost this week`)
+                        ? `, ${Math.abs(week.value)} calories over your goal this week`
+                        : `, ${week.value} calories under your goal this week`)
                     : ''}${
                     kg != null ? `, ${formatKg(kg)} kilos` : ''
                   }${avg != null ? `, ${formatKg(avg)} kilos on average this week` : ''}`}
@@ -1173,7 +1172,7 @@ export default function Meal() {
                       )}
                   {showWeek && (
                     <span className={`ml-day-week ml-day-lost${week.over ? ' ml-day-over' : ''}`}>
-                      {week.over ? `+${Math.abs(week.value).toLocaleString('en-US')}` : `🔥${week.value.toLocaleString('en-US')}`}
+                      {week.over ? `−${Math.abs(week.value).toLocaleString('en-US')}` : `🔥${week.value.toLocaleString('en-US')}`}
                     </span>
                   )}
                 </button>
@@ -1189,7 +1188,7 @@ export default function Meal() {
       {/* Few words, more picture (2026-10-08): what the Sunday number is, and
           what it adds up to. */}
       <div className="ml-legend ml-legend-simple splash-item">
-        <span className="ml-legend-item"><span className="ml-day-week ml-day-lost">🔥</span> Sunday = calories lost that week</span>
+        <span className="ml-legend-item"><span className="ml-day-week ml-day-lost">🔥</span> Sunday = goal − eaten, the week</span>
         <span className="ml-legend-item ml-legend-fact">1 kg fat = 7,700 cal</span>
       </div>
 
