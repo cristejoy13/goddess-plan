@@ -88,6 +88,37 @@ function dayDeficit(state, garmin, key, todayKey = dateKeyOf()) {
   return burned - t.total;
 }
 
+// A kilo of body fat is about 7,700 calories. Her week deficits are added up
+// in order from her first week with meals written down — a week where she ate
+// more than she burned takes away — and each Sunday on which the running total
+// reaches 7,700 is a kilo lost: that Sunday turns pale red, and counting starts
+// again, keeping whatever went past 7,700 so no effort is lost (2026-10-09).
+const KG_FAT_CAL = 7700;
+
+function kiloSundays(state, garmin, todayKey = dateKeyOf()) {
+  const keys = Object.keys(state.days || {}).filter(k => calTotals(state.days[k]).counted).sort();
+  const reached = new Set();
+  if (!keys.length) return reached;
+  const [y, m, d] = keys[0].split('-').map(Number);
+  const first = new Date(y, m - 1, d);
+  let monday = new Date(y, m - 1, d - ((first.getDay() + 6) % 7));
+  let running = 0;
+  // Weeks up to and including the one holding today.
+  while (dateKeyOf(monday) <= todayKey) {
+    for (let i = 0; i < 7; i += 1) {
+      const def = dayDeficit(state, garmin, dateKeyOf(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i)), todayKey);
+      if (def != null) running += def;
+    }
+    const sunday = dateKeyOf(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6));
+    while (running >= KG_FAT_CAL) {
+      reached.add(sunday);
+      running -= KG_FAT_CAL;
+    }
+    monday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 7);
+  }
+  return reached;
+}
+
 function weekLostEnding(state, garmin, year, monthIdx, day) {
   let sum = 0;
   let counted = 0;
@@ -966,6 +997,8 @@ export default function Meal() {
   const [state, setState] = useState(loadLog);
   // The page remounts when a sync lands, so reading once is enough.
   const [garmin] = useState(loadGarmin);
+  // Sundays on which another kilo was reached (see kiloSundays).
+  const kiloDays = useMemo(() => kiloSundays(state, garmin), [state, garmin]);
   // Read once and hold it: "today" must not shift under her while the page is
   // open, or the ring would jump to a different square at midnight mid-edit.
   const today = useMemo(() => todayParts(), []);
@@ -1143,7 +1176,7 @@ export default function Meal() {
               return (
                 <button
                   key={di}
-                  className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}${showWeek || showWt ? ' ml-day-sun' : ''}`}
+                  className={`ml-day${count ? ' ml-day-has' : ''}${isToday ? ' ml-day-today' : ''}${isOpen ? ' ml-day-open' : ''}${showWeek || showWt ? ' ml-day-sun' : ''}${isSunday && kiloDays.has(key) ? ' ml-day-kilo' : ''}`}
                   onClick={() => setOpenDay(isOpen ? null : day)}
                   aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${
                     showLeft
@@ -1160,7 +1193,7 @@ export default function Meal() {
                         ? `, ${Math.abs(week.value)} calories more eaten than burned this week`
                         : `, ${week.value} calorie deficit this week`)
                     : ''}${
-                    kg != null ? `, ${formatKg(kg)} kilos` : ''
+                    isSunday && kiloDays.has(key) ? ', another kilo lost' : ''}${kg != null ? `, ${formatKg(kg)} kilos` : ''
                   }${avg != null ? `, ${formatKg(avg)} kilos on average this week` : ''}`}
                 >
                   <span className="ml-day-num">{day}</span>
@@ -1200,7 +1233,7 @@ export default function Meal() {
       </div>
       {/* One line only, as she asked (2026-10-08). */}
       <div className="ml-legend ml-legend-simple splash-item">
-        <span className="ml-legend-item ml-legend-fact">Lose 1 kg = 7,700 cal</span>
+        <span className="ml-legend-item ml-legend-fact"><span className="ml-kilo-swatch" aria-hidden="true" />Lose 1 kg = 7,700 cal</span>
       </div>
 
       {openDay && (
