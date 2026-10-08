@@ -11319,3 +11319,11 @@ body {
 .nb-talk-note { font-size: 12px; text-align: center; color: var(--text-soft); }
 [data-mode="light"] .nb-mic { background: rgba(200,23,110,0.08); border-color: rgba(200,23,110,0.4); color: #b0105e; }
 [data-mode="light"] .nb-mic.is-on { background: #c8176e; border-color: #c8176e; color: #fff; }
+/* Day square: the day's calorie deficit (mint), or more eaten than burned (pink). */
+.ml-day-dot.ml-day-deficit { background: rgba(110,231,200,0.18); color: #6ee7c8; border: 1px solid rgba(110,231,200,0.4); }
+.ml-day-dot.ml-day-deficit.ml-day-over { background: rgba(255,92,157,0.16); color: #ff8fbb; border-color: rgba(255,92,157,0.45); }
+[data-mode="light"] .ml-day-dot.ml-day-deficit { background: rgba(11,122,98,0.12); color: #0b6b55; border-color: rgba(11,122,98,0.35); }
+[data-mode="light"] .ml-day-dot.ml-day-deficit.ml-day-over { background: rgba(200,23,110,0.1); color: #a00050; border-color: rgba(200,23,110,0.35); }
+.ml-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ml-tab { overflow: hidden; }
+@media (max-width: 360px) { .ml-tab { font-size: 12px; padding: 0 4px; gap: 3px; } }

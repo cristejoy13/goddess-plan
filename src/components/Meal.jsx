@@ -76,15 +76,25 @@ function monthWeeks(year, monthIdx) {
 // the same "left" each day square shows — added up over the seven days. Only
 // days with calories written down and a goal set count. Worked out from what
 // is stored, so every past week shows it too.
-function weekLostEnding(state, year, monthIdx, day) {
+// Changed again 2026-10-08, to her Garmin plan: each day's calorie deficit is
+// what she burned — her own number, else her Garmin number, else her average
+// (AVERAGE_BURN) — minus what she ate. It shows on every day square; Sunday
+// shows the seven days added up. Only days with calories written down, and
+// not future days, have one. Every past week is worked out the same way.
+function dayDeficit(state, garmin, key, todayKey = dateKeyOf()) {
+  const t = calTotals(state.days?.[key] || []);
+  if (!t.counted || key > todayKey) return null;
+  const burned = burnOn(state, key) ?? garminBurnOn(garmin, key) ?? AVERAGE_BURN;
+  return burned - t.total;
+}
+
+function weekLostEnding(state, garmin, year, monthIdx, day) {
   let sum = 0;
   let counted = 0;
   for (let back = 6; back >= 0; back--) {
-    const key = dateKeyOf(new Date(year, monthIdx, day - back));
-    if (!calTotals(state.days?.[key] || []).counted) continue;
-    const left = calsLeft(state, key);
-    if (left == null) continue;
-    sum += left;
+    const d = dayDeficit(state, garmin, dateKeyOf(new Date(year, monthIdx, day - back)));
+    if (d == null) continue;
+    sum += d;
     counted += 1;
   }
   return { value: sum, show: counted > 0, over: sum < 0 };
@@ -844,7 +854,9 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
   // missing shows at a glance.
   const [tab, setTab] = useState('meals');
   const show = part => tab === part;
-  const done = { goal: goal != null, meals: entries.length > 0, weight: kg != null };
+  // Two tabs since 2026-10-08: the weight moved in with the week's goal. Its
+  // tick needs both — the goal set and today's weight saved.
+  const done = { goal: goal != null && kg != null, meals: entries.length > 0 };
   return (
     <div className="ml-day-panel splash-item ml-day-tabs">
       <div className="ml-day-head">
@@ -863,7 +875,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
           meals and their calories, the scale — so each reads as its own
           thing without a heading line between them. */}
       <div className="ml-tabs" role="tablist" aria-label="Part of the day">
-        {[['goal', '🎯 Goal'], ['meals', '🍽️ Meals'], ['weight', '⚖️ Weight']].map(([id, label]) => (
+        {[['goal', '🎯 Goal & Weight'], ['meals', '🍽️ Meals']].map(([id, label]) => (
           <button
             key={id}
             type="button"
@@ -933,7 +945,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
       </div>
       </section>}
 
-      {show('weight') && <section className="ml-box ml-box-weight" aria-label="Weight">
+      {show('goal') && <section className="ml-box ml-box-weight" aria-label="Weight">
       <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="kg" onSave={onWeight} />
 
       {weekAvg && weekAvg.counted > 0 && (
@@ -1112,13 +1124,14 @@ export default function Meal() {
               // Column 6 is Sunday — the grid runs Mo…Su — and Sunday is where
               // the week closes, so that is where its total belongs.
               const isSunday = di === 6;
-              const week = isSunday ? weekLostEnding(state, year, monthIdx, day) : null;
+              const week = isSunday ? weekLostEnding(state, garmin, year, monthIdx, day) : null;
               const showWeek = Boolean(week && week.show);
               // What she came to the calendar to find out: how much is left of
               // today. Only a week with a goal has an answer; without one the
               // square shows what she ate, as it always did.
-              const left = calsLeft(state, key);
-              const showLeft = left != null;
+              // Each day's square shows its calorie deficit (burned − eaten).
+              const deficit = dayDeficit(state, garmin, key);
+              const showLeft = deficit != null;
               // The scale sits above the calories with a rule between them,
               // because two bare numbers stacked in one square with nothing
               // between them read as one four-digit number.
@@ -1134,9 +1147,9 @@ export default function Meal() {
                   onClick={() => setOpenDay(isOpen ? null : day)}
                   aria-label={`${day} ${MONTH_NAMES[monthIdx]} ${year}, ${
                     showLeft
-                      ? (left < 0
-                          ? `${Math.abs(left)} calories over your goal`
-                          : `${left} calories left of your goal`)
+                      ? (deficit < 0
+                          ? `${Math.abs(deficit)} calories more eaten than burned`
+                          : `${deficit} calorie deficit`)
                       : count === 0
                         ? 'nothing written down'
                         : counted === 0
@@ -1144,8 +1157,8 @@ export default function Meal() {
                           : `${total} calories`
                   }${showWeek
                     ? (week.over
-                        ? `, ${Math.abs(week.value)} calories over your goal this week`
-                        : `, ${week.value} calories under your goal this week`)
+                        ? `, ${Math.abs(week.value)} calories more eaten than burned this week`
+                        : `, ${week.value} calorie deficit this week`)
                     : ''}${
                     kg != null ? `, ${formatKg(kg)} kilos` : ''
                   }${avg != null ? `, ${formatKg(avg)} kilos on average this week` : ''}`}
@@ -1162,8 +1175,8 @@ export default function Meal() {
                   )}
                   {showRule && <span className="ml-day-rule" aria-hidden="true" />}
                   {showLeft
-                    ? <span className={`ml-day-dot ml-day-left${left < 0 ? ' ml-day-over' : ''}`}>
-                        {left < 0 ? `−${Math.abs(left)}` : left}
+                    ? <span className={`ml-day-dot ml-day-deficit${deficit < 0 ? ' ml-day-over' : ''}`}>
+                        {deficit < 0 ? `+${Math.abs(deficit)}` : deficit}
                       </span>
                     : count > 0 && (
                         <span className={`ml-day-dot${counted === 0 ? ' ml-day-dot-none' : ''}`}>
@@ -1172,7 +1185,7 @@ export default function Meal() {
                       )}
                   {showWeek && (
                     <span className={`ml-day-week ml-day-lost${week.over ? ' ml-day-over' : ''}`}>
-                      {week.over ? `−${Math.abs(week.value).toLocaleString('en-US')}` : `🔥${week.value.toLocaleString('en-US')}`}
+                      {week.over ? `+${Math.abs(week.value).toLocaleString('en-US')}` : `🔥${week.value.toLocaleString('en-US')}`}
                     </span>
                   )}
                 </button>

@@ -125,9 +125,10 @@ export function weekWeightAvg(state, year, monthIdx, day) {
 // Her own average burn, which she asked to have filled in for her on
 // 2026-09-30 so she does not type it every day. It shows on today and on any
 // past day she logged meals on, until she types that day's real number.
-// Her maintenance (TDEE) at 44 kg, as she gave it on 2026-10-08 (was 1,433).
-// Used only on a day with no Garmin number and none typed.
-export const AVERAGE_BURN = 1575;
+// Her Garmin average, 1,433 (2026-10-08: she chose Garmin over the online
+// TDEE calculator's 1,575). Used only on a day with no Garmin number and
+// none typed.
+export const AVERAGE_BURN = 1433;
 
 // Calories burned on a day — typed by her, or her average above. Whole
 // numbers, and only a figure a day could plausibly burn, for the same reason
