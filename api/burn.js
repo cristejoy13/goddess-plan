@@ -1,4 +1,8 @@
-// POST /api/burn  { cal | (active + resting), day?: 'yesterday' | 'today', date?: 'YYYY-MM-DD' }
+// POST /api/burn  { cal | (active + resting), day?: 'yesterday' | 'today', date?: 'YYYY-MM-DD…' }
+//
+// Her Shortcut sends today, then each of the last 7 days with its date, so a
+// week without opening Garmin still fills in. A past day with no watch data
+// is skipped quietly rather than saved as nothing.
 //   → { ok: true, date, cal }
 //
 // Called by her iPhone Shortcut with the day's calories burned from Apple
@@ -51,6 +55,10 @@ export default async function handler(req, res) {
   };
   const parts = [num(body.active), num(body.resting)].filter(Number.isFinite);
   const cal = Math.round(body.cal != null && body.cal !== '' ? num(body.cal) : (parts.length ? parts.reduce((a, b) => a + b, 0) : NaN));
+  const dateGiven = String(body.date || '').trim().match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+  if (dateGiven && !(cal >= 1)) {
+    return res.status(200).json({ ok: true, date: dateGiven, skipped: 'no calories in Health for this day' });
+  }
   if (!Number.isFinite(cal) || cal < 1 || cal > 10000) {
     // Say what arrived, so a Shortcut set up wrong can be put right.
     const seen = v => (v == null ? 'nothing' : JSON.stringify(v).slice(0, 80));
@@ -59,9 +67,8 @@ export default async function handler(req, res) {
       got: { active: seen(body.active), resting: seen(body.resting), cal: seen(body.cal) },
     });
   }
-  const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date || ''))
-    ? body.date
-    : dayKey(body.day === 'today' ? 0 : -1);
+  // An ISO date from the Shortcut ("2026-10-07" or "2026-10-07T00:00:00+08:00").
+  const date = dateGiven || dayKey(body.day === 'today' ? 0 : -1);
 
   // Read only the Garmin field, add this day, write only that field back.
   const got = await fetch(docUrl(code, '&mask.fieldPaths=data.gp_garmin'));
