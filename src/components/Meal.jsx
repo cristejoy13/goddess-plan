@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
-import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, groqKeyReminder } from '../utils/mealScan';
+import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
   dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
@@ -218,6 +218,38 @@ function MealForm({ initial, onSubmit, onCancel }) {
     setScan(null);
   }
 
+  // Fix a portion the scan got wrong: change how many, or the grams, and that
+  // line's calories follow (same calories per gram as the scan found). A line
+  // with no grams lets her change its calories directly.
+  function editItem(i, field, raw) {
+    setScan(prev => {
+      const items = prev.items.map((it, j) => {
+        if (j !== i) return it;
+        const base = it.base || { grams: it.grams, kcal: it.kcal, amount: it.amount };
+        const perGram = base.grams > 0 ? base.kcal / base.grams : null;
+        const v = Number(String(raw).replace(',', '.'));
+        if (field === 'kcal') return { ...it, base, kcalText: raw, kcal: Number.isFinite(v) && v >= 0 ? Math.round(v) : 0 };
+        if (field === 'grams') {
+          const grams = Number.isFinite(v) && v >= 0 ? v : 0;
+          return { ...it, base, gramsText: raw, grams: Math.round(grams), kcal: perGram != null ? Math.round(perGram * grams) : it.kcal };
+        }
+        // field === 'count': "3 medium" → "2 medium", grams scaled to match
+        const m = String(base.amount || '').match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
+        if (!m) return it;
+        const count = Number.isFinite(v) && v >= 0 ? v : 0;
+        const grams = base.grams > 0 ? (base.grams * count) / Number(m[1]) : null;
+        return {
+          ...it, base, countText: raw,
+          amount: `${raw || 0}${m[2] ? ` ${m[2]}` : ''}`,
+          grams: grams != null ? Math.round(grams) : it.grams,
+          gramsText: undefined,
+          kcal: grams != null && perGram != null ? Math.round(perGram * grams) : it.kcal,
+        };
+      });
+      return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) };
+    });
+  }
+
   function dropItem(i) {
     setScan(prev => {
       const items = prev.items.filter((_, j) => j !== i);
@@ -227,7 +259,18 @@ function MealForm({ initial, onSubmit, onCancel }) {
 
   function saveScan() {
     if (!scan) return;
-    onSubmit({ time: time || nowTime(), text: text.trim() || describeItems(scan.items), cal: scan.total });
+    const words = text.trim();
+    // Her corrected portions are what is remembered for these words, so the
+    // same meal comes back with her amounts next time.
+    if (words && !photo) {
+      const clean = scan.items.map(it => {
+        const out = { ...it };
+        delete out.base; delete out.countText; delete out.gramsText; delete out.kcalText;
+        return out;
+      });
+      remember(words, { items: clean, total: scan.total, ...(scan.missing && { missing: scan.missing }) });
+    }
+    onSubmit({ time: time || nowTime(), text: words || describeItems(scan.items), cal: scan.total });
     setScan(null); setPhoto(null); setText(''); setCal(''); setTime(nowTime());
   }
 
@@ -281,7 +324,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
       {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
 
       {!editing && !scan && (
-        <div className="ml-pills">
+        <div className={`ml-pills${cal.trim() !== '' ? '' : ' ml-pills-two'}`}>
           <input ref={fileRef} type="file" accept="image/*" className="ml-scan-file" onChange={pickPhoto} tabIndex={-1} aria-hidden="true" />
           {photo ? (
             <span className="ml-pill ml-pill-photo-on">
@@ -299,7 +342,11 @@ function MealForm({ initial, onSubmit, onCancel }) {
           >
             {scanning ? 'Working…' : '✨ Calories'}
           </button>
-          <button type="submit" className="ml-pill ml-pill-add" disabled={!text.trim()}>＋ Add</button>
+          {/* Only for a meal whose calories she typed herself; a scanned
+              meal is saved from its card. */}
+          {cal.trim() !== '' && (
+            <button type="submit" className="ml-pill ml-pill-add" disabled={!text.trim()}>＋ Save</button>
+          )}
         </div>
       )}
       {scanError && <span className="ml-mic-note ml-scan-error" role="alert">{scanError}</span>}
@@ -339,16 +386,46 @@ function MealForm({ initial, onSubmit, onCancel }) {
           </div>
           <ul className="ml-scan-list">
             {scan.items.map((it, i) => (
-              <li key={`${it.name}-${i}`}>
+              <li key={`${it.name}-${i}`} className="ml-scan-item">
                 <span className="ml-scan-name">
                   <b>{it.name}</b>
-                  <small>
-                    {[it.amount, it.grams && !new RegExp(`^${it.grams}\\s*g$`, 'i').test(it.amount || '') ? `${it.grams} g` : ''].filter(Boolean).join(' · ')}
-                    {' · '}
+                  <span className="ml-scan-edit">
+                    {/^\d/.test((it.base || it).amount || '') && !/^\d+(?:\.\d+)?\s*(g|grams?|ml|kg)\b/i.test((it.base || it).amount || '') && (
+                      <label className="ml-scan-field">
+                        <input
+                          type="number" inputMode="decimal" min="0" step="any"
+                          value={it.countText ?? String((it.amount || '').match(/^\d+(?:\.\d+)?/)?.[0] || '')}
+                          onChange={e => editItem(i, 'count', e.target.value)}
+                          aria-label={`How many, ${it.name}`}
+                        />
+                        <span>{(it.amount || '').replace(/^\d+(?:\.\d+)?\s*/, '') || '×'}</span>
+                      </label>
+                    )}
+                    {it.grams != null ? (
+                      <label className="ml-scan-field">
+                        <input
+                          type="number" inputMode="decimal" min="0" step="any"
+                          value={it.gramsText ?? String(it.grams)}
+                          onChange={e => editItem(i, 'grams', e.target.value)}
+                          aria-label={`Grams, ${it.name}`}
+                        />
+                        <span>g</span>
+                      </label>
+                    ) : (
+                      <label className="ml-scan-field">
+                        <input
+                          type="number" inputMode="numeric" min="0" step="1"
+                          value={it.kcalText ?? String(it.kcal)}
+                          onChange={e => editItem(i, 'kcal', e.target.value)}
+                          aria-label={`Calories, ${it.name}`}
+                        />
+                        <span>cal</span>
+                      </label>
+                    )}
                     <em className={it.source === 'ai' ? 'is-ai' : 'is-usda'} title={it.usdaName || ''}>
                       {it.source === 'ai' ? 'AI guess' : 'USDA'}
                     </em>
-                  </small>
+                  </span>
                 </span>
                 <span className="ml-scan-kcal">{it.kcal.toLocaleString('en-US')}</span>
                 <button type="button" className="ml-icon-btn ml-del ml-scan-drop" onClick={() => dropItem(i)} aria-label={`Delete ${it.name}`} title="Delete">🗑</button>

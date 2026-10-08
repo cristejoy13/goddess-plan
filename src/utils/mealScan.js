@@ -44,7 +44,7 @@ export function recall(text) {
   }
 }
 
-function remember(text, result) {
+export function remember(text, result) {
   try {
     const all = JSON.parse(localStorage.getItem(MEMORY_KEY) || '{}');
     all[memKey(text)] = { result, at: Date.now() };

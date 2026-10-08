@@ -11186,3 +11186,20 @@ body {
   .ml-box-weight .ml-wt-field:has(.ml-wt-snap) .ml-wt-input { padding-right: 32px; padding-left: 4px; }
   .ml-box-weight .ml-wt-snap { width: 30px; right: 2px; font-size: 15px; }
 }
+
+/* Scan card: change how many / grams; calories follow. */
+.ml-pills.ml-pills-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ml-scan-edit { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 4px; font-size: 12px; color: var(--text-mid, #c090b8); }
+.ml-scan-field { display: inline-flex; align-items: center; gap: 4px; }
+.ml-scan-field input {
+  width: 64px; min-height: 36px; padding: 4px 6px; border-radius: 9px;
+  border: 1.5px solid rgba(255,255,255,0.28); background: rgba(0,0,0,0.25);
+  color: var(--text); font: 700 15px inherit; font-family: inherit; text-align: center;
+  -moz-appearance: textfield; appearance: textfield;
+}
+.ml-scan-field input::-webkit-outer-spin-button, .ml-scan-field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ml-scan-field input:focus { outline: none; border-color: #ff5c9d; }
+.ml-scan-field span { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ml-scan-item .ml-scan-name { gap: 0; }
+[data-mode="light"] .ml-scan-field input { background: #fff; border-color: rgba(120,60,100,0.3); color: #3a1030; }
+[data-mode="light"] .ml-scan-edit { color: #5a2a4a; }
