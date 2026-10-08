@@ -7,7 +7,7 @@ import { useGoalsData } from '../utils/useGoalsData';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
 import { ask } from '../utils/ask';
-import { useDictation } from '../utils/dictation';
+import { useDictation, joinSpeech } from '../utils/dictation';
 
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -533,8 +533,7 @@ function DailyNotebook() {
   const talkBaseRef = useRef('');
   const talkColRef = useRef(0);
   const talk = useDictation(heard => {
-    const base = talkBaseRef.current;
-    const next = base && heard ? `${base} ${heard}` : (base || heard);
+    const next = joinSpeech(talkBaseRef.current, heard);
     if (talkColRef.current === 0) updateNote(next);
     else updateColumnNote(talkColRef.current, next);
   });

@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
-import { useDictation } from '../utils/dictation';
+import { useDictation, joinSpeech } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
@@ -185,8 +185,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
   const heardRef = useRef(false);
   const stopMicRef = useRef(() => {});
   const mic = useDictation(heard => {
-    const before = beforeTalkRef.current;
-    setText(before && heard ? `${before} ${heard}` : (before || heard));
+    setText(joinSpeech(beforeTalkRef.current, heard));
     if (heard) heardRef.current = true;
     clearTimeout(silenceRef.current);
     silenceRef.current = setTimeout(() => stopMicRef.current(), SILENCE_MS);
