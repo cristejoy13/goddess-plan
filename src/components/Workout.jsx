@@ -24,12 +24,12 @@ const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
 // The week at a glance. The evening walk is on every day, so it is said once,
 // under the grid, rather than seven times in the focus lines.
 const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian · Squat', color: 'pr' },
-  { lbl: 'Tue', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope', color: 'py' },
-  { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope', color: 'py' },
-  { lbl: 'Thu', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope', color: 'py' },
-  { lbl: 'Fri', emoji: '✨', name: 'Glutes B',        focus: 'Kickback · Abduction · Step-Up · Squat', color: 'pr' },
-  { lbl: 'Sat', emoji: '🏃', name: 'Zone 2 Run',      focus: 'Easy run', color: 'py' },
+  { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian · Abs', color: 'pr' },
+  { lbl: 'Tue', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope or Zone 2', color: 'py' },
+  { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope or Zone 2', color: 'py' },
+  { lbl: 'Thu', emoji: '✨', name: 'Glutes B',        focus: 'Kickback · Abduction · Step-Up · Abs', color: 'pr' },
+  { lbl: 'Fri', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope or Zone 2', color: 'py' },
+  { lbl: 'Sat', emoji: '🍑', name: 'Glutes C',        focus: 'Squat · Side Squat · Lunge · Abs', color: 'pr' },
   { lbl: 'Sun', emoji: '🚲', name: 'Bike & Swim',     focus: 'Bike · Swim 5 PM', color: 'py' },
 ];
 
@@ -703,8 +703,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {/* The two things every day has in common, said once here instead of
           seven times in the focus lines above. */}
       <div className="wg-every-day splash-item">
-        <span>🚶 Every evening: an easy walk.</span>
-        {owner && <span>🪢 Jump rope only Tue · Wed · Thu, after the workout.</span>}
+        <span>🚶 Every day: an easy walk.</span>
+        {owner && <span>🪢 Jump rope or Zone 2 after Tue · Wed · Fri.</span>}
       </div>
 
       {/* The five explainers used to sit open on this screen, which is the first
@@ -723,16 +723,16 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {showWhy && (
         <>
           <div className="g-card splash-item why-card">
-            <strong>Your week:</strong> glutes Mon · Fri, Pilates or yoga Tue · Thu, upper body &amp; core Wed, Zone 2 run Sat, bike then swim at 5 PM Sun. An easy walk every evening.
+            <strong>Your week:</strong> glutes Mon · Thu · Sat, each ending with your abs video; Pilates or yoga Tue · Fri and upper body &amp; core Wed, each followed by jump rope or Zone 2; bike then swim at 5 PM Sun. An easy walk every day.
           </div>
           <div className="g-card splash-item why-card">
             <strong>Getting stronger:</strong> same lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Cardio:</strong> go longer, not harder. Zone 2 stays easy. Jump rope never gets in the way of glute recovery.
+            <strong>Cardio:</strong> go longer, not harder. Zone 2 stays easy. Jump rope or Zone 2 only on the video days, never on a glute day.
           </div>
           <div className="g-card splash-item why-card">
-            <strong>Tired or sore?</strong> 1. Less jump rope. 2. Shorter walks. 3. Gentler video days. Keep Monday and Friday.
+            <strong>Tired or sore?</strong> 1. Less jump rope. 2. Shorter walks. 3. Gentler video days. Keep Monday, Thursday and Saturday.
           </div>
         </>
       )}

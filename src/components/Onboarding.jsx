@@ -153,7 +153,7 @@ export default function Onboarding({ onDone }) {
             <img className="su-logo" src="/icon-192.png" alt="" />
             <h1 className="su-title">The Goddess <em>Plan</em></h1>
             <p className="su-sub">Grow your glutes, tone your abs — with your meals and calories in one place. A few questions, then your plan.</p>
-            <button type="button" className="su-primary" onClick={next}>Make my plan</button>
+            <button type="button" className="su-primary" onClick={next}>Make Goddess Plan</button>
             <button type="button" className="su-link" onClick={() => signInWithGoogle()}>I already have an account · Sign in with Google</button>
           </div>
         )}

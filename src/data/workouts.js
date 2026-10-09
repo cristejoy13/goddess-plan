@@ -1,16 +1,15 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
-// Her plan of 2026-09-28, Monday to Sunday:
-//   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat, squat finisher
-//   Tue  Pilates or yoga (Jessica Diễm or Nicole) + jump rope
-//   Wed  Upper body & core — Pilates by Izzy + jump rope
-//   Thu  Pilates or yoga (Jessica Diễm or Nicole) + jump rope, same as Tue
-//   Fri  Glutes B — cable kickback, hip abduction, step-up, squat finisher
-//   Sat  Zone 2 run
+// Her plan of 2026-10-10, Monday to Sunday:
+//   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat · abs finisher
+//   Tue  Pilates or yoga (Jessica Diễm or Nicole) · jump rope or Zone 2
+//   Wed  Upper body & core — Pilates by Izzy · jump rope or Zone 2
+//   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
+//   Fri  Pilates or yoga, same as Tue · jump rope or Zone 2
+//   Sat  Glutes C — dumbbell squat, side squat, reverse lunge · abs finisher
 //   Sun  Biking, then swimming at 5 PM
-// An easy walk every evening. Jump rope ONLY after the main workout on Tue,
-// Wed and Thu. The glute days keep three main lifts each, never shared, and the
-// same light squat to finish; they progress by reps first, then a little weight — never by adding
-// exercises. Consistency over volume: nothing extra is added on its own.
+// An easy walk every day. Three main lifts on each glute day, never shared;
+// the abs finisher is her own ABS video. They progress by reps first, then a
+// little weight — never by adding exercises.
 //
 // Lift names match the old plan where the lift is the same, because the lift
 // log is keyed by name — renaming "Barbell Hip Thrust" would orphan her logged
@@ -51,10 +50,6 @@ const walk = (min) => [
   { name: 'Easy Walk', detail: `${min} min · easy pace` },
 ];
 
-const rope = (min, note) => [
-  H('🪢 After · Jump Rope', 'Only after the main workout.'),
-  { name: 'Jump Rope', detail: `${min} min · ${note} · 1 min jumping, 30–60 sec rest, repeat` },
-];
 
 const PILATES_OR_YOGA = [
   H('💗 Pick ONE video · Jessica Diễm', 'Pilates or yoga · 20–40 min.', 'core'),
@@ -65,11 +60,17 @@ const PILATES_OR_YOGA = [
 
 const cardio = (title, note) => ({ icon: '🚶', title, note });
 // Her own ABS video (ABS.MP4 from her Downloads, 2026-10-10), kept in the app
-// at /videos/abs.mp4 so it plays on any of her devices. Right after the main
-// workout on Tuesday, Wednesday, Thursday and Saturday.
-const ABS = [
-  H('🔥 After · ABS', 'Right after the main workout · 1½ min.', 'core'),
+// at /videos/abs.mp4 so it plays on any of her devices. It is the one abs
+// finisher that closes each glute day (Mon, Thu, Sat).
+const ABS_FINISHER = [
+  H('🔥 After · Abs Finisher', 'Your ABS video · 1½ min · straight after the lifts.', 'core'),
   { name: 'ABS', detail: 'your video · 1 min 29 sec', url: '/videos/abs.mp4' },
+];
+// After the main workout on the video days (Tue, Wed, Fri): one or the other.
+const ROPE_OR_ZONE2 = [
+  H('🪢 After · Jump Rope or Zone 2', 'Pick ONE · only after the main workout.'),
+  { name: 'Jump Rope', detail: '5–15 min · moderate · 1 min jumping, 30–60 sec rest, repeat' },
+  { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · easy — you can talk in short sentences' },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
@@ -924,15 +925,15 @@ const DAILY_MEALS = dailyMeals(false);
 export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Monday · Glutes A', title: 'Hip Thrust · RDL · Bulgarian · Squat',
-    sub: '30–40 min strength · evening walk',
+    day: 'Monday · Glutes A', title: 'Hip Thrust · RDL · Bulgarian · Abs',
+    sub: '30–40 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 lifts + squat finisher · in order.'),
+      H('🍑 Main Workout', '3 lifts · in order.'),
       { name: '1. Barbell Hip Thrust', detail: '4 × 8–12 reps · barbell or dumbbell · rest 90–120 sec · full hip extension, squeeze at the top' },
       { name: '2. Romanian Deadlift (RDL)', detail: '3 × 8–12 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
       { name: '3. Bulgarian Split Squat', detail: '3 × 8–10 reps each leg · rest 60–90 sec · lean slightly forward for the glutes' },
-      { name: '4. Squat — finisher', detail: '2 × 15 reps · bodyweight or a light dumbbell · slow, full depth' },
+      ...ABS_FINISHER,
       ...walk('30–60'),
     ],
     trackLifts: true,
@@ -940,81 +941,79 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Tuesday · Pilates or Yoga', title: 'One video · Jump Rope',
-    sub: '20–40 min video · jump rope · evening walk',
+    day: 'Tuesday · Pilates or Yoga', title: 'One video · Rope or Zone 2',
+    sub: '20–40 min video · jump rope or Zone 2 · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
       ...PILATES_OR_YOGA,
-      ...ABS,
-      ...rope('5–15', 'moderate pace'),
+      ...ROPE_OR_ZONE2,
       ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
   },
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Wednesday · Upper Body & Core', title: 'Pilates by Izzy · Jump Rope',
-    sub: '20–35 min video · jump rope · evening walk',
+    day: 'Wednesday · Upper Body & Core', title: 'Pilates by Izzy · Rope or Zone 2',
+    sub: '20–35 min video · jump rope or Zone 2 · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     noteBefore: { type: 'rose', text: '💪 Keep shoulders moderate. Slim and toned, not big.' },
     exercises: [
       H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core'),
       ...IZZY_ABS,
-      ...ABS,
-      ...rope('5–15', 'moderate'),
-      ...walk('30–60'),
-    ],
-    meals: DAILY_MEALS,
-  },
-  {
-    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Thursday · Pilates or Yoga', title: 'One video · Jump Rope',
-    sub: '20–40 min video · jump rope · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
-    exercises: [
-      ...PILATES_OR_YOGA,
-      ...ABS,
-      ...rope('5–15', 'moderate pace'),
+      ...ROPE_OR_ZONE2,
       ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
   },
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Friday · Glutes B', title: 'Kickback · Abduction · Step-Up · Squat',
-    sub: '25–35 min strength · evening walk',
+    day: 'Thursday · Glutes B', title: 'Kickback · Abduction · Step-Up · Abs',
+    sub: '25–35 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 lifts + squat finisher · in order.'),
+      H('🍑 Main Workout', '3 lifts · in order.'),
       { name: '1. Cable Kickback', detail: '3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec · a band round the ankle works at home' },
       { name: '2. Hip Abduction (machine or band)', detail: '3 × 15–25 reps · machine, band or cable · rest 45–60 sec' },
       { name: '3. Dumbbell Step-Up', detail: '3 × 8–12 reps each leg · rest 60–90 sec · drive through the working leg' },
-      { name: '4. Squat — finisher', detail: '2 × 15 reps · bodyweight or a light dumbbell · slow, full depth' },
+      ...ABS_FINISHER,
       ...walk('30–60'),
     ],
     trackLifts: true,
     meals: GLUTE_MEALS,
   },
   {
-    emoji: '🏃', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Saturday · Zone 2 Run', title: 'Easy Run',
-    sub: '20–30 min run · evening walk if recovered',
-    cardio: cardio('Easy evening walk — if recovered', '20–45 min'),
+    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Friday · Pilates or Yoga', title: 'One video · Rope or Zone 2',
+    sub: '20–40 min video · jump rope or Zone 2 · evening walk',
+    cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🏃 Main Workout · Zone 2 Run', 'Easy. You can talk in short sentences.'),
-      { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · build toward 30–45 min over the weeks · no tempo, no sprints' },
-      { name: 'Too hard to run nonstop?', detail: '3–5 min easy jog, 1–2 min walk, repeat' },
-      ...ABS,
-      H('🌙 Evening · Easy Walk', 'Only if you feel recovered.'),
-      { name: 'Easy Walk', detail: '20–45 min · easy pace' },
+      ...PILATES_OR_YOGA,
+      ...ROPE_OR_ZONE2,
+      ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
   },
   {
+    emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
+    day: 'Saturday · Glutes C', title: 'Squat · Side Squat · Lunge · Abs',
+    sub: '30–40 min strength · abs finisher · evening walk',
+    cardio: cardio('Easy evening walk', '30–60 min'),
+    exercises: [
+      H('🍑 Main Workout', '3 lifts · in order.'),
+      { name: '1. Dumbbell Squat', detail: '3 × 10–12 reps · dumbbells at your shoulders or one held at your chest · rest 60–90 sec · sit back, full depth' },
+      { name: '2. Side Squat (Lateral Squat)', detail: '3 × 8–10 reps each side · step wide, sit into one hip, keep the other leg straight · a light dumbbell when easy' },
+      { name: '3. Dumbbell Reverse Lunge', detail: '3 × 8–10 reps each leg · rest 60–90 sec · step back, front heel planted, lean slightly forward for the glutes' },
+      ...ABS_FINISHER,
+      ...walk('30–60'),
+    ],
+    trackLifts: true,
+    meals: GLUTE_MEALS,
+  },
+  {
     emoji: '🚲', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Sunday · Biking & Swim', title: 'Bike · Swim at 5 PM',
-    sub: '45–60 min bike · 30–45 min swim at 5 PM · optional evening walk',
-    cardio: cardio('Optional evening walk', '20–40 min, if recovered'),
+    sub: '45–60 min bike · 30–45 min swim at 5 PM · evening walk',
+    cardio: cardio('Easy evening walk', '20–40 min'),
     exercises: [
       H('🚲 Main Workout · Biking', 'Steady and easy.'),
       { name: 'Biking', log: 'bike', detail: '45–60 min · steady easy pace' },
@@ -1022,8 +1021,7 @@ export const WORKOUT_DAYS = [
       { name: 'Warm-Up Swim', detail: '5–10 min · easy' },
       { name: 'Main Swim', detail: '15–25 min · comfortable · mix strokes, rest when needed' },
       { name: 'Cool-Down Swim', detail: '5 min · very easy' },
-      H('🌙 Evening · Easy Walk', 'Optional, if you feel recovered.'),
-      { name: 'Easy Walk', detail: '20–40 min · easy pace' },
+      ...walk('20–40'),
     ],
     meals: DAILY_MEALS,
   },
