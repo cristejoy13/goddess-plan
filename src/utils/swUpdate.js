@@ -23,6 +23,55 @@ import { hasPendingSyncWrites } from './sync';
 const CHECK_INTERVAL_MS = 60 * 60 * 1000; // hourly while the app stays open
 const BLOCKED_RETRY_MS  = 5000;           // re-try a reload we had to defer
 
+// ── One load only (2026-10-10) ─────────────────────────────────────────────
+// She saw every refresh "glitch twice": the app drew, then a new version took
+// over and the page reloaded. Now the logo (#boot-cover in index.html) stays
+// over the app while it asks for a newer version. None → the logo lifts, and
+// that is the only load. One found → the page reloads behind the logo, so she
+// sees one logo and then the newest app.
+const LAUNCH_CHECK_MS = 1500;   // most checks answer in a few hundred ms
+const LAUNCH_UPDATE_MS = 8000;  // a new version downloading gets longer
+
+export function liftCover() {
+  if (window.__gpReloading) return;
+  document.getElementById('boot-cover')?.remove();
+}
+
+// Put the logo back over everything before any reload, so a reload looks
+// like the app opening, not a blank flash.
+export function reloadBehindLogo() {
+  window.__gpReloading = true;
+  if (!document.getElementById('boot-cover')) {
+    const cover = document.createElement('div');
+    cover.id = 'boot-cover';
+    const img = document.createElement('img');
+    img.src = '/icon-192.png'; img.alt = ''; img.width = 112; img.height = 112;
+    cover.appendChild(img);
+    document.body.appendChild(cover);
+  }
+  window.location.reload();
+}
+
+export function launchCheck() {
+  const sw = navigator.serviceWorker;
+  if (!sw || !sw.controller || navigator.onLine === false) { liftCover(); return; }
+  // Only while the logo is still up: later updates go through
+  // initSwUpdates, which waits until she is not typing.
+  sw.addEventListener('controllerchange', () => {
+    if (document.getElementById('boot-cover')) reloadBehindLogo();
+  }, { once: true });
+  let timer = setTimeout(liftCover, LAUNCH_CHECK_MS);
+  const waitForIt = () => { clearTimeout(timer); timer = setTimeout(liftCover, LAUNCH_UPDATE_MS); };
+  sw.getRegistration().then(reg => {
+    if (!reg) { liftCover(); return; }
+    if (reg.installing || reg.waiting) { waitForIt(); return; }
+    reg.addEventListener('updatefound', waitForIt, { once: true });
+    return reg.update().then(() => {
+      if (!reg.installing && !reg.waiting) { clearTimeout(timer); liftCover(); }
+    });
+  }).catch(liftCover);
+}
+
 export function initSwUpdates() {
   if (!('serviceWorker' in navigator)) return;
 
@@ -63,7 +112,8 @@ export function initSwUpdates() {
       return;
     }
     reloading = true;
-    window.location.reload();
+    if (window.__gpReloading) return;
+    reloadBehindLogo();
   }
 
   function markReady() {

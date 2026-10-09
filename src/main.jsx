@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App, { ErrorBoundary } from './App.jsx'
 import { initSync, initSyncStorage } from './utils/sync'
-import { initSwUpdates } from './utils/swUpdate'
+import { initSwUpdates, launchCheck } from './utils/swUpdate'
 import { initAccount } from './utils/account'
 
 // Stamp-tracking for local edits must be live before anything can be edited,
@@ -19,6 +19,9 @@ createRoot(document.getElementById('root')).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+
+// Hold the logo while checking for a newer version, so a refresh loads once.
+try { launchCheck() } catch { document.getElementById('boot-cover')?.remove() }
 
 // The app started, so the boot safety net in index.html may run again in a
 // later session if it is ever needed.

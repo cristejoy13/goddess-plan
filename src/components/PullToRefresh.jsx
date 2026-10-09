@@ -14,6 +14,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { hasPendingSyncWrites } from '../utils/sync';
+import { reloadBehindLogo } from '../utils/swUpdate';
 
 const TRIGGER = 80;       // pixels of pull (after damping) that count
 const IGNORE = '.daily-notebook-overlay, .goals-overlay, .ask-backdrop, .si-overlay, .sheet-overlay, input, textarea, select, [contenteditable="true"]';
@@ -82,17 +83,10 @@ export default function PullToRefresh() {
         if (!pending) break;
         await wait(200);
       }
-      // One reload only. If a newer version is on its way, the update system
-      // (swUpdate.js) reloads the moment it takes over — reloading here too
-      // made the screen flash twice. Otherwise this is the one reload.
-      try {
-        const reg = await navigator.serviceWorker?.getRegistration();
-        if (reg) {
-          await Promise.race([reg.update(), wait(1500)]);
-          if (reg.installing || reg.waiting) await wait(6000);
-        }
-      } catch { /* reload anyway */ }
-      window.location.reload();
+      // One reload, behind the logo. A newer version, if there is one, is
+      // picked up by the new page while the logo is still showing (see
+      // launchCheck in swUpdate.js), so it never loads twice.
+      reloadBehindLogo();
     })();
   }, [refreshing]);
 

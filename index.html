@@ -39,10 +39,20 @@
     <style>
       html, body { background: #07040f; margin: 0; }
       html[data-boot="light"], html[data-boot="light"] body { background: #fff5fb; }
-      #boot-splash { position: fixed; inset: 0; display: grid; place-items: center; }
-      #boot-splash img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 10px 40px rgba(255,92,157,0.3); }
+      #boot-splash, #boot-cover { position: fixed; inset: 0; display: grid; place-items: center; }
+      #boot-cover { z-index: 2147483647; background: #07040f; }
+      html[data-boot="light"] #boot-cover { background: #fff5fb; }
+      #boot-splash img, #boot-cover img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 10px 40px rgba(255,92,157,0.3); }
     </style>
     <div id="root"><div id="boot-splash"><img src="/icon-192.png" alt="" width="112" height="112" /></div></div>
+    <!-- One load only (2026-10-10). The logo stays over the app for a moment
+         while the app checks for a newer version, so a new version swaps in
+         behind the logo instead of the app showing and then reloading.
+         src/utils/swUpdate.js lifts it; this lifts it anyway after 8 s. -->
+    <div id="boot-cover"><img src="/icon-192.png" alt="" width="112" height="112" /></div>
+    <script>
+      setTimeout(function () { var c = document.getElementById('boot-cover'); if (c && !window.__gpReloading) c.remove(); }, 8000);
+    </script>
     <!-- Safety net (2026-10-08, after her iPad sat on a blank loading screen):
          if the app has not drawn anything 12 seconds after opening, and the
          device is online, the saved copy of the app's FILES is cleared once

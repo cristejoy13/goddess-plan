@@ -19,12 +19,23 @@
 //     account to nothing and hide her real data.
 
 import { whenFirebaseReady, getSyncCode, adoptSyncCode, deleteSyncedData } from './sync.js';
+import { reloadBehindLogo } from './swUpdate.js';
 
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^GP-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/;
 const LATER_KEY = 'gp_signin_later';
 // Set while Google confirms it is really them, before an account is deleted.
 const DELETE_KEY = 'gp_delete_account';
+// "This Google account is already linked to this gadget's code", remembered
+// so opening the app does not flash a "Loading your plan…" screen each time.
+const LINKED_KEY = 'gp_account_linked';
+const linkedMark = (uid, code) => `${uid}|${code}`;
+function rememberLinked(uid, code) {
+  try { localStorage.setItem(LINKED_KEY, linkedMark(uid, code)); } catch { /* checked again next time */ }
+}
+function knownLinked(uid) {
+  try { return localStorage.getItem(LINKED_KEY) === linkedMark(uid, getSyncCode()); } catch { return false; }
+}
 
 let auth = null;
 let authMod = null;
@@ -103,6 +114,7 @@ async function readNote(uid) {
 async function writeNote(uid, code) {
   const { fb, db } = await whenFirebaseReady();
   await fb.setDoc(fb.doc(db, 'sync', await noteId(uid)), { account: { syncCode: code, linkedAt: Date.now() } }, { merge: true });
+  rememberLinked(uid, code);
 }
 
 // Make the app use a code and reload so the saved data comes down. Adopting
@@ -110,15 +122,26 @@ async function writeNote(uid, code) {
 function switchTo(code) {
   if (code === getSyncCode()) return false;
   adoptSyncCode(code);
-  window.location.reload();
+  reloadBehindLogo();
   return true;
 }
 
 async function linkSignedIn(user) {
+  // Already linked on this gadget: show the app straight away and check
+  // quietly; only a code changed on another gadget moves anything.
+  if (knownLinked(user.uid)) {
+    set({ status: 'signed-in', email: user.email || '', error: '' });
+    try {
+      const saved = await readNote(user.uid);
+      if (saved && saved !== getSyncCode()) switchTo(saved);
+    } catch { /* offline: checked again when the app comes to the front */ }
+    return;
+  }
   set({ status: 'linking', email: user.email || '', error: '' });
   try {
     const saved = await readNote(user.uid);
     if (saved) {
+      rememberLinked(user.uid, saved);
       if (switchTo(saved)) return;
       set({ status: 'signed-in' });
       return;
