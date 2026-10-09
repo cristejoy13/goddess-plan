@@ -64,6 +64,13 @@ const PILATES_OR_YOGA = [
 ];
 
 const cardio = (title, note) => ({ icon: '🚶', title, note });
+// Her own ABS video (ABS.MP4 from her Downloads, 2026-10-10), kept in the app
+// at /videos/abs.mp4 so it plays on any of her devices. Right after the main
+// workout on Tuesday, Wednesday, Thursday and Saturday.
+const ABS = [
+  H('🔥 After · ABS', 'Right after the main workout · 1½ min.', 'core'),
+  { name: 'ABS', detail: 'your video · 1 min 29 sec', url: '/videos/abs.mp4' },
+];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
 // Two meals a day, and it is the same two every single day — glute day, abs
@@ -938,6 +945,7 @@ export const WORKOUT_DAYS = [
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
       ...PILATES_OR_YOGA,
+      ...ABS,
       ...rope('5–15', 'moderate pace'),
       ...walk('30–60'),
     ],
@@ -952,6 +960,7 @@ export const WORKOUT_DAYS = [
     exercises: [
       H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core'),
       ...IZZY_ABS,
+      ...ABS,
       ...rope('5–15', 'moderate'),
       ...walk('30–60'),
     ],
@@ -964,6 +973,7 @@ export const WORKOUT_DAYS = [
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
       ...PILATES_OR_YOGA,
+      ...ABS,
       ...rope('5–15', 'moderate pace'),
       ...walk('30–60'),
     ],
@@ -994,6 +1004,7 @@ export const WORKOUT_DAYS = [
       H('🏃 Main Workout · Zone 2 Run', 'Easy. You can talk in short sentences.'),
       { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · build toward 30–45 min over the weeks · no tempo, no sprints' },
       { name: 'Too hard to run nonstop?', detail: '3–5 min easy jog, 1–2 min walk, repeat' },
+      ...ABS,
       H('🌙 Evening · Easy Walk', 'Only if you feel recovered.'),
       { name: 'Easy Walk', detail: '20–45 min · easy pace' },
     ],
