@@ -997,8 +997,14 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
 
 export default function Meal() {
   const [state, setState] = useState(loadLog);
-  // The page remounts when a sync lands, so reading once is enough.
-  const [garmin] = useState(loadGarmin);
+  const [garmin, setGarmin] = useState(loadGarmin);
+  // A sync from another gadget (or the Garmin Shortcut) refreshes the numbers
+  // in place — the open day, its tab and anything half-typed stay as they are.
+  useEffect(() => {
+    const refresh = () => { setState(loadLog()); setGarmin(loadGarmin()); };
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => window.removeEventListener('gp-remote-sync', refresh);
+  }, []);
   // Sundays on which another kilo was reached (see kiloSundays).
   const kiloDays = useMemo(() => kiloSundays(state, garmin), [state, garmin]);
   // Read once and hold it: "today" must not shift under her while the page is

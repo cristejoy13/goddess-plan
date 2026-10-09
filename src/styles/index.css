@@ -11339,3 +11339,19 @@ body {
 .daily-note-input, .ml-text-input, .daily-page-title-input, .nb-album-title { caret-color: #ff5c9d; }
 [data-mode="light"] .daily-note-input, [data-mode="light"] .ml-text-input,
 [data-mode="light"] .daily-page-title-input, [data-mode="light"] .nb-album-title { caret-color: #c8176e; }
+
+/* Pull down to refresh (2026-10-10). */
+.ptr {
+  position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 8px); z-index: 4000;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border-radius: 999px;
+  background: rgba(26,12,36,0.94); border: 1px solid rgba(240,204,96,0.45);
+  color: #f6e9f1; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35); pointer-events: none;
+}
+.ptr-icon { display: inline-block; font-size: 16px; color: #f0cc60; }
+.ptr-icon.is-spinning { animation: ptr-spin 0.9s linear infinite; }
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ptr-icon.is-spinning { animation: none; } }
+[data-mode="light"] .ptr { background: rgba(255,248,252,0.97); border-color: rgba(154,104,0,0.4); color: #3a1030; }
+[data-mode="light"] .ptr-icon { color: #8a5c00; }

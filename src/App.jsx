@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, Component } from 'react';
 import AskHost from './components/Ask';
+import PullToRefresh from './components/PullToRefresh';
 import Hero from './components/Hero';
 import InstallBanner from './components/InstallBanner';
 import Workout from './components/Workout';
@@ -191,13 +192,11 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
-  const [syncEpoch, setSyncEpoch] = useState(0);
 
   useEffect(() => {
     const handleRemoteSync = () => {
       setProfile(loadProfile());
       setColorMode(localStorage.getItem('gp_color_mode') || 'dark');
-      setSyncEpoch(e => e + 1);
     };
     window.addEventListener('gp-remote-sync', handleRemoteSync);
     return () => window.removeEventListener('gp-remote-sync', handleRemoteSync);
@@ -371,6 +370,7 @@ export default function App() {
       <WorkoutToast />
       <SignInGate />
       <AskHost />
+      <PullToRefresh />
 
       <div className={`search-bar-fixed${searchOpen ? ' searching' : ''}`} ref={topbarRef}>
         <div className="topbar-row">
@@ -454,11 +454,15 @@ export default function App() {
             pieces — lifts, meal picks, workouts, run and bike minutes —
             refresh themselves on gp-remote-sync. */}
         {active === 'workout'    && <Workout key={navMeta.key} openDayId={navMeta.scrollTo} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} profile={profile} />}
-        {active === 'meal'       && <Meal key={syncEpoch} />}
-        {active === 'nutrition'  && <Nutrition key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
-        {active === 'skincare'   && <Skincare  key={`${navMeta.key}-${syncEpoch}`} initialTab={navMeta.tab} />}
+        {/* No page is rebuilt when a sync lands (2026-10-10): rebuilding Meal
+            closed the open day and lost what she was typing every time any
+            gadget — or the Garmin Shortcut — saved something. Meal refreshes
+            its numbers in place; Nutrition and Body show nothing synced. */}
+        {active === 'meal'       && <Meal />}
+        {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
+        {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings
-            key={`s${syncEpoch}`}
+            key="settings"
             onNavigate={navigate}
             profile={profile}
             onProfileUpdate={p => { setProfile(p); saveProfile(p); }}
