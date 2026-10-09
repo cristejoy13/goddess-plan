@@ -6,6 +6,7 @@
 // About 170 KB on the wire; Vercel compresses it.
 
 import foods from './_foods.js';
+import { okCode } from './_scan.js';
 
 // Bump when api/_foods.js is rebuilt, so every gadget fetches the new copy.
 export const FOODS_VERSION = 'sr-legacy-2018-04.v1';
@@ -13,9 +14,8 @@ export const FOODS_VERSION = 'sr-legacy-2018-04.v1';
 export default function handler(req, res) {
   res.setHeader('Cache-Control', 'private, no-store');
   if (req.method !== 'GET') return res.status(405).json({ error: 'Use GET.' });
-  const norm = v => String(v || '').trim().toUpperCase();
-  const code = norm(req.headers['x-gp-code']);
-  if (!process.env.SCAN_CODE || !code || code !== norm(process.env.SCAN_CODE)) {
+  // Any real app code (everyone who signs up gets offline calories too).
+  if (!okCode(req.headers['x-gp-code'])) {
     return res.status(403).json({ error: 'This gadget is not linked to your account.', code: 'code' });
   }
   if (req.query?.v === FOODS_VERSION) return res.status(200).json({ version: FOODS_VERSION, same: true });

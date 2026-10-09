@@ -115,6 +115,11 @@ export function groqKeyReminder(now = new Date()) {
   return null;
 }
 
+// Sign-up: a typical day in words → { calories, protein, summary }.
+export async function readDay(text) {
+  return post({ kind: 'day', text });
+}
+
 // A photo of the scale → { kg }. She checks the number and saves it herself.
 export async function scanScale(image) {
   const result = await post({ kind: 'scale', image: { data: image.data, type: image.type } });

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { WORKOUT_DAYS } from '../data/workouts';
+import { usePlanDays } from '../utils/userPlan';
 import { mergeNotebookBlobs } from '../utils/mergeNotebook';
 import { GoalsToggle, GoalsPanel } from './Goals';
 import { useGoalsData } from '../utils/useGoalsData';
@@ -22,9 +22,10 @@ function todayLabel() {
 
 // The day pills under the title take their picture from the plan itself, so
 // changing a day in src/data/workouts.js changes its pill too.
-const WEEK_PILLS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label, i) => ({
+// Her plan, or the plan built for someone who signed up (see userPlan.js).
+const weekPills = (days) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label, i) => ({
   label,
-  emoji: WORKOUT_DAYS[i].emoji,
+  emoji: days[i].emoji,
   dayId: ['day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday', 'day-friday', 'day-saturday', 'day-sunday'][i],
 }));
 
@@ -1573,7 +1574,7 @@ function loadChecksCarryingWorkout(today) {
   return next;
 }
 
-function TodayDashboard({ today, todayDayId, onNavigate }) {
+function TodayDashboard({ today, todayDayId, onNavigate, owner = true }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   // The workout tick is the 1,000-workout record, not a daily check that is
   // forgotten at midnight. The walk stays an ordinary check: it never counts.
@@ -1620,7 +1621,7 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
 
   // Ordered morning → night: start with the morning routine, then the workout,
   // then daytime meals + walk, then the evening shower and night routine.
-  const rows = [
+  const allRows = [
     { id: 'sec-morning', divider: true, label: '☀️ Morning' },
     { id: 'am-skin', icon: '☀️', title: 'Morning routine · AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
     // Nothing comes before the main workout any more — the warm-up is part of
@@ -1638,6 +1639,11 @@ function TodayDashboard({ today, todayDayId, onNavigate }) {
     { id: 'hair', icon: '💎', title: 'Hair care', note: 'Oil ritual · Scalp massage', nav: ['skincare', 'hair'] },
     { id: 'pm-skin', icon: '🌙', title: 'Night routine · PM skincare', note: 'Double cleanse · Treatment · Repair', nav: ['skincare', 'pm'] },
   ];
+  // Someone who signed up: their workout and walk only — no skincare (Body is
+  // hers) and no meal times (their meal plan comes later).
+  const rows = owner
+    ? allRows
+    : allRows.filter(r => !['am-skin', 'body', 'hair', 'pm-skin', 'sec-morning', 'sec-night', 'sec-day'].includes(r.id) && !String(r.id).startsWith('meal-'));
 
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
   const taskRows = rows.filter(r => !r.divider);
@@ -1735,7 +1741,9 @@ function RuleBoard() {
 export default function Hero({ onNavigate }) {
   const goalsData = useGoalsData();
   const [goalsOpen, setGoalsOpen] = useState(false);
-  const today = WORKOUT_DAYS[dayIndex];
+  const { days, owner } = usePlanDays();
+  const today = days[dayIndex];
+  const pills = weekPills(days);
   const todayDayId = `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`;
 
   return (
@@ -1758,7 +1766,7 @@ export default function Hero({ onNavigate }) {
 
       {/* Jump-to-Day pills — tap any day to go directly to that workout */}
       <div className="hero-week-pills splash-item">
-        {WEEK_PILLS.map((p, i) => (
+        {pills.map((p, i) => (
           <button
             key={p.dayId}
             className={`hero-week-pill${i === dayIndex ? ' is-today' : ''}`}
@@ -1773,9 +1781,10 @@ export default function Hero({ onNavigate }) {
       {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 
 
-      <TodayDashboard today={today} todayDayId={todayDayId} onNavigate={onNavigate} />
+      <TodayDashboard today={today} todayDayId={todayDayId} onNavigate={onNavigate} owner={owner} />
 
-      <RuleBoard />
+      {/* Her own rules (No GODSSS, PFBS, SLOW) are hers. */}
+      {owner && <RuleBoard />}
     </div>
   );
 }

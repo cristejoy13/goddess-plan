@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORKOUT_DAYS, MEAL_SLOTS, RECOMMENDED_MEALS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
+import { usePlanDays } from '../utils/userPlan';
+import { MEAL_SLOTS, RECOMMENDED_MEALS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
 import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
@@ -414,7 +415,7 @@ function CardioNote({ kind, dayIndex, compact }) {
   );
 }
 
-function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId }) {
+function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId, owner = true }) {
   // The whole lift log for every exercise, held once for the page so each row
   // does not re-read localStorage on every render.
   const [lifts, setLifts] = useState(loadLifts);
@@ -524,7 +525,8 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
           );
         })}
       </div>
-      <MealBuilder dayId={id} dayIndex={dayIndex} />
+      {/* Her meal plan; people who signed up get theirs later. */}
+      {owner && <MealBuilder dayId={id} dayIndex={dayIndex} />}
     </div>
   );
 }
@@ -579,7 +581,16 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
   // Closed by default: this screen should be a week you look at, not read.
   const [showWhy, setShowWhy]                       = useState(false);
   const userId        = user?.uid || null;
-  const todayDay = WORKOUT_DAYS[todayIndex];
+  const { days: planDays, owner } = usePlanDays();
+  const todayDay = planDays[todayIndex];
+  // Her grid is hand-written; someone who signed up gets theirs from the plan.
+  const gridDays = owner ? GRID_DAYS : planDays.map((d, i) => ({
+    lbl: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
+    emoji: d.emoji,
+    name: d.day.split(' · ')[1] || d.title,
+    focus: d.title,
+    color: /Glutes/.test(d.day) ? 'pr' : 'py',
+  }));
 
   useEffect(() => {
     if (openDayId) {
@@ -641,7 +652,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
   }
 
   if (selectedDayIdx !== null) {
-    const day   = WORKOUT_DAYS[selectedDayIdx];
+    const day   = planDays[selectedDayIdx];
     return (
       <div className="section">
         <DayDetailPage
@@ -652,6 +663,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           onIngredientClick={selectIngredient}
           onBack={closeDay}
           userId={userId}
+          owner={owner}
         />
       </div>
     );
@@ -661,8 +673,8 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
     <div className="section">
       <div className="s-header">
         <div className="s-tag">Weekly Structure</div>
-        <h2 className="s-title">Movement <em>&amp;</em> Meals</h2>
-        <p className="s-desc">Tap a day to open its full workout and meal plan.</p>
+        <h2 className="s-title">{owner ? <>Movement <em>&amp;</em> Meals</> : <>Your <em>week</em></>}</h2>
+        <p className="s-desc">{owner ? 'Tap a day to open its full workout and meal plan.' : 'Tap a day to open its workout.'}</p>
       </div>
 
 
@@ -672,7 +684,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       </div>
 
       <div className="week-grid week-grid-nav splash-item">
-        {GRID_DAYS.map((d, i) => (
+        {gridDays.map((d, i) => (
           <button
             key={d.lbl}
             className={`wg-day wg-day-btn${i === todayIndex ? ' wg-today' : ''}`}
@@ -692,12 +704,13 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           seven times in the focus lines above. */}
       <div className="wg-every-day splash-item">
         <span>🚶 Every evening: an easy walk.</span>
-        <span>🪢 Jump rope only Tue · Wed · Thu, after the workout.</span>
+        {owner && <span>🪢 Jump rope only Tue · Wed · Thu, after the workout.</span>}
       </div>
 
       {/* The five explainers used to sit open on this screen, which is the first
           thing she sees. She asked for fewer words and more to look at, so they
           fold into one pill she can open when she actually wants the reasoning. */}
+      {owner && <>
       <button
         className="why-pill splash-item"
         onClick={() => setShowWhy(v => !v)}
@@ -733,6 +746,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
           🥗 Nutrition &amp; Meals →
         </button>
       </div>
+      </>}
     </div>
   );
 }

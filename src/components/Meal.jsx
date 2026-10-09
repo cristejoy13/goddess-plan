@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
+import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
@@ -81,10 +82,23 @@ function monthWeeks(year, monthIdx) {
 // (AVERAGE_BURN) — minus what she ate. It shows on every day square; Sunday
 // shows the seven days added up. Only days with calories written down, and
 // not future days, have one. Every past week is worked out the same way.
+// Her average for her; for someone who signed up, the TDEE worked out from
+// their answers.
+function averageBurn(profile = readProfile()) {
+  if (isOwner(profile)) return AVERAGE_BURN;
+  return profile?.targets?.tdee || AVERAGE_BURN;
+}
+
+// Someone who signed up gets their daily calories from their answers until
+// they set a goal for a week themselves.
+function planGoal(profile = readProfile()) {
+  return isOwner(profile) ? null : (profile?.targets?.calories ?? null);
+}
+
 function dayDeficit(state, garmin, key, todayKey = dateKeyOf()) {
   const t = calTotals(state.days?.[key] || []);
   if (!t.counted || key > todayKey) return null;
-  const burned = burnOn(state, key) ?? garminBurnOn(garmin, key) ?? AVERAGE_BURN;
+  const burned = burnOn(state, key) ?? garminBurnOn(garmin, key) ?? averageBurn();
   return burned - t.total;
 }
 
@@ -1254,7 +1268,7 @@ export default function Meal() {
           burn={burnOn(state, openKey)}
           /* Her average fills today and any past day she ate on. A future
              day, or an empty old one, gets no made-up deficit. */
-          averageBurn={garminBurnOn(garmin, openKey) ?? (openKey === dateKeyOf() || (openKey < dateKeyOf() && (days[openKey] || []).length > 0) ? AVERAGE_BURN : null)}
+          averageBurn={garminBurnOn(garmin, openKey) ?? (openKey === dateKeyOf() || (openKey < dateKeyOf() && (days[openKey] || []).length > 0) ? averageBurn() : null)}
           /* Her watch's number, when the Shortcut has sent one for this day,
              stands in for the average. What she types still wins over both. */
           burnFrom={garminBurnOn(garmin, openKey) != null ? 'garmin' : 'average'}
@@ -1262,9 +1276,9 @@ export default function Meal() {
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
           weekAvg={openIsSunday ? weekWeightAvg(state, year, monthIdx, openDay) : null}
-          goal={openMonday ? goalForWeek(state, openMonday) : null}
+          goal={openMonday ? (goalForWeek(state, openMonday) ?? planGoal()) : null}
           weekLabel={openMonday ? weekLabelOf(openMonday) : ''}
-          left={openKey ? calsLeft(state, openKey) : null}
+          left={openKey ? (calsLeft(state, openKey) ?? (planGoal() != null ? planGoal() - calTotals(days[openKey] || []).total : null)) : null}
           onAdd={(fields) => addEntry(openDay, fields)}
           onEdit={(entry, fields) => editEntry(openDay, entry, fields)}
           onDelete={(entry) => deleteEntry(openDay, entry)}

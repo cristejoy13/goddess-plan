@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ask } from './ask';
-import { WORKOUT_DAYS } from '../data/workouts';
+import { planDays } from './userPlan';
 import { fireConfetti } from './confetti';
 import {
   MILESTONES, WORKOUTS_CHANGED, dayKey, parseDay,
@@ -14,7 +14,7 @@ export const fmt = n => n.toLocaleString('en-US');
 // whole "Monday · Glutes A" heading. Monday-first, like the plan.
 export function typeFor(key) {
   const js = parseDay(key).getDay();
-  const day = WORKOUT_DAYS[js === 0 ? 6 : js - 1];
+  const day = planDays()[js === 0 ? 6 : js - 1];
   return day?.day?.split(' · ')[1] || day?.title || 'Workout';
 }
 

@@ -123,3 +123,34 @@ export function parseScale(raw) {
   const kg = unit.startsWith('lb') ? v * 0.45359237 : unit.startsWith('st') ? v * 6.35029318 : v;
   return Math.round(kg * 10) / 10;
 }
+
+// ── A whole typical day, for sign-up ─────────────────────────────────────
+export function buildDayPrompt(text) {
+  return [
+    'Someone describes what they usually eat in a day:',
+    `"${text}"`,
+    'Estimate the total for one typical day.',
+    'Reply with JSON only: {"calories": 0, "protein": 0, "summary": ""}',
+    '- calories and protein (grams) as whole numbers for the whole day.',
+    '- summary: one short, kind sentence in plain words naming the main foods, no advice.',
+    'If the text does not describe food, use calories 0.',
+  ].join('\n');
+}
+
+export function parseDay(raw) {
+  let data = raw;
+  if (typeof raw === 'string') {
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (!m) return null;
+    try { data = JSON.parse(m[0]); } catch { return null; }
+  }
+  const calories = Math.round(Number(data?.calories));
+  const protein = Math.round(Number(data?.protein));
+  if (!(calories > 0 && calories < 15000)) return null;
+  return { calories, protein: protein > 0 ? protein : null, summary: String(data?.summary || '').slice(0, 200) };
+}
+
+// Any real app code may use the scanner (2026-10-10: everyone who signs up
+// gets it). Codes look like GP- and twelve letters/digits from this alphabet.
+export const CODE_RE = /^GP-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/;
+export const okCode = v => CODE_RE.test(String(v || '').trim().toUpperCase());

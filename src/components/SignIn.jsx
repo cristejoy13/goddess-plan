@@ -16,7 +16,7 @@ function useAccount() {
   return acc;
 }
 
-function GoogleMark() {
+export function GoogleMark() {
   return (
     <svg className="si-g" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.5 17.8 9.5 24 9.5z" />

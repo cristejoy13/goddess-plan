@@ -77,6 +77,8 @@ export function gadgetHasData() {
     read('gp_goals') && (read('gp_goals').items || []).length,
     nb && ['pages', 'checklists'].some(k => Array.isArray(nb[k]) && nb[k].length),
     read('gp_lifts') && Object.keys(read('gp_lifts')).length,
+    // Someone who has just answered the sign-up questions has a plan to keep.
+    read('gp_profile')?.onboarded,
   ];
   return counts.some(Boolean);
 }

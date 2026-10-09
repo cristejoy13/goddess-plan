@@ -12,7 +12,7 @@
 //   SCAN_CODE        her sync code, e.g. GP-XXXXXXXXXXXX
 //   GEMINI_MODEL     optional; tried before the built-in GEMINI_MODELS list
 
-import { GEMINI_MODELS, buildPrompt, parseItems, settleItem, buildScalePrompt, parseScale } from './_scan.js';
+import { GEMINI_MODELS, buildPrompt, parseItems, settleItem, buildScalePrompt, parseScale, buildDayPrompt, parseDay, okCode } from './_scan.js';
 
 const MAX_TEXT = 1000;
 const MAX_IMAGE_CHARS = 3_000_000; // ~2.2 MB of photo; the app sends far less
@@ -157,18 +157,22 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   groqRefused = false;
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST.' });
-  if (!process.env.GEMINI_API_KEY || !process.env.SCAN_CODE) {
+  if (!process.env.GEMINI_API_KEY) {
     return res.status(503).json({ error: 'The scanner is not set up yet.', code: 'setup' });
   }
-  // Spaces or a lowercase letter pasted into Vercel must not lock her out.
-  const norm = v => String(v || '').trim().toUpperCase();
-  if (!norm(req.headers['x-gp-code']) || norm(req.headers['x-gp-code']) !== norm(process.env.SCAN_CODE)) {
+  // Everyone with the app may scan (2026-10-10). The app sends its own code;
+  // anything that is not a real app code is turned away.
+  if (!okCode(req.headers['x-gp-code'])) {
     return res.status(403).json({ error: 'This gadget is not linked to your account.', code: 'code' });
   }
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
 
   // { check: true } — tells whether each key works, without showing any key.
+  const ownerCode = String(process.env.SCAN_CODE || '').trim().toUpperCase();
+  if (body.check === true && String(req.headers['x-gp-code'] || '').trim().toUpperCase() !== ownerCode) {
+    return res.status(403).json({ error: 'Only the owner can run the check.' });
+  }
   if (body.check === true) {
     const result = {};
     const key = String(process.env.GEMINI_API_KEY || '').trim();
@@ -210,6 +214,19 @@ export default async function handler(req, res) {
     && body.image.data.length <= MAX_IMAGE_CHARS
     ? { data: body.image.data, type: body.image.type }
     : null;
+  // { kind: 'day', text } — sign-up: a whole typical day, described in words.
+  if (body.kind === 'day') {
+    if (!text) return res.status(400).json({ error: 'Write or say what you usually eat first.' });
+    let day;
+    try {
+      day = await askAI({ text, prompt: buildDayPrompt(text), read: parseDay });
+    } catch (e) {
+      return res.status(502).json({ error: e.code === 'busy' ? 'The free AI is busy. Try again in a minute.' : 'The AI could not read that. Try again.' });
+    }
+    if (!day) return res.status(422).json({ error: 'Could not tell what you eat from that. Name a few foods and amounts.' });
+    return res.status(200).json(day);
+  }
+
   // { kind: 'scale', image } — read the weight off a photo of the scale.
   if (body.kind === 'scale') {
     if (!image) return res.status(400).json({ error: 'Take a photo of your scale first.' });

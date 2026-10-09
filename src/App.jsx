@@ -10,7 +10,8 @@ import Skincare from './components/Skincare';
 import Settings from './components/Settings';
 import { GoalWatcher } from './components/Goals';
 import { WorkoutToast } from './components/WorkoutTracker';
-import { SignInGate } from './components/SignIn';
+import { SignupGate } from './components/Onboarding';
+import { isOwner } from './utils/userPlan';
 import { getAvatarByProfile } from './avatars';
 import './styles/index.css';
 
@@ -132,8 +133,9 @@ function SearchBar({ onNavigate, onClose }) {
   const wrapRef = useRef(null);
   const inputRef = useRef(null);
 
+  const owner = isOwner();
   const results = query.trim().length > 1
-    ? SEARCH_INDEX.filter(item =>
+    ? SEARCH_INDEX.filter(item => owner || item.section !== 'skincare').filter(item =>
         item.label.toLowerCase().includes(query.toLowerCase()) ||
         item.hint.toLowerCase().includes(query.toLowerCase())
       ).slice(0, 7)
@@ -199,7 +201,11 @@ export default function App() {
       setColorMode(localStorage.getItem('gp_color_mode') || 'dark');
     };
     window.addEventListener('gp-remote-sync', handleRemoteSync);
-    return () => window.removeEventListener('gp-remote-sync', handleRemoteSync);
+    window.addEventListener('gp-profile-changed', handleRemoteSync);
+    return () => {
+      window.removeEventListener('gp-remote-sync', handleRemoteSync);
+      window.removeEventListener('gp-profile-changed', handleRemoteSync);
+    };
   }, []);
 
   // Apply gender-based color theme
@@ -368,7 +374,7 @@ export default function App() {
       <InstallBanner />
       <GoalWatcher />
       <WorkoutToast />
-      <SignInGate />
+      <SignupGate />
       <AskHost />
       <PullToRefresh />
 
@@ -419,7 +425,9 @@ export default function App() {
         {/* Sections, always on screen — this replaces the drawer, so every part
             of the app is one tap away instead of two. */}
         <nav className="topbar-sections" aria-label="Sections">
-          {NAV_ITEMS.map(item => (
+          {/* Body (skincare, hair, teeth…) is hers; people who signed up get
+              Home, Workouts and Meal (2026-10-10). */}
+          {NAV_ITEMS.filter(item => item.id !== 'skincare' || isOwner(profile)).map(item => (
             <button
               key={item.id}
               className={`topbar-sec-btn${active === item.id ? ' active' : ''}`}
@@ -460,7 +468,7 @@ export default function App() {
             its numbers in place; Nutrition and Body show nothing synced. */}
         {active === 'meal'       && <Meal />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
-        {active === 'skincare'   && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
+        {active === 'skincare'   && isOwner(profile) && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
         {active === 'settings'   && <Settings
             key="settings"
             onNavigate={navigate}
