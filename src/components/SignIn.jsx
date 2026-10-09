@@ -54,7 +54,7 @@ function ChooseScreen() {
   }
   return (
     <div className="si-card">
-      <img className="si-logo" src="/app-icon.png" alt="" />
+      <img className="si-logo" src="/icon-192.png" alt="" />
       <h2 className="si-title">Welcome <em>back</em></h2>
       <p className="si-text">Had the app before? Type your old code to bring everything back.</p>
       <form className="si-form" onSubmit={submit}>
@@ -91,7 +91,7 @@ export function SignInGate() {
   if (acc.status === 'linking') {
     return (
       <div className="si-overlay" role="status">
-        <div className="si-card"><img className="si-logo" src="/app-icon.png" alt="" /><p className="si-text">Loading your plan…</p></div>
+        <div className="si-card"><img className="si-logo" src="/icon-192.png" alt="" /><p className="si-text">Loading your plan…</p></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ export function SignInGate() {
   return (
     <div className="si-overlay" role="dialog" aria-modal="true" aria-label="Sign in">
       <div className="si-card">
-        <img className="si-logo" src="/app-icon.png" alt="" />
+        <img className="si-logo" src="/icon-192.png" alt="" />
         <h2 className="si-title">Keep your plan <em>safe</em></h2>
         <p className="si-text">Sign in once. If you ever remove the app, sign in again and everything comes back.</p>
         <GoogleButton />

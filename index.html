@@ -29,7 +29,20 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Her logo from the first moment (2026-10-10): before the app's code has
+         loaded, the page shows the lotus on her background instead of a blank
+         screen. React replaces it the moment the app draws. The background
+         follows her light/dark choice. -->
+    <script>
+      try { if (localStorage.getItem('gp_color_mode') === 'light') document.documentElement.setAttribute('data-boot', 'light'); } catch (e) {}
+    </script>
+    <style>
+      html, body { background: #07040f; margin: 0; }
+      html[data-boot="light"], html[data-boot="light"] body { background: #fff5fb; }
+      #boot-splash { position: fixed; inset: 0; display: grid; place-items: center; }
+      #boot-splash img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 10px 40px rgba(255,92,157,0.3); }
+    </style>
+    <div id="root"><div id="boot-splash"><img src="/icon-192.png" alt="" width="112" height="112" /></div></div>
     <!-- Safety net (2026-10-08, after her iPad sat on a blank loading screen):
          if the app has not drawn anything 12 seconds after opening, and the
          device is online, the saved copy of the app's FILES is cleared once
@@ -41,8 +54,8 @@
       (function () {
         try {
           setTimeout(function () {
-            var root = document.getElementById('root');
-            if (!root || root.children.length || navigator.onLine === false) return;
+            // The logo is still there only if the app never drew.
+            if (!document.getElementById('boot-splash') || navigator.onLine === false) return;
             if (sessionStorage.getItem('gp_boot_retry')) return;
             sessionStorage.setItem('gp_boot_retry', '1');
             var go = function () { location.reload(); };

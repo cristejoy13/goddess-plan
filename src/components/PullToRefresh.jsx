@@ -82,9 +82,15 @@ export default function PullToRefresh() {
         if (!pending) break;
         await wait(200);
       }
+      // One reload only. If a newer version is on its way, the update system
+      // (swUpdate.js) reloads the moment it takes over — reloading here too
+      // made the screen flash twice. Otherwise this is the one reload.
       try {
         const reg = await navigator.serviceWorker?.getRegistration();
-        await Promise.race([reg?.update(), wait(1500)]);
+        if (reg) {
+          await Promise.race([reg.update(), wait(1500)]);
+          if (reg.installing || reg.waiting) await wait(6000);
+        }
       } catch { /* reload anyway */ }
       window.location.reload();
     })();
