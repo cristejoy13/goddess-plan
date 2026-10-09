@@ -124,6 +124,7 @@ let resyncTimer = null;
 let lastRemote = null;
 let dirtyKeys = new Set();
 let dbRef = null;
+let unsubscribeSnapshot = null;
 let originalSetItem = null;
 let originalRemoveItem = null;
 
@@ -471,6 +472,12 @@ function handleRemoteSnapshot(snapshot) {
     }
 
     const remote = snapshot.data() || {};
+    // The account was deleted on another gadget: clear this one too.
+    if (remote.deletedAt) {
+      wipeThisGadget();
+      window.location.reload();
+      return;
+    }
     lastRemote = { data: remote.data || {}, meta: remote.meta || {} };
     latestDevices = remote.devices || {};
     notifyDevices();
@@ -680,6 +687,39 @@ function startPresence() {
   }
 }
 
+// ── Deleting an account (2026-10-10) ────────────────────────────────────────
+// Stop every write to the shared document, so nothing can put the data back.
+function stopSync() {
+  try { if (unsubscribeSnapshot) unsubscribeSnapshot(); } catch { /* fine */ }
+  unsubscribeSnapshot = null;
+  [pushTimer, presenceTimer, resyncTimer].forEach(t => { if (t) { clearTimeout(t); clearInterval(t); } });
+  pushTimer = presenceTimer = resyncTimer = null;
+  dirtyKeys.clear();
+  lastRemote = null;
+  dbRef = null;
+}
+
+// Remove everything the app keeps on this gadget. The next start is a new
+// person: no profile, so the sign-up questions show, under a brand-new code.
+export function wipeThisGadget() {
+  stopSync();
+  try {
+    Object.keys(localStorage).filter(k => k.startsWith('gp_')).forEach(k => {
+      (originalRemoveItem || localStorage.removeItem).call(localStorage, k);
+    });
+  } catch { /* nothing left to remove */ }
+}
+
+// Replace the shared document with a bare "deleted" marker: every saved
+// thing goes, and any other gadget on the same code sees the marker and
+// clears itself instead of uploading its copy back.
+export async function deleteSyncedData() {
+  const ref = dbRef;
+  stopSync();
+  if (ref) await fb.setDoc(ref, { deletedAt: Date.now() });
+  wipeThisGadget();
+}
+
 export function getSyncCode() {
   let code = safeGetItem(SYNC_CODE_KEY);
   if (!isValidSyncCode(code)) {
@@ -881,7 +921,7 @@ export async function initSync() {
     // Subscribe BEFORE the first presence write: presence creates the doc, and
     // the data bootstrap must never be skipped because presence got there first.
     // (reconcileWithRemote also covers this, as a second line of defense.)
-    fb.onSnapshot(dbRef, handleRemoteSnapshot, () => {
+    unsubscribeSnapshot = fb.onSnapshot(dbRef, handleRemoteSnapshot, () => {
       // Firestore snapshot errors are non-fatal for the local app.
     });
     startPresence();

@@ -93,7 +93,11 @@ const GLUTES = {
   },
 };
 const ABS_DAY = [['Dead Bug', '10 each side'], ['Reverse Crunch', '12–15'], ['Bicycle Crunch', '20'], ['Side Plank', '30 sec each side'], ['Plank', '45 sec']];
-const ABS_FINISHER = [['Reverse Crunch', '12–15'], ['Plank', '30–45 sec']];
+// One abs move after each glute day, a different one each day.
+const ABS_FINISHER = {
+  gym:  { A: ['Cable Crunch', '12–15'], B: ['Hanging Knee Raise', '10–12'], C: ['Ab Wheel Rollout (from knees)', '8–10'] },
+  home: { A: ['Reverse Crunch', '12–15'], B: ['Dead Bug', '10 each side'], C: ['Plank', '30–45 sec'] },
+};
 
 const SESSION_INFO = {
   A:    { emoji: '🍑', name: 'Glutes A', title: 'Thrusts & hinges · abs finisher' },
@@ -143,12 +147,14 @@ function sessionDay(kind, i, a) {
     ];
     return day;
   }
-  const lifts = GLUTES[a.place === 'gym' ? 'gym' : 'home'][kind];
+  const place = a.place === 'gym' ? 'gym' : 'home';
+  const lifts = GLUTES[place][kind];
+  const [absName, absReps] = ABS_FINISHER[place][kind];
   day.exercises = [
     H(`${info.emoji} Main Workout`, `${lifts.length} moves · in order · rest 60–90 sec.`),
     ...lifts.map(([n, r], k) => ({ name: `${k + 1}. ${n}`, detail: `${sets} × ${r}` })),
-    H('🔥 After · Abs Finisher', '2 moves · straight after.', 'core'),
-    ...ABS_FINISHER.map(([n, r]) => ({ name: n, detail: `${Math.max(2, sets - 1)} × ${r}` })),
+    H('🔥 After · Abs Finisher', 'One move · straight after.', 'core'),
+    { name: absName, detail: `${Math.max(2, sets - 1)} × ${absReps}` },
     H('🚶 Evening · Easy Walk', 'Every evening if you can.'),
     { name: 'Easy Walk', detail: `${walkMin} min · easy pace` },
   ];

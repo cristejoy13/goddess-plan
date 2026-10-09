@@ -723,7 +723,7 @@ export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBac
       {showWhy && (
         <>
           <div className="g-card splash-item why-card">
-            <strong>Your week:</strong> glutes Mon · Thu · Sat, each ending with your abs video; Pilates or yoga Tue · Fri and upper body &amp; core Wed, each followed by jump rope or Zone 2; bike then swim at 5 PM Sun. An easy walk every day.
+            <strong>Your week:</strong> glutes Mon · Thu · Sat, each ending with one abs move; Pilates or yoga Tue · Fri and upper body &amp; core Wed, each followed by jump rope or Zone 2; bike then swim at 5 PM Sun. An easy walk every day.
           </div>
           <div className="g-card splash-item why-card">
             <strong>Getting stronger:</strong> same lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.

@@ -381,7 +381,7 @@ export function SignupGate() {
       window.removeEventListener('gp-profile-changed', check);
     };
   }, []);
-  if (!noProfile) return <SignInGate />;
+  if (!noProfile || acc.status === 'deleting') return <SignInGate />;
   let adopting = false;
   try { adopting = localStorage.getItem('gp_sync_adopt') === '1'; } catch { /* fine */ }
   if (adopting || acc.status === 'linking') {

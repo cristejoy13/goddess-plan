@@ -59,12 +59,13 @@ const PILATES_OR_YOGA = [
 ];
 
 const cardio = (title, note) => ({ icon: '🚶', title, note });
-// Her own ABS video (ABS.MP4 from her Downloads, 2026-10-10), kept in the app
-// at /videos/abs.mp4 so it plays on any of her devices. It is the one abs
-// finisher that closes each glute day (Mon, Thu, Sat).
-const ABS_FINISHER = [
-  H('🔥 After · Abs Finisher', 'Your ABS video · 1½ min · straight after the lifts.', 'core'),
-  { name: 'ABS', detail: 'your video · 1 min 29 sec', url: '/videos/abs.mp4' },
+// One abs move closes each glute day (her call, 2026-10-10: one exercise, a
+// different one each day). Each is among the hardest-working abs moves in the
+// research — loaded or hanging, not endless floor crunches — and each hits the
+// abs a different way: weighted curl (Mon), lower abs (Thu), anti-extension (Sat).
+const absFinisher = (name, detail) => [
+  H('🔥 After · Abs Finisher', 'One move · straight after the lifts.', 'core'),
+  { name, detail },
 ];
 // After the main workout on the video days (Tue, Wed, Fri): one or the other.
 const ROPE_OR_ZONE2 = [
@@ -933,7 +934,7 @@ export const WORKOUT_DAYS = [
       { name: '1. Barbell Hip Thrust', detail: '4 × 8–12 reps · barbell or dumbbell · rest 90–120 sec · full hip extension, squeeze at the top' },
       { name: '2. Romanian Deadlift (RDL)', detail: '3 × 8–12 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
       { name: '3. Bulgarian Split Squat', detail: '3 × 8–10 reps each leg · rest 60–90 sec · lean slightly forward for the glutes' },
-      ...ABS_FINISHER,
+      ...absFinisher('Cable Crunch', '3 × 12–15 reps · kneel at the cable, rope by your head · curl your ribs down to your hips · hips stay still'),
       ...walk('30–60'),
     ],
     trackLifts: true,
@@ -975,7 +976,7 @@ export const WORKOUT_DAYS = [
       { name: '1. Cable Kickback', detail: '3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec · a band round the ankle works at home' },
       { name: '2. Hip Abduction (machine or band)', detail: '3 × 15–25 reps · machine, band or cable · rest 45–60 sec' },
       { name: '3. Dumbbell Step-Up', detail: '3 × 8–12 reps each leg · rest 60–90 sec · drive through the working leg' },
-      ...ABS_FINISHER,
+      ...absFinisher('Hanging Knee Raise', '3 × 10–12 reps · hang from a bar · curl your hips up, not just your knees · no swinging'),
       ...walk('30–60'),
     ],
     trackLifts: true,
@@ -1003,7 +1004,7 @@ export const WORKOUT_DAYS = [
       { name: '1. Dumbbell Squat', detail: '3 × 10–12 reps · dumbbells at your shoulders or one held at your chest · rest 60–90 sec · sit back, full depth' },
       { name: '2. Side Squat (Lateral Squat)', detail: '3 × 8–10 reps each side · step wide, sit into one hip, keep the other leg straight · a light dumbbell when easy' },
       { name: '3. Dumbbell Reverse Lunge', detail: '3 × 8–10 reps each leg · rest 60–90 sec · step back, front heel planted, lean slightly forward for the glutes' },
-      ...ABS_FINISHER,
+      ...absFinisher('Ab Wheel Rollout (from knees)', '3 × 8–10 reps · roll out only as far as your lower back stays flat · pull back with your abs'),
       ...walk('30–60'),
     ],
     trackLifts: true,

@@ -18,11 +18,13 @@
 //     fresh. Linking an empty gadget automatically is what would tie the
 //     account to nothing and hide her real data.
 
-import { whenFirebaseReady, getSyncCode, adoptSyncCode } from './sync.js';
+import { whenFirebaseReady, getSyncCode, adoptSyncCode, deleteSyncedData } from './sync.js';
 
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^GP-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{12}$/;
 const LATER_KEY = 'gp_signin_later';
+// Set while Google confirms it is really them, before an account is deleted.
+const DELETE_KEY = 'gp_delete_account';
 
 let auth = null;
 let authMod = null;
@@ -164,10 +166,13 @@ export async function initAccount() {
     try {
       await authMod.getRedirectResult(auth);
     } catch (err) {
+      // Coming back from Google without confirming: the delete is off.
+      try { localStorage.removeItem(DELETE_KEY); } catch { /* fine */ }
       set({ error: friendly(err) });
     }
     authMod.onAuthStateChanged(auth, user => {
       if (!user) { set({ status: 'signed-out', email: '' }); return; }
+      if (deleteWasAsked()) { finishDelete(user); return; }
       linkSignedIn(user);
     });
     // A gadget left open in the background never restarts, so it would miss
@@ -238,4 +243,59 @@ export async function relinkIfSignedIn(code) {
 export async function signOutAccount() {
   if (!auth) return;
   await authMod.signOut(auth);
+}
+
+// ── Delete account (2026-10-10) ─────────────────────────────────────────────
+// Deletes everything: the saved data, the note linking the Google account to
+// it, the Google sign-in itself, and the copy on this gadget. The same email
+// can sign up again afterwards and starts fresh, like anyone new.
+//
+// Google only lets an account be deleted within a few minutes of signing in.
+// If it has been longer, the page goes to Google once to confirm, and the
+// delete finishes when it comes back.
+function deleteWasAsked() {
+  try {
+    const at = Number(localStorage.getItem(DELETE_KEY));
+    return at > 0 && Date.now() - at < 10 * 60 * 1000;
+  } catch { return false; }
+}
+
+// Offline, the database waits forever; give up after 20 seconds instead.
+const inTime = p => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 20000))]);
+
+async function finishDelete(user) {
+  set({ status: 'deleting', email: user.email || '', error: '' });
+  try {
+    // Signed in too long ago? Confirm with Google first, before anything is
+    // touched; the delete carries on when the page comes back.
+    const token = await user.getIdTokenResult();
+    const signedInAgo = Date.now() - Date.parse(token.authTime);
+    if (!(signedInAgo < 4 * 60 * 1000) && !deleteWasAsked()) {
+      localStorage.setItem(DELETE_KEY, String(Date.now()));
+      const provider = new authMod.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account', login_hint: user.email || '' });
+      await authMod.reauthenticateWithRedirect(user, provider);
+      return;
+    }
+    // Data first, so nothing is left behind if the sign-in delete fails.
+    const { fb, db } = await whenFirebaseReady();
+    await inTime(fb.deleteDoc(fb.doc(db, 'sync', await noteId(user.uid))));
+    await inTime(deleteSyncedData());
+    try { await authMod.deleteUser(user); } catch { await authMod.signOut(auth).catch(() => {}); }
+    window.location.replace('/');
+  } catch {
+    try { localStorage.removeItem(DELETE_KEY); } catch { /* fine */ }
+    set({ status: 'signed-in', error: 'Could not delete your account. Check your internet and try again.' });
+  }
+}
+
+export async function deleteAccount() {
+  const user = auth?.currentUser;
+  if (!user) return;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    set({ error: 'No internet. Try again when you are online.' });
+    return;
+  }
+  try { localStorage.removeItem(DELETE_KEY); } catch { /* fine */ }
+  await finishDelete(user);
 }

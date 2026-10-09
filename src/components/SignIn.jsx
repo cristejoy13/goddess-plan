@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { ask } from '../utils/ask';
 import {
   onAccount, signInWithGoogle, signInLater, saidLater,
-  bringBack, startFresh, signOutAccount,
+  bringBack, startFresh, signOutAccount, deleteAccount,
 } from '../utils/account';
+import { isOwner } from '../utils/userPlan';
 
 // ─── SIGN IN ───────────────────────────────────────────────────────────────
 // One screen, one button. It shows on a gadget that is not signed in, until
@@ -88,10 +89,10 @@ export function SignInGate() {
   if (acc.status === 'choose') {
     return <div className="si-overlay" role="dialog" aria-modal="true" aria-label="Bring your data back"><ChooseScreen /></div>;
   }
-  if (acc.status === 'linking') {
+  if (acc.status === 'linking' || acc.status === 'deleting') {
     return (
       <div className="si-overlay" role="status">
-        <div className="si-card"><img className="si-logo" src="/icon-192.png" alt="" /><p className="si-text">Loading your plan…</p></div>
+        <div className="si-card"><img className="si-logo" src="/icon-192.png" alt="" /><p className="si-text">{acc.status === 'deleting' ? 'Deleting your account…' : 'Loading your plan…'}</p></div>
       </div>
     );
   }
@@ -130,6 +131,15 @@ export function AccountCard() {
               if (await ask('Sign out of Google on this gadget? Your things stay on this gadget and stay saved online.', { yes: 'Sign out' })) signOutAccount();
             }}
           >Sign out</button>
+          {!isOwner() && (
+            <button
+              type="button"
+              className="si-signout si-delete"
+              onClick={async () => {
+                if (await ask('Delete your account? Your plan, meals, weights, workouts, goals and notes are deleted from every gadget. This cannot be undone. You can sign up again with the same email any time.', { yes: 'Delete account', danger: true })) deleteAccount();
+              }}
+            >Delete account</button>
+          )}
         </>
       ) : (
         <>
