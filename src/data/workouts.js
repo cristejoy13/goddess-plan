@@ -5,7 +5,7 @@
 //   Wed  Upper body & core — Pilates by Izzy · jump rope or Zone 2
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
 //   Fri  Pilates or yoga, same as Tue · jump rope or Zone 2
-//   Sat  Glutes C — dumbbell squat, side squat, reverse lunge · abs finisher
+//   Sat  Glutes C — squat, pause squat, lateral squat, side-step squat, step-up · abs finisher
 //   Sun  Biking, then swimming at 5 PM
 // An easy walk every day. Three main lifts on each glute day, never shared;
 // the abs finisher is her own ABS video. They progress by reps first, then a
@@ -996,14 +996,16 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Saturday · Glutes C', title: 'Squat · Side Squat · Lunge · Abs',
-    sub: '30–40 min strength · abs finisher · evening walk',
+    day: 'Saturday · Glutes C', title: 'Squat · Pause · Lateral · Side-Step · Step-Up · Abs',
+    sub: '45–55 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 lifts · in order.'),
+      H('🍑 Main Workout', '5 lifts · in order.'),
       { name: '1. Dumbbell Squat', detail: '3 × 10–12 reps · dumbbells at your shoulders or one held at your chest · rest 60–90 sec · sit back, full depth' },
-      { name: '2. Side Squat (Lateral Squat)', detail: '3 × 8–10 reps each side · step wide, sit into one hip, keep the other leg straight · a light dumbbell when easy' },
-      { name: '3. Dumbbell Reverse Lunge', detail: '3 × 8–10 reps each leg · rest 60–90 sec · step back, front heel planted, lean slightly forward for the glutes' },
+      { name: '2. Pause Squat', detail: '3 × 6–8 reps · a little lighter than the squat · hold 2 sec at the bottom, then stand up strong · rest 90 sec' },
+      { name: '3. Side Squat (Lateral Squat)', detail: '3 × 8–10 reps each side · feet wide and planted, sit into one hip, keep the other leg straight · a light dumbbell when easy' },
+      { name: '4. Side-Step Squat', detail: '3 × 10 steps each way · stay low in a squat and step sideways · a band above the knees when easy' },
+      { name: '5. Dumbbell Step-Up', detail: '3 × 8–10 reps each leg · rest 60 sec · whole foot on the box, drive through the heel' },
       ...absFinisher('Ab Wheel Rollout (from knees)', '3 × 8–10 reps · roll out only as far as your lower back stays flat · pull back with your abs'),
       ...walk('30–60'),
     ],

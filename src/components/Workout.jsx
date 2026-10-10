@@ -29,7 +29,7 @@ const GRID_DAYS = [
   { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope or Zone 2', color: 'py' },
   { lbl: 'Thu', emoji: '✨', name: 'Glutes B',        focus: 'Kickback · Abduction · Step-Up · Abs', color: 'pr' },
   { lbl: 'Fri', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope or Zone 2', color: 'py' },
-  { lbl: 'Sat', emoji: '🍑', name: 'Glutes C',        focus: 'Squat · Side Squat · Lunge · Abs', color: 'pr' },
+  { lbl: 'Sat', emoji: '🍑', name: 'Glutes C',        focus: 'Squats · Step-Up · Abs', color: 'pr' },
   { lbl: 'Sun', emoji: '🚲', name: 'Bike & Swim',     focus: 'Bike · Swim 5 PM', color: 'py' },
 ];
 
