@@ -11479,3 +11479,156 @@ body {
   .ml-day-when { gap: 6px; }
   .ml-day-time.ml-time-input { padding: 4px 8px; }
 }
+
+/* ── HOME, her layout (2026-10-10) ─────────────────────────────────────────
+   Four buttons at the top (Settings, Home, Meals, Body). Home: the week with
+   dates and today lit up, today's workout as a photo, then today's plan with
+   a progress line. Titles only. One centred column, 560px at most, so it
+   reads the same on a phone and on a desktop. */
+.topbar-sections { margin-top: 0; }
+.topbar-settings-btn .topbar-sec-icon { font-size: 17px; }
+
+.home-week, .home-pic, .home-plan { width: 100%; max-width: 560px; margin-inline: auto; }
+.home-week {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px;
+  margin-top: 14px;
+}
+.home-week-day {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  min-width: 0; min-height: 60px; padding: 8px 0;
+  border-radius: 14px; border: 1px solid var(--border-r);
+  background: var(--card); color: var(--text-soft);
+  font-family: inherit; cursor: pointer; touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-week-lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+.home-week-num { font-size: 17px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.home-week-day.is-today {
+  background: linear-gradient(160deg, #ff7fb0, #e8347a); border-color: transparent; color: #fff;
+  box-shadow: 0 8px 22px rgba(232,52,122,0.35);
+}
+.home-week-day.is-today .home-week-num { color: #fff; }
+.home-week-day:focus-visible, .home-pic:focus-visible, .home-plan-item:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+.home-pic {
+  position: relative; display: block; margin-top: 14px; padding: 0;
+  aspect-ratio: 16 / 10; border: 0; border-radius: 22px; overflow: hidden;
+  background: var(--card); cursor: pointer; text-align: left;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.28);
+}
+.home-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.home-pic-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,4,16,0) 40%, rgba(20,4,16,0.72) 100%); }
+.home-pic-text { position: absolute; left: 20px; right: 20px; bottom: 16px; display: flex; flex-direction: column; gap: 2px; color: #fff; }
+.home-pic-kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.95; }
+.home-pic-name { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 600; line-height: 1.05; text-shadow: 0 2px 12px rgba(0,0,0,0.35); }
+
+.home-plan {
+  margin-top: 14px; margin-bottom: 22px; padding: 18px;
+  border-radius: 20px; border: 1px solid var(--border-r); background: var(--card);
+}
+.home-plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.home-plan-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--text); }
+.home-plan-count { font-size: 13px; font-weight: 600; color: var(--text-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.home-plan-bar { margin-top: 10px; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.home-plan-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ff7fb0, #e8347a); transition: width 0.3s ease; }
+.home-plan-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; }
+.home-plan-list li + li { border-top: 1px solid rgba(255,255,255,0.08); }
+.home-plan-item {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  min-height: 52px; padding: 8px 2px; border: 0; background: none;
+  color: var(--text); font-family: inherit; font-size: 15px; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-plan-ring {
+  flex: none; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--border-r); display: grid; place-items: center;
+}
+.home-plan-item.is-done .home-plan-ring { background: #e8347a; border-color: #e8347a; }
+.home-plan-item.is-done .home-plan-ring::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 800; line-height: 1; }
+.home-plan-name { flex: 1; min-width: 0; }
+.home-plan-icon { flex: none; font-size: 18px; }
+
+[data-mode="light"] .home-plan-bar { background: rgba(200,23,110,0.12); }
+[data-mode="light"] .home-plan-list li + li { border-top-color: rgba(200,23,110,0.12); }
+[data-mode="light"] .home-week-day.is-today { background: linear-gradient(160deg, #d63a7f, #a8105c); }
+[data-mode="light"] .home-plan-item.is-done .home-plan-ring { background: #a8105c; border-color: #a8105c; }
+
+@media (max-width: 360px) {
+  .home-week { gap: 4px; }
+  .home-week-day { min-height: 54px; border-radius: 12px; }
+  .home-week-num { font-size: 15px; }
+  .home-pic-name { font-size: 28px; }
+  .home-plan { padding: 14px; }
+}
+
+/* Settings: light or dark, two big buttons. */
+.set-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.set-mode-btn {
+  min-height: 46px; border-radius: 999px; border: 1px solid var(--border-r);
+  background: transparent; color: var(--text); font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.set-mode-btn.on { background: linear-gradient(135deg, #ff7fb0, #e8347a); border-color: transparent; color: #fff; }
+[data-mode="light"] .set-mode-btn.on { background: linear-gradient(135deg, #d63a7f, #a8105c); }
+
+/* ── Meals: Breakfast · Lunch · Dinner · Snacks (2026-10-10) ──────────────
+   Small pills under the calendar; one opens a panel with the hearted meal's
+   picture, today's nutrition (ring + protein, carbs, fats) and meal ideas. */
+.mt { width: 100%; max-width: 560px; margin: 14px auto 0; }
+.mt-pills { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.mt-pill {
+  min-width: 0; min-height: 40px; padding: 0 6px; border-radius: 999px;
+  border: 1px solid var(--border-r); background: var(--card); color: var(--text-soft);
+  font-family: inherit; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.mt-pill.on { background: linear-gradient(135deg, #ff7fb0, #e8347a); border-color: transparent; color: #fff; }
+[data-mode="light"] .mt-pill.on { background: linear-gradient(135deg, #d63a7f, #a8105c); }
+.mt-pill:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.mt-panel {
+  margin-top: 10px; padding: 14px; display: flex; flex-direction: column; gap: 14px;
+  border-radius: 20px; border: 1px solid var(--border-r); background: var(--card);
+}
+.mt-hero {
+  aspect-ratio: 16 / 9; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: 16px; text-align: center;
+  background: linear-gradient(160deg, rgba(255,127,176,0.16), rgba(232,52,122,0.06));
+  border: 1px dashed var(--border-r);
+}
+.mt-hero-icon { font-size: 34px; line-height: 1; }
+.mt-hero-text { font-size: 15px; font-weight: 700; color: var(--text); }
+.mt-hero-hint { font-size: 13px; color: var(--text-soft); }
+.mt-nutri-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.mt-nutri-body { margin-top: 10px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 18px; }
+.mt-ring { position: relative; width: 124px; height: 124px; }
+.mt-ring svg { width: 100%; height: 100%; }
+.mt-ring-track { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 9; }
+.mt-ring-fill { fill: none; stroke: #ff5c9d; stroke-width: 9; stroke-linecap: round; }
+[data-mode="light"] .mt-ring-track { stroke: rgba(200,23,110,0.14); }
+[data-mode="light"] .mt-ring-fill { stroke: #c8176e; }
+.mt-ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.mt-ring-text b { font-size: 22px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.mt-ring-text small { font-size: 11.5px; color: var(--text-soft); }
+.mt-macros { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.mt-macro { display: grid; grid-template-columns: auto minmax(0, 1fr) auto 3.2em; align-items: center; gap: 8px; font-size: 14px; color: var(--text); }
+.mt-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mt-protein .mt-dot { background: #ff5c9d; }
+.mt-carbs .mt-dot { background: #f0a060; }
+.mt-fat .mt-dot { background: #c9a0ff; }
+.mt-macro b { font-variant-numeric: tabular-nums; font-weight: 700; }
+.mt-macro em { font-style: normal; color: var(--text-soft); text-align: right; font-variant-numeric: tabular-nums; }
+.mt-note, .mt-empty { margin: 8px 0 0; font-size: 13px; color: var(--text-soft); }
+@media (max-width: 380px) {
+  .mt-pill { font-size: 12px; }
+  .mt-nutri-body { grid-template-columns: 1fr; justify-items: center; }
+  .mt-macros { width: 100%; }
+}
+.mt-pill { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 54px; padding: 6px 2px; border-radius: 14px; }
+.mt-pill-icon { font-size: 17px; line-height: 1; }
+.mt-pill-label { line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 360px) { .mt-pill { font-size: 11.5px; } }
+/* Today's day button: deep enough pink for white text in both modes. */
+.home-week-day.is-today { background: linear-gradient(160deg, #d63a7f, #a8105c); }
+/* The Home photo can sit behind the open notebook; the empty line keeps its
+   own dark backing so it stays readable over it. */
+.daily-page-empty { background: rgba(16,5,22,0.92); }
+.mt-pill.on, .set-mode-btn.on { background: linear-gradient(135deg, #d63a7f, #a8105c); }

@@ -184,6 +184,20 @@ function nowTime() {
 // The time of a new meal sits beside the date at the top of the day
 // (2026-10-10), so the day panel holds it and hands it in. Editing a meal
 // keeps its own time box inside the form.
+// Protein, carbs and fat (2026-10-10). A meal's total for one of them is
+// kept only when every food in it has that number — a total missing a food
+// would read as complete and be wrong.
+const MACROS = ['protein', 'carbs', 'fat'];
+function macroTotals(items = []) {
+  const out = {};
+  for (const k of MACROS) {
+    if (items.length && items.every(it => typeof it[k] === 'number')) {
+      out[k] = Math.round(items.reduce((sum, it) => sum + it[k], 0) * 10) / 10;
+    }
+  }
+  return out;
+}
+
 function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayTime }) {
   const [ownTime, setOwnTime] = useState(() => initial?.time || nowTime());
   const time = dayTime ?? ownTime;
@@ -331,17 +345,24 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
   // Fix a portion the scan got wrong: change how many, or the grams, and that
   // line's calories follow (same calories per gram as the scan found). A line
   // with no grams lets her change its calories directly.
+  // Protein, carbs and fat follow the portion the same way the calories do.
+  const scaled = (base, ratio) => Object.fromEntries(MACROS
+    .filter(k => typeof base[k] === 'number')
+    .map(k => [k, Math.round(base[k] * ratio * 10) / 10]));
   function editItem(i, field, raw) {
     setScan(prev => {
       const items = prev.items.map((it, j) => {
         if (j !== i) return it;
-        const base = it.base || { grams: it.grams, kcal: it.kcal, amount: it.amount };
+        const base = it.base || { grams: it.grams, kcal: it.kcal, amount: it.amount, ...Object.fromEntries(MACROS.filter(k => typeof it[k] === 'number').map(k => [k, it[k]])) };
         const perGram = base.grams > 0 ? base.kcal / base.grams : null;
         const v = Number(String(raw).replace(',', '.'));
-        if (field === 'kcal') return { ...it, base, kcalText: raw, kcal: Number.isFinite(v) && v >= 0 ? Math.round(v) : 0 };
+        if (field === 'kcal') {
+          const kcal = Number.isFinite(v) && v >= 0 ? Math.round(v) : 0;
+          return { ...it, base, kcalText: raw, kcal, ...(base.kcal > 0 && scaled(base, kcal / base.kcal)) };
+        }
         if (field === 'grams') {
           const grams = Number.isFinite(v) && v >= 0 ? v : 0;
-          return { ...it, base, gramsText: raw, grams: Math.round(grams), kcal: perGram != null ? Math.round(perGram * grams) : it.kcal };
+          return { ...it, base, gramsText: raw, grams: Math.round(grams), kcal: perGram != null ? Math.round(perGram * grams) : it.kcal, ...(base.grams > 0 && scaled(base, grams / base.grams)) };
         }
         // field === 'count': "3 medium" → "2 medium", grams scaled to match
         const m = String(base.amount || '').match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
@@ -354,6 +375,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
           grams: grams != null ? Math.round(grams) : it.grams,
           gramsText: undefined,
           kcal: grams != null && perGram != null ? Math.round(perGram * grams) : it.kcal,
+          ...(grams != null && base.grams > 0 && scaled(base, grams / base.grams)),
         };
       });
       return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) };
@@ -381,7 +403,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
       remember(words, { items: clean, total: scan.total, ...(scan.missing && { missing: scan.missing }) });
       rememberFoods(clean);
     }
-    onSubmit({ time: time || nowTime(), text: words || describeItems(scan.items), cal: scan.total });
+    onSubmit({ time: time || nowTime(), text: words || describeItems(scan.items), cal: scan.total, ...macroTotals(scan.items) });
     setScan(null); setPhoto(null); setText(''); setTime(nowTime());
   }
 
@@ -1030,6 +1052,101 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
   );
 }
 
+// ─── Breakfast · Lunch · Dinner · Snacks (her layout, 2026-10-10) ─────────
+// Small pills under the calendar. Clicking one opens it: the meal she hearted
+// for it (a picture), today's nutrition, then meal ideas. She is sending the
+// meal ideas with their pictures later, so until then the picture and the
+// ideas say so plainly — nothing is made up to fill them.
+const MEAL_TIMES = [
+  { id: 'breakfast', label: 'Breakfast', icon: '🍳' },
+  { id: 'lunch',     label: 'Lunch',     icon: '🥗' },
+  { id: 'dinner',    label: 'Dinner',    icon: '🍲' },
+  { id: 'snacks',    label: 'Snacks',    icon: '🍓' },
+];
+
+function TodayNutrition({ entries, goal }) {
+  const { total } = calTotals(entries);
+  const sums = Object.fromEntries(MACROS.map(k => [k, entries.reduce((s, e) => s + (typeof e[k] === 'number' ? e[k] : 0), 0)]));
+  const withMacros = entries.filter(e => MACROS.every(k => typeof e[k] === 'number')).length;
+  const kcalFrom = { protein: sums.protein * 4, carbs: sums.carbs * 4, fat: sums.fat * 9 };
+  const macroKcal = kcalFrom.protein + kcalFrom.carbs + kcalFrom.fat;
+  const pct = k => (macroKcal > 0 ? Math.round((kcalFrom[k] / macroKcal) * 100) : null);
+  const ring = goal ? Math.min(1, total / goal) : 0;
+  const R = 44, C = 2 * Math.PI * R;
+  return (
+    <div className="mt-nutri">
+      <div className="mt-nutri-title">Today&rsquo;s nutrition</div>
+      <div className="mt-nutri-body">
+        <div className="mt-ring" role="img" aria-label={`${total.toLocaleString()} calories eaten${goal ? ` of ${goal.toLocaleString()}` : ''}`}>
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r={R} className="mt-ring-track" />
+            {goal && <circle cx="50" cy="50" r={R} className="mt-ring-fill" strokeDasharray={`${C * ring} ${C}`} transform="rotate(-90 50 50)" />}
+          </svg>
+          <span className="mt-ring-text">
+            <b>{total.toLocaleString()}</b>
+            <small>{goal ? `of ${goal.toLocaleString()} cal` : 'cal'}</small>
+          </span>
+        </div>
+        <ul className="mt-macros">
+          {[['protein', 'Protein'], ['carbs', 'Carbs'], ['fat', 'Fats']].map(([k, label]) => (
+            <li key={k} className={`mt-macro mt-${k}`}>
+              <span className="mt-dot" aria-hidden="true" />
+              <span className="mt-macro-name">{label}</span>
+              <b>{withMacros ? `${Math.round(sums[k])} g` : '—'}</b>
+              <em>{withMacros && pct(k) != null ? `${pct(k)}%` : ''}</em>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {entries.length > 0 && withMacros < entries.length && (
+        <p className="mt-note">
+          {withMacros === 0
+            ? 'Protein, carbs and fats show for meals saved from now on.'
+            : `Protein, carbs and fats from ${withMacros} of ${entries.length} meals.`}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function MealTimes({ entries, goal }) {
+  const [open, setOpen] = useState(null);
+  const time = MEAL_TIMES.find(t => t.id === open);
+  return (
+    <section className="mt splash-item" aria-label="Meals of the day">
+      <div className="mt-pills" role="tablist" aria-label="Meal">
+        {MEAL_TIMES.map(t => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={open === t.id}
+            className={`mt-pill${open === t.id ? ' on' : ''}`}
+            onClick={() => setOpen(o => (o === t.id ? null : t.id))}
+          >
+            <span className="mt-pill-icon" aria-hidden="true">{t.icon}</span>
+            <span className="mt-pill-label">{t.label}</span>
+          </button>
+        ))}
+      </div>
+      {time && (
+        <div className="mt-panel" role="tabpanel" aria-label={time.label}>
+          <div className="mt-hero">
+            <span className="mt-hero-icon" aria-hidden="true">{time.icon}</span>
+            <span className="mt-hero-text">No {time.label.toLowerCase()} picked yet</span>
+            <span className="mt-hero-hint">Heart a meal idea and its picture shows here.</span>
+          </div>
+          <TodayNutrition entries={entries} goal={goal} />
+          <div className="mt-ideas">
+            <div className="mt-nutri-title">Meal ideas</div>
+            <p className="mt-empty">Your {time.label.toLowerCase()} ideas will show here.</p>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function Meal() {
   const [state, setState] = useState(loadLog);
   const [garmin, setGarmin] = useState(loadGarmin);
@@ -1278,6 +1395,11 @@ export default function Meal() {
       <div className="ml-legend ml-legend-simple splash-item">
         <span className="ml-legend-item ml-legend-fact"><span className="ml-kilo-swatch" aria-hidden="true" />Lose 1 kg = 7,700 cal</span>
       </div>
+
+      <MealTimes
+        entries={days[dateKeyOf()] || []}
+        goal={goalForWeek(state, weekStartKey(today.y, today.m, today.d)) ?? planGoal()}
+      />
 
       {openDay && (
         <DayPanel

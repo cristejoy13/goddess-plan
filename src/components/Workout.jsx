@@ -1,16 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { usePlanDays } from '../utils/userPlan';
-import { MEAL_SLOTS, RECOMMENDED_MEALS, mealSlots, slotMeals, suggestMeals, proteinTotal, calorieTotal, PROTEIN_TARGET, CALORIE_TARGET } from '../data/workouts';
-import IngredientDetailPage from './IngredientDetailPage';
 import LiftTracker from './LiftTracker';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { numberOf, dayKey } from '../utils/workoutLog';
 import { loadCardio, saveCardio, setMinutes, cardioStats, dateFor, CARDIO_CHANGED } from '../utils/cardioLog';
 import { loadLifts, isTrackable } from '../utils/lifts';
-import {
-  dateKeyOf, loadLog, saveLog, addPlannedMeal, removePlannedMeal,
-} from '../utils/mealLog';
-import { DailyClock, RecipesPanel, FoodGuide } from './Nutrition';
 
 const DAY_IDS = [
   'day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday',
@@ -20,18 +14,6 @@ const DAY_IDS = [
 // JavaScript numbers Sunday as 0, so Monday-first is a shift of one.
 const jsDay      = new Date().getDay();
 const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
-
-// The week at a glance. The evening walk is on every day, so it is said once,
-// under the grid, rather than seven times in the focus lines.
-const GRID_DAYS = [
-  { lbl: 'Mon', emoji: '🍑', name: 'Glutes A',        focus: 'Hip Thrust · RDL · Bulgarian · Abs', color: 'pr' },
-  { lbl: 'Tue', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope or Zone 2', color: 'py' },
-  { lbl: 'Wed', emoji: '💪', name: 'Upper & Core',    focus: 'Izzy · Rope or Zone 2', color: 'py' },
-  { lbl: 'Thu', emoji: '✨', name: 'Glutes B',        focus: 'Kickback · Abduction · Step-Up · Abs', color: 'pr' },
-  { lbl: 'Fri', emoji: '🧘', name: 'Pilates or Yoga', focus: 'Jessica or Nicole · Rope or Zone 2', color: 'py' },
-  { lbl: 'Sat', emoji: '🍑', name: 'Glutes C',        focus: 'Squats · Step-Up · Abs', color: 'pr' },
-  { lbl: 'Sun', emoji: '🚲', name: 'Bike & Swim',     focus: 'Bike · Swim 5 PM', color: 'py' },
-];
 
 // A day's exercise array is flat: heading, its exercises, the next heading, and
 // so on. The page shows it as a stack of collapsed pills instead, so the whole
@@ -66,255 +48,6 @@ function SectionTitle({ children }) {
 function NoteBox({ type, text }) {
   return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
 }
-
-// Per-day meal selection — the meals you'll eat today, saved locally per day.
-function readDayMeals(key) {
-  try {
-    const raw = JSON.parse(localStorage.getItem(key) || '[]');
-    // Legacy entries were objects {name,...}; keep only recognisable meal names.
-    return Array.isArray(raw)
-      ? raw.map(x => (typeof x === 'string' ? x : x?.name)).filter(Boolean)
-      : [];
-  } catch { return []; }
-}
-
-function useDayMeals(dayId) {
-  const key = `gp_meal_${dayId}`;
-  const [items, setItems] = useState(() => readDayMeals(key));
-  // Picks made on another gadget arrive here without closing the day.
-  useEffect(() => {
-    const refresh = () => setItems(readDayMeals(key));
-    window.addEventListener('gp-remote-sync', refresh);
-    return () => window.removeEventListener('gp-remote-sync', refresh);
-  }, [key]);
-  const save = useCallback((next) => {
-    setItems(next);
-    try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
-  }, [key]);
-  return [items, save];
-}
-
-// The meal plan reads as a clock, and it is the same clock every day: black
-// coffee until noon, apple and yogurt at 12, the real plate at 5 (chicken on
-// butt days, eggs on the rest), and then the window shuts. Each time opens with a short list of
-// picks rotated by the day of the week, and "more choices" reveals the rest of
-// the slot if none of them appeal. Tap a meal for the ingredients, the
-// step-by-step method, and to add it to today.
-// Choosing a meal here files it in the Meal record too — its time, its name
-// and its calories — so the same meal is never typed twice.
-//
-// It is filed ONLY when the day being looked at is today. Writing a meal into
-// last Monday because its plan was opened on a Friday would be a claim she
-// never made, and writing one into next Friday would be a prediction dressed as
-// a record. Either would break the one promise this record makes: that
-// everything in it is true. On any other day the plan still works exactly as
-// before, and the day simply says so.
-function MealBuilder({ dayId, dayIndex }) {
-  const [chosen, saveChosen] = useDayMeals(dayId);
-  const isToday = dayIndex === todayIndex;
-  const slotTime = (m) => MEAL_SLOTS.find(sl => sl.id === m.slot)?.t24 || '12:00';
-  const [openSlot, setOpenSlot] = useState(null);
-  const [showAll, setShowAll]   = useState({});
-  const [detail, setDetail]     = useState(null);
-  const slots = mealSlots(dayIndex);
-  const pro   = proteinTotal(chosen);
-  const cal   = calorieTotal(chosen);
-  // Protein is a floor to get above; calories are a ceiling to stay under.
-  const hitTarget  = pro >= PROTEIN_TARGET;
-  const overBudget = cal > CALORIE_TARGET;
-
-  function toggleChosen(name) {
-    const removing = chosen.includes(name);
-    saveChosen(removing ? chosen.filter(n => n !== name) : [...chosen, name]);
-    if (!isToday) return;
-    const meal = RECOMMENDED_MEALS.find(m => m.name === name);
-    if (!meal) return;
-    // Read the log fresh rather than holding it in state: this screen is not
-    // the one that owns it, and it may have been written to on the Meal page
-    // or by a sync since this page was opened.
-    const key = dateKeyOf();
-    const log = loadLog();
-    const next = removing
-      ? removePlannedMeal(log, key, name)
-      : addPlannedMeal(log, key, { name, time: slotTime(meal), cal: meal.cal });
-    if (next !== log) saveLog(next);
-  }
-
-  function clearChosen() {
-    if (isToday && chosen.length) {
-      const key = dateKeyOf();
-      let log = loadLog();
-      const before = log;
-      chosen.forEach(name => { log = removePlannedMeal(log, key, name); });
-      if (log !== before) saveLog(log);
-    }
-    saveChosen([]);
-  }
-
-  function Pill({ m }) {
-    const isChosen = chosen.includes(m.name);
-    return (
-      <button className={`meal-pill${isChosen ? ' chosen' : ''}`} onClick={() => setDetail(m)}>
-        <span className="meal-pill-em">{m.emoji}</span>
-        <span className="meal-pill-name">{m.name}</span>
-        <span className="meal-pill-pro">{m.pro}g protein</span>
-        <span className="meal-pill-cal">{m.cal}</span>
-        {isChosen && <span className="meal-pill-check">✓</span>}
-      </button>
-    );
-  }
-
-  return (
-    <div className="meal-builder">
-      <SectionTitle>Meals</SectionTitle>
-
-      <div className="two-meters">
-        <div className={`protein-meter${hitTarget ? ' hit' : ''}`}>
-          <div className="protein-meter-top">
-            <span className="protein-meter-lbl">💪 Protein — the floor</span>
-            <span className="protein-meter-num">{pro} g <em>/ {PROTEIN_TARGET} g</em></span>
-          </div>
-          <div className="protein-meter-bar">
-            <div className="protein-meter-fill" style={{ width: `${Math.min(100, (pro / PROTEIN_TARGET) * 100)}%` }} />
-          </div>
-          <div className="protein-meter-note">
-            {chosen.length === 0
-              ? 'Pick meals below. Aim above 50 g.'
-              : hitTarget
-                ? 'Above the floor. Good.'
-                : `${PROTEIN_TARGET - pro} g short. Add an egg, or swap plain yogurt for Greek.`}
-          </div>
-        </div>
-
-        <div className={`protein-meter calorie-meter${overBudget ? ' over' : ''}`}>
-          <div className="protein-meter-top">
-            <span className="protein-meter-lbl">🔥 Calories — the ceiling</span>
-            <span className="protein-meter-num">{cal} <em>/ {CALORIE_TARGET}</em></span>
-          </div>
-          <div className="protein-meter-bar">
-            <div className="protein-meter-fill" style={{ width: `${Math.min(100, (cal / CALORIE_TARGET) * 100)}%` }} />
-          </div>
-          <div className="protein-meter-note">
-            {chosen.length === 0
-              ? 'Stay under 1,000. Save most for 5 PM.'
-              : overBudget
-                ? `${cal - CALORIE_TARGET} over. Okay on lifting days.`
-                : `${CALORIE_TARGET - cal} left.`}
-          </div>
-        </div>
-      </div>
-
-      <div className="meal-times">
-        {slots.map(slot => {
-          const all       = slotMeals(slot.id);
-          const suggested = suggestMeals(slot.id, dayIndex);
-          const rest      = all.filter(m => !suggested.includes(m));
-          const picked    = all.filter(m => chosen.includes(m.name));
-          const isOpen    = openSlot === slot.id;
-          const expanded  = !!showAll[slot.id];
-          return (
-            <div key={slot.id} className={`meal-time${isOpen ? ' open' : ''}`}>
-              <button
-                className="meal-time-head"
-                onClick={() => setOpenSlot(isOpen ? null : slot.id)}
-                aria-expanded={isOpen}
-              >
-                <span className="meal-time-em">{slot.emoji}</span>
-                <span className="meal-time-meta">
-                  <span className="meal-time-clock">{slot.time}</span>
-                  <span className="meal-time-label">{slot.label}</span>
-                  <span className="meal-time-hint">
-                    {picked.length ? `✓ ${picked.map(m => m.name).join(' · ')}` : slot.hint}
-                  </span>
-                </span>
-                <span className="meal-time-count">{all.length}</span>
-                <span className="meal-time-caret">{isOpen ? '▲' : '▼'}</span>
-              </button>
-
-              {isOpen && (
-                <div className="meal-time-body">
-                  <div className="meal-sug-label">
-                    {slot.id === 'post' ? '🥬 Kimchi, cucumber and a banana alongside — pick your protein' : '✨ Today’s picks'}
-                  </div>
-                  <div className="meal-pills">
-                    {suggested.map(m => <Pill key={m.name} m={m} />)}
-                  </div>
-
-                  {rest.length > 0 && (expanded ? (
-                    <>
-                      <div className="meal-sug-label">🍽️ All other choices</div>
-                      <div className="meal-pills">
-                        {rest.map(m => <Pill key={m.name} m={m} />)}
-                      </div>
-                      <button
-                        className="meal-more-btn"
-                        onClick={() => setShowAll(v => ({ ...v, [slot.id]: false }))}
-                      >Show fewer</button>
-                    </>
-                  ) : (
-                    <button
-                      className="meal-more-btn"
-                      onClick={() => setShowAll(v => ({ ...v, [slot.id]: true }))}
-                    >Don’t like these? {rest.length} more choices ▾</button>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {chosen.length > 0 && (
-        <div className="meal-chosen-summary">
-          <span className="meal-chosen-text">🍽️ Today: {chosen.join(' · ')} — <strong>{pro} g protein · {cal} cal</strong></span>
-          <button className="meal-chosen-clear" onClick={() => clearChosen()}>Clear</button>
-        </div>
-      )}
-
-      <div className="meal-auto-note">
-        {isToday
-          ? '📓 Added meals go into today’s Meal record. Remove them here to remove them there.'
-          : '📓 Not today, so nothing is saved to Meal. Open today to file choices.'}
-      </div>
-
-      {detail && (
-        <div className="ingr-menu-backdrop" onClick={() => setDetail(null)}>
-          <div className="meal-detail-sheet" onClick={e => e.stopPropagation()}>
-            <div className="meal-detail-top">
-              <span className="meal-detail-em">{detail.emoji}</span>
-              <div className="meal-detail-meta">
-                <div className="meal-detail-name">{detail.name}</div>
-                <div className="meal-detail-cal">
-                  <strong>{detail.pro} g protein</strong> · ~{detail.cal} cal · {MEAL_SLOTS.find(sl => sl.id === detail.slot)?.time}
-                </div>
-              </div>
-            </div>
-            <div className="meal-detail-sec">
-              <div className="meal-detail-lbl">🥗 Ingredients</div>
-              <div>{detail.ingredients}</div>
-            </div>
-            <div className="meal-detail-sec">
-              <div className="meal-detail-lbl">🍳 How to make it</div>
-              <ol className="meal-detail-steps">
-                {(Array.isArray(detail.steps) ? detail.steps : [detail.steps]).map((st, i) => (
-                  <li key={i}>{st}</li>
-                ))}
-              </ol>
-            </div>
-            <button
-              className={`meal-detail-add${chosen.includes(detail.name) ? ' added' : ''}`}
-              onClick={() => toggleChosen(detail.name)}
-            >
-              {chosen.includes(detail.name) ? '✓ Added to today — tap to remove' : '＋ Add to today'}
-            </button>
-            <button className="ingr-menu-cancel" onClick={() => setDetail(null)}>Close</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 
 // The whole session is one workout, so the day page has one button for it,
 // at the top where she sees it first. Only on today.
@@ -415,7 +148,7 @@ function CardioNote({ kind, dayIndex, compact }) {
   );
 }
 
-function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, userId, owner = true }) {
+function DayDetailPage({ day, dayIndex, isToday, onBack }) {
   // The whole lift log for every exercise, held once for the page so each row
   // does not re-read localStorage on every render.
   const [lifts, setLifts] = useState(loadLifts);
@@ -443,7 +176,7 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
 
   return (
     <div className="day-detail-page">
-      <button className="day-detail-back" onClick={onBack}>← Back to Week</button>
+      <button className="day-detail-back" onClick={onBack}>← Home</button>
 
       <div className="day-detail-header">
         <span className="day-detail-emoji" style={{ background: day.emojiBg }}>{day.emoji}</span>
@@ -525,228 +258,26 @@ function DayDetailPage({ day, id, dayIndex, isToday, onIngredientClick, onBack, 
           );
         })}
       </div>
-      {/* Her meal plan; people who signed up get theirs later. */}
-      {owner && <MealBuilder dayId={id} dayIndex={dayIndex} />}
     </div>
   );
 }
 
-function WorkoutNutritionPage({ onBack, pushBack, clearInnerBack }) {
-  const [tab, setTab] = useState('recipes');
-  const [selectedIngredient, setSelectedIngredient] = useState(null);
-
-  function openIngredient(item) {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    setSelectedIngredient(item);
-    pushBack?.(() => { setSelectedIngredient(null); clearInnerBack?.(); });
-  }
-  function closeIngredient() { clearInnerBack?.(); setSelectedIngredient(null); }
-
-  if (selectedIngredient) {
-    return (
-      <IngredientDetailPage
-        ingredientKey={selectedIngredient.key}
-        ingredientName={selectedIngredient.name}
-        backLabel="Nutrition & Recipes"
-        onBack={closeIngredient}
-        pushBack={pushBack}
-      />
-    );
-  }
-
+// Workouts open from Home (2026-10-10): a day in the week strip or today's
+// picture opens that day's full workout straight away. There is no week
+// screen any more; back goes Home.
+export default function Workout({ openDayId, onNavigate }) {
+  const { days: planDays } = usePlanDays();
+  const picked = DAY_IDS.indexOf(openDayId);
+  const idx = picked >= 0 ? picked : todayIndex;
+  const day = planDays[idx];
   return (
     <div className="section">
-      <button className="day-detail-back" onClick={onBack}>← Back to Workouts</button>
-      <div className="s-header">
-        <div className="s-tag">Food, Meals &amp; Recipes</div>
-        <h2 className="s-title">Nutrition <em>&amp;</em> Meals</h2>
-        <p className="s-desc">Your daily eating clock, recipes, and food guide.</p>
-      </div>
-      <div className="sk-top-tabs splash-item">
-        <button className={`sk-top-tab${tab === 'daily'   ? ' active' : ''}`} onClick={() => setTab('daily')}>🍽️ Daily Clock</button>
-        <button className={`sk-top-tab${tab === 'recipes' ? ' active' : ''}`} onClick={() => setTab('recipes')}>🥘 Recipes</button>
-        <button className={`sk-top-tab${tab === 'guide'   ? ' active' : ''}`} onClick={() => setTab('guide')}>📊 Food Guide</button>
-      </div>
-      {tab === 'daily'   && <DailyClock />}
-      {tab === 'recipes' && <RecipesPanel onSelectRecipe={openIngredient} />}
-      {tab === 'guide'   && <FoodGuide />}
-    </div>
-  );
-}
-
-export default function Workout({ openDayId, onNavigate, pushBack, clearInnerBack, user }) {
-  const [selectedIngredient, setSelectedIngredient] = useState(null);
-  const [selectedDayIdx, setSelectedDayIdx]         = useState(null);
-  const [showNutrPanel, setShowNutrPanel]           = useState(false);
-  // Closed by default: this screen should be a week you look at, not read.
-  const [showWhy, setShowWhy]                       = useState(false);
-  const userId        = user?.uid || null;
-  const { days: planDays, owner } = usePlanDays();
-  const todayDay = planDays[todayIndex];
-  // Her grid is hand-written; someone who signed up gets theirs from the plan.
-  const gridDays = owner ? GRID_DAYS : planDays.map((d, i) => ({
-    lbl: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
-    emoji: d.emoji,
-    name: d.day.split(' · ')[1] || d.title,
-    focus: d.title,
-    color: /Glutes/.test(d.day) ? 'pr' : 'py',
-  }));
-
-  useEffect(() => {
-    if (openDayId) {
-      const idx = DAY_IDS.indexOf(openDayId);
-      if (idx >= 0) setSelectedDayIdx(idx);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function openDay(idx) {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    setSelectedDayIdx(idx);
-    pushBack?.(() => {
-      setSelectedDayIdx(null);
-      clearInnerBack?.();
-    });
-  }
-
-  function closeDay() {
-    clearInnerBack?.();
-    setSelectedDayIdx(null);
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }
-
-  function selectIngredient(ingr) {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    clearInnerBack?.();
-    setSelectedIngredient(ingr);
-    pushBack?.(() => {
-      setSelectedIngredient(null);
-      clearInnerBack?.();
-    });
-  }
-
-  function closeIngredient() {
-    clearInnerBack?.();
-    setSelectedIngredient(null);
-  }
-
-  if (showNutrPanel) {
-    return (
-      <WorkoutNutritionPage
-        onBack={() => { setShowNutrPanel(false); clearInnerBack?.(); }}
-        pushBack={pushBack}
-        clearInnerBack={clearInnerBack}
+      <DayDetailPage
+        day={day}
+        dayIndex={idx}
+        isToday={idx === todayIndex}
+        onBack={() => onNavigate('home')}
       />
-    );
-  }
-
-  if (selectedIngredient) {
-    return (
-      <IngredientDetailPage
-        ingredientKey={selectedIngredient.key}
-        ingredientName={selectedIngredient.name}
-        backLabel="Meals"
-        onBack={closeIngredient}
-        pushBack={pushBack}
-      />
-    );
-  }
-
-  if (selectedDayIdx !== null) {
-    const day   = planDays[selectedDayIdx];
-    return (
-      <div className="section">
-        <DayDetailPage
-          day={day}
-          id={DAY_IDS[selectedDayIdx]}
-          dayIndex={selectedDayIdx}
-          isToday={selectedDayIdx === todayIndex}
-          onIngredientClick={selectIngredient}
-          onBack={closeDay}
-          userId={userId}
-          owner={owner}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className="section">
-      <div className="s-header">
-        <div className="s-tag">Weekly Structure</div>
-        <h2 className="s-title">{owner ? <>Movement <em>&amp;</em> Meals</> : <>Your <em>week</em></>}</h2>
-        <p className="s-desc">{owner ? 'Tap a day to open its full workout and meal plan.' : 'Tap a day to open its workout.'}</p>
-      </div>
-
-
-      <div className="today-banner splash-item">
-        <span className="today-badge">Today</span>
-        <span className="today-banner-text">{todayDay.emoji} {todayDay.day} — {todayDay.title}</span>
-      </div>
-
-      <div className="week-grid week-grid-nav splash-item">
-        {gridDays.map((d, i) => (
-          <button
-            key={d.lbl}
-            className={`wg-day wg-day-btn${i === todayIndex ? ' wg-today' : ''}`}
-            onClick={() => openDay(i)}
-          >
-            <div className={`wg-dot wg-dot-${d.color}`} />
-            <div className="wg-emoji">{d.emoji}</div>
-            <div className="wg-lbl">{d.lbl}</div>
-            <div className="wg-name">{d.name}</div>
-            <div className="wg-focus">{d.focus}</div>
-            <div className="wg-tap-hint">Tap →</div>
-          </button>
-        ))}
-      </div>
-
-      {/* The two things every day has in common, said once here instead of
-          seven times in the focus lines above. */}
-      <div className="wg-every-day splash-item">
-        <span>🚶 Every day: an easy walk.</span>
-        {owner && <span>🪢 Jump rope or Zone 2 after Tue · Wed · Fri.</span>}
-      </div>
-
-      {/* The five explainers used to sit open on this screen, which is the first
-          thing she sees. She asked for fewer words and more to look at, so they
-          fold into one pill she can open when she actually wants the reasoning. */}
-      {owner && <>
-      <button
-        className="why-pill splash-item"
-        onClick={() => setShowWhy(v => !v)}
-        aria-expanded={showWhy}
-      >
-        <span>📖 Why this plan works</span>
-        <span className="why-pill-caret">{showWhy ? '▲' : '▼'}</span>
-      </button>
-
-      {showWhy && (
-        <>
-          <div className="g-card splash-item why-card">
-            <strong>Your week:</strong> glutes Mon · Thu · Sat, each ending with one abs move; Pilates or yoga Tue · Fri and upper body &amp; core Wed, each followed by jump rope or Zone 2; bike then swim at 5 PM Sun. An easy walk every day.
-          </div>
-          <div className="g-card splash-item why-card">
-            <strong>Getting stronger:</strong> same lifts, never more. Form first, then a rep a week (8 → 9 → 10 → 11–12). At the top of the range, add a little weight and go back to 8.
-          </div>
-          <div className="g-card splash-item why-card">
-            <strong>Cardio:</strong> go longer, not harder. Zone 2 stays easy. Jump rope or Zone 2 only on the video days, never on a glute day.
-          </div>
-          <div className="g-card splash-item why-card">
-            <strong>Tired or sore?</strong> 1. Less jump rope. 2. Shorter walks. 3. Gentler video days. Keep Monday, Thursday and Saturday.
-          </div>
-        </>
-      )}
-
-      <div className="workout-nutrition-row splash-item">
-        <button className="workout-nutrition-pill" onClick={() => {
-          window.scrollTo({ top: 0, behavior: 'instant' });
-          setShowNutrPanel(true);
-          pushBack?.(() => { setShowNutrPanel(false); clearInnerBack?.(); });
-        }}>
-          🥗 Nutrition &amp; Meals →
-        </button>
-      </div>
-      </>}
     </div>
   );
 }

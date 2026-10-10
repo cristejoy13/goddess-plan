@@ -9,25 +9,34 @@ import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from 
 import { ask } from '../utils/ask';
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 
-const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 const jsDay    = new Date().getDay();
 const dayIndex = jsDay === 0 ? 6 : jsDay - 1;
 
-function todayLabel() {
-  const d = new Date();
-  return `${DAYS_LONG[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+const DAY_IDS = ['day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday', 'day-friday', 'day-saturday', 'day-sunday'];
+const SHORT_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+// This week, Monday to Sunday, with each day's date.
+function thisWeek() {
+  const now = new Date();
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dayIndex);
+  return SHORT_DAYS.map((label, i) => {
+    const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+    return { label, date: d.getDate(), dayId: DAY_IDS[i], isToday: i === dayIndex };
+  });
 }
 
-// The day pills under the title take their picture from the plan itself, so
-// changing a day in src/data/workouts.js changes its pill too.
-// Her plan, or the plan built for someone who signed up (see userPlan.js).
-const weekPills = (days) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label, i) => ({
-  label,
-  emoji: days[i].emoji,
-  dayId: ['day-monday', 'day-tuesday', 'day-wednesday', 'day-thursday', 'day-friday', 'day-saturday', 'day-sunday'][i],
-}));
+// One photo for each kind of day (free photos from Unsplash, 2026-10-10;
+// any of them can be swapped for her own later). Upper body is checked
+// before Pilates because Wednesday's Izzy video is called "Pilates by Izzy".
+function pictureFor(day) {
+  const t = `${day.day} ${day.title}`;
+  if (/Glutes/i.test(t)) return '/workouts/glutes.jpg';
+  if (/Upper|Abs & Core/i.test(t)) return '/workouts/upper.jpg';
+  if (/Bike|Swim/i.test(t)) return '/workouts/bike.jpg';
+  if (/Pilates|Yoga/i.test(t)) return '/workouts/pilates.jpg';
+  return '/workouts/walk.jpg';
+}
 
 const RULE_BOARDS = [
   {
@@ -1574,15 +1583,61 @@ function loadChecksCarryingWorkout(today) {
   return next;
 }
 
-function TodayDashboard({ today, todayDayId, onNavigate, owner = true }) {
+// ─── HOME (her layout, 2026-10-10) ──────────────────────────────────────
+// The week, today's workout as a picture, then today's plan — titles only.
+// Workouts live here now; there is no separate Workouts button.
+
+function WeekStrip({ onOpen }) {
+  return (
+    <div className="home-week splash-item" role="list" aria-label="This week">
+      {thisWeek().map(d => (
+        <button
+          key={d.dayId}
+          type="button"
+          role="listitem"
+          className={`home-week-day${d.isToday ? ' is-today' : ''}`}
+          onClick={() => onOpen(d.dayId)}
+          aria-label={`${d.label} ${d.date}${d.isToday ? ', today' : ''} — open the workout`}
+          aria-current={d.isToday ? 'date' : undefined}
+        >
+          <span className="home-week-lbl">{d.label}</span>
+          <span className="home-week-num">{d.date}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function TodayPicture({ today, onOpen }) {
+  const name = today.day?.split(' · ')[1] || today.title;
+  return (
+    <button type="button" className="home-pic splash-item" onClick={onOpen} aria-label={`Today: ${name} — open the workout`}>
+      <img src={pictureFor(today)} alt="" loading="eager" />
+      <span className="home-pic-shade" aria-hidden="true" />
+      <span className="home-pic-text">
+        <span className="home-pic-kicker">Today</span>
+        <span className="home-pic-name">{name}</span>
+      </span>
+    </button>
+  );
+}
+
+const PLAN_ITEMS = [
+  { id: 'journal',   title: 'Morning journal',      icon: '📓' },
+  { id: 'workout',   title: 'Workout right away',   icon: '💪' },
+  { id: 'breakfast', title: 'Breakfast',            icon: '🍳' },
+  { id: 'deepwork',  title: 'Deep work',            icon: '💻' },
+  { id: 'water',     title: 'Drink 2 L water',      icon: '💧' },
+  { id: 'winddown',  title: 'Wind down after 5 PM', icon: '🌙' },
+];
+
+function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   // The workout tick is the 1,000-workout record, not a daily check that is
-  // forgotten at midnight. The walk stays an ordinary check: it never counts.
+  // forgotten at midnight.
   const { stats: workoutStats } = useWorkouts();
 
-
-  // Refresh from storage when another gadget ticks something off, instead of
-  // relying on the whole screen being rebuilt.
+  // Refresh when another gadget ticks something off.
   useEffect(() => {
     const onRemote = () => setChecked(loadChecks());
     window.addEventListener('gp-remote-sync', onRemote);
@@ -1605,87 +1660,36 @@ function TodayDashboard({ today, todayDayId, onNavigate, owner = true }) {
     });
   }
 
-  // Two meals a day, the same two every day — but the icons still ride on the
-  // row itself rather than a fixed list, so the timeline cannot drift out of
-  // step with the plan.
-  const mealRows = today.meals.rows.map((row, i) => {
-    const [time, name] = row.time.split(' — ');
-    return {
-      id: `meal-${i}`,
-      icon: row.icon || '🍽️',
-      time,
-      title: name || 'Meal',
-      note: row.ingredients.slice(0, 3).map(item => item.name).join(' · '),
-    };
-  });
-
-  // Ordered morning → night: start with the morning routine, then the workout,
-  // then daytime meals + walk, then the evening shower and night routine.
-  const allRows = [
-    { id: 'sec-morning', divider: true, label: '☀️ Morning' },
-    { id: 'am-skin', icon: '☀️', title: 'Morning routine · AM skincare', note: 'Cleanse · Vitamin C · SPF', nav: ['skincare', 'am'] },
-    // Nothing comes before the main workout any more — the warm-up is part of
-    // the session itself, and the running moved to the weekend. `cardioBefore`
-    // stays supported so a future day can put something ahead of the workout.
-    ...(today.cardioBefore
-      ? [{ id: 'cardio-pre', icon: today.cardioBefore.icon, title: today.cardioBefore.title, note: today.cardioBefore.note }]
-      : []),
-    { id: 'workout', icon: today.emoji, title: today.title, note: today.sub, nav: ['workout', null, todayDayId] },
-    { id: 'cardio', icon: today.cardio?.icon || '🚶', title: today.cardio?.title || 'Easy evening walk', note: today.cardio?.note },
-    { id: 'sec-day', divider: true, label: `🌤️ Meals · ${today.meals.clock}` },
-    ...mealRows,
-    { id: 'sec-night', divider: true, label: '🌙 Night' },
-    { id: 'body', icon: '🫧', title: 'Shower & body care', note: 'Shower · Moisturise · SPF', nav: ['skincare', 'body'] },
-    { id: 'hair', icon: '💎', title: 'Hair care', note: 'Oil ritual · Scalp massage', nav: ['skincare', 'hair'] },
-    { id: 'pm-skin', icon: '🌙', title: 'Night routine · PM skincare', note: 'Double cleanse · Treatment · Repair', nav: ['skincare', 'pm'] },
-  ];
-  // Someone who signed up: their workout and walk only — no skincare (Body is
-  // hers) and no meal times (their meal plan comes later).
-  const rows = owner
-    ? allRows
-    : allRows.filter(r => !['am-skin', 'body', 'hair', 'pm-skin', 'sec-morning', 'sec-night', 'sec-day'].includes(r.id) && !String(r.id).startsWith('meal-'));
-
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
-  const taskRows = rows.filter(r => !r.divider);
-  const done = taskRows.filter(r => isChecked(r.id)).length;
+  const done = PLAN_ITEMS.filter(it => isChecked(it.id)).length;
+  const pct = Math.round((done / PLAN_ITEMS.length) * 100);
 
   return (
-    <div className="today-dashboard splash-item">
-      <div className="today-dashboard-top">
-        <div>
-          <div className="daily-plan-label">Today's Plan</div>
-          <div className="today-dashboard-date">
-            {today.day} <span className="today-progress">{done}/{taskRows.length} ✨</span>
-          </div>
-        </div>
-        <button className="today-open-btn" onClick={() => onNavigate('workout', null, todayDayId)}>Open day</button>
+    <section className="home-plan splash-item" aria-label="Today's plan">
+      <div className="home-plan-head">
+        <h2 className="home-plan-title">Today&rsquo;s Plan</h2>
+        <span className="home-plan-count">{done} of {PLAN_ITEMS.length} · {pct}%</span>
       </div>
-
-      <div className="today-timeline">
-        {rows.map(r => (
-          r.divider ? (
-            <div key={r.id} className="tl-section">{r.label}</div>
-          ) : (
-          <div key={r.id} className={`tl-row${isChecked(r.id) ? ' is-done' : ''}`}>
-            <button className="tl-check" aria-label={`Mark ${r.title} done`} onClick={() => toggle(r.id)}>
-              <span className="tl-ring" />
+      <div className="home-plan-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Done today">
+        <span style={{ width: `${pct}%` }} />
+      </div>
+      <ul className="home-plan-list">
+        {PLAN_ITEMS.map(it => (
+          <li key={it.id}>
+            <button
+              type="button"
+              className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
+              onClick={() => toggle(it.id)}
+              aria-pressed={isChecked(it.id)}
+            >
+              <span className="home-plan-ring" aria-hidden="true" />
+              <span className="home-plan-name">{it.title}</span>
+              <span className="home-plan-icon" aria-hidden="true">{it.icon}</span>
             </button>
-            <button className="tl-body" onClick={r.nav ? () => onNavigate(...r.nav) : () => toggle(r.id)}>
-              <span className="tl-icon">{r.icon}</span>
-              <span className="tl-copy">
-                <span className="tl-title">
-                  {r.time && <em className="tl-time">{r.time}</em>}
-                  {r.title}
-                </span>
-                {r.note && <small className="tl-note">{r.note}</small>}
-              </span>
-              {r.nav && <span className="tl-arrow">›</span>}
-            </button>
-          </div>
-          )
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 }
 
@@ -1743,7 +1747,6 @@ export default function Hero({ onNavigate }) {
   const [goalsOpen, setGoalsOpen] = useState(false);
   const { days, owner } = usePlanDays();
   const today = days[dayIndex];
-  const pills = weekPills(days);
   const todayDayId = `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`;
 
   return (
@@ -1762,26 +1765,13 @@ export default function Hero({ onNavigate }) {
         </div>
       </div>
 
-      <div className="hero-date splash-item">{todayLabel()}</div>
-
-      {/* Jump-to-Day pills — tap any day to go directly to that workout */}
-      <div className="hero-week-pills splash-item">
-        {pills.map((p, i) => (
-          <button
-            key={p.dayId}
-            className={`hero-week-pill${i === dayIndex ? ' is-today' : ''}`}
-            onClick={() => onNavigate('workout', null, p.dayId)}
-          >
-            <span className="hero-week-pill-emoji">{p.emoji}</span>
-            <span className="hero-week-pill-label">{p.label}</span>
-          </button>
-        ))}
-      </div>
+      <WeekStrip onOpen={dayId => onNavigate('workout', null, dayId)} />
+      <TodayPicture today={today} onOpen={() => onNavigate('workout', null, todayDayId)} />
 
       {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 
 
-      <TodayDashboard today={today} todayDayId={todayDayId} onNavigate={onNavigate} owner={owner} />
+      <TodayPlan today={today} />
 
       {/* Her own rules (No GODSSS, PFBS, SLOW) are hers. */}
       {owner && <RuleBoard />}

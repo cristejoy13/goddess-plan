@@ -30,5 +30,12 @@ ok('no unit means kilos', parseScale({ value: 60 }) === 60);
 ok('an unreadable display gives no number, not a guess', parseScale({ value: null, unit: 'kg' }) === null);
 ok('nonsense gives no number', parseScale('cannot see') === null);
 
+// Protein, carbs and fat (2026-10-10): from USDA when it matched, else the AI's.
+const chicken = { description: 'Chicken breast, roasted', foodNutrients: [{ nutrientId: 1008, unitName: 'KCAL', value: 165 }, { nutrientId: 1003, unitName: 'G', value: 31 }, { nutrientId: 1004, unitName: 'G', value: 3.6 }, { nutrientId: 1005, unitName: 'G', value: 0 }] };
+const ck = settleItem(parseItems({ items: [{ name: 'Chicken', amount: '200 g', grams: 200, usda: 'chicken breast', kcal: 330, protein: 50, carbs: 0, fat: 8 }] })[0], chicken);
+ok('USDA protein for 200 g is 62 g', ck.protein === 62 && ck.fat === 7.2 && ck.carbs === 0 && ck.kcal === 330);
+const guess = settleItem({ name: 'Mystery', grams: 100, kcal: 200, protein: 10, carbs: 20, fat: NaN }, null);
+ok('an AI line keeps the AI macros it gave, and leaves out the one it did not', guess.protein === 10 && guess.carbs === 20 && !('fat' in guess));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

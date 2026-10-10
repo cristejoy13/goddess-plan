@@ -316,13 +316,12 @@ function NavigateScreen({ onBack }) {
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">📱 Touch & Phone Gestures</div>
         <GuideStep num="3" title="Swipe Right to Go Back" desc="Swipe left to right across the screen." />
-        <GuideStep num="4" title="Go Home" desc="Tap Home in the row under the top bar." />
+        <GuideStep num="4" title="Go Home" desc="Tap Home at the top." />
       </div>
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">🗂️ Finding Content</div>
-        <GuideStep num="5" title="Search Bar" desc="Find workouts, recipes, oils, and skincare." />
-        <GuideStep num="6" title="Section Row" desc="Home, Workouts, Meal and Body sit under the top bar." />
-        <GuideStep num="7" title="Detail Pages" desc="Tap cards or ingredient chips for details." />
+        <GuideStep num="5" title="Top Row" desc="Settings, Home, Meals and Body." />
+        <GuideStep num="6" title="Workouts" desc="On Home: tap a day or today's picture." />
       </div>
     </div>
   );
@@ -574,7 +573,7 @@ function DeviceSyncSection() {
 
 /* ─── Main Settings ─── */
 export default function Settings({
-  profile, onProfileUpdate,
+  profile, onProfileUpdate, colorMode, setColorMode,
   pushBack, clearInnerBack,
 }) {
   const [screen, setScreen] = useState('main');
@@ -601,6 +600,23 @@ export default function Settings({
         <div className="s-tag">App Settings</div>
         <h2 className="s-title">Settings</h2>
         <p className="s-desc">Manage your local profile and appearance.</p>
+      </div>
+
+      {/* Light or dark lives here now (2026-10-10), not in the top bar. */}
+      <div className="g-card splash-item settings-card">
+        <div className="settings-section-title">Light or dark</div>
+        <div className="set-mode" role="radiogroup" aria-label="Light or dark">
+          {[['light', '☀️ Light'], ['dark', '🌙 Dark']].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="radio"
+              aria-checked={colorMode === id}
+              className={`set-mode-btn${colorMode === id ? ' on' : ''}`}
+              onClick={() => setColorMode?.(id)}
+            >{label}</button>
+          ))}
+        </div>
       </div>
 
       <AccountCard />

@@ -123,9 +123,9 @@ let indexed = null;
 let indexedFor = null;
 function index(foods) {
   if (indexedFor === foods) return indexed;
-  indexed = foods.map(([desc, kcal, portions]) => {
+  indexed = foods.map(([desc, kcal, portions, macros]) => {
     const parts = desc.toLowerCase().replace(/\(includes[^)]*\)/g, '').split(',').map(p => words(p.replace(/-/g, ' ')).map(stem));
-    return { desc, kcal, portions, all: new Set(parts.flat()), head: new Set(parts[0] || []), size: parts.flat().length };
+    return { desc, kcal, portions, macros: macros || [], all: new Set(parts.flat()), head: new Set(parts[0] || []), size: parts.flat().length };
   });
   indexedFor = foods;
   return indexed;
@@ -217,7 +217,7 @@ export function gramsFor(food, { qty, unit, size }) {
 
 /**
  * estimateMeal(foods, text) → { items, total, missing }
- *   items:   [{ name, amount, grams, kcal, source: 'offline', usdaName }]
+ *   items:   [{ name, amount, grams, kcal, protein?, carbs?, fat?, source: 'offline', usdaName }]
  *   missing: the parts of her words it could not work out
  */
 export function estimateMeal(foods, text) {
@@ -234,6 +234,11 @@ export function estimateMeal(foods, text) {
       amount: [parsed.hadQty ? String(parsed.qty) : '', parsed.unit || parsed.size || ''].filter(Boolean).join(' '),
       grams: Math.round(grams),
       kcal: Math.round((food.kcal * grams) / 100),
+      // Protein, carbs and fat from the same USDA line, where it lists them.
+      ...Object.fromEntries(['protein', 'carbs', 'fat']
+        .map((k, i) => [k, food.macros[i]])
+        .filter(([, v]) => v != null)
+        .map(([k, v]) => [k, Math.round((v * grams) / 10) / 10])),
       source: 'offline',
       usdaName: food.desc,
     });
