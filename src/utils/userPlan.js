@@ -82,9 +82,9 @@ const SETS = { gentle: 2, steady: 3, allin: 4 };
 // and single-leg work (C). At a gym or at home.
 const GLUTES = {
   gym: {
-    A: [['Barbell Hip Thrust', '8–12'], ['Romanian Deadlift', '8–10'], ['Bulgarian Split Squat', '8–10 each leg'], ['Cable Kickback', '12 each leg']],
-    B: [['Hip Abduction Machine', '15–20'], ['Dumbbell Step-Up', '10 each leg'], ['Cable Pull-Through', '12'], ['Goblet Squat', '10–12']],
-    C: [['B-Stance Hip Thrust', '10 each leg'], ['Sumo Deadlift', '8–10'], ['Reverse Lunge', '10 each leg'], ['Glute Kickback Machine', '12 each leg']],
+    A: [['Barbell Hip Thrust', '10'], ['Romanian Deadlift', '10'], ['Bulgarian Split Squat', '10 each leg'], ['Cable Kickback', '12 each leg']],
+    B: [['Hip Abduction Machine', '20'], ['Dumbbell Step-Up', '10 each leg'], ['Cable Pull-Through', '12'], ['Goblet Squat', '12']],
+    C: [['B-Stance Hip Thrust', '10 each leg'], ['Sumo Deadlift', '10'], ['Reverse Lunge', '10 each leg'], ['Glute Kickback Machine', '12 each leg']],
   },
   home: {
     A: [['Glute Bridge', '15'], ['Single-Leg Romanian Deadlift', '10 each leg'], ['Bulgarian Split Squat (on a chair)', '10 each leg'], ['Donkey Kick', '15 each leg']],
@@ -92,11 +92,11 @@ const GLUTES = {
     C: [['B-Stance Glute Bridge', '12 each leg'], ['Sumo Squat Pulse', '20'], ['Curtsy Lunge', '10 each leg'], ['Clamshell', '20 each side']],
   },
 };
-const ABS_DAY = [['Dead Bug', '10 each side'], ['Reverse Crunch', '12–15'], ['Bicycle Crunch', '20'], ['Side Plank', '30 sec each side'], ['Plank', '45 sec']];
+const ABS_DAY = [['Dead Bug', '10 each side'], ['Reverse Crunch', '15'], ['Bicycle Crunch', '20'], ['Side Plank', '30 sec each side'], ['Plank', '45 sec']];
 // One abs move after each glute day, a different one each day.
 const ABS_FINISHER = {
-  gym:  { A: ['Cable Crunch', '12–15'], B: ['Hanging Knee Raise', '10–12'], C: ['Ab Wheel Rollout (from knees)', '8–10'] },
-  home: { A: ['Reverse Crunch', '12–15'], B: ['Dead Bug', '10 each side'], C: ['Plank', '30–45 sec'] },
+  gym:  { A: ['Cable Crunch', '15'], B: ['Hanging Knee Raise', '12'], C: ['Ab Wheel Rollout (from knees)', '10'] },
+  home: { A: ['Reverse Crunch', '15'], B: ['Dead Bug', '10 each side'], C: ['Plank', '45 sec'] },
 };
 
 const SESSION_INFO = {
@@ -140,7 +140,7 @@ function sessionDay(kind, i, a) {
   }
   if (kind === 'abs') {
     day.exercises = [
-      H('🔥 Main Workout · Abs & Core', `${sets} rounds · rest 30–45 sec.`, 'core'),
+      H('🔥 Main Workout · Abs & Core', `${sets} rounds · rest 45 sec.`, 'core'),
       ...ABS_DAY.map(([n, r]) => ({ name: n, detail: `${sets} × ${r}` })),
       H('🏃 After · Easy Cardio', 'Easy enough to talk in short sentences.'),
       { name: 'Zone 2 Cardio', detail: `${a.push === 'allin' ? '30–40' : '20–30'} min · brisk walk, bike or easy jog` },
@@ -151,7 +151,7 @@ function sessionDay(kind, i, a) {
   const lifts = GLUTES[place][kind];
   const [absName, absReps] = ABS_FINISHER[place][kind];
   day.exercises = [
-    H(`${info.emoji} Main Workout`, `${lifts.length} moves · in order · rest 60–90 sec.`),
+    H(`${info.emoji} Main Workout`, `${lifts.length} moves · in order · rest 90 sec.`),
     ...lifts.map(([n, r], k) => ({ name: `${k + 1}. ${n}`, detail: `${sets} × ${r}` })),
     H('🔥 After · Abs Finisher', 'One move · straight after.', 'core'),
     { name: absName, detail: `${Math.max(2, sets - 1)} × ${absReps}` },
