@@ -58,7 +58,8 @@ const MEAL_KEYS = [
 // gp_scan_memory: meals already worked out by the scanner, so one learned on
 // the phone fills in by itself on the iPad too (merged — see mergeScanMemory).
 // gp_garmin: calories burned from her watch, written by /api/burn (merged).
-const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', 'gp_goals', 'gp_workouts', 'gp_cardio', 'gp_scan_memory', 'gp_garmin', ...MEAL_KEYS];
+// gp_meal_picks: the meal idea she hearted for each meal time.
+const SYNC_KEYS = ['gp_profile', 'gp_today_checks', 'gp_daily_notebook', 'gp_year', 'gp_color_mode', 'gp_meal_log', 'gp_lifts', 'gp_goals', 'gp_workouts', 'gp_cardio', 'gp_scan_memory', 'gp_garmin', 'gp_meal_picks', ...MEAL_KEYS];
 // Keys that USED to sync and no longer exist in the app. They are cleared from
 // this device and deleted from the shared cloud document once, so the doc does
 // not carry dead weight against its 1 MB ceiling forever. Only ever add a key

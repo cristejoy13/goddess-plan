@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
+import { ideasFor } from '../data/mealIdeas';
 import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
@@ -1109,41 +1110,115 @@ function TodayNutrition({ entries, goal }) {
   );
 }
 
-function MealTimes({ entries, goal }) {
-  const [open, setOpen] = useState(null);
-  const time = MEAL_TIMES.find(t => t.id === open);
+// The meal she hearted for each meal time, synced across her gadgets.
+const PICKS_KEY = 'gp_meal_picks';
+function loadPicks() {
+  try { return JSON.parse(localStorage.getItem(PICKS_KEY) || '{}') || {}; } catch { return {}; }
+}
+
+function IdeaDetail({ idea, picked, onPick, onClose }) {
+  const nums = [['kcal', 'cal', ''], ['protein', 'Protein', ' g'], ['carbs', 'Carbs', ' g'], ['fat', 'Fats', ' g']]
+    .filter(([k]) => typeof idea[k] === 'number');
   return (
-    <section className="mt splash-item" aria-label="Meals of the day">
-      <div className="mt-pills" role="tablist" aria-label="Meal">
-        {MEAL_TIMES.map(t => (
+    <div className="mt-idea-detail">
+      {idea.image && <img className="mt-idea-big" src={idea.image} alt={idea.name} />}
+      <div className="mt-idea-top">
+        <h3 className="mt-idea-name">{idea.name}</h3>
+        <button type="button" className={`mt-heart${picked ? ' on' : ''}`} onClick={onPick} aria-pressed={picked} aria-label={picked ? 'Picked — click to un-pick' : 'Pick this meal'}>
+          {picked ? '♥' : '♡'}
+        </button>
+      </div>
+      {nums.length > 0 && (
+        <div className="mt-idea-nums">
+          {nums.map(([k, label, unit]) => <span key={k}><b>{idea[k].toLocaleString()}{unit}</b> {label}</span>)}
+        </div>
+      )}
+      {idea.ingredients?.length > 0 && <>
+        <div className="mt-nutri-title">Ingredients</div>
+        <ul className="mt-idea-list">{idea.ingredients.map((x, i) => <li key={i}>{x}</li>)}</ul>
+      </>}
+      {idea.steps?.length > 0 && <>
+        <div className="mt-nutri-title">Steps</div>
+        <ol className="mt-idea-steps">{idea.steps.map((x, i) => <li key={i}>{x}</li>)}</ol>
+      </>}
+      <button type="button" className="mt-idea-close" onClick={onClose}>Close</button>
+    </div>
+  );
+}
+
+function MealTimePanel({ time, entries, goal }) {
+  const [picks, setPicks] = useState(loadPicks);
+  const [openIdea, setOpenIdea] = useState(null);
+  useEffect(() => {
+    const refresh = () => setPicks(loadPicks());
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => window.removeEventListener('gp-remote-sync', refresh);
+  }, []);
+  const ideas = ideasFor(time.id);
+  const picked = ideas.find(i => i.id === picks[time.id]);
+  const shown = ideas.find(i => i.id === openIdea);
+  function pick(id) {
+    const next = { ...picks };
+    if (next[time.id] === id) delete next[time.id]; else next[time.id] = id;
+    setPicks(next);
+    try { localStorage.setItem(PICKS_KEY, JSON.stringify(next)); } catch { /* kept for this visit */ }
+  }
+  return (
+    <div className="mt-panel" role="tabpanel" aria-label={time.label}>
+      {picked?.image ? (
+        <button type="button" className="mt-hero mt-hero-pic" onClick={() => setOpenIdea(picked.id)}>
+          <img src={picked.image} alt="" />
+          <span className="mt-hero-name">♥ {picked.name}</span>
+        </button>
+      ) : (
+        <div className="mt-hero">
+          <span className="mt-hero-icon" aria-hidden="true">{time.icon}</span>
+          <span className="mt-hero-text">No {time.label.toLowerCase()} picked yet</span>
+          <span className="mt-hero-hint">Heart a meal idea and its picture shows here.</span>
+        </div>
+      )}
+      <TodayNutrition entries={entries} goal={goal} />
+      <div className="mt-ideas">
+        <div className="mt-nutri-title">Meal ideas</div>
+        {ideas.length === 0 ? (
+          <p className="mt-empty">Your {time.label.toLowerCase()} ideas will show here.</p>
+        ) : (
+          <div className="mt-idea-grid">
+            {ideas.map(i => (
+              <button key={i.id} type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
+                {i.image ? <img src={i.image} alt="" loading="lazy" /> : <span className="mt-idea-noimg" aria-hidden="true">{time.icon}</span>}
+                <span className="mt-idea-label">{picks[time.id] === i.id ? '♥ ' : ''}{i.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {shown && <IdeaDetail idea={shown} picked={picks[time.id] === shown.id} onPick={() => pick(shown.id)} onClose={() => setOpenIdea(null)} />}
+      </div>
+    </div>
+  );
+}
+
+// Breakfast · Lunch · Dinner · Snacks · Calendar. The calendar is the one
+// she has always had — every meal, weight and goal in it stays as it was.
+function MealTabs({ tab, setTab }) {
+  return (
+    <div className="mt splash-item">
+      <div className="mt-pills" role="tablist" aria-label="Meals">
+        {[...MEAL_TIMES, { id: 'calendar', label: 'Calendar', icon: '📅' }].map(t => (
           <button
             key={t.id}
             type="button"
             role="tab"
-            aria-selected={open === t.id}
-            className={`mt-pill${open === t.id ? ' on' : ''}`}
-            onClick={() => setOpen(o => (o === t.id ? null : t.id))}
+            aria-selected={tab === t.id}
+            className={`mt-pill${tab === t.id ? ' on' : ''}`}
+            onClick={() => setTab(t.id)}
           >
             <span className="mt-pill-icon" aria-hidden="true">{t.icon}</span>
             <span className="mt-pill-label">{t.label}</span>
           </button>
         ))}
       </div>
-      {time && (
-        <div className="mt-panel" role="tabpanel" aria-label={time.label}>
-          <div className="mt-hero">
-            <span className="mt-hero-icon" aria-hidden="true">{time.icon}</span>
-            <span className="mt-hero-text">No {time.label.toLowerCase()} picked yet</span>
-            <span className="mt-hero-hint">Heart a meal idea and its picture shows here.</span>
-          </div>
-          <TodayNutrition entries={entries} goal={goal} />
-          <div className="mt-ideas">
-            <div className="mt-nutri-title">Meal ideas</div>
-            <p className="mt-empty">Your {time.label.toLowerCase()} ideas will show here.</p>
-          </div>
-        </div>
-      )}
-    </section>
+    </div>
   );
 }
 
@@ -1166,6 +1241,8 @@ export default function Meal() {
   const [monthIdx, setMonthIdx] = useState(today.m);
   const [openDay, setOpenDay] = useState(null);
   const [saveFailed, setSaveFailed] = useState(false);
+  // Which pill is open: a meal time, or the calendar (first, as always).
+  const [tab, setTab] = useState('calendar');
 
   const days = state.days || {};
 
@@ -1284,6 +1361,20 @@ export default function Meal() {
         </p>
       </div>
 
+      <MealTabs tab={tab} setTab={setTab} />
+
+      {tab !== 'calendar' && (
+        <div className="mt">
+          <MealTimePanel
+            key={tab}
+            time={MEAL_TIMES.find(t => t.id === tab)}
+            entries={days[dateKeyOf()] || []}
+            goal={goalForWeek(state, weekStartKey(today.y, today.m, today.d)) ?? planGoal()}
+          />
+        </div>
+      )}
+
+      {tab === 'calendar' && <>
       <div className="ml-nav splash-item">
         <div className="ml-nav-row">
           <button className="ml-nav-btn" onClick={() => step(-1, 0)} aria-label="Previous month">‹</button>
@@ -1396,11 +1487,6 @@ export default function Meal() {
         <span className="ml-legend-item ml-legend-fact"><span className="ml-kilo-swatch" aria-hidden="true" />Lose 1 kg = 7,700 cal</span>
       </div>
 
-      <MealTimes
-        entries={days[dateKeyOf()] || []}
-        goal={goalForWeek(state, weekStartKey(today.y, today.m, today.d)) ?? planGoal()}
-      />
-
       {openDay && (
         <DayPanel
           year={year}
@@ -1431,6 +1517,7 @@ export default function Meal() {
           saveFailed={saveFailed}
         />
       )}
+      </>}
     </div>
   );
 }

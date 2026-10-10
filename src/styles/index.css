@@ -11632,3 +11632,27 @@ body {
    own dark backing so it stays readable over it. */
 .daily-page-empty { background: rgba(16,5,22,0.92); }
 .mt-pill.on, .set-mode-btn.on { background: linear-gradient(135deg, #d63a7f, #a8105c); }
+/* Five pills now: the four meal times and the calendar (2026-10-10). */
+.mt-pills { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.mt + .ml-nav { margin-top: 18px; }
+/* Meal ideas: picture cards, then the one opened in full with its heart. */
+.mt-hero-pic { position: relative; padding: 0; overflow: hidden; border-style: solid; cursor: pointer; font-family: inherit; }
+.mt-hero-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mt-hero-name { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 14px 12px; text-align: left; color: #fff; font-weight: 700; font-size: 16px; background: linear-gradient(180deg, rgba(20,4,16,0), rgba(20,4,16,0.75)); }
+.mt-idea-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.mt-idea { min-width: 0; padding: 0; border: 1px solid var(--border-r); border-radius: 14px; overflow: hidden; background: var(--card); color: var(--text); font-family: inherit; cursor: pointer; display: flex; flex-direction: column; text-align: center; }
+.mt-idea.on { border-color: #e8347a; box-shadow: 0 0 0 2px rgba(232,52,122,0.35); }
+.mt-idea img, .mt-idea-noimg { width: 100%; aspect-ratio: 1; object-fit: cover; display: grid; place-items: center; font-size: 28px; background: rgba(255,127,176,0.12); }
+.mt-idea-label { padding: 8px 6px; font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+.mt-idea-detail { margin-top: 12px; padding: 12px; border-radius: 16px; border: 1px solid var(--border-r); display: flex; flex-direction: column; gap: 10px; }
+.mt-idea-big { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; }
+.mt-idea-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.mt-idea-name { margin: 0; font-size: 18px; color: var(--text); }
+.mt-heart { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-r); background: transparent; color: #e8347a; font-size: 22px; cursor: pointer; }
+.mt-heart.on { background: #a8105c; border-color: #a8105c; color: #fff; }
+.mt-idea-nums { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13.5px; color: var(--text-soft); }
+.mt-idea-nums b { color: var(--text); font-variant-numeric: tabular-nums; }
+.mt-idea-list, .mt-idea-steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: var(--text); line-height: 1.45; }
+.mt-idea-close { align-self: center; min-height: 40px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--border-r); background: transparent; color: var(--text); font-family: inherit; font-weight: 600; cursor: pointer; }
+@media (max-width: 420px) { .mt-pills { gap: 4px; } .mt-pill { font-size: 11px; padding: 6px 1px; } }
+@media (max-width: 340px) { .mt-pill { font-size: 10px; } .mt-pill-icon { font-size: 15px; } }
