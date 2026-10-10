@@ -2,10 +2,10 @@ import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } fr
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
 import { isOwner, readProfile } from '../utils/userPlan';
-import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, groqKeyReminder } from '../utils/mealScan';
+import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import {
-  dateKey, dateKeyOf, newEntryId, parseCal, calTotals, byTime, loadLog, saveLog,
+  dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
   parseBurn, burnOn, setBurn, MAX_BURN, MIN_BURN, AVERAGE_BURN,
   parseGoal, setGoal, weekStartKey, goalForWeek, calsLeft, MIN_GOAL, MAX_GOAL,
@@ -181,10 +181,14 @@ function nowTime() {
 // writing down the meal you just ate — she types the food and nothing else.
 // It is still a real time box, so a meal written up later can be corrected by
 // tapping it and spinning the wheel.
-function MealForm({ initial, onSubmit, onCancel }) {
-  const [time, setTime] = useState(() => initial?.time || nowTime());
+// The time of a new meal sits beside the date at the top of the day
+// (2026-10-10), so the day panel holds it and hands it in. Editing a meal
+// keeps its own time box inside the form.
+function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayTime }) {
+  const [ownTime, setOwnTime] = useState(() => initial?.time || nowTime());
+  const time = dayTime ?? ownTime;
+  const setTime = setDayTime ?? setOwnTime;
   const [text, setText] = useState(initial?.text || '');
-  const [cal,  setCal]  = useState(() => (initial?.cal != null ? String(initial.cal) : ''));
   const editing = Boolean(initial);
   // Talk or type. Whatever is said is added after what is already in the box,
   // and shows as it is heard, so she can read it back and fix any word.
@@ -300,6 +304,25 @@ function MealForm({ initial, onSubmit, onCancel }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoScan]);
 
+  // Typed meals find their calories by themselves too (2026-10-10): three
+  // seconds after the last key, the same as after talking. A meal she has
+  // had before already filled in from memory above, with no internet.
+  useEffect(() => {
+    const words = text.trim();
+    if (editing || scan || scanning || photo || mic.listening || words.length < 3 || dismissedRef.current === words) return undefined;
+    const t = setTimeout(() => { if (!recall(words)) runScan(); }, SILENCE_MS);
+    return () => clearTimeout(t);
+    // runScan reads the latest words; a change of words restarts the wait.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, editing, scan, photo, mic.listening]);
+
+  // Changing the words after the calories came back means a new meal:
+  // the old card goes and the new words are worked out instead.
+  function changeText(value) {
+    setText(value);
+    if (scan && !photo) setScan(null);
+  }
+
   function cancelScan() {
     dismissedRef.current = text.trim();
     setScan(null);
@@ -356,9 +379,10 @@ function MealForm({ initial, onSubmit, onCancel }) {
         return out;
       });
       remember(words, { items: clean, total: scan.total, ...(scan.missing && { missing: scan.missing }) });
+      rememberFoods(clean);
     }
     onSubmit({ time: time || nowTime(), text: words || describeItems(scan.items), cal: scan.total });
-    setScan(null); setPhoto(null); setText(''); setCal(''); setTime(nowTime());
+    setScan(null); setPhoto(null); setText(''); setTime(nowTime());
   }
 
   function submit(e) {
@@ -366,8 +390,9 @@ function MealForm({ initial, onSubmit, onCancel }) {
     if (mic.listening) mic.stop();
     const t = text.trim();
     if (!t) return;
-    onSubmit({ time: time || nowTime(), text: t, cal: parseCal(cal) });
-    if (!editing) { setText(''); setCal(''); setTime(nowTime()); }
+    // A new meal: Enter finds its calories (saving is from the card).
+    if (!editing) { if (!scan) runScan(); return; }
+    onSubmit({ time: time || nowTime(), text: t, cal: initial?.cal ?? null });
   }
 
   return (
@@ -385,7 +410,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
             className="ml-text-input"
             rows={1}
             value={text}
-            onChange={e => setText(e.target.value)}
+            onChange={e => changeText(e.target.value)}
             // Enter still adds the meal, as it did when this was one line.
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }}
             placeholder={mic.listening ? 'Listening… say what you ate' : 'Type or tap 🎤 to talk'}
@@ -411,7 +436,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
       {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
 
       {!editing && !scan && (
-        <div className={`ml-pills${cal.trim() !== '' ? '' : ' ml-pills-two'}`}>
+        <div className="ml-pills ml-pills-two">
           <input ref={fileRef} type="file" accept="image/*" className="ml-scan-file" onChange={pickPhoto} tabIndex={-1} aria-hidden="true" />
           {photo ? (
             <span className="ml-pill ml-pill-photo-on">
@@ -429,17 +454,12 @@ function MealForm({ initial, onSubmit, onCancel }) {
           >
             {scanning ? 'Working…' : '✨ Calories'}
           </button>
-          {/* Only for a meal whose calories she typed herself; a scanned
-              meal is saved from its card. */}
-          {cal.trim() !== '' && (
-            <button type="submit" className="ml-pill ml-pill-add" disabled={!text.trim()}>＋ Save</button>
-          )}
         </div>
       )}
       {scanError && <span className="ml-mic-note ml-scan-error" role="alert">{scanError}</span>}
 
-      <div className="ml-tc-row">
-        <label className="ml-time-wrap">
+      {editing && (
+        <label className="ml-time-wrap ml-edit-time">
           <span className="ml-time-lbl">Time</span>
           <input
             className="ml-time-input"
@@ -449,21 +469,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
             aria-label="Time you ate"
           />
         </label>
-        <label className="ml-cal-wrap">
-          <span className="ml-time-lbl">Calories</span>
-          <input
-            className="ml-cal-input"
-            type="number"
-            inputMode="numeric"
-            min="0"
-            step="1"
-            value={cal}
-            onChange={e => setCal(e.target.value)}
-            placeholder="—"
-            aria-label="Calories, leave empty if you do not know"
-          />
-        </label>
-      </div>
+      )}
       {scan && (
         <div className="ml-scan-card" role="region" aria-label="Calories found">
           <div className="ml-scan-head">
@@ -521,7 +527,7 @@ function MealForm({ initial, onSubmit, onCancel }) {
           </ul>
           {scan.missing?.length > 0 && (
             <div className="ml-scan-missing">
-              Not found: {scan.missing.join(', ')}. Add its calories yourself.
+              Not found: {scan.missing.join(', ')}. Say it another way, or try again with internet.
             </div>
           )}
           <div className="ml-scan-total"><span>Total</span><b>{scan.total.toLocaleString('en-US')} cal</b></div>
@@ -900,15 +906,32 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
   // goal set, at least one meal written, the weight saved — so what is still
   // missing shows at a glance.
   const [tab, setTab] = useState('meals');
+  const [time, setTime] = useState(nowTime);
   const show = part => tab === part;
   // Two tabs since 2026-10-08: the weight moved in with the week's goal. Its
   // tick needs both — the goal set and today's weight saved.
   const done = { goal: goal != null && kg != null, meals: entries.length > 0 };
   return (
+    <>
     <div className="ml-day-panel splash-item ml-day-tabs">
+      {/* Date and time on one centred line; the ✕ sits in the corner. */}
       <div className="ml-day-head">
-        <div>
-          <div className="ml-day-date">{DAY_NAMES[dow]}, {day} {MONTH_NAMES[monthIdx]} {year}</div>
+        <div className="ml-day-title">
+          <div className="ml-day-when">
+            <span className="ml-day-date">
+              <span className="ml-date-long">{DAY_NAMES[dow]}, {day} {MONTH_NAMES[monthIdx]} {year}</span>
+              <span className="ml-date-short" aria-hidden="true">{DAY_NAMES[dow].slice(0, 3)}, {day} {MONTH_NAMES[monthIdx].slice(0, 3)}</span>
+            </span>
+            {show('meals') && (
+              <input
+                className="ml-time-input ml-day-time"
+                type="time"
+                value={time}
+                onChange={e => setTime(e.target.value)}
+                aria-label="Time you ate"
+              />
+            )}
+          </div>
           <div className="ml-day-count">
             {entries.length === 0
               ? 'Nothing written down yet'
@@ -941,7 +964,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
 
       {show('meals') && <section className="ml-box ml-box-meals" aria-label="Meals and calories">
       <GroqReminder />
-      <MealForm onSubmit={onAdd} />
+      <MealForm onSubmit={onAdd} time={time} setTime={setTime} />
 
       {saveFailed && (
         <div className="ml-save-warn">
@@ -951,7 +974,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
 
       {/* The day as a receipt: every meal in one box, a line, what she has
           eaten so far; then, on its own and highlighted, what is left. */}
-      <div className="ml-receipt">
+      {entries.length > 0 && <div className="ml-receipt">
         <ul className="ml-entries">
           {entries.map(en => (
             <EntryRow
@@ -961,22 +984,17 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
               onDelete={() => onDelete(en)}
             />
           ))}
-          {entries.length === 0 && (
-            <li className="ml-entry-empty">Write the first meal of this day above.</li>
-          )}
         </ul>
-        {entries.length > 0 && (
-          <div className="ml-receipt-total">
-            <span>Eaten so far</span>
-            <b>{total.toLocaleString()} cal</b>
-          </div>
-        )}
+        <div className="ml-receipt-total">
+          <span>Eaten so far</span>
+          <b>{total.toLocaleString()} cal</b>
+        </div>
         {missing > 0 && (
           <div className="ml-receipt-note">
             {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
           </div>
         )}
-      </div>
+      </div>}
 
       {goal != null && (
         <div className={`ml-left-box${left < 0 ? ' is-over' : ''}`}>
@@ -985,13 +1003,6 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
         </div>
       )}
 
-      </section>}
-
-      {/* Its own box under the meals (2026-10-10): calories burned (her
-          watch, her own number, or her average), what she ate, and the real
-          deficit — kept apart so the watch's number never reads as a meal. */}
-      {show('meals') && <section className="ml-box ml-box-burn ml-burn-panel" aria-label="Calories burned">
-        <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="burn" onSave={onWeight} />
       </section>}
 
       {show('goal') && <section className="ml-box ml-box-weight" aria-label="Weight">
@@ -1008,6 +1019,14 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
       )}
       </section>}
     </div>
+
+    {/* Outside the day's box, its own section (2026-10-10): calories
+        burned (her watch, her own number, or her average), what she ate,
+        and the real deficit. */}
+    <section className="ml-box ml-box-burn ml-burn-panel ml-burn-outside splash-item" aria-label="Calories burned">
+      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="burn" onSave={onWeight} />
+    </section>
+    </>
   );
 }
 

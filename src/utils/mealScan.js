@@ -52,14 +52,48 @@ export function remember(text, result) {
   } catch { /* memory is a bonus */ }
 }
 
-// Her words worked out from the USDA list kept on this gadget. `noList` is
-// what to say when the list has not arrived on this gadget yet.
+// Offline (2026-10-10): every food she has had before is known without
+// internet, even in a new mix. The words are cut into foods ("adobo and
+// rice, 1 egg"); each one she has had before comes from memory, and only the
+// rest is worked out from the USDA list kept on this gadget. `noList` is
+// what to say when that list has not arrived on this gadget yet.
+const PIECES = /\s*(?:,|\+|&|\n|\band\b|\bwith\b|\bplus\b)\s*/i;
+
 async function offline(text, noList) {
-  const { estimateOffline } = await import('./foodList.js');
-  const r = await estimateOffline(text);
-  if (!r) throw new Error(noList);
-  if (!r.items.length) throw new Error(`Could not work out "${text}" without the scanner. Type the calories yourself.`);
-  return { ...r, from: 'offline' };
+  const pieces = text.split(PIECES).map(s => s.trim()).filter(Boolean);
+  const items = [];
+  const rest = [];
+  for (const piece of pieces) {
+    const known = recall(piece);
+    if (known) items.push(...known.items); else rest.push(piece);
+  }
+  let missing = [];
+  if (rest.length) {
+    const { estimateOffline } = await import('./foodList.js');
+    const r = await estimateOffline(rest.join(', '));
+    if (r) { items.push(...r.items); missing = r.missing || []; } else if (!items.length) throw new Error(noList);
+    else missing = rest;
+  }
+  if (!items.length) throw new Error(`Could not work out "${text}" without internet. Try again when you are online.`);
+  const total = items.reduce((sum, it) => sum + (Number(it.kcal) || 0), 0);
+  return { items, total, ...(missing.length && { missing }), from: 'offline' };
+}
+
+// After a meal is saved, each food in it is remembered on its own too, by
+// its name, so it is known offline inside any later meal. A food already
+// remembered keeps the amount she had then.
+export function rememberFoods(items = []) {
+  try {
+    const all = JSON.parse(localStorage.getItem(MEMORY_KEY) || '{}');
+    let added = false;
+    items.forEach(it => {
+      const key = memKey(it.name || '');
+      if (!key || all[key] || !(Number(it.kcal) > 0)) return;
+      all[key] = { result: { items: [it], total: Number(it.kcal) }, at: Date.now() };
+      added = true;
+    });
+    if (added) localStorage.setItem(MEMORY_KEY, JSON.stringify(trimMemory(all)));
+  } catch { /* memory is a bonus */ }
 }
 
 /**
