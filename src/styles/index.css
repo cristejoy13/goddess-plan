@@ -11447,3 +11447,10 @@ body {
 [data-mode="light"] .su-bar { background: rgba(0,0,0,0.08); }
 [data-mode="light"] .su-error { color: #a00050; }
 @media (max-width: 360px) { .su-q { font-size: 26px; } .su-days button { min-height: 50px; font-size: 18px; } }
+
+/* Burned has its own box under the meals (2026-10-10), orange like the
+   burned numbers, so the watch's calories sit apart from what she ate. */
+.ml-box-burn { background: rgba(255,170,110,0.07); border: 1px solid rgba(255,170,110,0.34); }
+.ml-box-burn.ml-burn-panel .ml-wt-form { margin-top: 0; padding: 0; background: none; border: 0; border-radius: 0; }
+[data-mode="light"] .ml-box-burn { background: rgba(179,90,18,0.06); border-color: rgba(179,90,18,0.3); }
+[data-mode="light"] .ml-box-burn.ml-burn-panel .ml-wt-form { background: none; border: 0; }

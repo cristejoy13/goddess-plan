@@ -985,11 +985,13 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
         </div>
       )}
 
-      {/* Under it: calories burned (her watch, her own number, or her
-          average), what she ate, and the real deficit. */}
-      <div className="ml-burn-panel">
+      </section>}
+
+      {/* Its own box under the meals (2026-10-10): calories burned (her
+          watch, her own number, or her average), what she ate, and the real
+          deficit — kept apart so the watch's number never reads as a meal. */}
+      {show('meals') && <section className="ml-box ml-box-burn ml-burn-panel" aria-label="Calories burned">
         <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="burn" onSave={onWeight} />
-      </div>
       </section>}
 
       {show('goal') && <section className="ml-box ml-box-weight" aria-label="Weight">
