@@ -924,6 +924,8 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
+  const withProtein = entries.filter(e => typeof e.protein === 'number').length;
+  const protein = entries.reduce((sum, e) => sum + (typeof e.protein === 'number' ? e.protein : 0), 0);
   // One box at a time (chosen 2026-10-07): three tabs, Meals open first. A
   // green tick on a tab means that part of the day is filled in — the week's
   // goal set, at least one meal written, the weight saved — so what is still
@@ -1012,6 +1014,14 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
           <span>Eaten so far</span>
           <b>{total.toLocaleString()} cal</b>
         </div>
+        {/* Protein eaten that day (2026-10-11), from every meal that has it. */}
+        <div className="ml-receipt-protein">
+          <span>Protein</span>
+          <b>{withProtein ? `${Math.round(protein * 10) / 10} g` : '—'}</b>
+        </div>
+        {withProtein > 0 && withProtein < entries.length && (
+          <div className="ml-receipt-note">Protein from {withProtein} of {entries.length} meals.</div>
+        )}
         {missing > 0 && (
           <div className="ml-receipt-note">
             {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
@@ -1046,9 +1056,9 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
     {/* Outside the day's box, its own section (2026-10-10): calories
         burned (her watch, her own number, or her average), what she ate,
         and the real deficit. */}
-    <section className="ml-box ml-box-burn ml-burn-panel ml-burn-outside splash-item" aria-label="Calories burned">
+    {show('goal') && <section className="ml-box ml-box-burn ml-burn-panel ml-burn-outside splash-item" aria-label="Calories burned">
       <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="burn" onSave={onWeight} />
-    </section>
+    </section>}
     </>
   );
 }
@@ -1124,7 +1134,7 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
       {idea.image && <img className="mt-idea-big" src={idea.image} alt={idea.name} />}
       <div className="mt-idea-top">
         <h3 className="mt-idea-name">{idea.name}</h3>
-        <button type="button" className={`mt-heart${picked ? ' on' : ''}`} onClick={onPick} aria-pressed={picked} aria-label={picked ? 'Picked — click to un-pick' : 'Pick this meal'}>
+        <button type="button" className={`mt-heart${picked ? ' on' : ''}`} onClick={onPick} aria-pressed={picked} aria-label={picked ? 'Eaten today — click to take it off today' : 'I ate this — save it to today'}>
           {picked ? '♥' : '♡'}
         </button>
       </div>
@@ -1155,7 +1165,12 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
   );
 }
 
-function MealTimePanel({ time, entries, goal }) {
+// ♥ means "I ate this" (her rule, 2026-10-11): the meal is saved to today in
+// the calendar — its calories, protein, carbs and fats — and counts toward
+// eaten and left. Its picture stays on top of that meal time, today and every
+// day after, until she hearts another. A second ♥ on the same meal the same
+// day takes it off today again (the picture stays).
+function MealTimePanel({ time, entries, goal, onEat }) {
   const [picks, setPicks] = useState(loadPicks);
   const [openIdea, setOpenIdea] = useState(null);
   useEffect(() => {
@@ -1166,9 +1181,12 @@ function MealTimePanel({ time, entries, goal }) {
   const ideas = ideasFor(time.id);
   const picked = ideas.find(i => i.id === picks[time.id]);
   const shown = ideas.find(i => i.id === openIdea);
-  function pick(id) {
-    const next = { ...picks };
-    if (next[time.id] === id) delete next[time.id]; else next[time.id] = id;
+  const eatenToday = id => entries.some(e => e.ideaId === id && e.mealTime === time.id);
+  function pick(idea) {
+    const adding = !eatenToday(idea.id);
+    onEat(idea, time.id);
+    if (!adding) return;
+    const next = { ...picks, [time.id]: idea.id };
     setPicks(next);
     try { localStorage.setItem(PICKS_KEY, JSON.stringify(next)); } catch { /* kept for this visit */ }
   }
@@ -1177,7 +1195,7 @@ function MealTimePanel({ time, entries, goal }) {
       {picked?.image ? (
         <button type="button" className="mt-hero mt-hero-pic" onClick={() => setOpenIdea(picked.id)}>
           <img src={picked.image} alt="" />
-          <span className="mt-hero-name">♥ {picked.name}</span>
+          <span className="mt-hero-name">♥ {picked.name}{eatenToday(picked.id) ? ' · eaten today' : ''}</span>
         </button>
       ) : (
         <div className="mt-hero">
@@ -1199,12 +1217,12 @@ function MealTimePanel({ time, entries, goal }) {
             {ideas.map(i => (
               <button key={i.id} type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
                 {i.image ? <img src={i.image} alt="" loading="lazy" /> : <span className="mt-idea-noimg" aria-hidden="true">{time.icon}</span>}
-                <span className="mt-idea-label">{picks[time.id] === i.id ? '♥ ' : ''}{i.name}</span>
+                <span className="mt-idea-label">{eatenToday(i.id) ? '♥ ' : ''}{i.name}</span>
               </button>
             ))}
           </div>
         )}
-        {shown && <IdeaDetail idea={shown} picked={picks[time.id] === shown.id} onPick={() => pick(shown.id)} onClose={() => setOpenIdea(null)} />}
+        {shown && <IdeaDetail idea={shown} picked={eatenToday(shown.id)} onPick={() => pick(shown)} onClose={() => setOpenIdea(null)} />}
       </div>
     </div>
   );
@@ -1296,6 +1314,29 @@ export default function Meal() {
     }));
   };
 
+  // ♥ on a meal idea: save it to TODAY (whatever month the calendar shows),
+  // or, if that meal is already on today for this meal time, take it off.
+  const eatIdea = (idea, mealTime) => {
+    const key = dateKeyOf();
+    const now = new Date().toISOString();
+    commit(prev => {
+      const list = prev.days[key] || [];
+      const had = list.find(e => e.ideaId === idea.id && e.mealTime === mealTime);
+      if (had) {
+        const left = list.filter(e => e.id !== had.id);
+        const nextDays = { ...prev.days };
+        if (left.length) nextDays[key] = left; else delete nextDays[key];
+        return { ...prev, days: nextDays, deleted: { ...prev.deleted, [had.id]: now } };
+      }
+      const entry = {
+        id: newEntryId(), time: nowTime(), text: idea.name, cal: idea.kcal,
+        protein: idea.protein, carbs: idea.carbs, fat: idea.fat,
+        ideaId: idea.id, mealTime, createdAt: now, updatedAt: now,
+      };
+      return { ...prev, days: { ...prev.days, [key]: [...list, entry].sort(byTime) } };
+    });
+  };
+
   // A deleted line leaves a tombstone, or the other gadget's copy would put it
   // straight back on the next sync.
   const deleteEntry = async (dayNum, entry) => {
@@ -1382,6 +1423,7 @@ export default function Meal() {
             time={MEAL_TIMES.find(t => t.id === tab)}
             entries={days[dateKeyOf()] || []}
             goal={goalForWeek(state, weekStartKey(today.y, today.m, today.d)) ?? planGoal()}
+            onEat={eatIdea}
           />
         </div>
       )}

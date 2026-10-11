@@ -39,8 +39,8 @@ function saveProfile(p) {
   try { localStorage.setItem('gp_profile', JSON.stringify(p)); } catch {}
 }
 
-// Four buttons at the top, nothing else (her layout, 2026-10-10): Settings
-// (the flower), Home, Meals, Body. Workouts live inside Home now, and the
+// Four buttons at the top, nothing else (her layout, 2026-10-10; order
+// changed 2026-10-11): Home, Meals, Body, Settings (the flower). Workouts live inside Home now, and the
 // light/dark switch lives in Settings.
 const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🏠' },
@@ -238,14 +238,6 @@ export default function App() {
 
       <div className="search-bar-fixed" ref={topbarRef}>
         <nav className="topbar-sections" aria-label="Sections">
-          <button
-            className={`topbar-sec-btn topbar-settings-btn${active === 'settings' ? ' active' : ''}`}
-            onClick={() => navigate('settings')}
-            aria-current={active === 'settings' ? 'page' : undefined}
-          >
-            <span className="topbar-sec-icon">{avatar.emoji}</span>
-            <span className="topbar-sec-label">Settings</span>
-          </button>
           {/* Body (skincare, hair, teeth…) is hers; people who signed up get
               Home and Meals (2026-10-10). */}
           {NAV_ITEMS.filter(item => item.id !== 'skincare' || isOwner(profile)).map(item => (
@@ -259,6 +251,14 @@ export default function App() {
               <span className="topbar-sec-label">{item.label}</span>
             </button>
           ))}
+          <button
+            className={`topbar-sec-btn topbar-settings-btn${active === 'settings' ? ' active' : ''}`}
+            onClick={() => navigate('settings')}
+            aria-current={active === 'settings' ? 'page' : undefined}
+          >
+            <span className="topbar-sec-icon">{avatar.emoji}</span>
+            <span className="topbar-sec-label">Settings</span>
+          </button>
         </nav>
       </div>
 
