@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
-import { ideasFor, COOKING_NOTES } from '../data/mealIdeas';
+import { ideasFor, NUTRITION_NOTES, PREP_TIPS } from '../data/mealIdeas';
 import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
@@ -1141,12 +1141,14 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
         <div className="mt-nutri-title">Steps</div>
         <ol className="mt-idea-steps">{idea.steps.map((x, i) => <li key={i}>{x}</li>)}</ol>
       </>}
-      {/* Her notes for every meal: how to weigh, how to cook. */}
+      {/* Her notes for every meal: getting ahead, and how the numbers were worked out. */}
       <details className="mt-idea-notes">
-        <summary>Cooking notes</summary>
-        <ul className="mt-idea-list">{COOKING_NOTES.weights.map((x, i) => <li key={i}>{x}</li>)}</ul>
-        <p className="mt-empty">Cook by: {COOKING_NOTES.methods.join(' · ')}.</p>
-        <p className="mt-empty">{COOKING_NOTES.avoid}</p>
+        <summary>Prep tips</summary>
+        <ul className="mt-idea-list">{PREP_TIPS.map(([what, tip]) => <li key={what}><b>{what}:</b> {tip}</li>)}</ul>
+      </details>
+      <details className="mt-idea-notes">
+        <summary>Nutrition notes</summary>
+        <ul className="mt-idea-list">{NUTRITION_NOTES.map((x, i) => <li key={i}>{x}</li>)}</ul>
       </details>
       <button type="button" className="mt-idea-close" onClick={onClose}>Close</button>
     </div>
