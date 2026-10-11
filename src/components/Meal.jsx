@@ -1014,14 +1014,11 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
           <span>Eaten so far</span>
           <b>{total.toLocaleString()} cal</b>
         </div>
-        {/* Protein eaten that day (2026-10-11), from every meal that has it. */}
+        {/* Protein eaten that day (2026-10-11): it adds up with every meal. */}
         <div className="ml-receipt-protein">
           <span>Protein</span>
           <b>{withProtein ? `${Math.round(protein * 10) / 10} g` : '—'}</b>
         </div>
-        {withProtein > 0 && withProtein < entries.length && (
-          <div className="ml-receipt-note">Protein from {withProtein} of {entries.length} meals.</div>
-        )}
         {missing > 0 && (
           <div className="ml-receipt-note">
             {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
