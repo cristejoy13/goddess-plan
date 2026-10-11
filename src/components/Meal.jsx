@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
-import { ideasFor, NUTRITION_NOTES, PREP_TIPS } from '../data/mealIdeas';
+import { ideasFor, NUTRITION_NOTES, PREP_TIPS, DAY_RANGE } from '../data/mealIdeas';
 import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
@@ -1189,6 +1189,9 @@ function MealTimePanel({ time, entries, goal }) {
       <TodayNutrition entries={entries} goal={goal} />
       <div className="mt-ideas">
         <div className="mt-nutri-title">Meal ideas</div>
+        {ideas.length > 0 && (
+          <p className="mt-empty">Any 1 breakfast + lunch + dinner + snack = {DAY_RANGE.kcalLow.toLocaleString()}–{DAY_RANGE.kcalHigh.toLocaleString()} cal.</p>
+        )}
         {ideas.length === 0 ? (
           <p className="mt-empty">Your {time.label.toLowerCase()} ideas will show here.</p>
         ) : (
