@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Her full-size meal pictures; the app uses the shrunk .jpg copies.
+public/meal-ideas/*.png

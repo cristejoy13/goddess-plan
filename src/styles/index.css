@@ -11656,3 +11656,11 @@ body {
 .mt-idea-close { align-self: center; min-height: 40px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--border-r); background: transparent; color: var(--text); font-family: inherit; font-weight: 600; cursor: pointer; }
 @media (max-width: 420px) { .mt-pills { gap: 4px; } .mt-pill { font-size: 11px; padding: 6px 1px; } }
 @media (max-width: 340px) { .mt-pill { font-size: 10px; } .mt-pill-icon { font-size: 15px; } }
+.mt-idea-notes { border-top: 1px solid var(--border-r); padding-top: 10px; }
+.mt-idea-notes summary { cursor: pointer; font-weight: 700; color: var(--text); min-height: 32px; display: flex; align-items: center; }
+.mt-idea-notes .mt-idea-list { margin-top: 6px; font-size: 13.5px; }
+/* Five ideas per meal time: one row that scrolls sideways inside itself,
+   like a shelf, so no card sits alone on a row. */
+.mt-idea-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+.mt-idea { flex: 0 0 38%; scroll-snap-align: start; }
+@media (min-width: 600px) { .mt-idea { flex-basis: 30%; } }

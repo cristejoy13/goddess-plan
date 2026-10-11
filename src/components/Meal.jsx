@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useLayoutEffect, useEffect } from 'react';
 import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
-import { ideasFor } from '../data/mealIdeas';
+import { ideasFor, COOKING_NOTES } from '../data/mealIdeas';
 import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
@@ -1141,6 +1141,13 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
         <div className="mt-nutri-title">Steps</div>
         <ol className="mt-idea-steps">{idea.steps.map((x, i) => <li key={i}>{x}</li>)}</ol>
       </>}
+      {/* Her notes for every meal: how to weigh, how to cook. */}
+      <details className="mt-idea-notes">
+        <summary>Cooking notes</summary>
+        <ul className="mt-idea-list">{COOKING_NOTES.weights.map((x, i) => <li key={i}>{x}</li>)}</ul>
+        <p className="mt-empty">Cook by: {COOKING_NOTES.methods.join(' · ')}.</p>
+        <p className="mt-empty">{COOKING_NOTES.avoid}</p>
+      </details>
       <button type="button" className="mt-idea-close" onClick={onClose}>Close</button>
     </div>
   );
