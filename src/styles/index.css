@@ -11668,3 +11668,7 @@ body {
 .ml-receipt-protein { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 2px 0; font-size: 14px; font-weight: 700; color: var(--text); }
 .ml-receipt-protein b { font-size: 16px; font-variant-numeric: tabular-nums; color: #ff7fb0; }
 [data-mode="light"] .ml-receipt-protein b { color: #a8105c; }
+/* Her own pictures are tall (4:5) and shown whole, so her face and the
+   small pictures in the corner all stay in view. */
+.home-pic.is-hers { aspect-ratio: 4 / 5; }
+.home-pic.is-hers .home-pic-text { right: 45%; }

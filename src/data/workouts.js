@@ -2,7 +2,7 @@
 // Her plan of 2026-10-10, Monday to Sunday:
 //   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat · abs finisher
 //   Tue  Pilates or yoga (Jessica Diễm or Nicole) · jump rope or Zone 2
-//   Wed  Upper body & core — Pilates by Izzy · jump rope or Zone 2
+//   Wed  Upper body & core — Pilates by Izzy · Zone 2 run only
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
 //   Fri  Pilates or yoga, same as Tue · jump rope or Zone 2
 //   Sat  Glutes C — squat, pause squat, lateral squat, step-up · abs finisher
@@ -68,6 +68,11 @@ const absFinisher = (name, detail) => [
   { name, detail },
 ];
 // After the main workout on the video days (Tue, Wed, Fri): one or the other.
+// After Wednesday's Pilates: running only (her call, 2026-10-12).
+const RUN_AFTER = [
+  H('🏃 After · Zone 2 Run', 'Only after the main workout.'),
+  { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · easy — you can talk in short sentences' },
+];
 const ROPE_OR_ZONE2 = [
   H('🪢 After · Jump Rope or Zone 2', 'Pick ONE · only after the main workout.'),
   { name: 'Jump Rope', detail: '5–15 min · moderate · 1 min jumping, 30–60 sec rest, repeat' },
@@ -954,14 +959,14 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Wednesday · Upper Body & Core', title: 'Pilates by Izzy · Rope or Zone 2',
-    sub: '20–35 min video · jump rope or Zone 2 · evening walk',
+    day: 'Wednesday · Upper Body & Core', title: 'Pilates by Izzy · Zone 2 Run',
+    sub: '20–35 min video · Zone 2 run · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     noteBefore: { type: 'rose', text: '💪 Keep shoulders moderate. Slim and toned, not big.' },
     exercises: [
       H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core'),
       ...IZZY_ABS,
-      ...ROPE_OR_ZONE2,
+      ...RUN_AFTER,
       ...walk('30–60'),
     ],
     meals: DAILY_MEALS,

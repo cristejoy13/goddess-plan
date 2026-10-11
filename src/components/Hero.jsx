@@ -29,6 +29,15 @@ function thisWeek() {
 // One photo for each kind of day (free photos from Unsplash, 2026-10-10;
 // any of them can be swapped for her own later). Upper body is checked
 // before Pilates because Wednesday's Izzy video is called "Pilates by Izzy".
+// Her own pictures (2026-10-12), one for each of her days, Monday to Sunday.
+// Only on her Home — they are of her. People who signed up keep the photos
+// below.
+const HER_PICTURES = [
+  '/workouts/her-glute-a.jpg', '/workouts/her-yoga-a.jpg', '/workouts/her-pilates-run.jpg',
+  '/workouts/her-glute-b.jpg', '/workouts/her-yoga-b.jpg', '/workouts/her-glute-c.jpg',
+  '/workouts/her-bike-swim.jpg',
+];
+
 function pictureFor(day) {
   const t = `${day.day} ${day.title}`;
   if (/Glutes/i.test(t)) return '/workouts/glutes.jpg';
@@ -1608,11 +1617,12 @@ function WeekStrip({ onOpen }) {
   );
 }
 
-function TodayPicture({ today, onOpen }) {
+function TodayPicture({ today, owner, onOpen }) {
   const name = today.day?.split(' · ')[1] || today.title;
+  const mine = owner ? HER_PICTURES[dayIndex] : null;
   return (
-    <button type="button" className="home-pic splash-item" onClick={onOpen} aria-label={`Today: ${name} — open the workout`}>
-      <img src={pictureFor(today)} alt="" loading="eager" />
+    <button type="button" className={`home-pic splash-item${mine ? ' is-hers' : ''}`} onClick={onOpen} aria-label={`Today: ${name} — open the workout`}>
+      <img src={mine || pictureFor(today)} alt="" loading="eager" className={mine ? 'is-hers' : undefined} />
       <span className="home-pic-shade" aria-hidden="true" />
       <span className="home-pic-text">
         <span className="home-pic-kicker">Today</span>
@@ -1766,7 +1776,7 @@ export default function Hero({ onNavigate }) {
       </div>
 
       <WeekStrip onOpen={dayId => onNavigate('workout', null, dayId)} />
-      <TodayPicture today={today} onOpen={() => onNavigate('workout', null, todayDayId)} />
+      <TodayPicture today={today} owner={owner} onOpen={() => onNavigate('workout', null, todayDayId)} />
 
       {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 

@@ -24,7 +24,7 @@ var GOAL = 1000;
 var PLAN = [
   { day: "Monday", emoji: "\ud83c\udf51", name: "Glutes A", title: "Hip Thrust \u00b7 RDL \u00b7 Bulgarian \u00b7 Abs" },
   { day: "Tuesday", emoji: "\ud83e\uddd8", name: "Pilates or Yoga", title: "One video \u00b7 Rope or Zone 2" },
-  { day: "Wednesday", emoji: "\ud83d\udcaa", name: "Upper Body & Core", title: "Pilates by Izzy \u00b7 Rope or Zone 2" },
+  { day: "Wednesday", emoji: "\ud83d\udcaa", name: "Upper Body & Core", title: "Pilates by Izzy \u00b7 Zone 2 Run" },
   { day: "Thursday", emoji: "\u2728", name: "Glutes B", title: "Kickback \u00b7 Abduction \u00b7 Step-Up \u00b7 Abs" },
   { day: "Friday", emoji: "\ud83e\uddd8", name: "Pilates or Yoga", title: "One video \u00b7 Rope or Zone 2" },
   { day: "Saturday", emoji: "\ud83c\udf51", name: "Glutes C", title: "Squat \u00b7 Pause \u00b7 Lateral \u00b7 Step-Up \u00b7 Abs" },
