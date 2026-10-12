@@ -11672,3 +11672,26 @@ body {
    small pictures in the corner all stay in view. */
 .home-pic.is-hers { aspect-ratio: 4 / 5; }
 .home-pic.is-hers .home-pic-text { right: 45%; }
+/* Today's Plan: one ✎ button beside the title → Add or Delete (2026-10-12). */
+.home-plan-tools { display: inline-flex; align-items: center; gap: 10px; }
+.home-plan-edit {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-r);
+  background: transparent; color: var(--text); font-size: 16px; cursor: pointer; flex: none;
+}
+.home-plan-edit.on { background: #a8105c; border-color: #a8105c; color: #fff; }
+.home-plan-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.home-plan-menu button, .home-plan-add button {
+  min-height: 42px; border-radius: 999px; border: 1px solid var(--border-r); background: transparent;
+  color: var(--text); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.home-plan-menu button:disabled, .home-plan-add button:disabled { opacity: 0.55; cursor: default; }
+.home-plan-add { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 8px; margin-top: 10px; }
+.home-plan-add input {
+  min-width: 0; min-height: 42px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-r);
+  background: transparent; color: var(--text); font-family: inherit; font-size: 16px;
+}
+.home-plan-add-icon { text-align: center; padding: 0 4px !important; }
+.home-plan-add button { padding: 0 18px; background: linear-gradient(135deg, #d63a7f, #a8105c); color: #fff; border-color: transparent; }
+.home-plan-list li.is-deleting .home-plan-item { color: var(--text); }
+.home-plan-list li.is-deleting .home-plan-ring { opacity: 0.35; }
+.home-plan-list li.is-deleting .home-plan-icon { font-size: 17px; }

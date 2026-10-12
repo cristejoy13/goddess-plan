@@ -1645,17 +1645,56 @@ const PLAN_ITEMS = [
   { id: 'winddown',  title: 'Sunset: Wind Down',  icon: '🌅' },
 ]
 
+// Her own list (2026-10-12): she can add a step or delete one. Saved in
+// gp_plan_items and synced; until she changes it, the list is PLAN_ITEMS.
+const PLAN_KEY = 'gp_plan_items';
+const stampNow = () => Date.now();
+function loadPlanItems() {
+  try {
+    const v = JSON.parse(localStorage.getItem(PLAN_KEY) || 'null');
+    if (v && Array.isArray(v.items)) return v;
+  } catch { /* fall back to her default list */ }
+  return { items: PLAN_ITEMS.map((it, i) => ({ ...it, pos: i })), deleted: {} };
+}
+function savePlanItems(v) {
+  try { localStorage.setItem(PLAN_KEY, JSON.stringify(v)); } catch { /* kept for this visit */ }
+}
+
+// Ticks are read from storage on every change, so a tick from another gadget
+// (or a new day starting while the app was open) is never overwritten.
+function saveTick(id, on) {
+  const cur = (() => { try { return JSON.parse(localStorage.getItem('gp_today_checks') || 'null'); } catch { return null; } })();
+  const same = cur && cur.date === todayKey();
+  const next = {
+    date: todayKey(),
+    checked: { ...(same ? cur.checked : {}), [id]: on },
+    at: { ...(same ? cur.at : {}), [id]: Date.now() },
+  };
+  try { localStorage.setItem('gp_today_checks', JSON.stringify(next)); } catch { /* in memory only */ }
+  return next.checked;
+}
+
 function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
+  const [plan, setPlan] = useState(loadPlanItems);
+  const [mode, setMode] = useState(null);        // null | 'menu' | 'add' | 'delete'
+  const [newTitle, setNewTitle] = useState('');
+  const [newIcon, setNewIcon] = useState('✨');
   // The workout tick is the 1,000-workout record, not a daily check that is
   // forgotten at midnight.
   const { stats: workoutStats } = useWorkouts();
 
-  // Refresh when another gadget ticks something off.
+  // Refresh when another gadget ticks something off or changes the list, and
+  // when the app comes back to the front (a new day may have started).
   useEffect(() => {
-    const onRemote = () => setChecked(loadChecks());
-    window.addEventListener('gp-remote-sync', onRemote);
-    return () => window.removeEventListener('gp-remote-sync', onRemote);
+    const refresh = () => { setChecked(loadChecks()); setPlan(loadPlanItems()); };
+    const onShow = () => { if (document.visibilityState === 'visible') refresh(); };
+    window.addEventListener('gp-remote-sync', refresh);
+    document.addEventListener('visibilitychange', onShow);
+    return () => {
+      window.removeEventListener('gp-remote-sync', refresh);
+      document.removeEventListener('visibilitychange', onShow);
+    };
   }, []);
 
   function toggle(id) {
@@ -1663,42 +1702,80 @@ function TodayPlan({ today }) {
       if (workoutStats.doneToday) unmarkWorkout(); else markWorkout();
       return;
     }
-    setChecked(prev => {
-      const next = { ...prev, [id]: !prev[id] };
-      try {
-        localStorage.setItem('gp_today_checks', JSON.stringify({ date: todayKey(), checked: next }));
-      } catch {
-        // Daily checks still work in memory if storage is unavailable.
-      }
-      return next;
-    });
+    setChecked(saveTick(id, !loadChecks()[id]));
   }
 
+  function addItem(e) {
+    e.preventDefault();
+    const title = newTitle.trim();
+    if (!title) return;
+    const cur = loadPlanItems();
+    const pos = cur.items.reduce((m, it) => Math.max(m, Number(it.pos) || 0), -1) + 1;
+    const id = `my-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+    const next = { ...cur, items: [...cur.items, { id, title, icon: newIcon.trim() || '✨', pos }] };
+    savePlanItems(next); setPlan(next);
+    setNewTitle(''); setNewIcon('✨'); setMode(null);
+  }
+
+  async function deleteItem(it) {
+    if (!(await ask(`Delete “${it.title}” from Today’s Plan? It goes from every day, on every gadget.`, { yes: 'Delete', danger: true }))) return;
+    const cur = loadPlanItems();
+    const next = { items: cur.items.filter(x => x.id !== it.id), deleted: { ...cur.deleted, [it.id]: stampNow() } };
+    savePlanItems(next); setPlan(next);
+    if (!next.items.length) setMode(null);
+  }
+
+  const items = plan.items;
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
-  const done = PLAN_ITEMS.filter(it => isChecked(it.id)).length;
-  const pct = Math.round((done / PLAN_ITEMS.length) * 100);
+  const done = items.filter(it => isChecked(it.id)).length;
+  const pct = items.length ? Math.round((done / items.length) * 100) : 0;
+  const deleting = mode === 'delete';
 
   return (
     <section className="home-plan splash-item" aria-label="Today's plan">
       <div className="home-plan-head">
         <h2 className="home-plan-title">Today&rsquo;s Plan</h2>
-        <span className="home-plan-count">{done} of {PLAN_ITEMS.length} · {pct}%</span>
+        <span className="home-plan-tools">
+          <span className="home-plan-count">{done} of {items.length} · {pct}%</span>
+          <button
+            type="button"
+            className={`home-plan-edit${mode ? ' on' : ''}`}
+            onClick={() => setMode(m => (m ? null : 'menu'))}
+            aria-expanded={!!mode}
+            aria-label={mode ? 'Done' : 'Add or delete'}
+            title={mode ? 'Done' : 'Add or delete'}
+          >{mode ? '✓' : '✎'}</button>
+        </span>
       </div>
+      {mode === 'menu' && (
+        <div className="home-plan-menu">
+          <button type="button" onClick={() => setMode('add')}>＋ Add</button>
+          <button type="button" onClick={() => setMode('delete')} disabled={!items.length}>🗑 Delete</button>
+        </div>
+      )}
+      {mode === 'add' && (
+        <form className="home-plan-add" onSubmit={addItem}>
+          <input className="home-plan-add-icon" value={newIcon} onChange={e => setNewIcon(e.target.value)} aria-label="Emoji" maxLength={4} />
+          <input className="home-plan-add-title" value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="New step" aria-label="New step" autoFocus maxLength={40} />
+          <button type="submit" disabled={!newTitle.trim()}>Add</button>
+        </form>
+      )}
       <div className="home-plan-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Done today">
         <span style={{ width: `${pct}%` }} />
       </div>
       <ul className="home-plan-list">
-        {PLAN_ITEMS.map(it => (
-          <li key={it.id}>
+        {items.map(it => (
+          <li key={it.id} className={deleting ? 'is-deleting' : undefined}>
             <button
               type="button"
               className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
-              onClick={() => toggle(it.id)}
-              aria-pressed={isChecked(it.id)}
+              onClick={() => (deleting ? deleteItem(it) : toggle(it.id))}
+              aria-pressed={deleting ? undefined : isChecked(it.id)}
+              aria-label={deleting ? `Delete ${it.title}` : undefined}
             >
               <span className="home-plan-ring" aria-hidden="true" />
               <span className="home-plan-name">{it.title}</span>
-              <span className="home-plan-icon" aria-hidden="true">{it.icon}</span>
+              <span className="home-plan-icon" aria-hidden="true">{deleting ? '🗑' : it.icon}</span>
             </button>
           </li>
         ))}
