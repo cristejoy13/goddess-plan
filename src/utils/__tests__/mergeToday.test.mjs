@@ -23,5 +23,8 @@ const pm = P(mergePlanItems(J(added), J(removed)));
 ok('an add on one gadget and a delete on another both stick', pm.items.map(i => i.id).join() === 'a,my-x');
 ok('plan merge is the same both ways', mergePlanItems(J(added), J(removed)) === mergePlanItems(J(removed), J(added)));
 
+const moved = { ...base, items: [{ ...base.items[0], pos: 1, at: 500 }, { ...base.items[1], pos: 0, at: 500 }] };
+ok('a newer order wins over the old one', P(mergePlanItems(J(base), J(moved))).items.map(i => i.id).join() === 'b,a' && mergePlanItems(J(base), J(moved)) === mergePlanItems(J(moved), J(base)));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -11695,3 +11695,11 @@ body {
 .home-plan-list li.is-deleting .home-plan-item { color: var(--text); }
 .home-plan-list li.is-deleting .home-plan-ring { opacity: 0.35; }
 .home-plan-list li.is-deleting .home-plan-icon { font-size: 17px; }
+/* ↕ Move: arrows on each step (2026-10-12). */
+.home-plan-menu { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.home-plan-move-row { cursor: default; }
+.home-plan-arrow {
+  flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-r);
+  background: transparent; color: var(--text); font-size: 18px; font-weight: 700; cursor: pointer;
+}
+.home-plan-arrow:disabled { opacity: 0.3; cursor: default; }

@@ -1677,7 +1677,7 @@ function saveTick(id, on) {
 function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
-  const [mode, setMode] = useState(null);        // null | 'menu' | 'add' | 'delete'
+  const [mode, setMode] = useState(null);        // null | 'menu' | 'add' | 'delete' | 'move'
   const [newTitle, setNewTitle] = useState('');
   const [newIcon, setNewIcon] = useState('✨');
   // The workout tick is the 1,000-workout record, not a daily check that is
@@ -1725,7 +1725,24 @@ function TodayPlan({ today }) {
     if (!next.items.length) setMode(null);
   }
 
+  // Move a step up or down: it swaps places with its neighbour, and the new
+  // order wins on every gadget.
+  function move(i, dir) {
+    const cur = loadPlanItems();
+    const list = [...cur.items];
+    const j = i + dir;
+    if (j < 0 || j >= list.length) return;
+    const t = stampNow();
+    const norm = list.map((it, k) => ({ ...it, pos: k }));
+    const a = { ...norm[i], pos: j, at: t }, b = { ...norm[j], pos: i, at: t };
+    norm[i] = b; norm[j] = a;
+    // Every step is stamped: renumbering can shift the others too.
+    const next = { ...cur, items: norm.map(it => ({ ...it, at: t })) };
+    savePlanItems(next); setPlan(next);
+  }
+
   const items = plan.items;
+  const moving = mode === 'move';
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
   const done = items.filter(it => isChecked(it.id)).length;
   const pct = items.length ? Math.round((done / items.length) * 100) : 0;
@@ -1750,6 +1767,7 @@ function TodayPlan({ today }) {
       {mode === 'menu' && (
         <div className="home-plan-menu">
           <button type="button" onClick={() => setMode('add')}>＋ Add</button>
+          <button type="button" onClick={() => setMode('move')} disabled={items.length < 2}>↕ Move</button>
           <button type="button" onClick={() => setMode('delete')} disabled={!items.length}>🗑 Delete</button>
         </div>
       )}
@@ -1764,8 +1782,16 @@ function TodayPlan({ today }) {
         <span style={{ width: `${pct}%` }} />
       </div>
       <ul className="home-plan-list">
-        {items.map(it => (
-          <li key={it.id} className={deleting ? 'is-deleting' : undefined}>
+        {items.map((it, i) => (
+          <li key={it.id} className={deleting ? 'is-deleting' : moving ? 'is-moving' : undefined}>
+            {moving ? (
+              <div className="home-plan-item home-plan-move-row">
+                <span className="home-plan-icon" aria-hidden="true">{it.icon}</span>
+                <span className="home-plan-name">{it.title}</span>
+                <button type="button" className="home-plan-arrow" onClick={() => move(i, -1)} disabled={i === 0} aria-label={`Move ${it.title} up`}>↑</button>
+                <button type="button" className="home-plan-arrow" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label={`Move ${it.title} down`}>↓</button>
+              </div>
+            ) : (
             <button
               type="button"
               className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
@@ -1777,6 +1803,7 @@ function TodayPlan({ today }) {
               <span className="home-plan-name">{it.title}</span>
               <span className="home-plan-icon" aria-hidden="true">{deleting ? '🗑' : it.icon}</span>
             </button>
+            )}
           </li>
         ))}
       </ul>

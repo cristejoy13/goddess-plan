@@ -2,7 +2,7 @@
 //
 // Two synced keys:
 //   gp_today_checks  { date, checked: { id: true|false }, at: { id: ms } }
-//   gp_plan_items    { items: [{ id, title, icon, pos }], deleted: { id: ms } }
+//   gp_plan_items    { items: [{ id, title, icon, pos, at? }], deleted: { id: ms } }
 //
 // Newest-wins on the whole value lost ticks: tick "Stretch" on the phone and
 // "Gua Sha" on the iPad a moment apart, and whichever saved second wiped the
@@ -60,9 +60,10 @@ export function mergePlanItems(localRaw, remoteRaw) {
   for (const it of [...(b.items || []), ...(a.items || [])]) {
     if (!it?.id || deleted[it.id]) continue;
     const had = byId.get(it.id);
-    // Same item on both sides: keep the one listed later in the plan, else
-    // the larger copy, so both gadgets pick the same one.
-    if (!had || JSON.stringify(it) > JSON.stringify(had)) byId.set(it.id, it);
+    // Same item on both sides: the copy changed last wins (moving a step
+    // stamps it); with equal times, the larger copy, so both gadgets agree.
+    const ti = Number(it.at) || 0, th = Number(had?.at) || 0;
+    if (!had || ti > th || (ti === th && JSON.stringify(it) > JSON.stringify(had))) byId.set(it.id, it);
   }
   const items = [...byId.values()].sort((x, y) => (x.pos - y.pos) || (x.id < y.id ? -1 : x.id > y.id ? 1 : 0));
   return JSON.stringify({ items, deleted: sorted(deleted) });
