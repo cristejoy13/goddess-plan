@@ -1632,14 +1632,18 @@ function TodayPicture({ today, owner, onOpen }) {
   );
 }
 
+// Her day, in order (2026-10-12).
 const PLAN_ITEMS = [
-  { id: 'journal',   title: 'Morning journal',      icon: '📓' },
-  { id: 'workout',   title: 'Workout right away',   icon: '💪' },
-  { id: 'breakfast', title: 'Breakfast',            icon: '🍳' },
-  { id: 'deepwork',  title: 'Deep work',            icon: '💻' },
-  { id: 'water',     title: 'Drink 2 L water',      icon: '💧' },
-  { id: 'winddown',  title: 'Wind down after 5 PM', icon: '🌙' },
-];
+  { id: 'sunbell',   title: 'Sun & Bell',         icon: '🔔' },
+  { id: 'stretch',   title: 'Stretch',            icon: '🤸' },
+  { id: 'journal',   title: 'Coffee & Journal',   icon: '☕' },
+  { id: 'guasha',    title: 'Gua Sha',            icon: '💆' },
+  { id: 'workout',   title: 'Workout',            icon: '💪' },
+  { id: 'eat',       title: 'Eat',                icon: '🍽️' },
+  { id: 'deepwork',  title: 'Deep Work',          icon: '💻' },
+  { id: 'walk',      title: 'Walk',               icon: '🚶' },
+  { id: 'winddown',  title: 'Sunset: Wind Down',  icon: '🌅' },
+]
 
 function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
