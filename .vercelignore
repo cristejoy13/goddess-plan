@@ -1,0 +1,6 @@
+# Deploying from this computer (vercel --prod) uploads every file in the
+# folder, not just what is on GitHub. Keep her own files off the live site.
+public/Lotus.png
+public/Lotus 1.png
+public/Background 2.png
+public/meal-ideas/*.png
