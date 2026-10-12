@@ -45,7 +45,11 @@ function saveProfile(p) {
 const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🏠' },
   { id: 'meal',       label: 'Meals',      icon: '🍽️' },
-  { id: 'skincare',   label: 'Body',       icon: '✨' },
+  { id: 'skincare',   label: 'Body',       icon: '✨', ownerOnly: true },
+  // THIS, her challenges and trackers app, lives at /this on this same address,
+  // so it shares her Google sign-in. A full page trip keeps her in the same
+  // home-screen app window (2026-10-12).
+  { id: 'this',       label: 'THIS',       icon: '🎯', ownerOnly: true, href: '/this/' },
 ];
 
 export default function App() {
@@ -240,11 +244,11 @@ export default function App() {
         <nav className="topbar-sections" aria-label="Sections">
           {/* Body (skincare, hair, teeth…) is hers; people who signed up get
               Home and Meals (2026-10-10). */}
-          {NAV_ITEMS.filter(item => item.id !== 'skincare' || isOwner(profile)).map(item => (
+          {NAV_ITEMS.filter(item => !item.ownerOnly || isOwner(profile)).map(item => (
             <button
               key={item.id}
               className={`topbar-sec-btn${active === item.id || (item.id === 'home' && active === 'workout') ? ' active' : ''}`}
-              onClick={() => navigate(item.id)}
+              onClick={() => (item.href ? window.location.assign(item.href) : navigate(item.id))}
               aria-current={active === item.id ? 'page' : undefined}
             >
               <span className="topbar-sec-icon">{item.icon}</span>

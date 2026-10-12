@@ -24,8 +24,10 @@ cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
 
 // ── PWA: SPA navigation fallback ──
+// /this is a separate app (THIS) served at this same address with its own
+// offline helper; never answer its pages with Goddess Plan's index.html.
 registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html'), {
-  denylist: [/^\/__/, /\/[^/?]+\.[^/]+$/],
+  denylist: [/^\/__/, /\/[^/?]+\.[^/]+$/, /^\/this(\/|$)/],
 }));
 
 // ── PWA: cache Google Fonts ──

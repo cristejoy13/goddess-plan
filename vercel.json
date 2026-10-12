@@ -28,6 +28,14 @@
     {
       "source": "/__/firebase/:path*",
       "destination": "https://goddess-plan.firebaseapp.com/__/firebase/:path*"
+    },
+    {
+      "source": "/this",
+      "destination": "https://this-alpha.vercel.app/this/"
+    },
+    {
+      "source": "/this/:path*",
+      "destination": "https://this-alpha.vercel.app/this/:path*"
     }
   ]
 }
