@@ -34,8 +34,12 @@
       "destination": "https://this-alpha.vercel.app/this/"
     },
     {
-      "source": "/this/:path*",
-      "destination": "https://this-alpha.vercel.app/this/:path*"
+      "source": "/this/",
+      "destination": "https://this-alpha.vercel.app/this/"
+    },
+    {
+      "source": "/this/:path+",
+      "destination": "https://this-alpha.vercel.app/this/:path+"
     }
   ]
 }
