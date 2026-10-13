@@ -46,10 +46,10 @@ const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🏠' },
   { id: 'meal',       label: 'Meals',      icon: '🍽️' },
   { id: 'skincare',   label: 'Body',       icon: '✨', ownerOnly: true },
-  // DareZero, her challenges app (was THIS), opens at /this on this same address,
+  // DZ = DareZero, her challenges app (was THIS), opens at /this on this same address,
   // so it shares her Google sign-in. A full page trip keeps her in the same
   // home-screen app window. Its own address is darezero.vercel.app (2026-10-13).
-  { id: 'this',       label: 'DareZero',   icon: '🎯', ownerOnly: true, href: '/this/' },
+  { id: 'this',       label: 'DZ',         icon: '🎯', ownerOnly: true, href: '/this/' },
 ];
 
 export default function App() {
