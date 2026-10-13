@@ -11705,3 +11705,9 @@ body {
 .home-plan-list li.is-dragging + li { border-top-color: transparent; }
 body.gp-dragging { overscroll-behavior: none; }
 .mt-idea-note { margin: 0; font-size: 14px; font-style: italic; color: var(--text-soft); }
+/* DZ — DareZero's mark, where G used to sit (2026-10-14). Navy letters with
+   the pink Z and heart, like the DareZero logo. */
+.dz-launcher { text-decoration: none; background: #fff5f8; border-color: rgba(232,52,122,0.45); }
+.dz-mark { font-family: 'Outfit', system-ui, sans-serif; font-weight: 900; font-size: 21px; letter-spacing: -0.04em; color: #1c1f3f; line-height: 1; }
+.dz-mark span { color: #e8347a; }
+.dz-heart { position: absolute; right: 2px; top: 1px; font-size: 11px; color: #e8347a; line-height: 1; }

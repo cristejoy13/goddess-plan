@@ -46,10 +46,8 @@ const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: '🏠' },
   { id: 'meal',       label: 'Meals',      icon: '🍽️' },
   { id: 'skincare',   label: 'Body',       icon: '✨', ownerOnly: true },
-  // DZ = DareZero, her challenges app (was THIS), opens at /this on this same address,
-  // so it shares her Google sign-in. A full page trip keeps her in the same
-  // home-screen app window. Its own address is darezero.vercel.app (2026-10-13).
-  { id: 'this',       label: 'DZ',         icon: '🎯', ownerOnly: true, href: '/this/' },
+  // DZ (DareZero) moved to the top-left corner of Home, in place of G
+  // (2026-10-14) — see DzLink in Hero.jsx.
 ];
 
 export default function App() {

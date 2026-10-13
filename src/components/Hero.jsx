@@ -1954,6 +1954,18 @@ function RuleBoard() {
   );
 }
 
+// DZ — DareZero, her challenges app, at /this on this same address so it
+// shares her Google sign-in. A full page trip keeps her in the same
+// home-screen app window.
+function DzLink() {
+  return (
+    <a className="goals-launcher dz-launcher splash-item" href="/this/" aria-label="Open DareZero">
+      <span className="dz-mark" aria-hidden="true">D<span>Z</span></span>
+      <span className="dz-heart" aria-hidden="true">♥</span>
+    </a>
+  );
+}
+
 export default function Hero({ onNavigate }) {
   const goalsData = useGoalsData();
   const [goalsOpen, setGoalsOpen] = useState(false);
@@ -1968,7 +1980,9 @@ export default function Hero({ onNavigate }) {
             the two side columns are equal, so the title sits dead centre. */}
         <div className="hero-title-row">
           <div className="hero-title-side hero-title-left">
-            <GoalsToggle achieved={goalsData.achieved} onOpen={() => setGoalsOpen(true)} />
+            {/* Her "G" became DZ (2026-10-14): it opens DareZero, where her
+                goals now live beside Challenges. People who signed up keep G. */}
+            {owner ? <DzLink /> : <GoalsToggle achieved={goalsData.achieved} onOpen={() => setGoalsOpen(true)} />}
           </div>
           <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
           <div className="hero-title-side hero-title-right">
