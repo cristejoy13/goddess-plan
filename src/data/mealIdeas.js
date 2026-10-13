@@ -11,8 +11,9 @@
 // NUTRITION_NOTES for which USDA food each ingredient is. Any 1 breakfast +
 // 1 lunch + 1 dinner + 1 snack (all 625 mixes) is 1,079–1,164 cal and
 // 55.5–66.6 g protein, inside her 1,000–1,200 cal a day. With her three
-// favourites added (2026-10-13) the 1,080 mixes run 934–1,164.
-export const DAY_RANGE = { kcalLow: 934, kcalHigh: 1164 };
+// favourites added (2026-10-13) and the cucumber burger (2026-10-14), the
+// mixes run 910–1,164.
+export const DAY_RANGE = { kcalLow: 910, kcalHigh: 1164 };
 export const MEAL_IDEAS = [
   {
     id: 'b1', time: 'breakfast', name: "Eggs, Sweet Potato & Apple", image: '/meal-ideas/b1.jpg',
@@ -593,6 +594,28 @@ export const MEAL_IDEAS = [
       "Serve warm or chilled.",
     ],
     note: "Naturally sweet, creamy, tangy, and rich in carbohydrates and fiber.",
+  },
+  // Sent 2026-10-14; counted from USDA (cucumber with peel, raw).
+  {
+    id: 'b6', time: 'breakfast', name: 'Cucumber Egg Yogurt Burger', image: '/meal-ideas/b6.jpg',
+    kcal: 228, protein: 19.2, carbs: 12.2, fat: 11.8,
+    ingredients: [
+      "Fresh cucumber — 200 g (about 1 medium cucumber)",
+      "2 whole boiled eggs — 100 g",
+      "Plain Greek yogurt — 50 g (about ¼ cup)",
+      "Calamansi — 2 pieces (about 20 g juice)",
+      "Fresh parsley — 2 g (about ½ tbsp chopped)",
+      "Ground black pepper — 0.3 g (about ⅛ tsp)",
+      "Salt — a small pinch",
+    ],
+    steps: [
+      "Boil the eggs: place 2 eggs in boiling water and cook for 9–11 minutes, then move them to cold water and peel.",
+      "Make the filling: mash the eggs in a bowl. Add 50 g Greek yogurt, the juice of 2 calamansi, salt, black pepper and finely chopped parsley. Mix until creamy.",
+      "Prepare the cucumber: wash it, cut 6 thick, wide round slices of about equal size, and pat them dry with a paper towel.",
+      "Assemble: put 1 cucumber slice on a plate, add a generous spoonful of filling, and cover with another slice. Repeat to make 3 mini burgers.",
+      "Serve: sprinkle a little black pepper, garnish with parsley, and serve right away.",
+    ],
+    note: "Makes about 3 mini burgers — cucumber instead of bread. Optional: 1 tsp (5 g) olive oil in the filling adds about 45 cal and 5 g fat. Use a wide cucumber; refrigerate leftovers promptly.",
   },
 ];
 
