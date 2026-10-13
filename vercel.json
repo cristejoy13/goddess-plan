@@ -30,16 +30,19 @@
       "destination": "https://goddess-plan.firebaseapp.com/__/firebase/:path*"
     },
     {
-      "source": "/this",
-      "destination": "https://this-alpha.vercel.app/this/"
-    },
-    {
       "source": "/this/",
       "destination": "https://this-alpha.vercel.app/this/"
     },
     {
       "source": "/this/:path+",
       "destination": "https://this-alpha.vercel.app/this/:path+"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/this",
+      "destination": "/this/",
+      "permanent": false
     }
   ]
 }
