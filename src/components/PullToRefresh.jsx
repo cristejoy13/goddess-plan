@@ -49,6 +49,8 @@ export default function PullToRefresh() {
     const onMove = (e) => {
       const s = startRef.current;
       if (!s) return;
+      // A Today's Plan step is being dragged: this is not a pull.
+      if (document.body.classList.contains('gp-dragging')) { startRef.current = null; show(0); return; }
       const dx = e.touches[0].clientX - s.x;
       const dy = e.touches[0].clientY - s.y;
       if (dy <= 0 || Math.abs(dx) > dy) { if (dy < -10 || Math.abs(dx) > 30) { startRef.current = null; show(0); } return; }

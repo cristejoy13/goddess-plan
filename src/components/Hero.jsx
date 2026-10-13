@@ -1674,10 +1674,116 @@ function saveTick(id, on) {
   return next.checked;
 }
 
+// Hold-and-drag reordering for a list (2026-10-12). A short hold (about a
+// third of a second) picks the step up; moving the finger before that is a
+// normal scroll. While held, the page does not scroll and pull-to-refresh
+// stays out of the way. A mouse works the same, with a hold too.
+const HOLD_MS = 320;
+function useDragOrder(list, onDrop) {
+  const [order, setOrder] = useState(null);       // ids while dragging
+  const [draggingId, setDraggingId] = useState(null);
+  const els = useRef(new Map());
+  const st = useRef(null);
+  const dropped = useRef(0);
+  const listRef = useRef(list);
+  const dropRef = useRef(onDrop);
+  useEffect(() => { listRef.current = list; dropRef.current = onDrop; });
+
+  const byId = new Map(list.map(it => [it.id, it]));
+  const items = order ? order.map(id => byId.get(id)).filter(Boolean) : list;
+
+  function end(commit) {
+    const s = st.current;
+    st.current = null;
+    document.body.classList.remove('gp-dragging');
+    if (!s) return;
+    clearTimeout(s.timer);
+    if (s.active) {
+      dropped.current = Date.now();
+      const now = listRef.current;
+      if (commit && s.order.join() !== now.map(it => it.id).join()) {
+        const map = new Map(now.map(it => [it.id, it]));
+        dropRef.current(s.order.map(id => map.get(id)).filter(Boolean));
+      }
+    }
+    setOrder(null); setDraggingId(null);
+  }
+
+  useEffect(() => {
+    // While a step is held, stop the page from scrolling under the finger.
+    const block = e => { if (st.current?.active) e.preventDefault(); };
+    window.addEventListener('touchmove', block, { passive: false });
+    return () => window.removeEventListener('touchmove', block);
+  }, []);
+
+  // Finger and mouse share the same three steps.
+  function start(id, x, y) {
+    const s = { id, x, y, active: false, order: listRef.current.map(it => it.id) };
+    s.timer = setTimeout(() => {
+      s.active = true;
+      document.body.classList.add('gp-dragging');
+      try { navigator.vibrate?.(10); } catch { /* not on iPhone */ }
+      setOrder(s.order); setDraggingId(id);
+    }, HOLD_MS);
+    st.current = s;
+  }
+  function moveTo(x, y) {
+    const s = st.current;
+    if (!s) return;
+    if (!s.active) {
+      if (Math.abs(x - s.x) > 8 || Math.abs(y - s.y) > 8) { clearTimeout(s.timer); st.current = null; }
+      return;
+    }
+    // The step under the finger decides where the held one goes.
+    let target = -1;
+    s.order.forEach((other, k) => {
+      const r = els.current.get(other)?.getBoundingClientRect();
+      if (r && y >= r.top && y <= r.bottom) target = k;
+    });
+    const from = s.order.indexOf(s.id);
+    if (target >= 0 && target !== from) {
+      const next = [...s.order];
+      next.splice(from, 1);
+      next.splice(target, 0, s.id);
+      s.order = next;
+      setOrder(next);
+    }
+  }
+
+  function handlers(id) {
+    return {
+      onTouchStart: e => { if (e.touches.length === 1) start(id, e.touches[0].clientX, e.touches[0].clientY); },
+      onTouchMove: e => moveTo(e.touches[0].clientX, e.touches[0].clientY),
+      onTouchEnd: () => end(true),
+      onTouchCancel: () => end(st.current?.active),
+      onMouseDown: e => { if (e.button === 0) start(id, e.clientX, e.clientY); },
+      onContextMenu: e => { if (st.current) e.preventDefault(); },
+    };
+  }
+
+  useEffect(() => {
+    // A mouse can wander off the step while dragging, so follow it everywhere.
+    const mm = e => { if (st.current) moveTo(e.clientX, e.clientY); };
+    const mu = () => { if (st.current) end(true); };
+    window.addEventListener('mousemove', mm);
+    window.addEventListener('mouseup', mu);
+    return () => { window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+  });
+
+  return {
+    items,
+    draggingId,
+    handlers,
+    register: (id, el) => { if (el) els.current.set(id, el); else els.current.delete(id); },
+    // The tap that ends a drag must not also tick the step.
+    justDropped: () => Date.now() - dropped.current < 400,
+  };
+}
+
 function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
-  const [mode, setMode] = useState(null);        // null | 'menu' | 'add' | 'delete' | 'move'
+  const [mode, setMode] = useState(null);        // null | 'menu' | 'add' | 'delete'
   const [newTitle, setNewTitle] = useState('');
   const [newIcon, setNewIcon] = useState('✨');
   // The workout tick is the 1,000-workout record, not a daily check that is
@@ -1725,24 +1831,17 @@ function TodayPlan({ today }) {
     if (!next.items.length) setMode(null);
   }
 
-  // Move a step up or down: it swaps places with its neighbour, and the new
-  // order wins on every gadget.
-  function move(i, dir) {
-    const cur = loadPlanItems();
-    const list = [...cur.items];
-    const j = i + dir;
-    if (j < 0 || j >= list.length) return;
+  // Hold a step and drag it (2026-10-12): the list reorders as she drags,
+  // and on letting go the new order is saved and stamped, so it wins on every
+  // gadget.
+  function saveOrder(list) {
     const t = stampNow();
-    const norm = list.map((it, k) => ({ ...it, pos: k }));
-    const a = { ...norm[i], pos: j, at: t }, b = { ...norm[j], pos: i, at: t };
-    norm[i] = b; norm[j] = a;
-    // Every step is stamped: renumbering can shift the others too.
-    const next = { ...cur, items: norm.map(it => ({ ...it, at: t })) };
+    const next = { ...loadPlanItems(), items: list.map((it, k) => ({ ...it, pos: k, at: t })) };
     savePlanItems(next); setPlan(next);
   }
+  const drag = useDragOrder(plan.items, saveOrder);
 
-  const items = plan.items;
-  const moving = mode === 'move';
+  const items = drag.items;
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
   const done = items.filter(it => isChecked(it.id)).length;
   const pct = items.length ? Math.round((done / items.length) * 100) : 0;
@@ -1767,7 +1866,6 @@ function TodayPlan({ today }) {
       {mode === 'menu' && (
         <div className="home-plan-menu">
           <button type="button" onClick={() => setMode('add')}>＋ Add</button>
-          <button type="button" onClick={() => setMode('move')} disabled={items.length < 2}>↕ Move</button>
           <button type="button" onClick={() => setMode('delete')} disabled={!items.length}>🗑 Delete</button>
         </div>
       )}
@@ -1782,20 +1880,17 @@ function TodayPlan({ today }) {
         <span style={{ width: `${pct}%` }} />
       </div>
       <ul className="home-plan-list">
-        {items.map((it, i) => (
-          <li key={it.id} className={deleting ? 'is-deleting' : moving ? 'is-moving' : undefined}>
-            {moving ? (
-              <div className="home-plan-item home-plan-move-row">
-                <span className="home-plan-icon" aria-hidden="true">{it.icon}</span>
-                <span className="home-plan-name">{it.title}</span>
-                <button type="button" className="home-plan-arrow" onClick={() => move(i, -1)} disabled={i === 0} aria-label={`Move ${it.title} up`}>↑</button>
-                <button type="button" className="home-plan-arrow" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label={`Move ${it.title} down`}>↓</button>
-              </div>
-            ) : (
+        {items.map(it => (
+          <li
+            key={it.id}
+            ref={el => drag.register(it.id, el)}
+            className={[deleting && 'is-deleting', drag.draggingId === it.id && 'is-dragging'].filter(Boolean).join(' ') || undefined}
+            {...(deleting ? {} : drag.handlers(it.id))}
+          >
             <button
               type="button"
               className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
-              onClick={() => (deleting ? deleteItem(it) : toggle(it.id))}
+              onClick={() => { if (drag.justDropped()) return; if (deleting) deleteItem(it); else toggle(it.id); }}
               aria-pressed={deleting ? undefined : isChecked(it.id)}
               aria-label={deleting ? `Delete ${it.title}` : undefined}
             >
@@ -1803,7 +1898,6 @@ function TodayPlan({ today }) {
               <span className="home-plan-name">{it.title}</span>
               <span className="home-plan-icon" aria-hidden="true">{deleting ? '🗑' : it.icon}</span>
             </button>
-            )}
           </li>
         ))}
       </ul>
