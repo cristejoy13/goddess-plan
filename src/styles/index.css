@@ -11711,3 +11711,9 @@ body.gp-dragging { overscroll-behavior: none; }
 .dz-mark { font-family: 'Outfit', system-ui, sans-serif; font-weight: 900; font-size: 21px; letter-spacing: -0.04em; color: #1c1f3f; line-height: 1; }
 .dz-mark span { color: #e8347a; }
 .dz-heart { position: absolute; right: 2px; top: 1px; font-size: 11px; color: #e8347a; line-height: 1; }
+/* The notebook's two choices keep a solid backing, so her Home picture
+   behind the notebook never shows through and fades the words. */
+:root:not([data-mode="light"]) .daily-notebook-option-notes { background: linear-gradient(rgba(255,92,157,0.08), rgba(255,92,157,0.08)), #10051a; }
+:root:not([data-mode="light"]) .daily-notebook-option-checklist { background: linear-gradient(rgba(240,204,96,0.08), rgba(240,204,96,0.08)), #10051a; }
+:root:not([data-mode="light"]) .daily-notebook-option-notes.active { background: linear-gradient(rgba(255,92,157,0.14), rgba(255,92,157,0.14)), #10051a; }
+:root:not([data-mode="light"]) .daily-notebook-option-checklist.active { background: linear-gradient(rgba(240,204,96,0.14), rgba(240,204,96,0.14)), #10051a; }
