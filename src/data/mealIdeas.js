@@ -10,8 +10,9 @@
 // Legacy) for every ingredient, spices included, at her request — see
 // NUTRITION_NOTES for which USDA food each ingredient is. Any 1 breakfast +
 // 1 lunch + 1 dinner + 1 snack (all 625 mixes) is 1,079–1,164 cal and
-// 55.5–66.6 g protein, inside her 1,000–1,200 cal a day.
-export const DAY_RANGE = { kcalLow: 1079, kcalHigh: 1164 };
+// 55.5–66.6 g protein, inside her 1,000–1,200 cal a day. With her three
+// favourites added (2026-10-13) the 1,080 mixes run 934–1,164.
+export const DAY_RANGE = { kcalLow: 934, kcalHigh: 1164 };
 export const MEAL_IDEAS = [
   {
     id: 'b1', time: 'breakfast', name: "Eggs, Sweet Potato & Apple", image: '/meal-ideas/b1.jpg',
@@ -526,6 +527,73 @@ export const MEAL_IDEAS = [
       "Serve.",
     ],
   },
+  // Her favourites (sent 2026-10-13), counted from USDA like the others
+  // (calamansi as lime juice, 20 g per 2 pieces). Kept at her portions: on a
+  // day with all three, the total runs a little under 1,000 (her choice).
+  {
+    id: 's6', time: 'snacks', name: "Apple & Greek Yogurt", image: '/meal-ideas/s6.jpg',
+    kcal: 141, protein: 10.4, carbs: 21.8, fat: 2.2,
+    ingredients: [
+      "Fresh apple — 130 g (about ¾ medium apple)",
+      "Plain Greek yogurt — 100 g (about ⅓ cup)",
+    ],
+    steps: [
+      "Wash the apple thoroughly.",
+      "Slice the apple into bite-sized pieces.",
+      "Place Greek yogurt in a bowl.",
+      "Arrange the apple slices on top or beside the yogurt.",
+      "Serve fresh.",
+    ],
+    note: "Refrigerate the apple and yogurt before eating for a colder snack.",
+  },
+  {
+    id: 'l6', time: 'lunch', name: "Creamy Calamansi Eggs & Green Peas", image: '/meal-ideas/l6.jpg',
+    kcal: 319, protein: 22.9, carbs: 19.2, fat: 16.9,
+    ingredients: [
+      "2 boiled eggs — 100 g without shells",
+      "Boiled green peas — 100 g (about ⅔ cup)",
+      "Plain Greek yogurt — 50 g (about ¼ cup)",
+      "Extra virgin olive oil — 5 g (about 1 tsp)",
+      "Calamansi — 2 pieces (about 20 g juice)",
+      "Salt — a small pinch",
+      "Ground black pepper — 0.3 g (about ⅛ tsp)",
+    ],
+    steps: [
+      "Boil eggs for 9–11 minutes.",
+      "Cool, peel, and slice the eggs.",
+      "Boil green peas until tender.",
+      "Drain the green peas.",
+      "In a small bowl, mix 50 g Greek yogurt, 5 g olive oil, the juice from 2 calamansi, a pinch of salt and ground black pepper.",
+      "Stir until the dressing is creamy.",
+      "Place eggs and peas on a plate.",
+      "Pour the yogurt dressing over them.",
+      "Gently mix and serve.",
+    ],
+    note: "Creamy, slightly tangy, savory, and protein-rich.",
+  },
+  {
+    id: 'd6', time: 'dinner', name: "Sweet Potato with Calamansi Yogurt", image: '/meal-ideas/d6.jpg',
+    kcal: 222, protein: 10.2, carbs: 31.4, fat: 6.7,
+    ingredients: [
+      "Cooked sweet potato — 150 g (about 1 medium sweet potato)",
+      "Plain Greek yogurt — 80 g (about ⅓ cup)",
+      "Extra virgin olive oil — 5 g (about 1 tsp)",
+      "Calamansi — 2 pieces (about 20 g juice)",
+      "Salt — a small pinch",
+    ],
+    steps: [
+      "Wash and peel the sweet potato.",
+      "Cut into bite-sized cubes.",
+      "Boil or steam until tender, approximately 12–20 minutes.",
+      "Drain and allow to cool slightly.",
+      "In a small bowl, combine 80 g Greek yogurt, 5 g olive oil, the juice from 2 calamansi and a small pinch of salt.",
+      "Stir until smooth and creamy.",
+      "Arrange sweet potato on a plate.",
+      "Pour the dressing over the potato.",
+      "Serve warm or chilled.",
+    ],
+    note: "Naturally sweet, creamy, tangy, and rich in carbohydrates and fiber.",
+  },
 ];
 
 // Her notes for every meal (sent 2026-10-11; nutrition notes updated when
@@ -541,6 +609,8 @@ export const NUTRITION_NOTES = [
   'The cups and spoons are a guide; the grams are exact.',
   'Ingredient brands and preparation methods can change nutrition values.',
   'Unlisted toppings must be counted separately.',
+  'Calamansi: 2 pieces ≈ 20 g of juice. Salt adds sodium but no calories.',
+  'Check your yogurt label for accuracy.',
 ];
 
 export const PREP_TIPS = [

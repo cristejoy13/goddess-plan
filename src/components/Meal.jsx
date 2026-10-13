@@ -1148,6 +1148,7 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
         <div className="mt-nutri-title">Steps</div>
         <ol className="mt-idea-steps">{idea.steps.map((x, i) => <li key={i}>{x}</li>)}</ol>
       </>}
+      {idea.note && <p className="mt-idea-note">{idea.note}</p>}
       {/* Her notes for every meal: getting ahead, and how the numbers were worked out. */}
       <details className="mt-idea-notes">
         <summary>Prep tips</summary>
