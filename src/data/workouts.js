@@ -1007,7 +1007,7 @@ export const WORKOUT_DAYS = [
       // Ab wheel swapped for a no-equipment move (2026-10-14). The hollow
       // body hold does the same job as the wheel — the whole front of the
       // core resisting an arched back — on the floor, with nothing to buy.
-      ...absFinisher('Hollow Body Hold', '3 × 30 sec · lie on your back, lower back pressed into the floor · arms and legs long and lifted · bend your knees to make it easier', null),
+      ...absFinisher('Hollow Body Hold', '3 × 30 sec · lie on your back, lower back pressed into the floor · arms and legs long and lifted · bend your knees to make it easier', C('hollow-hold')),
       ...walk('30–60'),
     ],
     trackLifts: true,
