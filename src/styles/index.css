@@ -11755,3 +11755,14 @@ body.gp-dragging { overscroll-behavior: none; }
   .ex-card-num { width: 20px; height: 20px; font-size: 11px; top: 6px; left: 6px; }
   .ex-card-emoji { font-size: 28px; }
 }
+
+/* Workout day (2026-10-14): the pills and the picture cards sit centred. */
+.dd-stats { justify-content: center; }
+.ex-cards { justify-content: center; }
+@media (max-width: 699px) { .ex-cards { grid-template-columns: repeat(var(--ex-n, 3), minmax(0, 112px)); } }
+@media (min-width: 700px) { .ex-cards { grid-template-columns: repeat(var(--ex-n, 3), 128px); } }
+
+/* Settings at the top: just the flower and the word, no box (2026-10-14). */
+.topbar-sec-btn.topbar-settings-btn,
+[data-mode="light"] .topbar-sec-btn.topbar-settings-btn { border-color: transparent; background: transparent; box-shadow: none; }
+.topbar-sec-btn.topbar-settings-btn.active .topbar-sec-label { color: var(--rose); }

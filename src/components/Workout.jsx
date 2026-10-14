@@ -45,10 +45,6 @@ function SectionTitle({ children }) {
   return <h2 className="day-sec-title"><span>{children}</span></h2>;
 }
 
-function NoteBox({ type, text }) {
-  return <div className={`note-box note-${type}`} style={{ marginBottom: 14 }}>{text}</div>;
-}
-
 // The whole session is one workout, so the day page has one button for it,
 // at the top where she sees it first. Only on today.
 function TodayDoneButton() {
@@ -83,28 +79,6 @@ function useCardio() {
     };
   }, []);
   return log;
-}
-
-function CardioSummary({ day, dayIndex }) {
-  const log = useCardio();
-  const kinds = [...new Set(day.exercises.filter(e => e.log).map(e => e.log))];
-  return (
-    <div className="cardio-summary">
-      {kinds.map(kind => {
-        const { last, best } = cardioStats(log, kind);
-        const L = CARDIO_LABEL[kind];
-        return (
-          <div key={kind} className="cardio-row">
-            <span className="cardio-row-name">{L.icon} {L.name}</span>
-            <span className="cardio-row-nums">
-              {best ? <>Last <b>{last.min} min</b> · Best <b>{best.min} min</b> 🏅</> : 'No time yet'}
-            </span>
-            <CardioNote kind={kind} dayIndex={dayIndex} compact />
-          </div>
-        );
-      })}
-    </div>
-  );
 }
 
 function CardioNote({ kind, dayIndex, compact }) {
@@ -160,10 +134,10 @@ function DayDetailPage({ day, dayIndex, isToday, onBack }) {
   // Every section starts closed so the whole day is one screen — that is the
   // point of the pills. More than one can be open at a time: doing a session
   // means keeping the part you are on open while you look ahead to the next.
-  // Small square cards with her pictures, in order (2026-10-14). One is open
-  // at a time, the first to start with, so the day starts where she starts.
+  // Small square cards with her pictures, in order (2026-10-14). Nothing is
+  // open until she clicks a picture (2026-10-14); one open at a time.
   const groups = groupExercises(day.exercises);
-  const [openSec, setOpenSec] = useState(0);
+  const [openSec, setOpenSec] = useState(null);
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/(\d+(?:–\d+)?)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
@@ -189,7 +163,6 @@ function DayDetailPage({ day, dayIndex, isToday, onBack }) {
       </div>
 
       {isToday && <TodayDoneButton />}
-      {day.exercises.some(e => e.log) && <CardioSummary day={day} dayIndex={dayIndex} />}
 
       <SectionTitle>Workout</SectionTitle>
 
@@ -202,8 +175,7 @@ function DayDetailPage({ day, dayIndex, isToday, onBack }) {
         <div className="dd-stat dd-stat-count"><span>📋</span>{day.exercises.filter(e => !e.heading).length} exercises</div>
       </div>
 
-      {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
-      <div className="ex-cards" role="tablist" aria-label="Parts of the workout">
+      <div className="ex-cards" role="tablist" aria-label="Parts of the workout" style={{ '--ex-n': groups.length }}>
         {groups.map((g, gi) => {
           const label = cardLabel(g.heading);
           return (

@@ -957,7 +957,6 @@ export const WORKOUT_DAYS = [
     day: 'Wednesday · Upper Body & Core', title: 'Pilates by Izzy · Zone 2 Run',
     sub: '20–35 min video · Zone 2 run · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
-    noteBefore: { type: 'rose', text: '💪 Keep shoulders moderate. Slim and toned, not big.' },
     exercises: [
       H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core', C('pilates')),
       ...IZZY_ABS,

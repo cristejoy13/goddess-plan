@@ -12,7 +12,6 @@ import { GoalWatcher } from './components/Goals';
 import { WorkoutToast } from './components/WorkoutTracker';
 import { SignupGate } from './components/Onboarding';
 import { isOwner } from './utils/userPlan';
-import { getAvatarByProfile } from './avatars';
 import './styles/index.css';
 
 const DEFAULT_PROFILE = {
@@ -225,8 +224,6 @@ export default function App() {
     </>
   );
 
-  // Fall back to a default so the Settings entry point always exists (fresh devices have no avatarId)
-  const avatar = getAvatarByProfile(profile) || { emoji: '🌸', bg: 'rgba(255,92,157,0.25)' };
 
   return (
     <>
@@ -258,7 +255,7 @@ export default function App() {
             onClick={() => navigate('settings')}
             aria-current={active === 'settings' ? 'page' : undefined}
           >
-            <span className="topbar-sec-icon">{avatar.emoji}</span>
+            <span className="topbar-sec-icon">🌸</span>
             <span className="topbar-sec-label">Settings</span>
           </button>
         </nav>
