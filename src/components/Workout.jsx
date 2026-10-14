@@ -26,11 +26,11 @@ function groupExercises(exercises = []) {
   let current = null;
   for (const ex of exercises) {
     if (ex.heading) {
-      current = { heading: ex.heading, hint: ex.hint, tone: ex.tone, items: [] };
+      current = { heading: ex.heading, hint: ex.hint, tone: ex.tone, cover: ex.cover, items: [] };
       groups.push(current);
     } else {
       if (!current) {
-        current = { heading: null, hint: null, tone: null, items: [] };
+        current = { heading: null, hint: null, tone: null, cover: null, items: [] };
         groups.push(current);
       }
       current.items.push(ex);
@@ -160,12 +160,10 @@ function DayDetailPage({ day, dayIndex, isToday, onBack }) {
   // Every section starts closed so the whole day is one screen — that is the
   // point of the pills. More than one can be open at a time: doing a session
   // means keeping the part you are on open while you look ahead to the next.
+  // Small square cards with her pictures, in order (2026-10-14). One is open
+  // at a time, the first to start with, so the day starts where she starts.
   const groups = groupExercises(day.exercises);
-  const [openSecs, setOpenSecs] = useState({});
-  const allOpen = groups.length > 0 && groups.every((_, i) => openSecs[i]);
-  const toggleSec = (i) => setOpenSecs(v => ({ ...v, [i]: !v[i] }));
-  const toggleAll = () =>
-    setOpenSecs(allOpen ? {} : Object.fromEntries(groups.map((_, i) => [i, true])));
+  const [openSec, setOpenSec] = useState(0);
   // Parse stats from day.sub string
   const durationMatch = day.sub?.match(/(\d+(?:–\d+)?)\s*min/);
   const duration = durationMatch ? `${durationMatch[1]} min` : null;
@@ -205,61 +203,71 @@ function DayDetailPage({ day, dayIndex, isToday, onBack }) {
       </div>
 
       {day.noteBefore && <NoteBox type={day.noteBefore.type} text={day.noteBefore.text} />}
-      <div className="exercise-hint ex-hint-row">
-        <span>
-          👆 Open a section. Tap ▶ for YouTube or an exercise for form.
-          {day.trackLifts && ' Use the grey bar to log sets, reps, and weight.'}
-        </span>
-        <button className="ex-sec-all" onClick={toggleAll}>
-          {allOpen ? 'Close all' : 'Open all'}
-        </button>
-      </div>
-      <div className="ex-secs">
+      <div className="ex-cards" role="tablist" aria-label="Parts of the workout">
         {groups.map((g, gi) => {
-          const open = !!openSecs[gi];
+          const label = cardLabel(g.heading);
           return (
-            <div
+            <button
               key={gi}
-              className={`ex-sec${open ? ' is-open' : ''}${g.tone === 'core' ? ' ex-sec-core' : ''}`}
+              type="button"
+              role="tab"
+              aria-selected={openSec === gi}
+              className={`ex-card${openSec === gi ? ' is-open' : ''}${g.cover ? '' : ' no-cover'}${g.tone === 'core' ? ' ex-card-core' : ''}`}
+              onClick={() => setOpenSec(o => (o === gi ? null : gi))}
             >
-              <button
-                className="ex-sec-pill"
-                onClick={() => toggleSec(gi)}
-                aria-expanded={open}
-              >
-                <span className="ex-sec-name">{g.heading || 'Exercises'}</span>
-                <span className="ex-sec-count">{g.items.length}</span>
-                <span className="ex-sec-caret">▾</span>
-              </button>
-
-              {open && (
-                <div className="ex-sec-body">
-                  {g.hint && <div className="ex-sec-hint">{g.hint}</div>}
-                  <ul className="workout-list">
-                    {g.items.map((ex, i) => (
-                      <li key={i}>
-                        <a
-                          className={ex.url ? 'ex-link ex-video' : 'ex-link'}
-                          href={ex.url || `https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >{ex.url ? '▶ ' : ''}{ex.name}</a>
-                        {ex.detail ? <>{' '}— {ex.detail}</> : null}
-                        {ex.log && <CardioNote kind={ex.log} dayIndex={dayIndex} />}
-                        {day.trackLifts && isTrackable(ex) && (
-                          <LiftTracker exercise={ex} lifts={lifts} onChange={setLifts} />
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+              {g.cover
+                ? <img src={g.cover} alt="" loading="lazy" />
+                : <span className="ex-card-emoji" aria-hidden="true">{label.emoji}</span>}
+              <span className="ex-card-num" aria-hidden="true">{gi + 1}</span>
+              <span className="ex-card-label">{label.text}</span>
+            </button>
           );
         })}
       </div>
+
+      {openSec != null && groups[openSec] && (() => {
+        const g = groups[openSec];
+        return (
+          <div className={`ex-sec is-open ex-card-body${g.tone === 'core' ? ' ex-sec-core' : ''}`} role="tabpanel">
+            <div className="ex-card-body-head">
+              <span>{g.heading || 'Exercises'}</span>
+              <span className="ex-sec-count">{g.items.length}</span>
+            </div>
+            <div className="ex-sec-body">
+              {g.hint && <div className="ex-sec-hint">{g.hint}</div>}
+              <ul className="workout-list">
+                {g.items.map((ex, i) => (
+                  <li key={i}>
+                    <a
+                      className={ex.url ? 'ex-link ex-video' : 'ex-link'}
+                      href={ex.url || `https://www.youtube.com/results?search_query=how+to+do+${encodeURIComponent(ex.name)}+proper+form`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >{ex.url ? '▶ ' : ''}{ex.name}</a>
+                    {ex.detail ? <>{' '}— {ex.detail}</> : null}
+                    {ex.log && <CardioNote kind={ex.log} dayIndex={dayIndex} />}
+                    {day.trackLifts && isTrackable(ex) && (
+                      <LiftTracker exercise={ex} lifts={lifts} onChange={setLifts} />
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
+}
+
+// "🔥 After · Abs Finisher" → { emoji: '🔥', text: 'Abs Finisher' }: the
+// last part of the heading is the short name for the card.
+function cardLabel(heading) {
+  const h = String(heading || 'Exercises');
+  const m = h.match(/^(\p{Extended_Pictographic}\uFE0F?)\s*/u);
+  const rest = m ? h.slice(m[0].length) : h;
+  const parts = rest.split('·').map(x => x.trim()).filter(Boolean);
+  return { emoji: m ? m[1] : '✨', text: parts[parts.length - 1] || rest };
 }
 
 // Workouts open from Home (2026-10-10): a day in the week strip or today's

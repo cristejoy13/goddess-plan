@@ -95,7 +95,7 @@ const GLUTES = {
 const ABS_DAY = [['Dead Bug', '10 each side'], ['Reverse Crunch', '15'], ['Bicycle Crunch', '20'], ['Side Plank', '30 sec each side'], ['Plank', '45 sec']];
 // One abs move after each glute day, a different one each day.
 const ABS_FINISHER = {
-  gym:  { A: ['Cable Crunch', '15'], B: ['Hanging Knee Raise', '12'], C: ['Ab Wheel Rollout (from knees)', '10'] },
+  gym:  { A: ['Cable Crunch', '15'], B: ['Hanging Knee Raise', '12'], C: ['Hollow Body Hold', '30 sec'] },
   home: { A: ['Reverse Crunch', '15'], B: ['Dead Bug', '10 each side'], C: ['Plank', '45 sec'] },
 };
 

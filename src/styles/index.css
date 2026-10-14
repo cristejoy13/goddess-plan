@@ -11717,3 +11717,41 @@ body.gp-dragging { overscroll-behavior: none; }
 :root:not([data-mode="light"]) .daily-notebook-option-checklist { background: linear-gradient(rgba(240,204,96,0.08), rgba(240,204,96,0.08)), #10051a; }
 :root:not([data-mode="light"]) .daily-notebook-option-notes.active { background: linear-gradient(rgba(255,92,157,0.14), rgba(255,92,157,0.14)), #10051a; }
 :root:not([data-mode="light"]) .daily-notebook-option-checklist.active { background: linear-gradient(rgba(240,204,96,0.14), rgba(240,204,96,0.14)), #10051a; }
+
+/* ── Workout day: small square cards with her pictures (2026-10-14) ──────
+   One card per part of the session, in order (1 Main Workout, 2 Abs
+   Finisher, 3 Evening Walk…). Clicking one opens its exercises below. */
+.ex-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin-top: 6px; }
+@media (min-width: 700px) { .ex-cards { grid-template-columns: repeat(auto-fill, 128px); } }
+.ex-card {
+  position: relative; aspect-ratio: 1; min-width: 0; padding: 0; overflow: hidden;
+  border-radius: 16px; border: 2px solid transparent; background: var(--card);
+  cursor: pointer; font-family: inherit; text-align: left;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.22); transition: transform 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ex-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+.ex-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,4,16,0) 45%, rgba(20,4,16,0.82) 100%); }
+.ex-card.no-cover { background: linear-gradient(160deg, #d63a7f, #6b1f5a); }
+.ex-card-emoji { position: absolute; inset: 0 0 26px; display: grid; place-items: center; font-size: 34px; }
+.ex-card-num {
+  position: absolute; top: 7px; left: 7px; z-index: 1; width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; background: rgba(255,255,255,0.92); color: #a8105c; font-size: 12px; font-weight: 800;
+}
+.ex-card-label {
+  position: absolute; left: 8px; right: 8px; bottom: 7px; z-index: 1;
+  color: #fff; font-size: 12.5px; font-weight: 700; line-height: 1.2; text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+}
+.ex-card.is-open { border-color: #ff5c9d; transform: translateY(-2px); }
+.ex-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+[data-mode="light"] .ex-card.is-open { border-color: #a8105c; }
+.ex-card-body { margin-top: 12px; }
+.ex-card-body-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px 0; font-weight: 700; color: var(--text); }
+/* Always three small cards across on a phone, so a day never leaves one alone. */
+@media (max-width: 699px) {
+  .ex-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .ex-card { border-radius: 14px; }
+  .ex-card-label { font-size: 11.5px; left: 6px; right: 6px; bottom: 6px; }
+  .ex-card-num { width: 20px; height: 20px; font-size: 11px; top: 6px; left: 6px; }
+  .ex-card-emoji { font-size: 28px; }
+}

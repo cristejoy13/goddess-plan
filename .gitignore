@@ -26,3 +26,6 @@ dist-ssr
 
 # Her full-size meal pictures; the app uses the shrunk .jpg copies.
 public/meal-ideas/*.png
+
+# Her full-size workout pictures; the app uses shrunk copies.
+public/workouts/originals/
