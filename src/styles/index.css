@@ -11766,3 +11766,7 @@ body.gp-dragging { overscroll-behavior: none; }
 .topbar-sec-btn.topbar-settings-btn,
 [data-mode="light"] .topbar-sec-btn.topbar-settings-btn { border-color: transparent; background: transparent; box-shadow: none; }
 .topbar-sec-btn.topbar-settings-btn.active .topbar-sec-label { color: var(--rose); }
+/* Her DareZero logo inside the same floating circle (2026-10-15). */
+.dz-launcher { overflow: hidden; padding: 0; }
+.dz-launcher { background: #f7f3ee; }
+.dz-logo { width: 74%; height: 74%; object-fit: contain; mix-blend-mode: multiply; }
