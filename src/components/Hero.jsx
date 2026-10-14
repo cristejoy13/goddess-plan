@@ -2,8 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePlanDays } from '../utils/userPlan';
 import { mergeNotebookBlobs } from '../utils/mergeNotebook';
-import { GoalsToggle, GoalsPanel } from './Goals';
-import { useGoalsData } from '../utils/useGoalsData';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
 import { ask } from '../utils/ask';
@@ -1957,7 +1955,29 @@ function RuleBoard() {
 // DZ — DareZero, her challenges app, at /this on this same address so it
 // shares her Google sign-in. A full page trip keeps her in the same
 // home-screen app window.
-function DzLink() {
+async function offerDareZero() {
+  const yes = await ask(
+    'Add DareZero too? It’s a challenges app: 30- and 90-day challenges for your health, money and growth, with daily check-ins, streaks and progress photos. It’s a paid add-on, coming soon.',
+    { yes: 'I’m interested', no: 'Not now' },
+  );
+  if (!yes) return;
+  // Remember the interest on their profile (synced), so it can be offered
+  // when DareZero opens to everyone. Nothing is charged or installed.
+  try {
+    const p = JSON.parse(localStorage.getItem('gp_profile') || '{}');
+    localStorage.setItem('gp_profile', JSON.stringify({ ...p, dzInterest: new Date().toISOString() }));
+  } catch { /* fine */ }
+}
+
+function DzLink({ owner }) {
+  if (!owner) {
+    return (
+      <button type="button" className="goals-launcher dz-launcher splash-item" onClick={offerDareZero} aria-label="DareZero, a paid add-on">
+        <span className="dz-mark" aria-hidden="true">D<span>Z</span></span>
+        <span className="dz-heart" aria-hidden="true">♥</span>
+      </button>
+    );
+  }
   return (
     <a className="goals-launcher dz-launcher splash-item" href="/this/" aria-label="Open DareZero">
       <span className="dz-mark" aria-hidden="true">D<span>Z</span></span>
@@ -1967,8 +1987,6 @@ function DzLink() {
 }
 
 export default function Hero({ onNavigate }) {
-  const goalsData = useGoalsData();
-  const [goalsOpen, setGoalsOpen] = useState(false);
   const { days, owner } = usePlanDays();
   const today = days[dayIndex];
   const todayDayId = `day-${['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][dayIndex]}`;
@@ -1980,9 +1998,10 @@ export default function Hero({ onNavigate }) {
             the two side columns are equal, so the title sits dead centre. */}
         <div className="hero-title-row">
           <div className="hero-title-side hero-title-left">
-            {/* Her "G" became DZ (2026-10-14): it opens DareZero, where her
-                goals now live beside Challenges. People who signed up keep G. */}
-            {owner ? <DzLink /> : <GoalsToggle achieved={goalsData.achieved} onOpen={() => setGoalsOpen(true)} />}
+            {/* Her "G" became DZ (2026-10-14): it opens DareZero. Her goals
+                move to Biz. People who signed up get DZ too, but it asks
+                whether they want DareZero, a paid add-on (price to come). */}
+            <DzLink owner={owner} />
           </div>
           <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
           <div className="hero-title-side hero-title-right">
@@ -1994,7 +2013,6 @@ export default function Hero({ onNavigate }) {
       <WeekStrip onOpen={dayId => onNavigate('workout', null, dayId)} />
       <TodayPicture today={today} owner={owner} onOpen={() => onNavigate('workout', null, todayDayId)} />
 
-      {goalsOpen && <GoalsPanel data={goalsData} onClose={() => setGoalsOpen(false)} onNavigate={onNavigate} />}
 
 
       <TodayPlan today={today} />
