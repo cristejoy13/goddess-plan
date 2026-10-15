@@ -38,8 +38,10 @@ const firebaseConfig = {
   // forwards /__/auth to Firebase — see vercel.json). Safari blocks the
   // sign-in from finishing when it happens on a different site, which is what
   // firebaseapp.com is; anywhere else (local testing) that address is fine.
-  authDomain: typeof location !== 'undefined' && location.hostname === 'goddess-plan.vercel.app'
-    ? 'goddess-plan.vercel.app'
+  // Both live addresses (goddessed.vercel.app since 2026-10-15) sign in
+  // through themselves; anywhere else (local testing) uses firebaseapp.com.
+  authDomain: typeof location !== 'undefined' && ['goddess-plan.vercel.app', 'goddessed.vercel.app'].includes(location.hostname)
+    ? location.hostname
     : 'goddess-plan.firebaseapp.com',
   projectId: 'goddess-plan',
   storageBucket: 'goddess-plan.firebasestorage.app',

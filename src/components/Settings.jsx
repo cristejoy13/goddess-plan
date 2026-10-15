@@ -429,7 +429,7 @@ function DeviceSyncSection() {
     async function generateQr() {
       try {
         const QRCode = await import('qrcode');
-        const url = await QRCode.toDataURL(`https://goddess-plan.vercel.app/?sync=${code}`, { margin: 1, width: 220 });
+        const url = await QRCode.toDataURL(`https://goddessed.vercel.app/?sync=${code}`, { margin: 1, width: 220 });
         if (!cancelled) setQrUrl(url);
       } catch {
         // QR generation is optional; the sync code remains usable.
