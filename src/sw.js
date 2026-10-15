@@ -59,7 +59,7 @@ const app = initializeApp({
 const messaging = getMessaging(app);
 
 onBackgroundMessage(messaging, payload => {
-  const { title = 'Goddess Plan 🌸', body = '' } = payload.notification ?? {};
+  const { title = 'Goddessed 🌸', body = '' } = payload.notification ?? {};
   self.registration.showNotification(title, {
     body,
     icon: '/app-icon.png',

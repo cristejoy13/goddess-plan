@@ -2001,7 +2001,7 @@ export default function Hero({ onNavigate }) {
                 whether they want DareZero, a paid add-on (price to come). */}
             <DzLink owner={owner} />
           </div>
-          <h1 className="hero-brand-title">The <em>Goddess</em> Plan</h1>
+          <h1 className="hero-brand-title"><em>Goddess</em>ed</h1>
           <div className="hero-title-side hero-title-right">
             <DailyNotebook />
           </div>

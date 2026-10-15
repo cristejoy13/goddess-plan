@@ -49,13 +49,13 @@ export default function InstallBanner() {
           <>
             <span className="install-icon">🌸</span>
             <span>
-              Install Goddess Plan: <strong>Share</strong> <span style={{ fontSize: 13 }}>⬆</span> then <strong>"Add to Home Screen"</strong>
+              Install Goddessed: <strong>Share</strong> <span style={{ fontSize: 13 }}>⬆</span> then <strong>"Add to Home Screen"</strong>
             </span>
           </>
         ) : (
           <>
             <span className="install-icon">🌸</span>
-            <span>Install Goddess Plan to use it offline</span>
+            <span>Install Goddessed to use it offline</span>
           </>
         )}
       </div>

@@ -11,8 +11,8 @@ export default defineConfig({
       filename: 'sw.js',
       registerType: 'autoUpdate',
       manifest: {
-        name: 'The Goddess Plan',
-        short_name: 'Goddess Plan',
+        name: 'Goddessed',
+        short_name: 'Goddessed',
         description: 'Your personal wellness plan — workouts, nutrition, skincare, and reminders.',
         theme_color: '#1a0c12',
         background_color: '#1a0c12',

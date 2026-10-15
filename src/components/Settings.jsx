@@ -334,7 +334,7 @@ function AboutScreen({ onBack }) {
       <button className="section-back-btn" onClick={onBack}>‹ Settings</button>
       <div className="s-header" style={{ marginBottom: 20 }}>
         <div className="s-tag">About</div>
-        <h2 className="s-title">The Goddess <em>Plan</em></h2>
+        <h2 className="s-title"><em>Goddess</em>ed</h2>
       </div>
       <div className="g-card splash-item settings-card">
         <div className="settings-section-title">🌸 About This App</div>
@@ -630,7 +630,7 @@ export default function Settings({
         <SettingsPill icon="🗂️" label="Navigate the App"
           desc="Gestures, shortcuts, tips" onClick={() => openScreen('navigate')} />
         <SettingsPill icon="🌸" label="About & Help"
-          desc="About the Goddess Plan" onClick={() => openScreen('about')} />
+          desc="About Goddessed" onClick={() => openScreen('about')} />
       </div>
     </div>
   );
