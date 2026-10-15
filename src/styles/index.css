@@ -11769,4 +11769,4 @@ body.gp-dragging { overscroll-behavior: none; }
 /* Her DareZero logo inside the same floating circle (2026-10-15). */
 .dz-launcher { overflow: hidden; padding: 0; }
 .dz-launcher { background: #f7f3ee; }
-.dz-logo { width: 74%; height: 74%; object-fit: contain; mix-blend-mode: multiply; }
+.dz-logo { width: 76%; height: 76%; object-fit: contain; }

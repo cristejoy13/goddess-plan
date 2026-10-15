@@ -1973,13 +1973,13 @@ function DzLink({ owner }) {
   if (!owner) {
     return (
       <button type="button" className="goals-launcher dz-launcher splash-item" onClick={offerDareZero} aria-label="DareZero, a paid add-on">
-        <img className="dz-logo" src="/dz-logo.jpg" alt="" />
+        <img className="dz-logo" src="/dz-logo.png" alt="" />
       </button>
     );
   }
   return (
     <a className="goals-launcher dz-launcher splash-item" href="/this/" aria-label="Open DareZero">
-      <img className="dz-logo" src="/dz-logo.jpg" alt="" />
+      <img className="dz-logo" src="/dz-logo.png" alt="" />
     </a>
   );
 }
