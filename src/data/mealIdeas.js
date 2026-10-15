@@ -17,7 +17,7 @@ export const DAY_RANGE = { kcalLow: 910, kcalHigh: 1164 };
 export const MEAL_IDEAS = [
   {
     id: 'b1', time: 'breakfast', name: "Eggs, Sweet Potato & Apple", image: '/meal-ideas/b1.jpg',
-    kcal: 274, protein: 14.4, carbs: 30.1, fat: 10.9,
+    kcal: 274, protein: 14.4, carbs: 30.1, fat: 10.9, fiber: 4.7,
     ingredients: [
       "2 whole eggs — 100 g",
       "Cooked sweet potato — 110 g (about ¾ medium sweet potato)",
@@ -39,7 +39,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'b2', time: 'breakfast', name: "Greek Yogurt, Apple & Sweet Potato Bowl", image: '/meal-ideas/b2.jpg',
-    kcal: 252, protein: 14.8, carbs: 42.6, fat: 3.6,
+    kcal: 252, protein: 14.8, carbs: 42.6, fat: 3.6, fiber: 6.6,
     ingredients: [
       "Plain Greek yogurt — 125 g (about ½ cup)",
       "Fresh apple — 115 g (about ⅔ medium apple)",
@@ -61,7 +61,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'b3', time: 'breakfast', name: "Egg, Yogurt & Sweet Potato", image: '/meal-ideas/b3.jpg',
-    kcal: 261, protein: 17.6, carbs: 28.7, fat: 8.5,
+    kcal: 261, protein: 17.6, carbs: 28.7, fat: 8.5, fiber: 3.9,
     ingredients: [
       "1 whole egg — 50 g",
       "Plain Greek yogurt — 85 g (about ⅓ cup)",
@@ -84,7 +84,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'b4', time: 'breakfast', name: "Egg & Green Pea Breakfast Hash", image: '/meal-ideas/b4.jpg',
-    kcal: 262, protein: 14.7, carbs: 29.7, fat: 9.5,
+    kcal: 262, protein: 14.7, carbs: 29.7, fat: 9.5, fiber: 5.9,
     ingredients: [
       "Whole eggs — 75 g (about 1½ eggs)",
       "Cooked green peas — 70 g (about ½ cup)",
@@ -110,7 +110,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'b5', time: 'breakfast', name: "Yogurt, Egg & Fruit Breakfast Plate", image: '/meal-ideas/b5.jpg',
-    kcal: 275, protein: 17.3, carbs: 34.6, fat: 8.2,
+    kcal: 275, protein: 17.3, carbs: 34.6, fat: 8.2, fiber: 5.9,
     ingredients: [
       "Plain Greek yogurt — 90 g (about ⅓ cup)",
       "1 whole egg — 50 g",
@@ -134,7 +134,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'l1', time: 'lunch', name: "Chicken & Sweet Potato Bowl", image: '/meal-ideas/l1.jpg',
-    kcal: 364, protein: 21, carbs: 42.4, fat: 13.3,
+    kcal: 364, protein: 21, carbs: 42.4, fat: 13.3, fiber: 11.2,
     ingredients: [
       "Cooked chicken breast — 40 g",
       "Cooked sweet potato — 125 g (about ¾ medium sweet potato)",
@@ -164,7 +164,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'l2', time: 'lunch', name: "Beef & Sweet Potato Plate", image: '/meal-ideas/l2.jpg',
-    kcal: 373, protein: 19.4, carbs: 41.2, fat: 15.6,
+    kcal: 373, protein: 19.4, carbs: 41.2, fat: 15.6, fiber: 11.1,
     ingredients: [
       "Cooked lean beef — 40 g",
       "Cooked sweet potato — 115 g (about ¾ medium sweet potato)",
@@ -194,7 +194,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'l3', time: 'lunch', name: "Egg & Avocado Power Bowl", image: '/meal-ideas/l3.jpg',
-    kcal: 380, protein: 17.4, carbs: 36, fat: 19.6,
+    kcal: 380, protein: 17.4, carbs: 36, fat: 19.6, fiber: 10.4,
     ingredients: [
       "Whole eggs — 75 g (about 1½ eggs)",
       "Cooked sweet potato — 95 g (about ⅔ medium sweet potato)",
@@ -222,7 +222,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'l4', time: 'lunch', name: "Chicken, Peas & Avocado Bowl", image: '/meal-ideas/l4.jpg',
-    kcal: 368, protein: 20.2, carbs: 43.2, fat: 13.9,
+    kcal: 368, protein: 20.2, carbs: 43.2, fat: 13.9, fiber: 11.9,
     ingredients: [
       "Cooked chicken breast — 35 g",
       "Cooked sweet potato — 115 g (about ¾ medium sweet potato)",
@@ -252,7 +252,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'l5', time: 'lunch', name: "Beef, Peas & Avocado Bowl", image: '/meal-ideas/l5.jpg',
-    kcal: 381, protein: 19.9, carbs: 41.3, fat: 16.4,
+    kcal: 381, protein: 19.9, carbs: 41.3, fat: 16.4, fiber: 11.7,
     ingredients: [
       "Cooked lean beef — 40 g",
       "Cooked sweet potato — 105 g (about ⅔ medium sweet potato)",
@@ -281,7 +281,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'd1', time: 'dinner', name: "Chicken & Roasted Sweet Potato", image: '/meal-ideas/d1.jpg',
-    kcal: 306, protein: 17.5, carbs: 34.8, fat: 11.8,
+    kcal: 306, protein: 17.5, carbs: 34.8, fat: 11.8, fiber: 10,
     ingredients: [
       "Cooked chicken breast — 35 g",
       "Cooked sweet potato — 105 g (about ⅔ medium sweet potato)",
@@ -309,7 +309,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'd2', time: 'dinner', name: "Lean Beef & Green Peas Plate", image: '/meal-ideas/d2.jpg',
-    kcal: 336, protein: 18, carbs: 33.9, fat: 15.3,
+    kcal: 336, protein: 18, carbs: 33.9, fat: 15.3, fiber: 9.9,
     ingredients: [
       "Cooked lean beef — 40 g",
       "Cooked sweet potato — 100 g (about ⅔ medium sweet potato)",
@@ -336,7 +336,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'd3', time: 'dinner', name: "Egg & Avocado Dinner Bowl", image: '/meal-ideas/d3.jpg',
-    kcal: 337, protein: 16.9, carbs: 29.9, fat: 17.6,
+    kcal: 337, protein: 16.9, carbs: 29.9, fat: 17.6, fiber: 9.3,
     ingredients: [
       "Whole eggs — 85 g (about 1¾ eggs)",
       "Cooked sweet potato — 75 g (about ½ medium sweet potato)",
@@ -362,7 +362,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'd4', time: 'dinner', name: "Chicken & Green Pea Skillet", image: '/meal-ideas/d4.jpg',
-    kcal: 310, protein: 18.2, carbs: 35.2, fat: 11.8,
+    kcal: 310, protein: 18.2, carbs: 35.2, fat: 11.8, fiber: 10.5,
     ingredients: [
       "Cooked chicken breast — 35 g",
       "Cooked sweet potato — 95 g (about ⅔ medium sweet potato)",
@@ -391,7 +391,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'd5', time: 'dinner', name: "Beef & Sweet Potato Dinner", image: '/meal-ideas/d5.jpg',
-    kcal: 336, protein: 17.2, carbs: 36.2, fat: 14.7,
+    kcal: 336, protein: 17.2, carbs: 36.2, fat: 14.7, fiber: 10.5,
     ingredients: [
       "Cooked lean beef — 35 g",
       "Cooked sweet potato — 105 g (about ⅔ medium sweet potato)",
@@ -419,7 +419,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 's1', time: 'snacks', name: "Greek Yogurt & Apple", image: '/meal-ideas/s1.jpg',
-    kcal: 169, protein: 9.1, carbs: 27.6, fat: 3.7,
+    kcal: 169, protein: 9.1, carbs: 27.6, fat: 3.7, fiber: 4.7,
     ingredients: [
       "Plain Greek yogurt — 75 g (about ⅓ cup)",
       "Fresh apple — 140 g (about ¾ medium apple)",
@@ -442,7 +442,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 's2', time: 'snacks', name: "Boiled Egg & Apple", image: '/meal-ideas/s2.jpg',
-    kcal: 157, protein: 6.8, carbs: 21.8, fat: 5.6,
+    kcal: 157, protein: 6.8, carbs: 21.8, fat: 5.6, fiber: 3.9,
     ingredients: [
       "1 whole egg — 50 g",
       "Fresh apple — 150 g (about ¾ medium apple)",
@@ -462,7 +462,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 's3', time: 'snacks', name: "Greek Yogurt & Sweet Potato", image: '/meal-ideas/s3.jpg',
-    kcal: 161, protein: 9.8, carbs: 21.5, fat: 4.5,
+    kcal: 161, protein: 9.8, carbs: 21.5, fat: 4.5, fiber: 2.8,
     ingredients: [
       "Plain Greek yogurt — 75 g (about ⅓ cup)",
       "Cooked sweet potato — 90 g (about ⅔ medium sweet potato)",
@@ -484,7 +484,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 's4', time: 'snacks', name: "Apple, Yogurt & Sweet Potato", image: '/meal-ideas/s4.jpg',
-    kcal: 170, protein: 8.5, carbs: 27.9, fat: 3.8,
+    kcal: 170, protein: 8.5, carbs: 27.9, fat: 3.8, fiber: 4.2,
     ingredients: [
       "Fresh apple — 95 g (about ½ medium apple)",
       "Plain Greek yogurt — 65 g (about ¼ cup)",
@@ -507,7 +507,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 's5', time: 'snacks', name: "Mini Greek Yogurt Fruit Bowl", image: '/meal-ideas/s5.jpg',
-    kcal: 171, protein: 9.5, carbs: 28.2, fat: 3.3,
+    kcal: 171, protein: 9.5, carbs: 28.2, fat: 3.3, fiber: 4.1,
     ingredients: [
       "Plain Greek yogurt — 80 g (about ⅓ cup)",
       "Fresh apple — 105 g (about ½ medium apple)",
@@ -533,7 +533,7 @@ export const MEAL_IDEAS = [
   // day with all three, the total runs a little under 1,000 (her choice).
   {
     id: 's6', time: 'snacks', name: "Apple & Greek Yogurt", image: '/meal-ideas/s6.jpg',
-    kcal: 141, protein: 10.4, carbs: 21.8, fat: 2.2,
+    kcal: 141, protein: 10.4, carbs: 21.8, fat: 2.2, fiber: 3.1,
     ingredients: [
       "Fresh apple — 130 g (about ¾ medium apple)",
       "Plain Greek yogurt — 100 g (about ⅓ cup)",
@@ -549,7 +549,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'l6', time: 'lunch', name: "Creamy Calamansi Eggs & Green Peas", image: '/meal-ideas/l6.jpg',
-    kcal: 319, protein: 22.9, carbs: 19.2, fat: 16.9,
+    kcal: 319, protein: 22.9, carbs: 19.2, fat: 16.9, fiber: 4.7,
     ingredients: [
       "2 boiled eggs — 100 g without shells",
       "Boiled green peas — 100 g (about ⅔ cup)",
@@ -574,7 +574,7 @@ export const MEAL_IDEAS = [
   },
   {
     id: 'd6', time: 'dinner', name: "Sweet Potato with Calamansi Yogurt", image: '/meal-ideas/d6.jpg',
-    kcal: 222, protein: 10.2, carbs: 31.4, fat: 6.7,
+    kcal: 222, protein: 10.2, carbs: 31.4, fat: 6.7, fiber: 3.8,
     ingredients: [
       "Cooked sweet potato — 150 g (about 1 medium sweet potato)",
       "Plain Greek yogurt — 80 g (about ⅓ cup)",
@@ -598,7 +598,7 @@ export const MEAL_IDEAS = [
   // Sent 2026-10-14; counted from USDA (cucumber with peel, raw).
   {
     id: 'b6', time: 'breakfast', name: 'Cucumber Egg Yogurt Burger', image: '/meal-ideas/b6.jpg',
-    kcal: 228, protein: 19.2, carbs: 12.2, fat: 11.8,
+    kcal: 228, protein: 19.2, carbs: 12.2, fat: 11.8, fiber: 1.2,
     ingredients: [
       "Fresh cucumber — 200 g (about 1 medium cucumber)",
       "2 whole boiled eggs — 100 g",
@@ -623,6 +623,7 @@ export const MEAL_IDEAS = [
 // the numbers moved to USDA, 2026-10-11).
 export const NUTRITION_NOTES = [
   'Counted from USDA for every ingredient, spices included. Salt has no calories.',
+  'Fiber is counted from USDA too (added 2026-10-16).',
   'Chicken and beef = cooked weight. Chicken: breast, roasted. Beef: 90% lean, cooked (230 cal per 100 g).',
   'Sweet potato and peas = cooked weight (boiled).',
   'Quinoa = cooked weight.',

@@ -33,9 +33,9 @@ export function buildPrompt(text) {
     '- grams: the edible weight eaten, as a number. Convert units (1 tsp oil = 4.5 g, 1 tbsp oil = 13.5 g, 1 medium egg = 44 g, 1 large egg = 50 g, 1 cup cooked rice = 158 g, 100 ml milk = 103 g).',
     '- usda: a short search phrase for the USDA FoodData Central database, e.g. "egg whole cooked fried", "milk whole", "oil olive".',
     '- kcal: your own best calorie estimate for that amount, as a number.',
-    '- protein, carbs, fat: your own best estimate in grams for that amount, as numbers.',
+    '- protein, carbs, fat, fiber: your own best estimate in grams for that amount, as numbers.',
     'Cooking fat she mentions (oil, butter) is its own item.',
-    'Reply with JSON only: {"items":[{"name":"","amount":"","grams":0,"usda":"","kcal":0,"protein":0,"carbs":0,"fat":0}]}',
+    'Reply with JSON only: {"items":[{"name":"","amount":"","grams":0,"usda":"","kcal":0,"protein":0,"carbs":0,"fat":0,"fiber":0}]}',
   ].join('\n');
 }
 
@@ -58,6 +58,7 @@ export function parseItems(raw) {
       protein: Number(it?.protein),
       carbs: Number(it?.carbs),
       fat: Number(it?.fat),
+      fiber: Number(it?.fiber),
     }))
     .filter(it => it.name && ((Number.isFinite(it.grams) && it.grams > 0) || (Number.isFinite(it.kcal) && it.kcal >= 0)));
 }
@@ -75,7 +76,7 @@ export function kcalPer100g(food) {
 
 // Protein, carbs and fat per 100 g from one USDA search result (2026-10-10).
 // Each is null when USDA does not list it, never guessed.
-const MACRO_IDS = { protein: 1003, fat: 1004, carbs: 1005 };
+const MACRO_IDS = { protein: 1003, fat: 1004, carbs: 1005, fiber: 1079 };
 export function macrosPer100g(food) {
   const ns = Array.isArray(food?.foodNutrients) ? food.foodNutrients : [];
   const out = {};
@@ -91,7 +92,7 @@ const grams1 = v => Math.round(v * 10) / 10;
 // The AI's own protein/carbs/fat, only where it gave a real number.
 function aiMacros(item) {
   const out = {};
-  for (const k of ['protein', 'carbs', 'fat']) {
+  for (const k of ['protein', 'carbs', 'fat', 'fiber']) {
     if (Number.isFinite(item[k]) && item[k] >= 0) out[k] = grams1(item[k]);
   }
   return out;
@@ -112,7 +113,7 @@ export function settleItem(item, usdaFood) {
     if (plausible) {
       const per = macrosPer100g(usdaFood);
       const macros = { ...aiMacros(item) };
-      for (const k of ['protein', 'carbs', 'fat']) if (per[k] != null) macros[k] = grams1((per[k] * item.grams) / 100);
+      for (const k of ['protein', 'carbs', 'fat', 'fiber']) if (per[k] != null) macros[k] = grams1((per[k] * item.grams) / 100);
       return { ...base(item), kcal: usda, ...macros, source: 'usda', usdaName: usdaFood.description || '' };
     }
   }

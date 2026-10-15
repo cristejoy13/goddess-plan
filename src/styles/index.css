@@ -11770,3 +11770,28 @@ body.gp-dragging { overscroll-behavior: none; }
 .dz-launcher { overflow: hidden; padding: 0; }
 .dz-launcher { background: #f7f3ee; }
 .dz-logo { width: 76%; height: 76%; object-fit: contain; }
+
+/* ── The day's nutrition table, under "Eaten so far" (2026-10-16) ─────── */
+.nt-table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; color: var(--text); }
+.nt-table th, .nt-table td { padding: 6px 2px; border-top: 1px solid rgba(255,255,255,0.08); vertical-align: middle; }
+.nt-table tr:first-child th, .nt-table tr:first-child td { border-top: 0; }
+.nt-table th { text-align: left; font-weight: 700; white-space: nowrap; }
+.nt-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.nt-protein .nt-dot, .nt-protein .nt-bar span { background: #ff5c9d; }
+.nt-carbs .nt-dot, .nt-carbs .nt-bar span { background: #f0a060; }
+.nt-fat .nt-dot, .nt-fat .nt-bar span { background: #c9a0ff; }
+.nt-fiber .nt-dot, .nt-fiber .nt-bar span { background: #6ee7c8; }
+.nt-g { text-align: right; font-weight: 800; white-space: nowrap; padding-right: 10px !important; }
+.nt-bar-cell { width: 42%; }
+.nt-bar { display: block; height: 7px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.nt-bar span { display: block; height: 100%; border-radius: inherit; }
+.nt-aim { text-align: right; color: var(--text-soft); white-space: nowrap; font-size: 12px; padding-left: 10px !important; }
+[data-mode="light"] .nt-table th, [data-mode="light"] .nt-table td { border-top-color: rgba(120,60,100,0.12); }
+[data-mode="light"] .nt-bar { background: rgba(200,23,110,0.1); }
+[data-mode="light"] .nt-fiber .nt-dot, [data-mode="light"] .nt-fiber .nt-bar span { background: #0b9b7c; }
+@media (max-width: 360px) { .nt-table { font-size: 12.5px; } .nt-aim { font-size: 11px; } .nt-bar-cell { width: 34%; } }
+@media (max-width: 360px) {
+  .nt-dot { margin-right: 5px; width: 8px; height: 8px; }
+  .nt-g { padding-right: 8px !important; }
+  .nt-bar-cell { width: auto; min-width: 44px; }
+}

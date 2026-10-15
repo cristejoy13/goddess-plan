@@ -188,7 +188,46 @@ function nowTime() {
 // Protein, carbs and fat (2026-10-10). A meal's total for one of them is
 // kept only when every food in it has that number — a total missing a food
 // would read as complete and be wrong.
-const MACROS = ['protein', 'carbs', 'fat'];
+const MACROS = ['protein', 'carbs', 'fat', 'fiber'];
+
+// The day's nutrition as a small table (2026-10-16): grams eaten, a bar
+// toward the day's aim, and the aim. Protein, carbs and fats are her own
+// plan's ranges; fiber is the usual 25 g a day for women.
+const NUTRIENTS = [
+  { k: 'protein', label: 'Protein', lo: 50,  hi: 70 },
+  { k: 'carbs',   label: 'Carbs',   lo: 130, hi: 152 },
+  { k: 'fat',     label: 'Fats',    lo: 30,  hi: 51 },
+  { k: 'fiber',   label: 'Fiber',   lo: 25,  hi: 25 },
+];
+const r1 = n => Math.round(n * 10) / 10;
+function nutrientSums(entries) {
+  return Object.fromEntries(NUTRIENTS.map(({ k }) => {
+    const has = entries.filter(e => typeof e[k] === 'number');
+    return [k, has.length ? r1(has.reduce((s, e) => s + e[k], 0)) : null];
+  }));
+}
+function NutrientTable({ entries }) {
+  const sums = nutrientSums(entries);
+  return (
+    <table className="nt-table">
+      <tbody>
+        {NUTRIENTS.map(({ k, label, lo, hi }) => {
+          const v = sums[k];
+          const pct = v == null ? 0 : Math.min(100, (v / hi) * 100);
+          const state = v == null ? '' : v < lo ? ' is-low' : v > hi * 1.15 ? ' is-over' : ' is-in';
+          return (
+            <tr key={k} className={`nt-${k}${state}`}>
+              <th scope="row"><span className="nt-dot" aria-hidden="true" />{label}</th>
+              <td className="nt-g">{v == null ? '—' : `${v} g`}</td>
+              <td className="nt-bar-cell" aria-hidden="true"><span className="nt-bar"><span style={{ width: `${pct}%` }} /></span></td>
+              <td className="nt-aim">{lo === hi ? `${hi} g` : `${lo}–${hi} g`}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
 function macroTotals(items = []) {
   const out = {};
   for (const k of MACROS) {
@@ -924,8 +963,6 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
-  const withProtein = entries.filter(e => typeof e.protein === 'number').length;
-  const protein = entries.reduce((sum, e) => sum + (typeof e.protein === 'number' ? e.protein : 0), 0);
   // One box at a time (chosen 2026-10-07): three tabs, Meals open first. A
   // green tick on a tab means that part of the day is filled in — the week's
   // goal set, at least one meal written, the weight saved — so what is still
@@ -1014,11 +1051,9 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
           <span>Eaten so far</span>
           <b>{total.toLocaleString()} cal</b>
         </div>
-        {/* Protein eaten that day (2026-10-11): it adds up with every meal. */}
-        <div className="ml-receipt-protein">
-          <span>Protein</span>
-          <b>{withProtein ? `${Math.round(protein * 10) / 10} g` : '—'}</b>
-        </div>
+        {/* Protein, carbs, fats and fiber for the day, adding up with every
+            meal (2026-10-16). */}
+        <NutrientTable entries={entries} />
         {missing > 0 && (
           <div className="ml-receipt-note">
             {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
@@ -1075,7 +1110,8 @@ const MEAL_TIMES = [
 function TodayNutrition({ entries, goal }) {
   const { total } = calTotals(entries);
   const sums = Object.fromEntries(MACROS.map(k => [k, entries.reduce((s, e) => s + (typeof e[k] === 'number' ? e[k] : 0), 0)]));
-  const withMacros = entries.filter(e => MACROS.every(k => typeof e[k] === 'number')).length;
+  const withMacros = entries.filter(e => ['protein', 'carbs', 'fat'].every(k => typeof e[k] === 'number')).length;
+  const daySums = nutrientSums(entries);
   const kcalFrom = { protein: sums.protein * 4, carbs: sums.carbs * 4, fat: sums.fat * 9 };
   const macroKcal = kcalFrom.protein + kcalFrom.carbs + kcalFrom.fat;
   const pct = k => (macroKcal > 0 ? Math.round((kcalFrom[k] / macroKcal) * 100) : null);
@@ -1096,12 +1132,12 @@ function TodayNutrition({ entries, goal }) {
           </span>
         </div>
         <ul className="mt-macros">
-          {[['protein', 'Protein'], ['carbs', 'Carbs'], ['fat', 'Fats']].map(([k, label]) => (
+          {[['protein', 'Protein'], ['carbs', 'Carbs'], ['fat', 'Fats'], ['fiber', 'Fiber']].map(([k, label]) => (
             <li key={k} className={`mt-macro mt-${k}`}>
               <span className="mt-dot" aria-hidden="true" />
               <span className="mt-macro-name">{label}</span>
-              <b>{withMacros ? `${Math.round(sums[k])} g` : '—'}</b>
-              <em>{withMacros && pct(k) != null ? `${pct(k)}%` : ''}</em>
+              <b>{daySums[k] == null ? '—' : `${Math.round(daySums[k])} g`}</b>
+              <em>{k !== 'fiber' && withMacros && pct(k) != null ? `${pct(k)}%` : ''}</em>
             </li>
           ))}
         </ul>
@@ -1124,7 +1160,7 @@ function loadPicks() {
 }
 
 function IdeaDetail({ idea, picked, onPick, onClose }) {
-  const nums = [['kcal', 'cal', ''], ['protein', 'Protein', ' g'], ['carbs', 'Carbs', ' g'], ['fat', 'Fats', ' g']]
+  const nums = [['kcal', 'cal', ''], ['protein', 'Protein', ' g'], ['carbs', 'Carbs', ' g'], ['fat', 'Fats', ' g'], ['fiber', 'Fiber', ' g']]
     .filter(([k]) => typeof idea[k] === 'number');
   return (
     <div className="mt-idea-detail">
@@ -1329,7 +1365,7 @@ export default function Meal() {
       }
       const entry = {
         id: newEntryId(), time: nowTime(), text: idea.name, cal: idea.kcal,
-        protein: idea.protein, carbs: idea.carbs, fat: idea.fat,
+        protein: idea.protein, carbs: idea.carbs, fat: idea.fat, fiber: idea.fiber,
         ideaId: idea.id, mealTime, createdAt: now, updatedAt: now,
       };
       return { ...prev, days: { ...prev.days, [key]: [...list, entry].sort(byTime) } };

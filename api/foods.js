@@ -9,7 +9,7 @@ import foods from './_foods.js';
 import { okCode } from './_scan.js';
 
 // Bump when api/_foods.js is rebuilt, so every gadget fetches the new copy.
-export const FOODS_VERSION = 'sr-legacy-2018-04.v2-macros';
+export const FOODS_VERSION = 'sr-legacy-2018-04.v3-fiber';
 
 export default function handler(req, res) {
   res.setHeader('Cache-Control', 'private, no-store');
