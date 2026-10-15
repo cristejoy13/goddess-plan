@@ -49,10 +49,44 @@ const NAV_ITEMS = [
   // (2026-10-14) — see DzLink in Hero.jsx.
 ];
 
+const VIEW_KEY = 'gp_view';
+const KNOWN_SECTIONS = ['home', 'workout', 'meal', 'nutrition', 'skincare', 'settings'];
+function readView() {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(VIEW_KEY) || 'null');
+    if (v && KNOWN_SECTIONS.includes(v.section)) return { section: v.section, tab: v.tab ?? null, scrollTo: v.scrollTo ?? null };
+  } catch { /* fine */ }
+  return { section: 'home', tab: null, scrollTo: null };
+}
+
 export default function App() {
   const [profile, setProfile] = useState(loadProfile);
-  const [active, setActive] = useState('home');
-  const [navMeta, setNavMeta] = useState({ tab: null, scrollTo: null, key: 0 });
+  // A refresh (pull down, or the app reloading for an update) comes back to
+  // the same section — and the same workout day — instead of Home
+  // (2026-10-15). Kept for this visit only: opening the app fresh starts at Home.
+  const [active, setActive] = useState(() => readView().section);
+  const [navMeta, setNavMeta] = useState(() => ({ tab: readView().tab, scrollTo: readView().scrollTo, key: 0 }));
+  useEffect(() => {
+    try { sessionStorage.setItem(VIEW_KEY, JSON.stringify({ section: active, tab: navMeta.tab, scrollTo: navMeta.scrollTo })); } catch { /* fine */ }
+  }, [active, navMeta.tab, navMeta.scrollTo]);
+  // ...and to the same spot on the page: the scroll position is noted as the
+  // page goes away and put back once the section has drawn.
+  useEffect(() => {
+    const save = () => { try { sessionStorage.setItem('gp_view_y', String(Math.round(window.scrollY))); } catch { /* fine */ } };
+    window.addEventListener('pagehide', save);
+    window.addEventListener('beforeunload', save);
+    let y = 0;
+    try { y = Number(sessionStorage.getItem('gp_view_y')) || 0; sessionStorage.removeItem('gp_view_y'); } catch { /* fine */ }
+    if (y > 0) {
+      let tries = 0;
+      const put = () => {
+        window.scrollTo({ top: y, behavior: 'instant' });
+        if (Math.abs(window.scrollY - y) > 4 && tries++ < 20) setTimeout(put, 100);
+      };
+      setTimeout(put, 50);
+    }
+    return () => { window.removeEventListener('pagehide', save); window.removeEventListener('beforeunload', save); };
+  }, []);
   const [history, setHistory] = useState([]);
   const [colorMode, setColorMode] = useState(() => localStorage.getItem('gp_color_mode') || 'dark');
 

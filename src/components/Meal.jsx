@@ -1270,7 +1270,8 @@ export default function Meal() {
   const [openDay, setOpenDay] = useState(null);
   const [saveFailed, setSaveFailed] = useState(false);
   // Which pill is open: a meal time, or the calendar (first, as always).
-  const [tab, setTab] = useState('calendar');
+  const [tab, setTabState] = useState(() => { try { return sessionStorage.getItem('gp_meal_tab') || 'calendar'; } catch { return 'calendar'; } });
+  const setTab = t => { setTabState(t); try { sessionStorage.setItem('gp_meal_tab', t); } catch { /* fine */ } };
 
   const days = state.days || {};
 

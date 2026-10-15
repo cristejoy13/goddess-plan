@@ -41,6 +41,7 @@ export function liftCover() {
 // like the app opening, not a blank flash.
 export function reloadBehindLogo() {
   window.__gpReloading = true;
+  try { sessionStorage.setItem('gp_view_y', String(Math.round(window.scrollY))); } catch { /* fine */ }
   if (!document.getElementById('boot-cover')) {
     const cover = document.createElement('div');
     cover.id = 'boot-cover';
