@@ -158,9 +158,6 @@ export default function App() {
     innerBackStackRef.current = [];
   }
 
-  // Touch tracking for swipe-back gesture
-  const touchStartRef = useRef({ x: 0, y: 0 });
-
   const navigate = (id, tab = null, scrollTo = null) => {
     if (id === 'antiaging') { id = 'skincare'; tab = tab ?? 'antiaging'; }
     clearInnerBack(); // entering a new section clears any inner sub-page history
@@ -234,22 +231,9 @@ export default function App() {
     return () => window.removeEventListener('keydown', handler);
   }, []); // goBack/goHome read refs — always fresh, no deps needed
 
-  // Touch: swipe right from left edge to go back (mirrors iOS native gesture)
-  function handleTouchStart(e) {
-    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  }
-  function handleTouchEnd(e) {
-    const startX = touchStartRef.current.x;
-    const dx = e.changedTouches[0].clientX - startX;
-    const dy = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
-    // Fire when swiping right from the left 220px of screen (covers sidebar + left content edge)
-    if (startX < 220 && dx > 80 && dy < 100) {
-      goBack();
-    }
-    // Double-tap to go home was removed (2026-10-08): an accidental double
-    // tap threw her out of a meal she was still writing. Home is the Home
-    // button in the section row.
-  }
+  // Swipe-to-go-back was removed (2026-10-16): a sideways swipe inside a
+  // section threw her out of it. Double-tap to go home went earlier
+  // (2026-10-08) for the same reason. She leaves a section only by tapping.
 
   const background = (
     <>
@@ -297,8 +281,6 @@ export default function App() {
 
       <div
         className="main"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Home is NOT keyed on syncEpoch: remounting it every time a sync
             landed slammed the notes panel shut and threw away whatever was
