@@ -191,12 +191,12 @@ function nowTime() {
 const MACROS = ['protein', 'carbs', 'fat', 'fiber'];
 
 // The day's nutrition as a small table (2026-10-16): grams eaten, a bar
-// toward the day's aim, and the aim. Protein, carbs and fats are her own
-// plan's ranges; fiber is the usual 25 g a day for women.
+// toward the day's aim, and the aim. Her own daily aims, set 2026-10-16:
+// 70 g protein, 150 g carbs, 50 g fats, 25 g fiber.
 const NUTRIENTS = [
-  { k: 'protein', label: 'Protein', lo: 50,  hi: 70 },
-  { k: 'carbs',   label: 'Carbs',   lo: 130, hi: 152 },
-  { k: 'fat',     label: 'Fats',    lo: 30,  hi: 51 },
+  { k: 'protein', label: 'Protein', lo: 70,  hi: 70 },
+  { k: 'carbs',   label: 'Carbs',   lo: 150, hi: 150 },
+  { k: 'fat',     label: 'Fats',    lo: 50,  hi: 50 },
   { k: 'fiber',   label: 'Fiber',   lo: 25,  hi: 25 },
 ];
 const r1 = n => Math.round(n * 10) / 10;
