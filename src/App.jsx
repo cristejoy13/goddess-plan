@@ -134,12 +134,23 @@ export default function App() {
       document.documentElement.style.setProperty('--topbar-h', `${el.offsetHeight}px`);
     };
     apply();
+    // border-box: on an installed iPhone app the notch gap (safe-area inset)
+    // often arrives a moment after launch. That grows the bar's padding, not
+    // its content, so a plain observer never saw it and the title sat under
+    // the buttons until a refresh (fixed 2026-10-17).
     const ro = new ResizeObserver(apply);
-    ro.observe(el);
-    window.addEventListener('orientationchange', apply);
+    ro.observe(el, { box: 'border-box' });
+    const later = () => requestAnimationFrame(apply);
+    const events = ['orientationchange', 'resize', 'load', 'pageshow'];
+    events.forEach(ev => window.addEventListener(ev, later));
+    document.addEventListener('visibilitychange', later);
+    document.fonts?.ready.then(later);
+    const timers = [100, 400, 1200].map(ms => setTimeout(apply, ms));
     return () => {
       ro.disconnect();
-      window.removeEventListener('orientationchange', apply);
+      events.forEach(ev => window.removeEventListener(ev, later));
+      document.removeEventListener('visibilitychange', later);
+      timers.forEach(clearTimeout);
     };
   }, []);
 

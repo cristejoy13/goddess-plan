@@ -11795,3 +11795,10 @@ body.gp-dragging { overscroll-behavior: none; }
   .nt-g { padding-right: 8px !important; }
   .nt-bar-cell { width: auto; min-width: 44px; }
 }
+
+/* Home, Meals and Body at the top: no thin outline (2026-10-17). The fill
+   alone shows which one is open. */
+.topbar-sec-btn,
+.topbar-sec-btn.active,
+[data-mode="light"] .topbar-sec-btn,
+[data-mode="light"] .topbar-sec-btn.active { border-color: transparent; }
