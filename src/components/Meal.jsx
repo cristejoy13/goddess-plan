@@ -807,7 +807,9 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
     onSave(patch);
   }
 
-  const net = burn != null ? eaten - burn : null;
+  // No meals written and no burn typed: no deficit yet, so an empty day does
+  // not claim a 1,400 deficit (2026-10-20).
+  const net = burn != null && (eaten > 0 || typedBurnCal != null) ? eaten - burn : null;
   const saveLabel = onlyClearing ? 'Remove' : 'Save';
 
   return (
@@ -1584,12 +1586,14 @@ export default function Meal() {
           entries={days[openKey] || []}
           kg={weightOn(state, openKey)}
           burn={burnOn(state, openKey)}
-          /* Her average fills today and any past day she ate on. A future
-             day, or an empty old one, gets no made-up deficit. */
-          averageBurn={garminBurnOn(garmin, openKey) ?? (openKey === dateKeyOf() || (openKey < dateKeyOf() && (days[openKey] || []).length > 0) ? averageBurn() : null)}
+          /* Her Garmin average (1,400) shows on every day, all the time
+             (2026-10-20), until the watch sends that day's number. A day with
+             no meals still gets no deficit: dayDeficit needs meals. */
+          averageBurn={garminBurnOn(garmin, openKey) ?? averageBurn()}
           /* Her watch's number, when the Shortcut has sent one for this day,
-             stands in for the average. What she types still wins over both. */
-          burnFrom={garminBurnOn(garmin, openKey) != null ? 'garmin' : 'average'}
+             stands in for the average. What she types still wins over both.
+             For her, the average is her Garmin average, so it reads Garmin. */
+          burnFrom={garminBurnOn(garmin, openKey) != null || isOwner(readProfile()) ? 'garmin' : 'average'}
           /* The average belongs to the week, so it is shown where the week
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
