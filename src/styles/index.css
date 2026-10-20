@@ -11692,9 +11692,14 @@ body {
 }
 .home-plan-add-icon { text-align: center; padding: 0 4px !important; }
 .home-plan-add button { padding: 0 18px; background: linear-gradient(135deg, #d63a7f, #a8105c); color: #fff; border-color: transparent; }
-.home-plan-list li.is-deleting .home-plan-item { color: var(--text); }
-.home-plan-list li.is-deleting .home-plan-ring { opacity: 0.35; }
-.home-plan-list li.is-deleting .home-plan-icon { font-size: 17px; }
+.home-plan-edit { font-size: 20px; line-height: 1; }
+/* Hold a step and let go: a Delete button shows on that row (2026-10-20). */
+.home-plan-list li.is-held { display: flex; align-items: center; gap: 8px; }
+.home-plan-list li.is-held .home-plan-item { flex: 1; min-width: 0; }
+.home-plan-del {
+  flex: none; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 0;
+  background: #a8105c; color: #fff; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
 /* Hold a step and drag it (2026-10-12). */
 .home-plan-list li { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: pan-y; }
 .home-plan-list li.is-dragging {

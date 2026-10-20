@@ -1677,7 +1677,7 @@ function saveTick(id, on) {
 // normal scroll. While held, the page does not scroll and pull-to-refresh
 // stays out of the way. A mouse works the same, with a hold too.
 const HOLD_MS = 320;
-function useDragOrder(list, onDrop) {
+function useDragOrder(list, onDrop, onHold) {
   const [order, setOrder] = useState(null);       // ids while dragging
   const [draggingId, setDraggingId] = useState(null);
   const els = useRef(new Map());
@@ -1685,7 +1685,8 @@ function useDragOrder(list, onDrop) {
   const dropped = useRef(0);
   const listRef = useRef(list);
   const dropRef = useRef(onDrop);
-  useEffect(() => { listRef.current = list; dropRef.current = onDrop; });
+  const holdRef = useRef(onHold);
+  useEffect(() => { listRef.current = list; dropRef.current = onDrop; holdRef.current = onHold; });
 
   const byId = new Map(list.map(it => [it.id, it]));
   const items = order ? order.map(id => byId.get(id)).filter(Boolean) : list;
@@ -1698,6 +1699,8 @@ function useDragOrder(list, onDrop) {
     clearTimeout(s.timer);
     if (s.active) {
       dropped.current = Date.now();
+      // Held and let go without moving it: that's a hold, not a drag.
+      if (commit && !s.moved) holdRef.current?.(s.id);
       const now = listRef.current;
       if (commit && s.order.join() !== now.map(it => it.id).join()) {
         const map = new Map(now.map(it => [it.id, it]));
@@ -1744,6 +1747,7 @@ function useDragOrder(list, onDrop) {
       next.splice(from, 1);
       next.splice(target, 0, s.id);
       s.order = next;
+      s.moved = true;
       setOrder(next);
     }
   }
@@ -1781,7 +1785,10 @@ function useDragOrder(list, onDrop) {
 function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
-  const [mode, setMode] = useState(null);        // null | 'menu' | 'add' | 'delete'
+  const [adding, setAdding] = useState(false);
+  // The step she held (2026-10-20): it shows a Delete button until she taps
+  // anywhere else on the list.
+  const [heldId, setHeldId] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [newIcon, setNewIcon] = useState('✨');
   // The workout tick is the 1,000-workout record, not a daily check that is
@@ -1818,15 +1825,15 @@ function TodayPlan({ today }) {
     const id = `my-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
     const next = { ...cur, items: [...cur.items, { id, title, icon: newIcon.trim() || '✨', pos }] };
     savePlanItems(next); setPlan(next);
-    setNewTitle(''); setNewIcon('✨'); setMode(null);
+    setNewTitle(''); setNewIcon('✨'); setAdding(false);
   }
 
   async function deleteItem(it) {
+    setHeldId(null);
     if (!(await ask(`Delete “${it.title}” from Today’s Plan? It goes from every day, on every gadget.`, { yes: 'Delete', danger: true }))) return;
     const cur = loadPlanItems();
     const next = { items: cur.items.filter(x => x.id !== it.id), deleted: { ...cur.deleted, [it.id]: stampNow() } };
     savePlanItems(next); setPlan(next);
-    if (!next.items.length) setMode(null);
   }
 
   // Hold a step and drag it (2026-10-12): the list reorders as she drags,
@@ -1837,13 +1844,12 @@ function TodayPlan({ today }) {
     const next = { ...loadPlanItems(), items: list.map((it, k) => ({ ...it, pos: k, at: t })) };
     savePlanItems(next); setPlan(next);
   }
-  const drag = useDragOrder(plan.items, saveOrder);
+  const drag = useDragOrder(plan.items, saveOrder, setHeldId);
 
   const items = drag.items;
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
   const done = items.filter(it => isChecked(it.id)).length;
   const pct = items.length ? Math.round((done / items.length) * 100) : 0;
-  const deleting = mode === 'delete';
 
   return (
     <section className="home-plan splash-item" aria-label="Today's plan">
@@ -1853,21 +1859,15 @@ function TodayPlan({ today }) {
           <span className="home-plan-count">{done} of {items.length} · {pct}%</span>
           <button
             type="button"
-            className={`home-plan-edit${mode ? ' on' : ''}`}
-            onClick={() => setMode(m => (m ? null : 'menu'))}
-            aria-expanded={!!mode}
-            aria-label={mode ? 'Done' : 'Add or delete'}
-            title={mode ? 'Done' : 'Add or delete'}
-          >{mode ? '✓' : '✎'}</button>
+            className={`home-plan-edit${adding ? ' on' : ''}`}
+            onClick={() => { setAdding(a => !a); setHeldId(null); }}
+            aria-expanded={adding}
+            aria-label={adding ? 'Close' : 'Add a step'}
+            title={adding ? 'Close' : 'Add a step'}
+          >{adding ? '✕' : '＋'}</button>
         </span>
       </div>
-      {mode === 'menu' && (
-        <div className="home-plan-menu">
-          <button type="button" onClick={() => setMode('add')}>＋ Add</button>
-          <button type="button" onClick={() => setMode('delete')} disabled={!items.length}>🗑 Delete</button>
-        </div>
-      )}
-      {mode === 'add' && (
+      {adding && (
         <form className="home-plan-add" onSubmit={addItem}>
           <input className="home-plan-add-icon" value={newIcon} onChange={e => setNewIcon(e.target.value)} aria-label="Emoji" maxLength={4} />
           <input className="home-plan-add-title" value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="New step" aria-label="New step" autoFocus maxLength={40} />
@@ -1882,20 +1882,22 @@ function TodayPlan({ today }) {
           <li
             key={it.id}
             ref={el => drag.register(it.id, el)}
-            className={[deleting && 'is-deleting', drag.draggingId === it.id && 'is-dragging'].filter(Boolean).join(' ') || undefined}
-            {...(deleting ? {} : drag.handlers(it.id))}
+            className={[heldId === it.id && 'is-held', drag.draggingId === it.id && 'is-dragging'].filter(Boolean).join(' ') || undefined}
+            {...drag.handlers(it.id)}
           >
             <button
               type="button"
               className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
-              onClick={() => { if (drag.justDropped()) return; if (deleting) deleteItem(it); else toggle(it.id); }}
-              aria-pressed={deleting ? undefined : isChecked(it.id)}
-              aria-label={deleting ? `Delete ${it.title}` : undefined}
+              onClick={() => { if (drag.justDropped()) return; if (heldId) { setHeldId(null); return; } toggle(it.id); }}
+              aria-pressed={isChecked(it.id)}
             >
               <span className="home-plan-ring" aria-hidden="true" />
               <span className="home-plan-name">{it.title}</span>
-              <span className="home-plan-icon" aria-hidden="true">{deleting ? '🗑' : it.icon}</span>
+              <span className="home-plan-icon" aria-hidden="true">{it.icon}</span>
             </button>
+            {heldId === it.id && (
+              <button type="button" className="home-plan-del" onClick={() => deleteItem(it)} onTouchStart={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>🗑 Delete</button>
+            )}
           </li>
         ))}
       </ul>
