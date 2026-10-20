@@ -32,9 +32,19 @@ const BLOCKED_RETRY_MS  = 5000;           // re-try a reload we had to defer
 const LAUNCH_CHECK_MS = 1500;   // most checks answer in a few hundred ms
 const LAUNCH_UPDATE_MS = 8000;  // a new version downloading gets longer
 
+// The logo lifts only once her fonts are in and the page has drawn twice, so
+// nothing on the first screen shifts after it goes (2026-10-20). Never waits
+// more than a second for the fonts.
+let lifting = false;
 export function liftCover() {
-  if (window.__gpReloading) return;
-  document.getElementById('boot-cover')?.remove();
+  if (window.__gpReloading || lifting) return;
+  lifting = true;
+  const fonts = document.fonts?.ready || Promise.resolve();
+  Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(() => {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!window.__gpReloading) document.getElementById('boot-cover')?.remove();
+    }));
+  });
 }
 
 // Put the logo back over everything before any reload, so a reload looks

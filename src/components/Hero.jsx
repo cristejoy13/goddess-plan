@@ -1786,9 +1786,16 @@ function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
   const [adding, setAdding] = useState(false);
-  // The step she held (2026-10-20): it shows a Delete button until she taps
-  // anywhere else on the list.
-  const [heldId, setHeldId] = useState(null);
+  // Hold a step (2026-10-20): the list turns into a picker. The held step is
+  // picked; tapping others picks them too. Delete asks once for all of them.
+  const [picked, setPicked] = useState(null);    // null, or a Set of ids
+  const picking = !!picked;
+  const startPicking = id => setPicked(new Set([id]));
+  const togglePick = id => setPicked(cur => {
+    const next = new Set(cur);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
   const [newTitle, setNewTitle] = useState('');
   const [newIcon, setNewIcon] = useState('✨');
   // The workout tick is the 1,000-workout record, not a daily check that is
@@ -1828,12 +1835,20 @@ function TodayPlan({ today }) {
     setNewTitle(''); setNewIcon('✨'); setAdding(false);
   }
 
-  async function deleteItem(it) {
-    setHeldId(null);
-    if (!(await ask(`Delete “${it.title}” from Today’s Plan? It goes from every day, on every gadget.`, { yes: 'Delete', danger: true }))) return;
+  async function deletePicked() {
     const cur = loadPlanItems();
-    const next = { items: cur.items.filter(x => x.id !== it.id), deleted: { ...cur.deleted, [it.id]: stampNow() } };
-    savePlanItems(next); setPlan(next);
+    const gone = cur.items.filter(x => picked.has(x.id));
+    if (!gone.length) return;
+    const text = gone.length === 1
+      ? `Delete “${gone[0].title}” from Today’s Plan? It goes from every day, on every gadget.`
+      : `Delete these ${gone.length} steps from Today’s Plan? They go from every day, on every gadget.`;
+    if (!(await ask(text, { yes: 'Delete', danger: true }))) return;
+    const t = stampNow();
+    const fresh = loadPlanItems();
+    const deleted = { ...fresh.deleted };
+    gone.forEach(x => { deleted[x.id] = t; });
+    const next = { items: fresh.items.filter(x => !picked.has(x.id)), deleted };
+    savePlanItems(next); setPlan(next); setPicked(null);
   }
 
   // Hold a step and drag it (2026-10-12): the list reorders as she drags,
@@ -1844,7 +1859,7 @@ function TodayPlan({ today }) {
     const next = { ...loadPlanItems(), items: list.map((it, k) => ({ ...it, pos: k, at: t })) };
     savePlanItems(next); setPlan(next);
   }
-  const drag = useDragOrder(plan.items, saveOrder, setHeldId);
+  const drag = useDragOrder(plan.items, saveOrder, startPicking);
 
   const items = drag.items;
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
@@ -1860,7 +1875,7 @@ function TodayPlan({ today }) {
           <button
             type="button"
             className={`home-plan-edit${adding ? ' on' : ''}`}
-            onClick={() => { setAdding(a => !a); setHeldId(null); }}
+            onClick={() => { setAdding(a => !a); setPicked(null); }}
             aria-expanded={adding}
             aria-label={adding ? 'Close' : 'Add a step'}
             title={adding ? 'Close' : 'Add a step'}
@@ -1877,27 +1892,31 @@ function TodayPlan({ today }) {
       <div className="home-plan-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Done today">
         <span style={{ width: `${pct}%` }} />
       </div>
-      <ul className="home-plan-list">
+      {picking && (
+        <div className="home-plan-pickbar">
+          <button type="button" onClick={() => setPicked(null)}>Cancel</button>
+          <button type="button" className="home-plan-del" onClick={deletePicked} disabled={!picked.size}>🗑 Delete {picked.size || ''}</button>
+        </div>
+      )}
+      <ul className={`home-plan-list${picking ? ' is-picking' : ''}`}>
         {items.map(it => (
           <li
             key={it.id}
             ref={el => drag.register(it.id, el)}
-            className={[heldId === it.id && 'is-held', drag.draggingId === it.id && 'is-dragging'].filter(Boolean).join(' ') || undefined}
-            {...drag.handlers(it.id)}
+            className={drag.draggingId === it.id ? 'is-dragging' : undefined}
+            {...(picking ? {} : drag.handlers(it.id))}
           >
             <button
               type="button"
-              className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
-              onClick={() => { if (drag.justDropped()) return; if (heldId) { setHeldId(null); return; } toggle(it.id); }}
-              aria-pressed={isChecked(it.id)}
+              className={`home-plan-item${picking ? (picked.has(it.id) ? ' is-picked' : '') : isChecked(it.id) ? ' is-done' : ''}`}
+              onClick={() => { if (drag.justDropped()) return; if (picking) togglePick(it.id); else toggle(it.id); }}
+              aria-pressed={picking ? picked.has(it.id) : isChecked(it.id)}
+              aria-label={picking ? `Pick ${it.title} to delete` : undefined}
             >
               <span className="home-plan-ring" aria-hidden="true" />
               <span className="home-plan-name">{it.title}</span>
               <span className="home-plan-icon" aria-hidden="true">{it.icon}</span>
             </button>
-            {heldId === it.id && (
-              <button type="button" className="home-plan-del" onClick={() => deleteItem(it)} onTouchStart={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>🗑 Delete</button>
-            )}
           </li>
         ))}
       </ul>
