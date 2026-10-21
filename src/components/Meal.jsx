@@ -96,6 +96,24 @@ function planGoal(profile = readProfile()) {
   return isOwner(profile) ? null : (profile?.targets?.calories ?? null);
 }
 
+// One short line under Garmin cal burned (2026-10-21), so she can see whether
+// the number came from her watch or is her 1,400 average — and, if it is the
+// average, when the watch last sent anything at all.
+function watchNoteFor(garmin, key) {
+  const b = garmin?.burns?.[key];
+  const when = iso => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? null : d; };
+  if (garminBurnOn(garmin, key) != null) {
+    const at = when(b.at);
+    return at ? `From your watch · ${at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : 'From your watch';
+  }
+  const last = Object.entries(garmin?.burns || {})
+    .filter(([, v]) => typeof v?.cal === 'number' && v.cal > 0)
+    .map(([, v]) => when(v.at)).filter(Boolean)
+    .sort((x, y) => y - x)[0];
+  if (!last) return 'Your average · nothing from your watch yet';
+  return `Your average · watch last sent ${last.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}`;
+}
+
 function dayDeficit(state, garmin, key, todayKey = dateKeyOf()) {
   const t = calTotals(state.days?.[key] || []);
   if (!t.counted || key > todayKey) return null;
@@ -719,7 +737,7 @@ function GoalForm({ cal, weekLabel, onSave }) {
 // `part` splits it across the tabs (2026-10-08): 'kg' is the Weight tab — the
 // scale reading alone; 'burn' sits under the meals — calories burned, what she
 // ate, and her real deficit.
-function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'average', part = 'both', onSave }) {
+function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'average', watchNote, part = 'both', onSave }) {
   const showKg = part !== 'burn';
   const showBurn = part !== 'kg';
   const fromWatch = averageFrom === 'garmin';
@@ -864,6 +882,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
               />
               <span className="ml-wt-unit ml-burn-unit">cal</span>
             </div>
+            {watchNote && typedBurnCal == null && <span className="ml-burn-src">{watchNote}</span>}
           </label>}
           <button type="submit" className="ml-wt-btn" disabled={unchanged}>
             {saveLabel}
@@ -961,7 +980,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 }
 
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFrom, weekAvg, goal, weekLabel, left,
+function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFrom, watchNote, weekAvg, goal, weekLabel, left,
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
@@ -1091,7 +1110,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
         burned (her watch, her own number, or her average), what she ate,
         and the real deficit. */}
     {show('goal') && <section className="ml-box ml-box-burn ml-burn-panel ml-burn-outside splash-item" aria-label="Calories burned">
-      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} part="burn" onSave={onWeight} />
+      <WeightForm kg={kg} burn={burn} eaten={total} average={averageBurn} averageFrom={burnFrom} watchNote={watchNote} part="burn" onSave={onWeight} />
     </section>}
     </>
   );
@@ -1594,6 +1613,7 @@ export default function Meal() {
              stands in for the average. What she types still wins over both.
              For her, the average is her Garmin average, so it reads Garmin. */
           burnFrom={garminBurnOn(garmin, openKey) != null || isOwner(readProfile()) ? 'garmin' : 'average'}
+          watchNote={isOwner(readProfile()) ? watchNoteFor(garmin, openKey) : null}
           /* The average belongs to the week, so it is shown where the week
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
