@@ -398,6 +398,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
   }
 
   function cancelScan() {
+    setRename(null);
     dismissedRef.current = text.trim();
     setScan(null);
   }
@@ -442,7 +443,34 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
     });
   }
 
+  // Fix a food the scan named wrong (2026-10-22): click its name, type the
+  // right food, and it is looked up again for the same amount, so the
+  // calories, protein, carbs, fats and fiber all follow.
+  const [rename, setRename] = useState(null);   // { i, text, busy, error }
+  async function saveRename() {
+    const r = rename;
+    const words = r?.text.trim();
+    if (!r || !words || r.busy) return;
+    const it = scan.items[r.i];
+    if (words === it.name) { setRename(null); return; }
+    const amount = it.grams != null ? `${it.grams} g` : (it.amount || '');
+    setRename({ ...r, busy: true, error: '' });
+    try {
+      const found = await scanMeal({ text: `${amount} ${words}`.trim() });
+      const fresh = (found?.items || []).map(x => ({ ...x, name: found.items.length === 1 ? words : x.name }));
+      if (!fresh.length) throw new Error(`Could not find “${words}”. Say it another way.`);
+      setScan(prev => {
+        const items = [...prev.items.slice(0, r.i), ...fresh, ...prev.items.slice(r.i + 1)];
+        return { ...prev, items, total: items.reduce((sum, x) => sum + x.kcal, 0) };
+      });
+      setRename(null);
+    } catch (err) {
+      setRename(cur => cur && { ...cur, busy: false, error: err.message || 'Could not look it up. Try again.' });
+    }
+  }
+
   function dropItem(i) {
+    setRename(null);
     setScan(prev => {
       const items = prev.items.filter((_, j) => j !== i);
       return items.length ? { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) } : null;
@@ -564,7 +592,29 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
             {scan.items.map((it, i) => (
               <li key={`${it.name}-${i}`} className="ml-scan-item">
                 <span className="ml-scan-name">
-                  <b>{it.name}</b>
+                  {rename?.i === i ? (
+                    <span className="ml-scan-rename">
+                      <input
+                        value={rename.text}
+                        onChange={e => setRename({ ...rename, text: e.target.value, error: '' })}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') { e.preventDefault(); saveRename(); }
+                          if (e.key === 'Escape') { e.preventDefault(); setRename(null); }
+                        }}
+                        disabled={rename.busy}
+                        autoFocus
+                        maxLength={60}
+                        aria-label={`The right food instead of ${it.name}`}
+                      />
+                      <button type="button" className="ml-scan-rename-ok" onClick={saveRename} disabled={rename.busy || !rename.text.trim()} aria-label="Save the food">{rename.busy ? '…' : '✓'}</button>
+                      <button type="button" className="ml-scan-rename-x" onClick={() => setRename(null)} disabled={rename.busy} aria-label="Keep it as it was">✕</button>
+                    </span>
+                  ) : (
+                    <button type="button" className="ml-scan-namebtn" onClick={() => setRename({ i, text: it.name, busy: false, error: '' })} aria-label={`Change ${it.name} to the right food`}>
+                      <b>{it.name}</b> <span aria-hidden="true">✎</span>
+                    </button>
+                  )}
+                  {rename?.i === i && rename.error && <small className="ml-scan-rename-err" role="alert">{rename.error}</small>}
                   <span className="ml-scan-edit">
                     {/^\d/.test((it.base || it).amount || '') && !/^\d+(?:\.\d+)?\s*(g|grams?|ml|kg)\b/i.test((it.base || it).amount || '') && (
                       <label className="ml-scan-field">
