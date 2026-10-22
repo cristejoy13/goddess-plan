@@ -35,6 +35,18 @@
          follows her light/dark choice. -->
     <script>
       try { if (localStorage.getItem('gp_color_mode') === 'light') document.documentElement.setAttribute('data-boot', 'light'); } catch (e) {}
+      // The logo's height on the screen is fixed once, here (2026-10-22). On
+      // an installed iPhone app the page grows by the notch gap a moment
+      // after launch, so a logo centred in the page slid down mid-load. The
+      // home-screen app fills the whole screen, so its middle is the screen's
+      // middle; in a browser it is the window's middle at the first moment.
+      try {
+        var standalone = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+        var land = window.matchMedia && matchMedia('(orientation: landscape)').matches;
+        var sh = land ? Math.min(screen.width, screen.height) : Math.max(screen.width, screen.height);
+        var mid = Math.round((standalone && sh ? sh : window.innerHeight) / 2);
+        if (mid > 0) document.documentElement.style.setProperty('--boot-y', mid + 'px');
+      } catch (e) {}
     </script>
     <style>
       html, body { background: #07040f; margin: 0; }
@@ -42,7 +54,18 @@
       #boot-splash, #boot-cover { position: fixed; inset: 0; display: grid; place-items: center; }
       #boot-cover { z-index: 2147483647; background: #07040f; }
       html[data-boot="light"] #boot-cover { background: #fff5fb; }
+      #boot-splash img, #boot-cover img, #boot-splash::after, #boot-cover::after {
+        position: absolute; left: 50%; top: var(--boot-y, 50%); transform: translate(-50%, -50%);
+      }
       #boot-splash img, #boot-cover img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 10px 40px rgba(255,92,157,0.3); }
+      /* A ring turning around the logo while the app loads (2026-10-22). */
+      #boot-splash::after, #boot-cover::after {
+        content: ''; width: 144px; height: 144px; box-sizing: border-box; border-radius: 50%;
+        border: 3px solid rgba(255,92,157,0.18); border-top-color: #ff5c9d;
+        animation: boot-spin 0.9s linear infinite;
+      }
+      @keyframes boot-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) { #boot-splash::after, #boot-cover::after { animation-duration: 2.4s; } }
     </style>
     <div id="root"><div id="boot-splash"><img src="/icon-192.png" alt="" width="112" height="112" /></div></div>
     <!-- One load only (2026-10-10). The logo stays over the app for a moment

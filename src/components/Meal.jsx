@@ -208,16 +208,18 @@ function nowTime() {
 // Protein, carbs and fat (2026-10-10). A meal's total for one of them is
 // kept only when every food in it has that number — a total missing a food
 // would read as complete and be wrong.
-const MACROS = ['protein', 'carbs', 'fat', 'fiber'];
+const MACROS = ['protein', 'carbs', 'fat', 'fiber', 'iron'];
 
 // The day's nutrition as a small table (2026-10-16): grams eaten, a bar
 // toward the day's aim, and the aim. Her own daily aims, set 2026-10-16:
-// 70 g protein, 150 g carbs, 50 g fats, 25 g fiber.
+// 70 g protein, 150 g carbs, 50 g fats, 25 g fiber. Iron added 2026-10-22:
+// 18 mg a day, the amount for a woman her age.
 const NUTRIENTS = [
-  { k: 'protein', label: 'Protein', lo: 70,  hi: 70 },
-  { k: 'carbs',   label: 'Carbs',   lo: 150, hi: 150 },
-  { k: 'fat',     label: 'Fats',    lo: 50,  hi: 50 },
-  { k: 'fiber',   label: 'Fiber',   lo: 25,  hi: 25 },
+  { k: 'protein', label: 'Protein', lo: 70,  hi: 70,  unit: 'g' },
+  { k: 'carbs',   label: 'Carbs',   lo: 150, hi: 150, unit: 'g' },
+  { k: 'fat',     label: 'Fats',    lo: 50,  hi: 50,  unit: 'g' },
+  { k: 'fiber',   label: 'Fiber',   lo: 25,  hi: 25,  unit: 'g' },
+  { k: 'iron',    label: 'Iron',    lo: 18,  hi: 18,  unit: 'mg' },
 ];
 const r1 = n => Math.round(n * 10) / 10;
 function nutrientSums(entries) {
@@ -231,16 +233,16 @@ function NutrientTable({ entries }) {
   return (
     <table className="nt-table">
       <tbody>
-        {NUTRIENTS.map(({ k, label, lo, hi }) => {
+        {NUTRIENTS.map(({ k, label, lo, hi, unit }) => {
           const v = sums[k];
           const pct = v == null ? 0 : Math.min(100, (v / hi) * 100);
           const state = v == null ? '' : v < lo ? ' is-low' : v > hi * 1.15 ? ' is-over' : ' is-in';
           return (
             <tr key={k} className={`nt-${k}${state}`}>
               <th scope="row"><span className="nt-dot" aria-hidden="true" />{label}</th>
-              <td className="nt-g">{v == null ? '—' : `${v} g`}</td>
+              <td className="nt-g">{v == null ? '—' : `${v} ${unit}`}</td>
               <td className="nt-bar-cell" aria-hidden="true"><span className="nt-bar"><span style={{ width: `${pct}%` }} /></span></td>
-              <td className="nt-aim">{lo === hi ? `${hi} g` : `${lo}–${hi} g`}</td>
+              <td className="nt-aim">{lo === hi ? `${hi} ${unit}` : `${lo}–${hi} ${unit}`}</td>
             </tr>
           );
         })}
@@ -1256,12 +1258,12 @@ function TodayNutrition({ entries, goal }) {
           </span>
         </div>
         <ul className="mt-macros">
-          {[['protein', 'Protein'], ['carbs', 'Carbs'], ['fat', 'Fats'], ['fiber', 'Fiber']].map(([k, label]) => (
+          {[['protein', 'Protein'], ['carbs', 'Carbs'], ['fat', 'Fats'], ['fiber', 'Fiber'], ['iron', 'Iron']].map(([k, label]) => (
             <li key={k} className={`mt-macro mt-${k}`}>
               <span className="mt-dot" aria-hidden="true" />
               <span className="mt-macro-name">{label}</span>
-              <b>{daySums[k] == null ? '—' : `${Math.round(daySums[k])} g`}</b>
-              <em>{k !== 'fiber' && withMacros && pct(k) != null ? `${pct(k)}%` : ''}</em>
+              <b>{daySums[k] == null ? '—' : k === 'iron' ? `${daySums[k]} mg` : `${Math.round(daySums[k])} g`}</b>
+              <em>{!['fiber', 'iron'].includes(k) && withMacros && pct(k) != null ? `${pct(k)}%` : ''}</em>
             </li>
           ))}
         </ul>
@@ -1284,7 +1286,7 @@ function loadPicks() {
 }
 
 function IdeaDetail({ idea, picked, onPick, onClose }) {
-  const nums = [['kcal', 'cal', ''], ['protein', 'Protein', ' g'], ['carbs', 'Carbs', ' g'], ['fat', 'Fats', ' g'], ['fiber', 'Fiber', ' g']]
+  const nums = [['kcal', 'cal', ''], ['protein', 'Protein', ' g'], ['carbs', 'Carbs', ' g'], ['fat', 'Fats', ' g'], ['fiber', 'Fiber', ' g'], ['iron', 'Iron', ' mg']]
     .filter(([k]) => typeof idea[k] === 'number');
   const [whole, setWhole] = useState(false);
   return (
@@ -1318,10 +1320,10 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
       </>}
       {idea.note && <p className="mt-idea-note">{idea.note}</p>}
       {/* Her notes for every meal: getting ahead, and how the numbers were worked out. */}
-      <details className="mt-idea-notes">
+      {PREP_TIPS.length > 0 && <details className="mt-idea-notes">
         <summary>Prep tips</summary>
         <ul className="mt-idea-list">{PREP_TIPS.map(([what, tip]) => <li key={what}><b>{what}:</b> {tip}</li>)}</ul>
-      </details>
+      </details>}
       <details className="mt-idea-notes">
         <summary>Nutrition notes</summary>
         <ul className="mt-idea-list">{NUTRITION_NOTES.map((x, i) => <li key={i}>{x}</li>)}</ul>
@@ -1374,7 +1376,7 @@ function MealTimePanel({ time, entries, goal, onEat }) {
       <div className="mt-ideas">
         <div className="mt-nutri-title">Meal ideas</div>
         {ideas.length > 0 && (
-          <p className="mt-empty">Any 1 breakfast + lunch + dinner + snack = {DAY_RANGE.kcalLow.toLocaleString()}–{DAY_RANGE.kcalHigh.toLocaleString()} cal.</p>
+          <p className="mt-empty">Any 1 {DAY_RANGE.times.map(t => (t === 'snacks' ? 'snack' : t)).join(' + ')} = {DAY_RANGE.kcalLow.toLocaleString()}–{DAY_RANGE.kcalHigh.toLocaleString()} cal.</p>
         )}
         {ideas.length === 0 ? (
           <p className="mt-empty">Your {time.label.toLowerCase()} ideas will show here.</p>
@@ -1497,7 +1499,7 @@ export default function Meal() {
       }
       const entry = {
         id: newEntryId(), time: nowTime(), text: idea.name, cal: idea.kcal,
-        protein: idea.protein, carbs: idea.carbs, fat: idea.fat, fiber: idea.fiber,
+        protein: idea.protein, carbs: idea.carbs, fat: idea.fat, fiber: idea.fiber, ...(typeof idea.iron === 'number' && { iron: idea.iron }),
         ideaId: idea.id, mealTime, createdAt: now, updatedAt: now,
       };
       return { ...prev, days: { ...prev.days, [key]: [...list, entry].sort(byTime) } };

@@ -217,7 +217,7 @@ export function gramsFor(food, { qty, unit, size }) {
 
 /**
  * estimateMeal(foods, text) → { items, total, missing }
- *   items:   [{ name, amount, grams, kcal, protein?, carbs?, fat?, fiber?, source: 'offline', usdaName }]
+ *   items:   [{ name, amount, grams, kcal, protein?, carbs?, fat?, fiber?, iron?, source: 'offline', usdaName }]
  *   missing: the parts of her words it could not work out
  */
 export function estimateMeal(foods, text) {
@@ -235,7 +235,7 @@ export function estimateMeal(foods, text) {
       grams: Math.round(grams),
       kcal: Math.round((food.kcal * grams) / 100),
       // Protein, carbs and fat from the same USDA line, where it lists them.
-      ...Object.fromEntries(['protein', 'carbs', 'fat', 'fiber']
+      ...Object.fromEntries(['protein', 'carbs', 'fat', 'fiber', 'iron']
         .map((k, i) => [k, food.macros[i]])
         .filter(([, v]) => v != null)
         .map(([k, v]) => [k, Math.round((v * grams) / 10) / 10])),

@@ -11913,3 +11913,9 @@ body.gp-dragging { overscroll-behavior: none; }
   position: absolute; top: calc(env(safe-area-inset-top) + 12px); right: 16px; width: 48px; height: 48px; border-radius: 50%;
   border: 0; background: rgba(255,255,255,0.18); color: #fff; font-size: 20px; cursor: pointer;
 }
+
+/* Iron, 18 mg a day (2026-10-22): a deep red, like the 🩸 in her recipes. */
+.nt-iron .nt-dot, .nt-iron .nt-bar span, .mt-iron .mt-dot { background: #ff6b6b; }
+[data-mode="light"] .nt-iron .nt-dot, [data-mode="light"] .nt-iron .nt-bar span, [data-mode="light"] .mt-iron .mt-dot { background: #c62828; }
+.mt-fiber .mt-dot { background: #6ee7c8; }
+[data-mode="light"] .mt-fiber .mt-dot { background: #0b9b7c; }
