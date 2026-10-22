@@ -5,6 +5,7 @@ import { ideasFor, NUTRITION_NOTES, PREP_TIPS, DAY_RANGE } from '../data/mealIde
 import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
+import Camera from './Camera';
 import {
   dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -309,6 +310,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
   // ── Scan: her words and/or a photo → each food with its calories. The
   // numbers are shown to her first; nothing is saved until she says so.
   const fileRef = useRef(null);
+  const [camOpen, setCamOpen] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [scan, setScan] = useState(null);       // { items, total } waiting for her
   const [scanning, setScanning] = useState(false);
@@ -515,6 +517,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
       </label>
       {(mic.error || micNote) && <span className="ml-mic-note" role="status">{mic.error || micNote}</span>}
 
+      <Camera open={camOpen} title="Photo of your meal" onClose={() => setCamOpen(false)} onPhoto={file => pickPhoto({ target: { files: [file] } })} />
       {!editing && !scan && (
         <div className="ml-pills ml-pills-two">
           <input ref={fileRef} type="file" accept="image/*" className="ml-scan-file" onChange={pickPhoto} tabIndex={-1} aria-hidden="true" />
@@ -524,7 +527,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
               <button type="button" className="ml-pill-x" onClick={() => { setPhoto(null); setScan(null); }} aria-label="Delete photo" title="Delete photo">🗑</button>
             </span>
           ) : (
-            <button type="button" className="ml-pill ml-pill-photo" onClick={() => fileRef.current?.click()}>📷 Photo</button>
+            <button type="button" className="ml-pill ml-pill-photo" onClick={() => setCamOpen(true)}>📷 Photo</button>
           )}
           <button
             type="button"
@@ -758,6 +761,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
   // Snap the scale: the number it reads goes into the box for her to check,
   // and is only kept when she clicks Save.
   const scaleRef = useRef(null);
+  const [scaleCam, setScaleCam] = useState(false);
   const [reading, setReading] = useState(false);
   const [readNote, setReadNote] = useState('');
   async function readScale(e) {
@@ -858,7 +862,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
               <button
                 type="button"
                 className="ml-icon-btn ml-wt-snap"
-                onClick={() => scaleRef.current?.click()}
+                onClick={() => setScaleCam(true)}
                 disabled={reading}
                 aria-label="Snap your scale"
                 title="Snap your scale"
@@ -924,6 +928,7 @@ function WeightForm({ kg, burn: typedBurnCal, eaten, average, averageFrom = 'ave
       )}
       {reading && <div className="ml-wt-read" role="status"><span>Reading your scale…</span></div>}
       {warn && <div className="ml-wt-warn">{warn}</div>}
+      <Camera open={scaleCam} title="Snap your scale" onClose={() => setScaleCam(false)} onPhoto={file => readScale({ target: { files: [file] } })} />
     </form>
   );
 }

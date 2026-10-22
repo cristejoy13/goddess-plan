@@ -11821,3 +11821,43 @@ body.gp-dragging { overscroll-behavior: none; }
 
 /* Under Garmin cal burned: from the watch, or her average (2026-10-21). */
 .ml-burn-src { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-soft); }
+
+/* ── The app's own camera (2026-10-22): flash, timer, flip, pick a photo ── */
+.cam {
+  position: fixed; inset: 0; z-index: 9000; display: flex; flex-direction: column;
+  background: #000; color: #fff; font-family: inherit;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.cam-top, .cam-bottom {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; max-width: 720px; margin: 0 auto; padding: 12px 16px; box-sizing: border-box;
+}
+.cam-bottom { padding-bottom: 20px; }
+.cam-opts { display: flex; gap: 8px; }
+.cam-btn {
+  width: 48px; height: 48px; border-radius: 50%; border: 0; flex: none;
+  background: rgba(255,255,255,0.16); color: #fff; font-size: 20px; cursor: pointer;
+}
+.cam-chip {
+  min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0;
+  background: rgba(255,255,255,0.16); color: #fff; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.cam-chip.on { background: #ffd34d; color: #1a0c12; }
+.cam-chip:disabled, .cam-btn:disabled { opacity: 0.5; cursor: default; }
+.cam-view { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; }
+.cam-view video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.cam-view video.is-front { transform: scaleX(-1); }
+.cam-failed { max-width: 320px; margin: 0 16px; text-align: center; font-size: 16px; line-height: 1.4; }
+.cam-count {
+  position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+  font-size: clamp(96px, 30vw, 200px); font-weight: 800; text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+}
+.cam-shutter {
+  width: 76px; height: 76px; border-radius: 50%; flex: none; cursor: pointer;
+  border: 5px solid #fff; background: rgba(255,255,255,0.9); box-shadow: inset 0 0 0 3px #000;
+  display: grid; place-items: center;
+}
+.cam-shutter:active { transform: scale(0.94); }
+.cam-shutter:disabled { opacity: 0.5; }
+.cam-stop { width: 24px; height: 24px; border-radius: 5px; background: #e8347a; }
+.cam-white { position: fixed; inset: 0; z-index: 9001; background: #fff; }
