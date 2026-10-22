@@ -126,7 +126,7 @@ function dayDeficit(state, garmin, key, todayKey = dateKeyOf()) {
 // A kilo of body fat is about 7,700 calories. Her week deficits are added up
 // in order from her first week with meals written down — a week where she ate
 // more than she burned takes away — and each Sunday on which the running total
-// reaches 7,700 is a kilo lost: that Sunday turns pale red, and counting starts
+// reaches 7,700 is a kilo lost: that Sunday turns bright blue (pale red until 2026-10-23), and counting starts
 // again, keeping whatever went past 7,700 so no effort is lost (2026-10-09).
 const KG_FAT_CAL = 7700;
 
