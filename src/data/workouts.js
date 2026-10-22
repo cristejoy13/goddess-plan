@@ -1,10 +1,11 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
 // Her plan of 2026-10-10, Monday to Sunday:
 //   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat · abs finisher
-//   Tue  Pilates or yoga (Move With Nicole) · jump rope or Zone 2
-//   Wed  Upper body & core — Pilates by Izzy · Zone 2 run only
+//   Tue  Upper body & core — Pilates by Izzy · jump rope or Zone 2
+//   Wed  Pilates or yoga (Move With Nicole) · Zone 2 run only
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
-//   Fri  Pilates or yoga, same as Tue · jump rope or Zone 2
+//   Fri  Pilates by Izzy, same as Tue · jump rope or Zone 2
+// (2026-10-23, her call: Izzy moved to Tue and Fri, Nicole to Wed.)
 //   Sat  Glutes C — squat, pause squat, lateral squat · abs finisher
 //   Sun  Biking, then swimming at 5 PM
 // An easy walk every day. Three main lifts on each glute day, never shared;
@@ -48,6 +49,10 @@ const walk = (min) => [
 
 
 // Move With Nicole only (2026-10-14: Jessica Diễm's videos removed).
+const izzy = cover => [
+  H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core', cover),
+  ...IZZY_ABS,
+];
 const pilatesOrYoga = cover => [
   H('🧘 Pick ONE video · Move With Nicole', 'Pilates or yoga · 20–40 min.', 'core', cover),
   ...NICOLE_FULLBODY,
@@ -941,25 +946,24 @@ export const WORKOUT_DAYS = [
     meals: GLUTE_MEALS,
   },
   {
-    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Tuesday · Pilates or Yoga', title: 'One video · Rope or Zone 2',
-    sub: '20–40 min video · jump rope or Zone 2 · evening walk',
+    emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
+    day: 'Tuesday · Upper Body & Core', title: 'Pilates by Izzy · Rope or Zone 2',
+    sub: '20–35 min video · jump rope or Zone 2 · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...pilatesOrYoga(C('yoga-tue')),
+      ...izzy(C('pilates')),
       ...ROPE_OR_ZONE2,
       ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
   },
   {
-    emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Wednesday · Upper Body & Core', title: 'Pilates by Izzy · Zone 2 Run',
-    sub: '20–35 min video · Zone 2 run · evening walk',
+    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
+    day: 'Wednesday · Pilates or Yoga', title: 'Move With Nicole · Zone 2 Run',
+    sub: '20–40 min video · Zone 2 run · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core', C('pilates')),
-      ...IZZY_ABS,
+      ...pilatesOrYoga(C('yoga-tue')),
       ...RUN_AFTER,
       ...walk('30–60'),
     ],
@@ -982,12 +986,12 @@ export const WORKOUT_DAYS = [
     meals: GLUTE_MEALS,
   },
   {
-    emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Friday · Pilates or Yoga', title: 'One video · Rope or Zone 2',
-    sub: '20–40 min video · jump rope or Zone 2 · evening walk',
+    emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
+    day: 'Friday · Upper Body & Core', title: 'Pilates by Izzy · Rope or Zone 2',
+    sub: '20–35 min video · jump rope or Zone 2 · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...pilatesOrYoga(C('yoga-fri')),
+      ...izzy(C('pilates')),
       ...ROPE_OR_ZONE2,
       ...walk('30–60'),
     ],

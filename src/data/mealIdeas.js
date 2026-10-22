@@ -2,6 +2,10 @@
 // nutrition — and it is added here by hand. Nothing here is made up: every
 // number, ingredient and step below is hers, per serving.
 //
+// Calamansi goes in every meal with iron (her rule, 2026-10-23): its
+// vitamin C helps the body take in the iron. Its few calories are not added
+// to her numbers.
+//
 // Her 10 new meals (sent 2026-10-22) replace the 20 + 4 before them, at her
 // request. Calories, protein, fat, carbs and iron are her own approximate
 // numbers; she sent no fiber, so none is shown. Lunch, dinner and snacks
@@ -21,6 +25,7 @@ export const MEAL_IDEAS = [
       "Olive oil — 1 tsp (5 g)",
       "Black pepper — optional",
       "Salt — optional",
+      "1 calamansi",
     ],
     steps: [
       "Cut the chicken into bite-size pieces.",
@@ -29,6 +34,7 @@ export const MEAL_IDEAS = [
       "Add the green peas.",
       "Stir together for 2–3 minutes.",
       "Add black pepper and a little salt if desired.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
   },
   {
@@ -42,6 +48,7 @@ export const MEAL_IDEAS = [
       "Black pepper — optional",
       "Cayenne pepper — optional",
       "Pumpkin seeds — optional",
+      "1 calamansi",
     ],
     steps: [
       "Heat 1 tsp olive oil in a pan.",
@@ -52,6 +59,7 @@ export const MEAL_IDEAS = [
       "Cook until the eggs are fully set.",
       "Season with black pepper or a small pinch of cayenne.",
       "Add a few pumpkin seeds on top if desired.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
     note: "The beef numbers vary the most depending on how lean your ground beef is. Leaner ground beef = fewer calories and less fat.",
   },
@@ -66,6 +74,7 @@ export const MEAL_IDEAS = [
       "Water — 300–400 ml",
       "Salt — optional",
       "Black pepper — optional",
+      "1 calamansi",
     ],
     steps: [
       "Put cooked mung beans and water in a pot.",
@@ -75,6 +84,7 @@ export const MEAL_IDEAS = [
       "Add malunggay leaves last.",
       "Simmer for another 2–3 minutes.",
       "Season lightly if desired.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
   },
   {
@@ -108,6 +118,7 @@ export const MEAL_IDEAS = [
       "Sesame oil — 1 tsp (5 g)",
       "Sesame seeds — optional",
       "Black pepper — optional",
+      "1 calamansi",
     ],
     steps: [
       "Boil the eggs and peel them.",
@@ -115,6 +126,7 @@ export const MEAL_IDEAS = [
       "Place kimchi on top of the eggs.",
       "Drizzle 1 tsp sesame oil over everything.",
       "Sprinkle sesame seeds and black pepper if desired.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
   },
   {
@@ -135,6 +147,7 @@ export const MEAL_IDEAS = [
       "Cayenne pepper — small pinch",
       "Sesame seeds — optional",
       "Pumpkin seeds — optional",
+      "1 calamansi",
     ],
     steps: [
       "Spiralize the carrot and cucumber.",
@@ -144,6 +157,7 @@ export const MEAL_IDEAS = [
       "Toss well.",
       "Top with sibuyas dahon.",
       "Add a small sprinkle of sesame or pumpkin seeds if desired.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
     note: "Adding seeds will increase calories.",
   },
@@ -178,12 +192,14 @@ export const MEAL_IDEAS = [
       "Black pepper — optional",
       "Salt — optional",
       "Cayenne pepper — optional",
+      "1 calamansi",
     ],
     steps: [
       "Heat 1 tsp olive oil in a pan.",
       "Crack in the 2 eggs.",
       "Fry until the whites are cooked and the yolks reach your preferred doneness.",
       "Season lightly with black pepper, salt, or cayenne.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
   },
   {
@@ -192,12 +208,14 @@ export const MEAL_IDEAS = [
     ingredients: [
       "Apple — 100 g, sliced",
       "Greek yogurt — 100 g",
+      "1 calamansi",
     ],
     steps: [
       "Slice the apple.",
       "Put the Greek yogurt in a bowl.",
       "Add the apple on top.",
       "Serve cold.",
+      "Squeeze 1 calamansi on top before eating.",
     ],
   },
   {
@@ -210,6 +228,7 @@ export const MEAL_IDEAS = [
       "Chia seeds — 1 tsp (~5 g)",
       "Toppings: walnuts — 10 g",
       "Toppings: granola — 20 g",
+      "1 calamansi",
     ],
     steps: [
       "Put frozen banana, frozen apple, chia seeds, and water into a blender.",
@@ -217,6 +236,7 @@ export const MEAL_IDEAS = [
       "Add a little more water if needed.",
       "Pour into a bowl or glass.",
       "Top with 10 g walnuts and 20 g granola.",
+      "Squeeze 1 calamansi into it before drinking.",
     ],
   },
 ];
@@ -234,6 +254,7 @@ export const DAY_RANGE = {
 // Her notes for every meal (replaced 2026-10-22 with her new recipes).
 export const NUTRITION_NOTES = [
   'All numbers are approximate.',
+  'Calamansi in every meal helps your body take in the iron.',
 ];
 
 export const PREP_TIPS = [];
