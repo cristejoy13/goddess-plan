@@ -398,7 +398,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
   }
 
   function cancelScan() {
-    setRename(null);
+    setRename(null); setExtra(null);
     dismissedRef.current = text.trim();
     setScan(null);
   }
@@ -466,6 +466,29 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
       setRename(null);
     } catch (err) {
       setRename(cur => cur && { ...cur, busy: false, error: err.message || 'Could not look it up. Try again.' });
+    }
+  }
+
+  // Add a food the scan missed (2026-10-22): type it with its amount ("2
+  // eggs", "1 cup rice") and it is looked up and added to the list, so the
+  // total, protein, carbs, fats and fiber include it.
+  const [extra, setExtra] = useState(null);     // { text, busy, error }
+  async function saveExtra() {
+    const x = extra;
+    const words = x?.text.trim();
+    if (!x || !words || x.busy) return;
+    setExtra({ ...x, busy: true, error: '' });
+    try {
+      const found = await scanMeal({ text: words });
+      const fresh = found?.items || [];
+      if (!fresh.length) throw new Error(`Could not find “${words}”. Say it another way.`);
+      setScan(prev => {
+        const items = [...prev.items, ...fresh];
+        return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) };
+      });
+      setExtra(null);
+    } catch (err) {
+      setExtra(cur => cur && { ...cur, busy: false, error: err.message || 'Could not look it up. Try again.' });
     }
   }
 
@@ -658,6 +681,30 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
               </li>
             ))}
           </ul>
+          {extra ? (
+            <div className="ml-scan-extra">
+              <span className="ml-scan-rename">
+                <input
+                  value={extra.text}
+                  onChange={e => setExtra({ ...extra, text: e.target.value, error: '' })}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') { e.preventDefault(); saveExtra(); }
+                    if (e.key === 'Escape') { e.preventDefault(); setExtra(null); }
+                  }}
+                  placeholder="e.g. 2 eggs"
+                  disabled={extra.busy}
+                  autoFocus
+                  maxLength={60}
+                  aria-label="Food to add, with how much"
+                />
+                <button type="button" className="ml-scan-rename-ok" onClick={saveExtra} disabled={extra.busy || !extra.text.trim()} aria-label="Add the food">{extra.busy ? '…' : '✓'}</button>
+                <button type="button" className="ml-scan-rename-x" onClick={() => setExtra(null)} disabled={extra.busy} aria-label="Don't add">✕</button>
+              </span>
+              {extra.error && <small className="ml-scan-rename-err" role="alert">{extra.error}</small>}
+            </div>
+          ) : (
+            <button type="button" className="ml-scan-addfood" onClick={() => { setRename(null); setExtra({ text: '', busy: false, error: '' }); }}>＋ Add a food</button>
+          )}
           {scan.missing?.length > 0 && (
             <div className="ml-scan-missing">
               Not found: {scan.missing.join(', ')}. Say it another way, or try again with internet.

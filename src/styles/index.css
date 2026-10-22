@@ -11884,3 +11884,11 @@ body.gp-dragging { overscroll-behavior: none; }
 /* While renaming, the name takes the whole row so the box is wide enough. */
 .ml-scan-item:has(.ml-scan-rename) { flex-wrap: wrap; }
 .ml-scan-item:has(.ml-scan-rename) .ml-scan-name { flex: 1 1 100%; }
+
+/* Add a food the scan missed (2026-10-22). */
+.ml-scan-addfood {
+  display: block; width: 100%; min-height: 44px; margin-top: 8px; border-radius: 12px;
+  border: 1px dashed var(--border-r); background: transparent; color: var(--text);
+  font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.ml-scan-extra { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
