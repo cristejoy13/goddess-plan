@@ -6,6 +6,7 @@ import { isOwner, readProfile } from '../utils/userPlan';
 import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import Camera from './Camera';
+import PhotoView from './PhotoView';
 import {
   dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -1285,9 +1286,17 @@ function loadPicks() {
 function IdeaDetail({ idea, picked, onPick, onClose }) {
   const nums = [['kcal', 'cal', ''], ['protein', 'Protein', ' g'], ['carbs', 'Carbs', ' g'], ['fat', 'Fats', ' g'], ['fiber', 'Fiber', ' g']]
     .filter(([k]) => typeof idea[k] === 'number');
+  const [whole, setWhole] = useState(false);
   return (
     <div className="mt-idea-detail">
-      {idea.image && <img className="mt-idea-big" src={idea.image} alt={idea.name} />}
+      {/* Click the picture to see it whole (2026-10-22). */}
+      {idea.image && (
+        <button type="button" className="mt-idea-bigbtn" onClick={() => setWhole(true)} aria-label={`See the whole picture of ${idea.name}`}>
+          <img className="mt-idea-big" src={idea.image} alt={idea.name} />
+          <span className="mt-idea-expand" aria-hidden="true">⤢</span>
+        </button>
+      )}
+      <PhotoView src={whole ? idea.image : null} alt={idea.name} onClose={() => setWhole(false)} />
       <div className="mt-idea-top">
         <h3 className="mt-idea-name">{idea.name}</h3>
         <button type="button" className={`mt-heart${picked ? ' on' : ''}`} onClick={onPick} aria-pressed={picked} aria-label={picked ? 'Eaten today — click to take it off today' : 'I ate this — save it to today'}>
