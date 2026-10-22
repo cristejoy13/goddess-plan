@@ -1226,9 +1226,11 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
 // for it (a picture), today's nutrition, then meal ideas. She is sending the
 // meal ideas with their pictures later, so until then the picture and the
 // ideas say so plainly — nothing is made up to fill them.
+// Breakfast tab taken away and Lunch renamed Brunch at her request
+// (2026-10-23). Brunch keeps the id 'lunch', so her meals and hearted picks
+// stay where they are.
 const MEAL_TIMES = [
-  { id: 'breakfast', label: 'Breakfast', icon: '🍳' },
-  { id: 'lunch',     label: 'Lunch',     icon: '🥗' },
+  { id: 'lunch',     label: 'Brunch',    icon: '🥗' },
   { id: 'dinner',    label: 'Dinner',    icon: '🍲' },
   { id: 'snacks',    label: 'Snacks',    icon: '🍓' },
 ];
@@ -1376,7 +1378,7 @@ function MealTimePanel({ time, entries, goal, onEat }) {
       <div className="mt-ideas">
         <div className="mt-nutri-title">Meal ideas</div>
         {ideas.length > 0 && (
-          <p className="mt-empty">Any 1 {DAY_RANGE.times.map(t => (t === 'snacks' ? 'snack' : t)).join(' + ')} = {DAY_RANGE.kcalLow.toLocaleString()}–{DAY_RANGE.kcalHigh.toLocaleString()} cal.</p>
+          <p className="mt-empty">Any 1 {DAY_RANGE.times.map(t => (t === 'snacks' ? 'snack' : MEAL_TIMES.find(m => m.id === t)?.label.toLowerCase() || t)).join(' + ')} = {DAY_RANGE.kcalLow.toLocaleString()}–{DAY_RANGE.kcalHigh.toLocaleString()} cal.</p>
         )}
         {ideas.length === 0 ? (
           <p className="mt-empty">Your {time.label.toLowerCase()} ideas will show here.</p>
@@ -1440,7 +1442,12 @@ export default function Meal() {
   const [openDay, setOpenDay] = useState(null);
   const [saveFailed, setSaveFailed] = useState(false);
   // Which pill is open: a meal time, or the calendar (first, as always).
-  const [tab, setTabState] = useState(() => { try { return sessionStorage.getItem('gp_meal_tab') || 'calendar'; } catch { return 'calendar'; } });
+  // A tab that no longer exists (Breakfast, taken away 2026-10-23) opens the calendar.
+  const [tab, setTabState] = useState(() => {
+    let saved = null;
+    try { saved = sessionStorage.getItem('gp_meal_tab'); } catch { /* fine */ }
+    return MEAL_TIMES.some(t => t.id === saved) ? saved : 'calendar';
+  });
   const setTab = t => { setTabState(t); try { sessionStorage.setItem('gp_meal_tab', t); } catch { /* fine */ } };
 
   const days = state.days || {};

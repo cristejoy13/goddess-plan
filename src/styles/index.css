@@ -11633,7 +11633,7 @@ body {
 .daily-page-empty { background: rgba(16,5,22,0.92); }
 .mt-pill.on, .set-mode-btn.on { background: linear-gradient(135deg, #d63a7f, #a8105c); }
 /* Five pills now: the four meal times and the calendar (2026-10-10). */
-.mt-pills { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.mt-pills { grid-template-columns: repeat(4, minmax(0, 1fr)); } /* Brunch, Dinner, Snacks, Calendar (2026-10-23) */
 .mt + .ml-nav { margin-top: 18px; }
 /* Meal ideas: picture cards, then the one opened in full with its heart. */
 .mt-hero-pic { position: relative; padding: 0; overflow: hidden; border-style: solid; cursor: pointer; font-family: inherit; }
