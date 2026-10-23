@@ -30,9 +30,12 @@ function thisWeek() {
 // Her own pictures (2026-10-12), one for each of her days, Monday to Sunday.
 // Only on her Home — they are of her. People who signed up keep the photos
 // below.
+// Tue and Fri are Pilates days, Wed is yoga (2026-10-23). Her one Pilates
+// picture shows on both for now; she is making a second for Friday.
+// her-yoga-b.jpg rests until then.
 const HER_PICTURES = [
-  '/workouts/her-glute-a.jpg', '/workouts/her-yoga-a.jpg', '/workouts/her-pilates-run.jpg',
-  '/workouts/her-glute-b.jpg', '/workouts/her-yoga-b.jpg', '/workouts/her-glute-c.jpg',
+  '/workouts/her-glute-a.jpg', '/workouts/her-pilates-run.jpg', '/workouts/her-yoga-a.jpg',
+  '/workouts/her-glute-b.jpg', '/workouts/her-pilates-run.jpg', '/workouts/her-glute-c.jpg',
   '/workouts/her-bike-swim.jpg',
 ];
 
