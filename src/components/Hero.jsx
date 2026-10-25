@@ -5,7 +5,9 @@ import { mergeNotebookBlobs } from '../utils/mergeNotebook';
 import { useWorkouts, markWorkout, unmarkWorkout } from '../utils/useWorkouts';
 import { loadWorkouts, saveWorkouts, logWorkout, dayKey as workoutDayKey } from '../utils/workoutLog';
 import { ask } from '../utils/ask';
-import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
+import { useDictation, joinSpeech } from '../utils/dictation';
+import { RichNote, NoteToolbar } from './RichNote';
+import { noteText, appendSpeech, showRichCursorAtEnd } from '../utils/richNote';
 
 
 const jsDay    = new Date().getDay();
@@ -341,8 +343,8 @@ function createEmptyNotebook() {
 // she made on purpose, and it has to survive being closed and reopened.
 function pageHasDiaryContent(page) {
   return Boolean(
-    (page.note || '').trim() ||
-    (Array.isArray(page.notes) && page.notes.some(n => (n || '').trim())) ||
+    noteText(page.note).trim() ||
+    (Array.isArray(page.notes) && page.notes.some(n => noteText(n).trim())) ||
     (page.title || '').trim() ||
     page.mood ||
     (Array.isArray(page.images) && page.images.length > 0)
@@ -506,19 +508,6 @@ function NbIcon({ name }) {
   );
 }
 
-// A box split into n columns, for the 1 / 2 / 3 / 4 column buttons.
-function ColumnsIcon({ n }) {
-  const w = 16 / n;
-  return (
-    <svg className="nb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
-      <rect x="4" y="5" width="16" height="14" rx="2" />
-      {Array.from({ length: n - 1 }, (_, i) => (
-        <path key={i} d={`M${4 + w * (i + 1)} 5v14`} />
-      ))}
-    </svg>
-  );
-}
-
 function DailyNotebook() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('notes');
@@ -551,10 +540,14 @@ function DailyNotebook() {
   const [talkCol, setTalkCol] = useState(null);
   const [talkNote, setTalkNote] = useState('');
   const talkBaseRef = useRef('');
+  const talkBaseTextRef = useRef('');
   const talkColRef = useRef(0);
   const colRefs = useRef([]);
+  // Caps Lock from the writing tools, read by every writing box.
+  const capsRef = useRef(false);
   const talk = useDictation(heard => {
-    const next = joinSpeech(talkBaseRef.current, heard);
+    const before = talkBaseTextRef.current;
+    const next = appendSpeech(talkBaseRef.current, joinSpeech(before, heard), before);
     if (talkColRef.current === 0) updateNote(next);
     else updateColumnNote(talkColRef.current, next);
   });
@@ -569,9 +562,10 @@ function DailyNotebook() {
     }
     setTalkNote('');
     talkColRef.current = i;
-    talkBaseRef.current = String(currentText || '').replace(/[ \t]+$/, '');
+    talkBaseRef.current = String(currentText || '');
+    talkBaseTextRef.current = noteText(currentText).replace(/\s+$/, '');
     setTalkCol(i);
-    showCursorAtEnd(colRefs.current[i], true);
+    showRichCursorAtEnd(colRefs.current[i], true);
     talk.start();
   }
 
@@ -683,7 +677,7 @@ function DailyNotebook() {
     ? (talkCol === 0 ? currentPage?.note : currentPage?.notes?.[(talkCol || 1) - 1]) : null;
   useEffect(() => {
     if (talkCol == null) return;
-    showCursorAtEnd(colRefs.current[talkCol], talk.listening);
+    showRichCursorAtEnd(colRefs.current[talkCol], talk.listening);
   }, [talkingText, talk.listening, talkCol]);
 
   function updateCurrentPage(patch) {
@@ -1300,21 +1294,6 @@ function DailyNotebook() {
                         {saveButton}
                       </div>
                       <div className="nb-actions">
-                        <div className="nb-cols" role="group" aria-label="Columns">
-                          {[1, 2, 3, 4].map(n => (
-                            <button
-                              key={n}
-                              type="button"
-                              className={`nb-icon-btn${(currentPage?.columns || 1) === n ? ' is-on' : ''}`}
-                              onClick={() => pickColumns(n)}
-                              aria-pressed={(currentPage?.columns || 1) === n}
-                              aria-label={n === 1 ? '1 column' : `${n} columns`}
-                              title={n === 1 ? '1 column' : `${n} columns`}
-                            >
-                              <ColumnsIcon n={n} />
-                            </button>
-                          ))}
-                        </div>
                         <button type="button" className="nb-icon-btn danger" onClick={deleteCurrentPage} aria-label="Delete this entry" title="Delete entry">
                           <NbIcon name="trash" />
                         </button>
@@ -1367,6 +1346,13 @@ function DailyNotebook() {
                       </div>
                     )}
 
+                    <NoteToolbar
+                      columns={currentPage?.columns || 1}
+                      onPickColumns={pickColumns}
+                      editors={() => colRefs.current}
+                      capsRef={capsRef}
+                    />
+
                     {(currentPage?.columns || 1) > 1 ? (
                       <div className={`nb-columns nb-columns-${currentPage.columns}${expandedCol !== null ? ' is-expanded' : ''}`}>
                         {Array.from({ length: currentPage.columns }, (_, i) => i).map(i => {
@@ -1374,13 +1360,13 @@ function DailyNotebook() {
                           const big = expandedCol === i;
                           return (
                             <div key={i} className="nb-col">
-                              <textarea
-                                ref={el => { colRefs.current[i] = el; }}
-                                className="daily-note-input"
+                              <RichNote
+                                key={`${currentPage.id}-${i}`}
+                                editorRef={el => { colRefs.current[i] = el; }}
+                                capsRef={capsRef}
                                 value={i === 0 ? (currentPage.note || '') : (currentPage.notes?.[i - 1] || '')}
-                                onChange={e => (i === 0 ? updateNote(e.target.value) : updateColumnNote(i, e.target.value))}
+                                onChange={html => (i === 0 ? updateNote(html) : updateColumnNote(i, html))}
                                 placeholder={`Column ${i + 1}`}
-                                aria-label={`Column ${i + 1}`}
                               />
                               <button
                                 type="button"
@@ -1412,12 +1398,14 @@ function DailyNotebook() {
                       </div>
                     ) : (
                       <div className="nb-col nb-col-single">
-                        <textarea
-                          ref={el => { colRefs.current[0] = el; }}
-                          className="daily-note-input"
+                        <RichNote
+                          key={currentPage.id}
+                          editorRef={el => { colRefs.current[0] = el; }}
+                          capsRef={capsRef}
                           value={currentPage?.note || ''}
-                          onChange={e => updateNote(e.target.value)}
+                          onChange={updateNote}
                           placeholder={talk.listening ? 'Listening… say what is on your mind' : 'Write or tap 🎤 to talk...'}
+                          label="Your entry"
                         />
                         <button
                                 type="button"
