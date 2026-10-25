@@ -12067,3 +12067,29 @@ body.gp-dragging { overscroll-behavior: none; }
 [data-h="purple"] { background: rgba(160,110,255,0.32); }
 [data-h="none"] { background: transparent; }
 .nb-rich [data-h]:not([data-h="none"]) { border-radius: 3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ── Meals: her own numbers (2026-10-25) ──
+   Each food's calories sit in a box on the right she can type over; under
+   the list, total calories, protein and iron, each typeable too. */
+.ml-scan-list .ml-scan-kcal { flex: none; display: inline-flex; flex-direction: column; align-items: center; gap: 1px; font-size: 11px; color: var(--text-mid, #c090b8); }
+.ml-scan-list .ml-scan-kcal input { width: 66px; }
+.ml-scan-macros { margin-top: 3px; }
+.ml-scan-totals { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.12); }
+.ml-scan-totals .ml-scan-total { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px; border-top: 0; }
+.ml-scan-totals .ml-scan-total > span:first-child { padding-top: 0; font-size: 13px; color: var(--text-mid, #c090b8); }
+.ml-scan-totals .ml-scan-field input { width: 76px; }
+.ml-scan-totals .ml-scan-field > span { width: 26px; font-size: 12px; color: var(--text-mid, #c090b8); }
+.ml-scan-totals .is-cal > span:first-child { font-weight: 800; color: var(--text); }
+.ml-scan-totals .is-cal input { font-size: 17px; }
+.ml-own-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ml-own-num { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ml-own-num .ml-scan-field input { width: 100%; min-width: 0; }
+.ml-own-num .ml-scan-field { width: 100%; }
+.ml-own-num .ml-scan-field > span { flex: none; font-size: 12px; color: var(--text-mid, #c090b8); }
+[data-mode="light"] .ml-scan-totals { border-color: rgba(120,60,100,0.2); }
+[data-mode="light"] .ml-scan-list .ml-scan-kcal,
+[data-mode="light"] .ml-scan-totals .ml-scan-total > span:first-child,
+[data-mode="light"] .ml-scan-totals .ml-scan-field > span,
+[data-mode="light"] .ml-own-num .ml-scan-field > span { color: #5a2a4a; }
+[data-mode="light"] .ml-scan-totals .is-cal > span:first-child { color: var(--text); }
+.ml-scan-totals .ml-scan-total span { padding-top: 0; }

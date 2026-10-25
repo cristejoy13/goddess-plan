@@ -8,7 +8,7 @@ import { ask } from '../utils/ask';
 import Camera from './Camera';
 import PhotoView from './PhotoView';
 import {
-  dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog,
+  dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog, parseCal,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
   parseBurn, burnOn, setBurn, MAX_BURN, MIN_BURN, AVERAGE_BURN,
   parseGoal, setGoal, weekStartKey, goalForWeek, calsLeft, MIN_GOAL, MAX_GOAL,
@@ -266,6 +266,12 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
   const setTime = setDayTime ?? setOwnTime;
   const [text, setText] = useState(initial?.text || '');
   const editing = Boolean(initial);
+  // A saved meal's own numbers, to fix by hand (2026-10-25).
+  const [own, setOwn] = useState(() => ({
+    cal: initial?.cal != null ? String(initial.cal) : '',
+    protein: typeof initial?.protein === 'number' ? String(initial.protein) : '',
+    iron: typeof initial?.iron === 'number' ? String(initial.iron) : '',
+  }));
   // Talk or type. Whatever is said is added after what is already in the box,
   // and shows as it is heard, so she can read it back and fix any word.
   const boxRef = useRef(null);
@@ -420,9 +426,13 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
         const base = it.base || { grams: it.grams, kcal: it.kcal, amount: it.amount, ...Object.fromEntries(MACROS.filter(k => typeof it[k] === 'number').map(k => [k, it[k]])) };
         const perGram = base.grams > 0 ? base.kcal / base.grams : null;
         const v = Number(String(raw).replace(',', '.'));
+        // Her own calorie number (2026-10-25): the AI or USDA can be wrong,
+        // so typing a food's calories changes only its calories. Grams changed
+        // afterwards follow her number, not the old one.
         if (field === 'kcal') {
           const kcal = Number.isFinite(v) && v >= 0 ? Math.round(v) : 0;
-          return { ...it, base, kcalText: raw, kcal, ...(base.kcal > 0 && scaled(base, kcal / base.kcal)) };
+          const ownBase = base.grams > 0 && it.grams > 0 ? { ...base, kcal: (kcal * base.grams) / it.grams } : { ...base, kcal };
+          return { ...it, base: ownBase, kcalText: raw, kcal };
         }
         if (field === 'grams') {
           const grams = Number.isFinite(v) && v >= 0 ? v : 0;
@@ -442,8 +452,30 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
           ...(grams != null && base.grams > 0 && scaled(base, grams / base.grams)),
         };
       });
-      return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) };
+      return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0), totals: null };
     });
+  }
+
+  // The meal's totals can be typed over too (2026-10-25): calories, protein
+  // and iron. A change to any food afterwards adds them up again.
+  function editTotal(k, raw) {
+    setScan(prev => ({ ...prev, totals: { ...(prev.totals || {}), [k]: raw } }));
+  }
+  const typedNum = raw => {
+    const v = Number(String(raw ?? '').replace(',', '.'));
+    return String(raw ?? '').trim() !== '' && Number.isFinite(v) && v >= 0 ? v : null;
+  };
+  function finalTotals(sc) {
+    const sums = macroTotals(sc.items);
+    const out = { cal: sc.total, ...sums };
+    const t = sc.totals || {};
+    if (t.cal != null) out.cal = typedNum(t.cal) != null ? Math.round(typedNum(t.cal)) : sc.total;
+    for (const k of ['protein', 'iron']) {
+      if (t[k] == null) continue;
+      const n = typedNum(t[k]);
+      if (n != null) out[k] = r1(n); else delete out[k];
+    }
+    return out;
   }
 
   // Fix a food the scan named wrong (2026-10-22): click its name, type the
@@ -464,7 +496,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
       if (!fresh.length) throw new Error(`Could not find “${words}”. Say it another way.`);
       setScan(prev => {
         const items = [...prev.items.slice(0, r.i), ...fresh, ...prev.items.slice(r.i + 1)];
-        return { ...prev, items, total: items.reduce((sum, x) => sum + x.kcal, 0) };
+        return { ...prev, items, total: items.reduce((sum, x) => sum + x.kcal, 0), totals: null };
       });
       setRename(null);
     } catch (err) {
@@ -487,7 +519,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
       if (!fresh.length) throw new Error(`Could not find “${words}”. Say it another way.`);
       setScan(prev => {
         const items = [...prev.items, ...fresh];
-        return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) };
+        return { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0), totals: null };
       });
       setExtra(null);
     } catch (err) {
@@ -499,7 +531,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
     setRename(null);
     setScan(prev => {
       const items = prev.items.filter((_, j) => j !== i);
-      return items.length ? { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0) } : null;
+      return items.length ? { ...prev, items, total: items.reduce((sum, it) => sum + it.kcal, 0), totals: null } : null;
     });
   }
 
@@ -517,7 +549,8 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
       remember(words, { items: clean, total: scan.total, ...(scan.missing && { missing: scan.missing }) });
       rememberFoods(clean);
     }
-    onSubmit({ time: time || nowTime(), text: words || describeItems(scan.items), cal: scan.total, ...macroTotals(scan.items) });
+    const { cal, ...macros } = finalTotals(scan);
+    onSubmit({ time: time || nowTime(), text: words || describeItems(scan.items), ...macros, cal });
     setScan(null); setPhoto(null); setText(''); setTime(nowTime());
   }
 
@@ -528,7 +561,13 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
     if (!t) return;
     // A new meal: Enter finds its calories (saving is from the card).
     if (!editing) { if (!scan) runScan(); return; }
-    onSubmit({ time: time || nowTime(), text: t, cal: initial?.cal ?? null });
+    const protein = typedNum(own.protein);
+    const iron = typedNum(own.iron);
+    onSubmit({
+      time: time || nowTime(), text: t, cal: parseCal(own.cal),
+      protein: protein != null ? r1(protein) : undefined,
+      iron: iron != null ? r1(iron) : undefined,
+    });
   }
 
   return (
@@ -607,6 +646,24 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
           />
         </label>
       )}
+      {editing && (
+        <div className="ml-own-nums">
+          {[['cal', 'Calories', 'cal', 'numeric'], ['protein', 'Protein', 'g', 'decimal'], ['iron', 'Iron', 'mg', 'decimal']].map(([k, label, unit, mode]) => (
+            <label key={k} className="ml-own-num">
+              <span className="ml-time-lbl">{label}</span>
+              <span className="ml-scan-field">
+                <input
+                  type="number" inputMode={mode} min="0" step="any"
+                  value={own[k]}
+                  onChange={e => setOwn(o => ({ ...o, [k]: e.target.value }))}
+                  aria-label={label}
+                />
+                <span>{unit}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
       {scan && (
         <div className="ml-scan-card" role="region" aria-label="Calories found">
           <div className="ml-scan-head">
@@ -653,7 +710,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
                         <span>{(it.amount || '').replace(/^\d+(?:\.\d+)?\s*/, '') || '×'}</span>
                       </label>
                     )}
-                    {it.grams != null ? (
+                    {it.grams != null && (
                       <label className="ml-scan-field">
                         <input
                           type="number" inputMode="decimal" min="0" step="any"
@@ -663,23 +720,26 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
                         />
                         <span>g</span>
                       </label>
-                    ) : (
-                      <label className="ml-scan-field">
-                        <input
-                          type="number" inputMode="numeric" min="0" step="1"
-                          value={it.kcalText ?? String(it.kcal)}
-                          onChange={e => editItem(i, 'kcal', e.target.value)}
-                          aria-label={`Calories, ${it.name}`}
-                        />
-                        <span>cal</span>
-                      </label>
                     )}
                     <em className={it.source === 'ai' ? 'is-ai' : 'is-usda'} title={it.usdaName || ''}>
                       {it.source === 'ai' ? 'AI guess' : 'USDA'}
                     </em>
                   </span>
+                  {(typeof it.protein === 'number' || typeof it.iron === 'number') && (
+                    <small className="ml-scan-macros">
+                      {[typeof it.protein === 'number' && `${r1(it.protein)} g protein`, typeof it.iron === 'number' && `${r1(it.iron)} mg iron`].filter(Boolean).join(' · ')}
+                    </small>
+                  )}
                 </span>
-                <span className="ml-scan-kcal">{it.kcal.toLocaleString('en-US')}</span>
+                <label className="ml-scan-field ml-scan-kcal">
+                  <input
+                    type="number" inputMode="numeric" min="0" step="1"
+                    value={it.kcalText ?? String(it.kcal)}
+                    onChange={e => editItem(i, 'kcal', e.target.value)}
+                    aria-label={`Calories, ${it.name}`}
+                  />
+                  <span>cal</span>
+                </label>
                 <button type="button" className="ml-icon-btn ml-del ml-scan-drop" onClick={() => dropItem(i)} aria-label={`Delete ${it.name}`} title="Delete">🗑</button>
               </li>
             ))}
@@ -713,15 +773,42 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
               Not found: {scan.missing.join(', ')}. Say it another way, or try again with internet.
             </div>
           )}
-          <div className="ml-scan-total"><span>Total</span><b>{scan.total.toLocaleString('en-US')} cal</b></div>
+          {(() => {
+            const sums = macroTotals(scan.items);
+            const t = scan.totals || {};
+            const rows = [
+              ['cal', 'Total calories', 'cal', 'numeric', String(scan.total)],
+              ['protein', 'Total protein', 'g', 'decimal', sums.protein != null ? String(sums.protein) : ''],
+              ['iron', 'Total iron', 'mg', 'decimal', sums.iron != null ? String(sums.iron) : ''],
+            ];
+            return (
+              <div className="ml-scan-totals">
+                {rows.map(([k, label, unit, mode, found]) => (
+                  <label key={k} className={`ml-scan-total${k === 'cal' ? ' is-cal' : ''}`}>
+                    <span>{label}</span>
+                    <span className="ml-scan-field">
+                      <input
+                        type="number" inputMode={mode} min="0" step="any"
+                        value={t[k] ?? found}
+                        placeholder="—"
+                        onChange={e => editTotal(k, e.target.value)}
+                        aria-label={label}
+                      />
+                      <span>{unit}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            );
+          })()}
           <div className="ml-form-btns">
-            <button type="button" className="ml-add-btn" onClick={saveScan}>Save this meal</button>
+            <button type="button" className="ml-add-btn" onClick={saveScan}>✓ Save</button>
             <button type="button" className="ml-cancel-btn" onClick={cancelScan}>Cancel</button>
           </div>
         </div>
       )}
       {editing && <div className="ml-form-btns">
-        <button type="submit" className="ml-add-btn" disabled={!text.trim()}>Save</button>
+        <button type="submit" className="ml-add-btn" disabled={!text.trim()}>✓ Save</button>
         <button type="button" className="ml-cancel-btn" onClick={onCancel}>Cancel</button>
       </div>}
     </form>
