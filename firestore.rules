@@ -14,6 +14,21 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
+    // DareZero: one Steps page she shared by link (2026-10-26). The long random code is the key to
+    // that single page: anyone with it can open it, nobody can list the shared pages. Only she makes,
+    // changes or stops a share. Through a link to edit, anyone with it may change the page itself
+    // (doc, updatedAt, by) and nothing else; a link to see can't be changed by anyone but her.
+    match /share/{code} {
+      allow get: if code.size() >= 20;
+      allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
+      allow update: if (request.auth != null && resource.data.owner == request.auth.uid
+                        && request.resource.data.owner == request.auth.uid)
+                    || (resource.data.mode == 'edit'
+                        && request.resource.data.by == 'guest'
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['doc', 'updatedAt', 'by']));
+      allow delete: if request.auth != null && resource.data.owner == request.auth.uid;
+    }
+
     // Biz (mybizapp.vercel.app): each person's trackers. Only that signed-in person can
     // read or write their own folder; nobody else, and nothing is public.
     match /biz/{uid}/{document=**} {
