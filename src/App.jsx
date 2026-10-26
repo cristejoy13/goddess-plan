@@ -42,12 +42,28 @@ function saveProfile(p) {
 // changed 2026-10-11): Home, Meals, Body, Settings (the flower). Workouts live inside Home now, and the
 // light/dark switch lives in Settings.
 const NAV_ITEMS = [
-  { id: 'home',       label: 'Home',       icon: '🏠' },
-  { id: 'meal',       label: 'Meals',      icon: '🍽️' },
-  { id: 'skincare',   label: 'Body',       icon: '✨', ownerOnly: true },
+  { id: 'home',       label: 'Home',       icon: 'home' },
+  { id: 'meal',       label: 'Meals',      icon: 'meal' },
+  { id: 'skincare',   label: 'Body',       icon: 'body', ownerOnly: true },
   // DZ (DareZero) moved to the top-left corner of Home, in place of G
   // (2026-10-14) — see DzLink in Hero.jsx.
 ];
+
+// Drawn line icons in place of emoji (2026-10-26): thin, rounded strokes
+// that take the button's colour, so they sit quietly in both modes.
+const NAV_ICON_PATHS = {
+  home: <><path d="M3.2 11.3 12 4.2l8.8 7" /><path d="M5.7 9.7v9.8c0 .5.3.8.8.8h11.1c.5 0 .8-.3.8-.8V9.5" /><path d="M10 20.2v-4.6c0-1 .8-1.7 2-1.7s2 .7 2 1.7v4.6" /></>,
+  meal: <><path d="M3.4 12.3h17.2c-.3 4.4-3.4 7.2-7.3 7.4h-2.6c-3.9-.2-7-3-7.3-7.4z" /><path d="M9 21.2h6" /><path d="M13.4 10.4 19.6 3.6M15.8 10.6l5-5.6" /><path d="M8.3 9.6c-1-1.3-.2-2.2.5-3s1-1.8.1-2.9" /></>,
+  body: <><path d="M12 18.9c-3-2.9-3.1-8.4 0-12.4 3.1 4 3 9.5 0 12.4z" /><path d="M11.2 19.1c-4.3 0-7.3-3-7.8-7.6 2.8.3 5 1.6 6.4 3.8" /><path d="M12.8 19.1c4.3 0 7.3-3 7.8-7.6-2.8.3-5 1.6-6.4 3.8" /><path d="M5 21.3c4.6-1.2 9.4-1.2 14 0" /></>,
+  settings: <><circle cx="12" cy="12" r="2.6" /><circle cx="12" cy="12" r="6.1" /><path d="M12 2.9v2.6M12 18.5v2.6M2.9 12h2.6M18.5 12h2.6M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8" /></>,
+};
+function NavIcon({ name }) {
+  return (
+    <svg className="topbar-sec-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {NAV_ICON_PATHS[name]}
+    </svg>
+  );
+}
 
 const VIEW_KEY = 'gp_view';
 const KNOWN_SECTIONS = ['home', 'workout', 'meal', 'nutrition', 'skincare', 'settings'];
@@ -275,7 +291,7 @@ export default function App() {
               onClick={() => (item.href ? window.location.assign(item.href) : navigate(item.id))}
               aria-current={active === item.id ? 'page' : undefined}
             >
-              <span className="topbar-sec-icon">{item.icon}</span>
+              <span className="topbar-sec-icon"><NavIcon name={item.icon} /></span>
               <span className="topbar-sec-label">{item.label}</span>
             </button>
           ))}
@@ -284,7 +300,7 @@ export default function App() {
             onClick={() => navigate('settings')}
             aria-current={active === 'settings' ? 'page' : undefined}
           >
-            <span className="topbar-sec-icon">🌸</span>
+            <span className="topbar-sec-icon"><NavIcon name="settings" /></span>
             <span className="topbar-sec-label">Settings</span>
           </button>
         </nav>

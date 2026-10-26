@@ -57,7 +57,7 @@ export function noteText(value) {
     .replace(/&amp;/g, '&');
 }
 
-const KEEP = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'S', 'SPAN', 'DIV', 'P', 'BR', 'UL', 'OL', 'LI']);
+const KEEP = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'SPAN', 'DIV', 'P', 'BR', 'UL', 'OL', 'LI', 'H3', 'HR']);
 const DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'TEMPLATE', 'NOSCRIPT', 'TITLE', 'TEXTAREA', 'SVG', 'MATH', 'LINK', 'META']);
 const STYLE_KEEP = ['font-weight', 'font-style', 'text-decoration', 'text-decoration-line'];
 // 'none' marks words taken back to plain inside a coloured run.
@@ -79,6 +79,9 @@ function cleanNode(node) {
       const name = attr.name.toLowerCase();
       if (name === 'data-c' && COLOR_IDS.has(attr.value)) continue;
       if (name === 'data-h' && HIGHLIGHT_IDS.has(attr.value)) continue;
+      // Tick-box lists: the list is marked, and each ticked line too.
+      if (name === 'data-todo' && tag === 'UL') continue;
+      if (name === 'data-done' && tag === 'LI') continue;
       if (name === 'style') {
         const kept = STYLE_KEEP
           .map(p => [p, child.style.getPropertyValue(p)])
@@ -156,6 +159,14 @@ export function settleColors(editor) {
     }
   });
   editor.querySelectorAll('span:not([data-c]):not([data-h]):not([style])').forEach(unwrap);
+}
+
+// A new line made with Enter copies the tick of the line above; an empty
+// line is never ticked.
+export function tidyTicks(editor) {
+  editor.querySelectorAll('li[data-done]').forEach(li => {
+    if (!li.textContent.trim()) li.removeAttribute('data-done');
+  });
 }
 
 // While she talks, the cursor sits after the newest words.

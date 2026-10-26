@@ -228,26 +228,24 @@ function nutrientSums(entries) {
     return [k, has.length ? r1(has.reduce((s, e) => s + e[k], 0)) : null];
   }));
 }
-function NutrientTable({ entries }) {
+function NutrientCards({ entries }) {
   const sums = nutrientSums(entries);
   return (
-    <table className="nt-table">
-      <tbody>
-        {NUTRIENTS.map(({ k, label, lo, hi, unit }) => {
-          const v = sums[k];
-          const pct = v == null ? 0 : Math.min(100, (v / hi) * 100);
-          const state = v == null ? '' : v < lo ? ' is-low' : v > hi * 1.15 ? ' is-over' : ' is-in';
-          return (
-            <tr key={k} className={`nt-${k}${state}`}>
-              <th scope="row"><span className="nt-dot" aria-hidden="true" />{label}</th>
-              <td className="nt-g">{v == null ? '—' : `${v} ${unit}`}</td>
-              <td className="nt-bar-cell" aria-hidden="true"><span className="nt-bar"><span style={{ width: `${pct}%` }} /></span></td>
-              <td className="nt-aim">{lo === hi ? `${hi} ${unit}` : `${lo}–${hi} ${unit}`}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <ul className="nt-cards">
+      {NUTRIENTS.map(({ k, label, lo, hi, unit }) => {
+        const v = sums[k];
+        const pct = v == null ? 0 : Math.min(100, (v / hi) * 100);
+        const state = v == null ? '' : v < lo ? ' is-low' : v > hi * 1.15 ? ' is-over' : ' is-in';
+        return (
+          <li key={k} className={`nt-card nt-${k}${state}`}>
+            <span className="nt-card-name"><span className="nt-dot" aria-hidden="true" />{label}</span>
+            <b className="nt-card-num">{v == null ? '—' : `${v} ${unit}`}</b>
+            <span className="nt-bar" aria-hidden="true"><span style={{ width: `${pct}%` }} /></span>
+            <small className="nt-card-aim">of {lo === hi ? `${hi} ${unit}` : `${lo}–${hi} ${unit}`}</small>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 function macroTotals(items = []) {
@@ -1260,13 +1258,16 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
             />
           ))}
         </ul>
-        <div className="ml-receipt-total">
+      </div>}
+
+      {/* Eaten so far in its own highlighted card, each nutrient in a small
+          card of its own (2026-10-26), adding up with every meal. */}
+      {entries.length > 0 && <div className="ml-eaten-card">
+        <div className="ml-receipt-total ml-eaten-total">
           <span>Eaten so far</span>
           <b>{total.toLocaleString()} cal</b>
         </div>
-        {/* Protein, carbs, fats and fiber for the day, adding up with every
-            meal (2026-10-16). */}
-        <NutrientTable entries={entries} />
+        <NutrientCards entries={entries} />
         {missing > 0 && (
           <div className="ml-receipt-note">
             {missing} {missing === 1 ? 'meal has' : 'meals have'} no calories, so not counted.
