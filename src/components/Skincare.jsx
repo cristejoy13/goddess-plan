@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RoutineStep from './RoutineStep';
 import Sheet from './Sheet';
 import StepFlow from './StepFlow';
 import { BodyIcon, Tips, WeekGrid } from './BodyIcons';
+import { ShelfContext, useShelf, useShelfContext, productKey } from '../utils/bodyShelf';
 
 const BRAND_COLOR = {
   'COSRX':            '#5a9a5a',
@@ -63,6 +64,12 @@ const BRAND_COLOR = {
 
 function ProductCard({ brand, name, badges = [], why, primary = false }) {
   const color = BRAND_COLOR[brand] || '#888';
+  const shelf = useShelfContext();
+  const key = productKey(brand, name);
+  const owned = Boolean(shelf?.owned[key]);
+  const low = Boolean(shelf?.low[key]);
+  // "Hide the rest": only the products she owns stay on screen.
+  if (shelf?.onlyMine && !owned) return null;
   return (
     <div className={`product-card${primary ? ' primary' : ''}`}>
       <div className="pc-band" style={{ background: color }} />
@@ -77,6 +84,23 @@ function ProductCard({ brand, name, badges = [], why, primary = false }) {
         )}
         <div className="pc-why">{why}</div>
         <div className="pc-find"><BodyIcon name="bag" size={15} /> Shopee · Lazada · Watsons</div>
+        {shelf && (
+          <div className="pc-shelf">
+            <button type="button" className={`pc-shelf-btn${owned ? ' is-on' : ''}`} onClick={() => shelf.toggleOwned(key)} aria-pressed={owned}>
+              {owned ? '✓ I have it' : '＋ I have it'}
+            </button>
+            {owned && (
+              <button
+                type="button"
+                className={`pc-shelf-btn pc-shelf-low${low ? ' is-on' : ''}`}
+                onClick={() => (low ? shelf.clearLow(key) : shelf.markLow(key, `${brand} ${name}`))}
+                aria-pressed={low}
+              >
+                {low ? '✓ On shopping list' : 'Running low'}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -189,9 +213,26 @@ function AMFace() {
 }
 
 /* ─── PM Face Routine ─── */
+// Her retinol, chosen for her age (22, as of 2026-10-26): a gentle
+// over-the-counter retinol once a week. Prescription tretinoin waits until
+// 24–25 and a dermatologist, as the Retinoid page already says.
+function MyRetinol() {
+  return (
+    <div className="my-retinol splash-item">
+      <span className="my-retinol-ico"><BodyIcon name="dropper" size={22} /></span>
+      <div className="my-retinol-text">
+        <div className="my-retinol-kicker">Your retinol at 22</div>
+        <div className="my-retinol-name">The Inkey List Retinol Serum · 0.025%</div>
+        <div className="my-retinol-how">Saturday night · moisturiser → retinol → moisturiser</div>
+      </div>
+    </div>
+  );
+}
+
 function PMFace() {
   return (
     <>
+      <MyRetinol />
       <StepFlow>
         <RoutineStep num="1" cat="First Cleanse — Remove Everything" name="Oil or Balm Cleanser">
           <ProductCard brand="Banila Co" primary name="Clean It Zero Cleansing Balm (Purifying)" badges={['BHA', 'Pore-Decongesting', 'SPF Remover', 'Purifying']} why="Removes SPF and helps clear pores." />
@@ -1745,7 +1786,9 @@ function resolveInitial(initialTab) {
   if (initialTab === 'makeup')   return { top: 'makeup',   faceSub: 'morning', bodySub: 'morning' };
   if (initialTab === 'teeth')    return { top: 'teeth',    faceSub: 'morning', bodySub: 'morning' };
   if (initialTab === 'underarm') return { top: 'underarm', faceSub: 'morning', bodySub: 'morning' };
-  return { top: 'face', faceSub: 'morning', bodySub: 'morning' };
+  if (initialTab === 'antiaging') return { top: 'antiaging', faceSub: 'morning', bodySub: 'morning' };
+  // No section named: the Body home, with only the tiles.
+  return { top: null, faceSub: 'morning', bodySub: 'morning' };
 }
 
 // Two columns, and the split is not alphabetical: the left column is the four
@@ -1783,39 +1826,113 @@ function SubTabs({ tabs, value, onChange }) {
   );
 }
 
-export default function Skincare({ initialTab }) {
+// What today asks for, at the top of the Body home (2026-10-26), read from
+// the same week the Face calendars show.
+const tidyStep = t => String(t || '').replace(/\n/g, ' · ').replace(/\(M2\+\)/g, '(month 2+)').replace(/\bM1\b/g, '(month 1)');
+function TodayCard() {
+  const i = (new Date().getDay() + 6) % 7;
+  const am = AM_DAYS[i];
+  const pm = PM_DAYS[i];
+  return (
+    <div className="bk-today splash-item">
+      <div className="bk-today-head">Today · {DAY_NAMES[i]}</div>
+      <div className="bk-today-row">
+        <BodyIcon name="sun" size={20} />
+        <span><b>Morning</b> {tidyStep(am.am)}{am.addOn ? ` + ${am.addOn}` : ''}</span>
+      </div>
+      <div className="bk-today-row">
+        <BodyIcon name="moon" size={20} />
+        <span><b>Evening</b> {tidyStep(pm.pm)}{pm.addOn ? ` + ${tidyStep(pm.addOn)}` : ''}</span>
+      </div>
+      {pm.warn && <div className="bk-today-warn"><BodyIcon name="alert" size={15} /> {pm.warn}</div>}
+    </div>
+  );
+}
+
+export default function Skincare({ initialTab, pushBack, clearInnerBack }) {
   const init = resolveInitial(initialTab);
   const [topTab,    setTopTab]    = useState(init.top);
   const [faceSub,   setFaceSub]   = useState(init.faceSub);
   const [bodySub,   setBodySub]   = useState(init.bodySub);
   const [agSelected, setAgSelected] = useState(null);
   const [selectedOil, setSelectedOil] = useState(null);
+  const shelf = useShelf();
 
-  function switchTop(id) {
-    setTopTab(id);
+  function goHome() {
+    clearInnerBack?.();
+    setTopTab(null);
     setAgSelected(null);
     setSelectedOil(null);
   }
+
+  // Each tile opens its own page; Back (or the phone's back) returns to the tiles.
+  function openTop(id) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setTopTab(id);
+    setAgSelected(null);
+    setSelectedOil(null);
+    clearInnerBack?.();
+    pushBack?.(() => { setTopTab(null); setAgSelected(null); setSelectedOil(null); clearInnerBack?.(); });
+  }
+
+  // Opened straight into a section from elsewhere: Back still returns home.
+  useEffect(() => {
+    if (init.top) pushBack?.(() => { setTopTab(null); clearInnerBack?.(); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (selectedOil) {
     return <OilBenefitsPage oilName={selectedOil} onBack={() => setSelectedOil(null)} />;
   }
 
-  return (
-    <div className="section">
-      <div className="s-header">
-        <div className="s-tag">Your Complete Body Protocol</div>
-        <h2 className="s-title">Body <em>Care</em></h2>
+  if (!topTab) {
+    return (
+      <div className="section">
+        <div className="s-header">
+          <div className="s-tag">Your Complete Body Protocol</div>
+          <h2 className="s-title">Body <em>Care</em></h2>
+        </div>
+        <TodayCard />
+        <div className="bk-tiles splash-item">
+          {TOP_TABS.map(t => (
+            <button key={t.id} className="bk-tile" onClick={() => openTop(t.id)}>
+              <BodyIcon name={t.icon} size={26} />
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
+    );
+  }
 
-      <div className="bk-tiles splash-item">
-        {TOP_TABS.map(t => (
-          <button key={t.id} className={`bk-tile${topTab === t.id ? ' active' : ''}`} onClick={() => switchTop(t.id)} aria-pressed={topTab === t.id}>
-            <BodyIcon name={t.icon} size={26} />
-            <span>{t.label}</span>
+  const tab = TOP_TABS.find(t => t.id === topTab);
+  const shelfHere = !['antiaging'].includes(topTab);
+  const ownsAny = Object.keys(shelf.owned).length > 0;
+
+  return (
+    <ShelfContext.Provider value={shelf}>
+    <div className="section">
+      <div className="bk-page-head">
+        <button type="button" className="bk-back" onClick={goHome} aria-label="Back to Body">‹ Body</button>
+        <h2 className="bk-page-title"><BodyIcon name={tab?.icon} size={24} /> {tab?.label}</h2>
+        {shelfHere ? (
+          <button
+            type="button"
+            className={`bk-only-mine${shelf.onlyMine ? ' is-on' : ''}`}
+            onClick={() => shelf.setOnlyMine(!shelf.onlyMine)}
+            aria-pressed={shelf.onlyMine}
+            title={shelf.onlyMine ? 'Show all products' : 'Hide products you don’t have'}
+          >
+            <span>{shelf.onlyMine ? 'Mine' : 'All'}</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d={shelf.onlyMine ? 'M6 9l6 6 6-6' : 'M6 15l6-6 6 6'} />
+            </svg>
           </button>
-        ))}
+        ) : <span className="bk-page-spacer" />}
       </div>
+      {shelfHere && shelf.onlyMine && !ownsAny && (
+        <p className="bk-shelf-empty">Click “I have it” on a product to keep it here.</p>
+      )}
 
       {topTab === 'face' && (
         <>
@@ -1848,5 +1965,6 @@ export default function Skincare({ initialTab }) {
       {topTab === 'teeth'    && <TeethRoutine />}
       {topTab === 'makeup'   && <MakeupRoutine />}
     </div>
+    </ShelfContext.Provider>
   );
 }

@@ -325,7 +325,7 @@ export default function App() {
             its numbers in place; Nutrition and Body show nothing synced. */}
         {active === 'meal'       && <Meal />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
-        {active === 'skincare'   && isOwner(profile) && <Skincare  key={navMeta.key} initialTab={navMeta.tab} />}
+        {active === 'skincare'   && isOwner(profile) && <Skincare  key={navMeta.key} initialTab={navMeta.tab} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'settings'   && <Settings
             key="settings"
             onNavigate={navigate}
