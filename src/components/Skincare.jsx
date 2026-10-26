@@ -2,6 +2,7 @@ import { useState } from 'react';
 import RoutineStep from './RoutineStep';
 import Sheet from './Sheet';
 import StepFlow from './StepFlow';
+import { BodyIcon, Tips, WeekGrid } from './BodyIcons';
 
 const BRAND_COLOR = {
   'COSRX':            '#5a9a5a',
@@ -67,7 +68,7 @@ function ProductCard({ brand, name, badges = [], why, primary = false }) {
       <div className="pc-band" style={{ background: color }} />
       <div className="pc-body">
         <span className={`pc-star ${primary ? 'primary' : 'alt'}`}>
-          {primary ? '★ Recommended' : '✦ Alternative'}
+          {primary ? 'Recommended' : 'Alternative'}
         </span>
         <div className="pc-brand" style={{ '--brand': color }}>{brand}</div>
         <div className="pc-name">{name}</div>
@@ -75,7 +76,7 @@ function ProductCard({ brand, name, badges = [], why, primary = false }) {
           <div className="pc-badges">{badges.map((b, i) => <span key={i} className="pc-badge">{b}</span>)}</div>
         )}
         <div className="pc-why">{why}</div>
-        <div className="pc-find">🛍 <strong>Find it:</strong> Search the full name on Shopee, Lazada, or Watsons PH.</div>
+        <div className="pc-find"><BodyIcon name="bag" size={15} /> Shopee · Lazada · Watsons</div>
       </div>
     </div>
   );
@@ -105,7 +106,7 @@ function AMCalendar() {
   const todayIdx = ((new Date().getDay() + 6) % 7);
   return (
     <div className="tx-cal splash-item">
-      <div className="tx-cal-title">☀️ Morning Treatment Schedule</div>
+      <div className="tx-cal-title"><BodyIcon name="sun" size={17} /> Morning, by day</div>
       <div className="tx-cal-grid">
         {AM_DAYS.map((d, i) => (
           <div key={d.day} className={`tx-day${i === todayIdx ? ' tx-today' : ''}${d.addOn ? ' tx-addon' : ''}`}>
@@ -126,7 +127,7 @@ function PMCalendar() {
   const todayIdx = ((new Date().getDay() + 6) % 7);
   return (
     <div className="tx-cal splash-item">
-      <div className="tx-cal-title">🌙 Evening Treatment Schedule</div>
+      <div className="tx-cal-title"><BodyIcon name="moon" size={17} /> Evening, by day</div>
       <div className="tx-cal-grid">
         {PM_DAYS.map((d, i) => (
           <div key={d.day} className={`tx-day${i === todayIdx ? ' tx-today' : ''}${d.addOn ? ' tx-addon' : ''}`}>
@@ -136,7 +137,7 @@ function PMCalendar() {
               <div className="tx-item">{d.pm}</div>
             </div>
             {d.addOn && <div className="tx-addon-badge">{d.addOn}</div>}
-            {d.warn && <div className="tx-warn">⚠ {d.warn}</div>}
+            {d.warn && <div className="tx-warn">{d.warn}</div>}
           </div>
         ))}
       </div>
@@ -148,10 +149,6 @@ function PMCalendar() {
 function AMFace() {
   return (
     <>
-      <AMCalendar />
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        ☀️ Morning goal: cleanse, hydrate, protect. Do NOT over-strip. SPF helps prevent dark spots.
-      </div>
       <StepFlow>
         <RoutineStep num="1" cat="First Step — Gentle Cleanse" name="Low pH Cleanser">
           <ProductCard brand="COSRX" primary name="Low pH Good Morning Gel Cleanser" badges={['pH 5.0', 'BHA', 'Tea Tree', 'Fragrance-Free']} why="pH 5.0 is barrier-friendly. Cleanses without stripping." />
@@ -179,15 +176,14 @@ function AMFace() {
           <ProductCard brand="Etude" name="Soon Jung 2× Barrier Intensive Cream" badges={['Panthenol', 'Madecassoside', 'Redness Repair']} why="Use on reactive days. Repairs and calms." />
           <div className="step-note">Apply while skin is slightly damp to lock hydration in.</div>
         </RoutineStep>
-        <RoutineStep num="6" cat="Final Step — Never Skip This ☀️" name="Sunscreen SPF 50+ PA++++">
+        <RoutineStep num="6" cat="Final Step — Never Skip This" name="Sunscreen SPF 50+ PA++++">
           <ProductCard brand="Beauty of Joseon" primary name="Relief Sun: Rice + Probiotics SPF 50+ PA++++" badges={['SPF 50+', 'PA++++', 'Probiotics', 'Zero White Cast', 'Sensitive Skin']} why="For reactive skin. Calming, brightening, zero white cast." />
           <ProductCard brand="Round Lab" name="Birch Juice Moisturizing Sun Cream SPF 50+" badges={['SPF 50+', 'Birch Juice', 'Hydrating', 'Moisturiser + SPF']} why="Hydrating sunscreen that doubles as moisturiser on minimal-layer days." />
-          <div className="step-note">⚠️ Apply generously. Reapply every 2 hours outdoors.</div>
+          <div className="step-note">Apply generously. Reapply every 2 hours outdoors.</div>
         </RoutineStep>
       </StepFlow>
-      <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        📅 <strong>Saturday AM:</strong> Clay mask before shower, then full routine. <strong>Saturday PM:</strong> Retinol (Month 2+) + Gua Sha after moisturiser. <strong>Wednesday PM:</strong> Gua Sha after moisturiser.
-      </div>
+      <div className="bk-tips-line bk-tips-line-top"><span>Your week</span></div>
+      <AMCalendar />
     </>
   );
 }
@@ -196,10 +192,6 @@ function AMFace() {
 function PMFace() {
   return (
     <>
-      <PMCalendar />
-      <div className="note-box note-rose" style={{ marginBottom: 14 }}>
-        🌙 Night goal: cleanse, clear congestion, and repair.
-      </div>
       <StepFlow>
         <RoutineStep num="1" cat="First Cleanse — Remove Everything" name="Oil or Balm Cleanser">
           <ProductCard brand="Banila Co" primary name="Clean It Zero Cleansing Balm (Purifying)" badges={['BHA', 'Pore-Decongesting', 'SPF Remover', 'Purifying']} why="Removes SPF and helps clear pores." />
@@ -224,7 +216,7 @@ function PMFace() {
           <div className="prod-item"><div className="prod-badge">Tue·Thu</div><div><div className="prod-name">Niacinamide Serum — Some By Mi 10% Niacinamide · Alt: COSRX Niacinamide 15% or The Ordinary Niacinamide 10%+Zinc</div><div className="prod-why">Minimise pores and strengthen barrier.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Sat (M2+)</div><div><div className="prod-name">Retinol 0.025% — The Inkey List Retinol Serum · Alt: Mediheal Retinol or Rohto Melano CC Retinol</div><div className="prod-why">Start Saturday only once barrier is strong.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Sun</div><div><div className="prod-name">Laneige Water Sleeping Mask — rest night only</div><div className="prod-why">Zero actives. Let the barrier recover.</div></div></div>
-          <div className="step-note">⚠️ Never use BHA or AHA on a retinol night. One active at a time.</div>
+          <div className="step-note">Never use BHA or AHA on a retinol night. One active at a time.</div>
         </RoutineStep>
         <RoutineStep num="6" cat="Sixth Step" name="Eye Care">
           <ProductCard brand="Some By Mi" primary name="Eye Serum" badges={['Peptides', 'Puffiness Reducing', 'Dark Circles']} why="Reduces puffiness. Pat, never rub." />
@@ -237,6 +229,8 @@ function PMFace() {
           <div className="step-note">BHA: lighter moisturiser. Retinol: richer one. Sunday: sleeping mask.</div>
         </RoutineStep>
       </StepFlow>
+      <div className="bk-tips-line bk-tips-line-top"><span>Your week</span></div>
+      <PMCalendar />
     </>
   );
 }
@@ -245,35 +239,30 @@ function PMFace() {
 function BodyMorning() {
   return (
     <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        🫧 Stay consistent. Softer skin in 4–8 weeks.
-      </div>
       <StepFlow>
         <RoutineStep num="1" cat="In The Shower" name="Cleanse & Exfoliate">
-          <div className="note-box note-rose" style={{ marginBottom: 12, marginTop: 0 }}>
-            🌡️ Use warm water, never hot. Finish with a 30-second cooler rinse.
-          </div>
           <ProductCard brand="Human Nature" primary name="Naturals Body Wash — Sunflower" badges={['Sulfate-Free', 'Moisturising', 'Filipino Brand', 'Gentle']} why="Gentle sulfate-free wash. Cleanses without stripping." />
           <ProductCard brand="Dove" name="Sensitive Skin Body Wash" badges={['Fragrance-Free', 'Hypoallergenic', 'Moisture Seal']} why="Contains ¼ moisturising cream. Good for reactive skin or after sun." />
-          <div className="step-note">🪥 Dry brush 2× per week BEFORE shower (Sunday + Wednesday): firm upward circles from feet toward heart.</div>
+          <div className="step-note">Warm water, never hot. Cool rinse to finish.</div>
+          <div className="step-note">Dry brush Sun + Wed before the shower, upward to the heart.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="St. Ives" name="Oatmeal & Shea Butter Body Scrub" badges={['Physical Exfoliant', '2× per week', 'Texture Smoothing']} why="Buffs dull, rough patches. Use Sunday and Wednesday after body wash." />
           </div>
           <div className="step-note">Exfoliate Sunday and Wednesday only. Overdoing it irritates.</div>
         </RoutineStep>
         <RoutineStep num="2" cat="After Shower — Before Going Out" name="Seal & Protect">
-          <div className="step-note" style={{ marginBottom: 12 }}>⏱️ Apply body moisturiser within 2 minutes after showering, while skin is damp.</div>
+          
           <ProductCard brand="CeraVe" primary name="Moisturizing Cream (body)" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free', '24-Hour Hydration']} why="Barrier repair with non-greasy hydration." />
           <ProductCard brand="Human Nature" name="Naturals Intensive Moisturizer" badges={['Sunflower Oil', 'Non-Greasy', 'Lightweight', 'Filipino Brand']} why="Fast-absorbing and non-sticky for humid Philippine weather." />
-          <div className="step-note">🦵 Use a thicker layer on elbows, knees, and heels.</div>
+          <div className="step-note">Within 2 minutes, on damp skin. Thicker on elbows, knees, heels.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Biore" name="UV Aqua Rich Watery Essence SPF 50+ PA++++" badges={['SPF 50+', 'PA++++', 'Lightweight', 'No White Cast']} why="Apply to exposed arms, neck, décolletage, and legs. Absorbs fast with no stickiness." />
           </div>
-          <div className="step-note">⚠️ Body SPF outdoors. Reapply every 2 hours.</div>
+          <div className="step-note">Reapply SPF every 2 hours outdoors.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Bio-Oil" name="Bio-Oil Skincare Oil" badges={['Vitamin A & E', 'Stretch Mark Fading', 'Scar Reduction', 'Skin Glow']} why="2–3 drops over moisturiser add glow and help fade marks. Pat, never rub." />
           </div>
-          <div className="step-note">Layer order: moisturiser → absorb 1 min → 2–3 drops Bio-Oil.</div>
+          <div className="step-note">Moisturiser → 1 minute → 2–3 drops Bio-Oil.</div>
         </RoutineStep>
       </StepFlow>
     </>
@@ -286,31 +275,30 @@ function BodyEvening() {
     <>
       <StepFlow>
         <RoutineStep num="3" cat="Evening Routine" name="Repair Overnight">
-          <div className="step-note" style={{ marginBottom: 12 }}>🌙 Use richer products between 10 PM and 2 AM.</div>
+          
           <ProductCard brand="Aveeno" primary name="Daily Moisturizing Lotion" badges={['Colloidal Oat', 'Soothing', 'Fragrance-Free', '24-Hour Repair']} why="Colloidal oatmeal soothes and repairs the barrier overnight." />
           <ProductCard brand="CeraVe" name="Moisturizing Cream (heavy layer)" badges={['Ceramides', 'Overnight Repair', 'Barrier Restoration']} why="Use a generous night layer for barrier repair." />
-          <div className="step-note">🦶 Vaseline on heels and elbows nightly. Smoother in 2–3 weeks.</div>
+          
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Vaseline" name="Original Petroleum Jelly" badges={['Occlusive', 'Heel Repair', 'Elbow Softening', 'Fragrance-Free']} why="Seals moisture in. Apply on heels and elbows every night after moisturiser." />
           </div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="AmLactin" name="Daily Moisturizing Body Lotion" badges={['Lactic Acid 12%', 'AHA', 'Keratosis Pilaris', '1× per week']} why="Lactic acid smooths keratosis pilaris, texture, and uneven tone. Use Sunday evening only." />
           </div>
-          <div className="step-note">AmLactin: Sunday evenings only. Do not mix with Bio-Oil. Wash hands.</div>
+          <div className="step-note">AmLactin Sunday only, never with Bio-Oil.</div>
           <div style={{ marginTop: 12 }}>
             <ProductCard brand="Bio-Oil" name="Bio-Oil Evening Massage (2× per week)" badges={['Circulation Boost', 'Lymphatic Drainage', 'Firming', 'Tue + Fri']} why="Massage 5 minutes on Tuesday and Friday. Use long upward strokes on arms, thighs, and abdomen." />
           </div>
-          <div className="step-note">Use 4–5 drops per area. Long strokes on limbs, small circles on abdomen. Apply AFTER moisturiser.</div>
+          <div className="step-note">4–5 drops per area, after moisturiser.</div>
         </RoutineStep>
       </StepFlow>
-      <div className="note-box note-rose" style={{ marginTop: 20 }}>
-        🌸 <strong>Weekly body skin schedule at a glance</strong><br /><br />
-        <strong>Every day:</strong> Warm shower → body wash → moisturise within 2 min → SPF on all exposed skin<br />
-        <strong>Sunday + Wednesday:</strong> Dry brush before shower + body scrub in shower<br />
-        <strong>Sunday evening:</strong> AmLactin AHA lotion instead of regular moisturiser on rough areas<br />
-        <strong>Tuesday + Friday evening:</strong> Bio-Oil massage after regular moisturiser<br />
-        <strong>Every night:</strong> Vaseline on heels and elbows — non-negotiable
-      </div>
+      <WeekGrid rows={[
+        { icon: 'drop', label: 'Moisturise + SPF', days: [0, 1, 2, 3, 4, 5, 6] },
+        { icon: 'shield', label: 'Vaseline heels', days: [0, 1, 2, 3, 4, 5, 6] },
+        { icon: 'sparkle', label: 'Dry brush + scrub', days: [2, 6], tone: 'gold' },
+        { icon: 'hand', label: 'Bio-Oil massage', days: [1, 4], tone: 'gold' },
+        { icon: 'moon', label: 'AmLactin', days: [6], tone: 'gold' },
+      ]} />
     </>
   );
 }
@@ -318,35 +306,39 @@ function BodyEvening() {
 /* ─── Retinoid ─── */
 function Retinoid() {
   const rows = [
-    { phase: 'Month 2 — Start here', product: 'Retinol 0.025% OTC', brand: 'The Inkey List Retinol Serum', alt: 'Mediheal Collagen Retinol Serum · Rohto Melano CC Retinol', freq: '1× per week (Saturday)', what: 'Smooths texture and buildup. Use sandwich method: moisturiser → retinol → moisturiser.' },
-    { phase: 'Month 3–6', product: 'Retinol 0.05% OTC', brand: 'The Inkey List or Mediheal', alt: 'Cos De BAHA Retinol 0.05% · The Ordinary Retinol 0.5%', freq: '2–3× per week', what: 'More resurfacing and pore tightening. Upgrade only when 0.025% gives zero irritation.' },
-    { phase: 'Month 6–12', product: 'Retinol 0.1% or Adapalene 0.1%', brand: 'La Roche-Posay Effaclar or Differin', alt: 'A-Derma Dermalibour+ Retinol · APLB Retinol Cream 0.1%', freq: '4–5× per week', what: 'Stronger for acne, pores, and texture. Often better for congested skin.' },
-    { phase: 'Age 24–25+', product: 'Tretinoin 0.025% (prescription)', brand: 'Consult a dermatologist', alt: 'Prescription only — no OTC alternative', freq: '3–5× per week', what: 'Strongest retinoid. Start only after at least 6 months adapted to OTC retinoids. Consult a PH dermatologist.' },
+    { phase: 'Month 2 — Start here', product: 'Retinol 0.025% OTC', brand: 'The Inkey List Retinol Serum', alt: 'Mediheal Collagen Retinol Serum · Rohto Melano CC Retinol', freq: '1× a week (Sat)', what: 'Moisturiser → retinol → moisturiser.' },
+    { phase: 'Month 3–6', product: 'Retinol 0.05% OTC', brand: 'The Inkey List or Mediheal', alt: 'Cos De BAHA Retinol 0.05% · The Ordinary Retinol 0.5%', freq: '2–3× a week', what: 'Only once 0.025% gives zero irritation.' },
+    { phase: 'Month 6–12', product: 'Retinol 0.1% or Adapalene 0.1%', brand: 'La Roche-Posay Effaclar or Differin', alt: 'A-Derma Dermalibour+ Retinol · APLB Retinol Cream 0.1%', freq: '4–5× a week', what: 'Stronger, for pores and texture.' },
+    { phase: 'Age 24–25+', product: 'Tretinoin 0.025% (prescription)', brand: 'Ask a dermatologist', alt: 'Prescription only', freq: '3–5× a week', what: 'After 6 months on OTC retinol.' },
   ];
+  // How many nights a week, drawn as seven dots.
+  const nights = [1, 3, 5, 5];
   return (
     <>
-      <div className="note-box note-gold" style={{ marginBottom: 16 }}>
-        ✨ Start retinoids low and slow. Protect your barrier.
-      </div>
-      <table className="fancy-table splash-item">
-        <thead>
-          <tr><th>Phase</th><th>Product & Brand</th><th>Alternatives (if unavailable)</th><th>Frequency</th><th>What It Does</th></tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => (
-            <tr key={i}>
-              <td><strong>{r.phase}</strong></td>
-              <td><strong>{r.product}</strong><br /><span style={{ fontSize: 11, color: 'var(--text-soft)' }}>{r.brand}</span></td>
-              <td><span style={{ fontSize: 11, color: 'var(--text-soft)' }}>{r.alt}</span></td>
-              <td>{r.freq}</td>
-              <td>{r.what}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        ⚠️ Never mix retinol with BHA or AHA. No retinoids during pregnancy. Night only. SPF next morning.
-      </div>
+      <ol className="rt-ladder">
+        {rows.map((r, i) => (
+          <li key={i} className="rt-step splash-item">
+            <span className="rt-num">{i + 1}</span>
+            <div className="rt-body">
+              <div className="rt-phase">{r.phase}</div>
+              <div className="rt-product">{r.product}</div>
+              <div className="rt-brand">{r.brand}</div>
+              <div className="rt-freq" aria-label={r.freq}>
+                {Array.from({ length: 7 }, (_, d) => <span key={d} className={d < nights[i] ? 'is-on' : undefined} />)}
+                <em>{r.freq}</em>
+              </div>
+              <div className="rt-what">{r.what}</div>
+              <div className="rt-alt">Or: {r.alt}</div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <Tips items={[
+        ['moon', 'Night only'],
+        ['no', 'Never with BHA or AHA'],
+        ['sun', 'SPF the next morning'],
+        ['alert', 'Not during pregnancy'],
+      ]} />
     </>
   );
 }
@@ -407,21 +399,21 @@ function AgCardDetail({ card, onBack }) {
     <>
       <button className="ag-detail-back" onClick={onBack}>← Back to Anti-Aging</button>
       <div className="ag-detail-header splash-item">
-        <div className="ag-detail-ico">{card.ico}</div>
+        <div className="ag-detail-ico"><BodyIcon name={card.ico} size={34} /></div>
         <div className="ag-detail-group-tag">{card.group}</div>
         <h2 className="ag-detail-title">{card.t}</h2>
         <p className="ag-detail-intro">{card.b}</p>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">📋 How to Do It</div>
+        <div className="ag-detail-section-title"><BodyIcon name="list" size={17} /> How to Do It</div>
         <ul className="ag-detail-list">{card.how.map((item, i) => <li key={i}>{item}</li>)}</ul>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">💡 Why It Works</div>
+        <div className="ag-detail-section-title"><BodyIcon name="bulb" size={17} /> Why It Works</div>
         <p className="ag-detail-body">{card.why}</p>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">⏰ Best Time</div>
+        <div className="ag-detail-section-title"><BodyIcon name="clock" size={17} /> Best Time</div>
         <p className="ag-detail-body">{card.when}</p>
       </div>
     </>
@@ -432,17 +424,13 @@ function AntiAgingTab({ selected, onSelect, onBack }) {
   if (selected) return <AgCardDetail card={selected} onBack={onBack} />;
   return (
     <>
-      <div className="s-header" style={{ paddingTop: 0 }}>
-        <div className="s-tag">Longevity &amp; Hormones</div>
-        <p className="s-desc">Start early. Tap any topic for how, why, and when.</p>
-      </div>
       {AG_GROUPS.map(group => (
         <div key={group.title}>
-          <div className="divider splash-item">{group.ico} {group.title}</div>
+          <div className="divider splash-item bk-divider-ico"><BodyIcon name={group.ico} size={16} /> {group.title}</div>
           <div className="ag-nav-list splash-item">
             {AG_CARDS.filter(c => c.group === group.title).map(card => (
               <button key={card.t} className="ag-nav-item" onClick={() => onSelect(card)}>
-                <span className="ag-nav-ico">{card.ico}</span>
+                <span className="ag-nav-ico"><BodyIcon name={card.ico} size={24} /></span>
                 <div className="ag-nav-text">
                   <div className="ag-nav-title">{card.t}</div>
                   <div className="ag-nav-desc">{card.b}</div>
@@ -681,32 +669,32 @@ function OilDayModal({ day, monthIdx, oils, dayName, onClose }) {
   return (
     <div className="oil-modal-overlay" onClick={onClose}>
       <div className="oil-modal" onClick={e => e.stopPropagation()}>
-        <button className="oil-modal-close" onClick={onClose}>✕</button>
+        <button className="oil-modal-close" onClick={onClose}></button>
         <div className="oil-modal-date">{dateLabel}</div>
         {isRest ? (
           <div className="oil-modal-rest">
-            <div className="oil-modal-rest-icon">🌙</div>
+            <div className="oil-modal-rest-icon"><BodyIcon name="moon" size={34} /></div>
             <p className="oil-modal-rest-text">No soak today.</p>
-            <p className="oil-modal-rest-sub">Saturdays only. Tonight: light oil and massage. 🌸</p>
+            <p className="oil-modal-rest-sub">Saturdays only. Tonight: light oil and massage.</p>
           </div>
         ) : (
           <>
             <div className="oil-modal-oils-row">
               {oils.map(o => (
-                <span key={o.n} className="oil-modal-chip">{o.e} {o.n}</span>
+                <span key={o.n} className="oil-modal-chip"><BodyIcon name={o.e} size={15} /> {o.n}</span>
               ))}
             </div>
             <p className="oil-modal-card-tip" style={{ marginBottom: 10 }}>
-              💡 Mix in your palm. Scalp first, lengths second. Leave 45 min, shampoo twice.
+              Mix in your palm. Scalp first, lengths second. Leave 45 min, shampoo twice.
             </p>
             {oils.map(o => {
               const g = OIL_GUIDE[o.n];
               if (!g) return null;
               return (
                 <div key={o.n} className="oil-modal-card">
-                  <div className="oil-modal-card-title">{g.emoji} {o.n} Oil</div>
+                  <div className="oil-modal-card-title"><BodyIcon name={g.emoji} size={17} /> {o.n} Oil</div>
                   <p className="oil-modal-card-how">{g.how}</p>
-                  <p className="oil-modal-card-tip">💡 {g.tip}</p>
+                  <p className="oil-modal-card-tip">{g.tip}</p>
                 </div>
               );
             })}
@@ -727,18 +715,18 @@ function OilBenefitsPage({ oilName, onBack }) {
     <div className="section">
       <button className="ag-detail-back" onClick={onBack}>← Back to Body</button>
       <div className="oil-detail-header splash-item" style={{ borderColor: b.borderColor, background: b.color }}>
-        <div className="oil-detail-emoji">{b.emoji}</div>
+        <div className="oil-detail-emoji"><BodyIcon name={b.emoji} size={38} /></div>
         <h2 className="oil-detail-title">{oilName} Oil</h2>
         <p className="oil-detail-tagline">{b.tagline}</p>
       </div>
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">🔬 The Science</div>
+        <div className="ag-detail-section-title"><BodyIcon name="flask" size={17} /> The Science</div>
         <p className="ag-detail-body">{b.science}</p>
       </div>
       <div className="divider splash-item">Key Benefits</div>
       {b.benefits.map((benefit, i) => (
         <div key={i} className="oil-benefit-card splash-item">
-          <span className="oil-benefit-icon">{benefit.icon}</span>
+          <span className="oil-benefit-icon"><BodyIcon name={benefit.icon} size={22} /></span>
           <div>
             <div className="oil-benefit-title">{benefit.title}</div>
             <p className="oil-benefit-body">{benefit.body}</p>
@@ -746,7 +734,7 @@ function OilBenefitsPage({ oilName, onBack }) {
         </div>
       ))}
       <div className="g-card splash-item" style={{ marginTop: 8 }}>
-        <div className="ag-detail-section-title">💆 How to Use</div>
+        <div className="ag-detail-section-title"><BodyIcon name="hand" size={17} /> How to Use</div>
         <p className="ag-detail-body">{OIL_GUIDE[oilName]?.how}</p>
       </div>
       <div className="oil-detail-meta splash-item">
@@ -760,7 +748,7 @@ function OilBenefitsPage({ oilName, onBack }) {
         </div>
         <div className="oil-detail-meta-row">
           <span className="oil-detail-meta-label">Pro tip</span>
-          <span className="oil-detail-meta-value">💡 {OIL_GUIDE[oilName]?.tip}</span>
+          <span className="oil-detail-meta-value">{OIL_GUIDE[oilName]?.tip}</span>
         </div>
       </div>
     </div>
@@ -814,7 +802,7 @@ function OilRotationCalendar({ onSelectOil }) {
                     <span className="oil-rot-day-num">{day}</span>
                     <div className="oil-rot-day-oils">
                       {oils.map(o => (
-                        <span key={o.n} className="oil-rot-day-em" title={o.n}>{o.e}</span>
+                        <span key={o.n} className="oil-rot-day-em" title={o.n}><BodyIcon name={o.e} size={13} /></span>
                       ))}
                     </div>
                   </button>
@@ -829,7 +817,7 @@ function OilRotationCalendar({ onSelectOil }) {
         <div className="oil-rot-summary-grid">
           {ALL_OILS.map(o => (
             <button key={o.n} className="oil-rot-summary-item oil-rot-summary-btn" onClick={() => onSelectOil(o.n)}>
-              <span className="oil-rot-summary-em">{o.e}</span>
+              <span className="oil-rot-summary-em"><BodyIcon name={o.e} size={18} /></span>
               <span className="oil-rot-summary-name">{o.n}</span>
             </button>
           ))}
@@ -857,8 +845,8 @@ const HAIR_ROUTINES = [
     title: 'Before shower',
     sub: 'Comb · massage · oil · wash',
     oils: [
-      { part: 'Scalp', main: '🌼 Jojoba + 3 drops rosemary', alt: '🌿 Mielle Rosemary Mint' },
-      { part: 'Ends', main: '🌸 Camellia', alt: '💧 Squalane' },
+      { part: 'Scalp', main: 'Jojoba + 3 drops rosemary', alt: 'Mielle Rosemary Mint' },
+      { part: 'Ends', main: 'Camellia', alt: 'Squalane' },
     ],
     steps: [
       {
@@ -929,7 +917,7 @@ const HAIR_ROUTINES = [
     title: 'After shower',
     sub: 'Growth serum · leave-in · oil · heat guard',
     oils: [
-      { part: 'Ends', main: '🌸 Camellia — 1 drop, damp', alt: '💧 Squalane' },
+      { part: 'Ends', main: 'Camellia — 1 drop, damp', alt: 'Squalane' },
     ],
     steps: [
       {
@@ -1011,8 +999,8 @@ const HAIR_ROUTINES = [
     title: 'Night',
     sub: 'Scalp oil · ends · plait · bonnet',
     oils: [
-      { part: 'Scalp', main: '🌿 Mielle Rosemary Mint', alt: '🌼 Jojoba + rosemary' },
-      { part: 'Ends', main: '🌸 Camellia', alt: '💧 Squalane' },
+      { part: 'Scalp', main: 'Mielle Rosemary Mint', alt: 'Jojoba + rosemary' },
+      { part: 'Ends', main: 'Camellia', alt: 'Squalane' },
     ],
     steps: [
       {
@@ -1118,7 +1106,7 @@ const HAIR_ROUTINES = [
     title: 'Going out',
     sub: 'Not greasy, not dry',
     oils: [
-      { part: 'Ends', main: '💧 Squalane — half a drop', alt: '🌸 Camellia — half a drop' },
+      { part: 'Ends', main: 'Squalane — half a drop', alt: 'Camellia — half a drop' },
     ],
     steps: [
       {
@@ -1190,7 +1178,7 @@ const HAIR_ROUTINES = [
 function ToolCard({ icon, name, why }) {
   return (
     <div className="tool-card">
-      <span className="tool-card-icon">{icon}</span>
+      <span className="tool-card-icon"><BodyIcon name={icon} size={22} /></span>
       <div>
         <div className="tool-card-name">{name}</div>
         <div className="tool-card-why">{why}</div>
@@ -1210,7 +1198,7 @@ const HAIR_EXTRAS = [
 function RoutineCard({ r, onOpen }) {
   return (
     <button className="routine-card splash-item" onClick={onOpen}>
-      <span className="rc-emoji" style={{ background: r.emojiBg }}>{r.emoji}</span>
+      <span className="rc-emoji" style={{ background: r.emojiBg }}><BodyIcon name={r.emoji} size={24} /></span>
       <span className="rc-text">
         <span className="rc-when">{r.when}</span>
         <span className="rc-title">{r.title}</span>
@@ -1239,10 +1227,6 @@ function HairTab({ onSelectOil }) {
 
   return (
     <>
-      <div className="s-header" style={{ paddingTop: 0 }}>
-        <div className="s-tag">Wavy · Thin strands</div>
-        <p className="s-desc">Tap the one you are in.</p>
-      </div>
 
       <div className="routine-cards">
         {cards.map(c => <RoutineCard key={c.id} r={c} onOpen={() => setOpenId(c.id)} />)}
@@ -1250,7 +1234,7 @@ function HairTab({ onSelectOil }) {
 
       <Sheet
         open={Boolean(current)}
-        emoji={current?.emoji}
+        emoji={current?.emoji && <BodyIcon name={current.emoji} size={30} />}
         emojiBg={current?.emojiBg}
         kicker={current?.when}
         title={current?.title || ''}
@@ -1274,7 +1258,7 @@ function HairTab({ onSelectOil }) {
                   <ul className="ag-detail-list">
                     {st.list.map((line, li) => <li key={li}>{line}</li>)}
                   </ul>
-                  {st.note && <div className="note-box note-rose" style={{ marginTop: 10 }}>{st.note}</div>}
+                  {st.note && <div className="step-note">{st.note}</div>}
                   {st.tools?.map(t => <ToolCard key={t.name} {...t} />)}
                   {st.products?.map(pr => <ProductCard key={pr.name + (pr.primary ? '-p' : '')} {...pr} />)}
                 </RoutineStep>
@@ -1287,12 +1271,12 @@ function HairTab({ onSelectOil }) {
           <>
             <div className="hair-oil-pick">
               <span className="hop-lbl">Always</span>
-              <span className="hop-main">🌿 Rosemary — 3 drops</span>
+              <span className="hop-main"><BodyIcon name="leaf" size={15} /> Rosemary — 3 drops</span>
               <span className="hop-alt">never neat</span>
             </div>
             <div className="hair-oil-pick">
               <span className="hop-lbl">Partner</span>
-              <span className="hop-main">🌼 Jojoba → 🌸 Camellia → 💧 Squalane → 🥥 Coconut</span>
+              <span className="hop-main">Jojoba → Camellia → Squalane → Coconut</span>
               <span className="hop-alt">one each Saturday, then round again</span>
             </div>
             <OilRotationCalendar onSelectOil={name => { close(); onSelectOil(name); }} />
@@ -1320,24 +1304,15 @@ function UnderarmRoutine() {
   const [sub, setSub] = useState('morning');
   function switchSub(s) { setSub(s); }
   const UNDERARM_TABS = [
-    { id: 'morning', label: '☀️ Morning' },
-    { id: 'night',   label: '🌙 Night' },
+    { id: 'morning', label: 'Morning', icon: 'sun' },
+    { id: 'night',   label: 'Night',   icon: 'moon' },
   ];
   return (
     <>
-      <div className="sk-tabs splash-item">
-        {UNDERARM_TABS.map(t => (
-          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => switchSub(t.id)}>
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <SubTabs tabs={UNDERARM_TABS} value={sub} onChange={switchSub} />
 
       {sub === 'morning' && (
         <>
-          <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-            Morning is simple: shower, dry completely, then apply whitening deo spray. Actives are evening-only.
-          </div>
           <StepFlow>
             <RoutineStep num="1" cat="After Shower" name="Pat Dry Completely">
               <ul className="ag-detail-list">
@@ -1365,9 +1340,6 @@ function UnderarmRoutine() {
 
       {sub === 'night' && (
         <>
-          <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-            Three steps: exfoliate → brighten → repair. Use actives on dry skin only. Results in 4–6 weeks.
-          </div>
           <StepFlow>
             <RoutineStep num="1" cat="3–4× per week · dry skin only" name="Exfoliate — AHA / Glycolic Acid">
               <ul className="ag-detail-list">
@@ -1403,9 +1375,11 @@ function UnderarmRoutine() {
               <ProductCard brand="CeraVe" name="Moisturizing Cream" badges={['Ceramides', 'Hyaluronic Acid', 'Fragrance-Free']} why="Repairs the barrier. Watsons or Mercury Drug PH." />
             </RoutineStep>
           </StepFlow>
-          <div className="note-box note-rose" style={{ marginTop: 8 }}>
-            ⚠️ <strong>Shaving vs. waxing:</strong> Shaving can trigger darkening through friction and nicks. Waxing causes less damage; laser is best long-term. If shaving: use cream, go with the grain, and wait 24 hours before actives.
-          </div>
+          <Tips items={[
+            ['sparkle', 'Waxing or laser darkens less than shaving'],
+            ['clock', 'Wait 24 hours after shaving before acids'],
+            ['drop', 'Actives on dry skin only'],
+          ]} />
         </>
       )}
     </>
@@ -1417,25 +1391,16 @@ function TeethRoutine() {
   const [sub, setSub] = useState('morning');
   function switchSub(s) { setSub(s); }
   const TEETH_TABS = [
-    { id: 'morning',   label: '☀️ Morning' },
-    { id: 'night',     label: '🌙 Night' },
-    { id: 'saltwater', label: '🧂 Salt Water' },
-    { id: 'whitening', label: '✨ Whitening' },
+    { id: 'morning',   label: 'Morning',    icon: 'sun' },
+    { id: 'night',     label: 'Night',      icon: 'moon' },
+    { id: 'saltwater', label: 'Salt Water', icon: 'shaker' },
+    { id: 'whitening', label: 'Whitening',  icon: 'sparkle' },
   ];
   return (
     <>
-      <div className="sk-tabs splash-item">
-        {TEETH_TABS.map(t => (
-          <button key={t.id} className={`sk-tab${sub === t.id ? ' active' : ''}`} onClick={() => switchSub(t.id)}>
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <SubTabs tabs={TEETH_TABS} value={sub} onChange={switchSub} />
 
       {sub === 'morning' && <>
-        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-          Morning routine: oil pull, brush with HA toothpaste, and protect gums.
-        </div>
         <StepFlow>
           <RoutineStep num="1" cat="Before anything else · 3–5× per week" name="Oil Pulling">
             <ul className="ag-detail-list">
@@ -1452,7 +1417,7 @@ function TeethRoutine() {
               <li>All surfaces: outer, inner, chewing, and the tongue</li>
               <li><strong>Do NOT rinse after</strong> — spit only</li>
             </ul>
-            <div className="step-note">💡 HA toothpaste repairs enamel and whitens naturally.</div>
+            <div className="step-note">HA toothpaste repairs enamel and whitens.</div>
             <ProductCard brand="Apagard" primary name="Apagard Premio Toothpaste" badges={['Hydroxyapatite', 'Remineralising', 'Whitening', 'Japanese']} why="Repairs enamel, whitens, eases sensitivity." />
             <ProductCard brand="Boka" name="Boka Ela Mint Toothpaste" badges={['Nano-Hydroxyapatite', 'Fluoride-Free']} why="Nano-HA toothpaste. iHerb ships to PH." />
             <ProductCard brand="Sensodyne" name="Sensodyne Pronamel Mineral Boost" badges={['Enamel Strengthening', 'Sensitivity', 'Fluoride']} why="Use for 2 weeks before whitening. Watsons, Mercury Drug." />
@@ -1475,9 +1440,6 @@ function TeethRoutine() {
       </>}
 
       {sub === 'night' && <>
-        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-          Night routine: floss first, brush with HA paste, and leave it on overnight.
-        </div>
         <StepFlow>
           <RoutineStep num="1" cat="Before brushing · every night" name="Floss First">
             <ul className="ag-detail-list">
@@ -1502,9 +1464,6 @@ function TeethRoutine() {
       </>}
 
       {sub === 'saltwater' && <>
-        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-          Salt water rinse is a targeted treatment — not a daily step. Use it for gum irritation, sores, or sensitivity. Always before brushing, never after.
-        </div>
         <StepFlow>
           <RoutineStep num="1" cat="When needed" name="Prepare the Rinse">
             <ul className="ag-detail-list">
@@ -1512,7 +1471,7 @@ function TeethRoutine() {
               <li>Stir until fully dissolved — use immediately while warm</li>
               <li>Make fresh every time — do not store leftover rinse</li>
             </ul>
-            <div className="prod-item"><div className="prod-badge">★ Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any fine salt works. Under ₱50.</div></div></div>
+            <div className="prod-item"><div className="prod-badge">Best</div><div><div className="prod-name">Fine sea salt or iodized table salt — DIY rinse</div><div className="prod-why">½ tsp in warm water, fresh every use. Any fine salt works. Under ₱50.</div></div></div>
             <ProductCard brand="TheraBreath" name="TheraBreath Oral Rinse (Alcohol-Free)" badges={['Dentist-Developed', 'Alcohol-Free', 'Fluoride-Free']} why="Ready-made rinse. iHerb ships to PH." />
             <ProductCard brand="Listerine" name="Listerine Zero Alcohol Mouthwash" badges={['Alcohol-Free', 'Bacteria-Killing', 'No Burning']} why="No burning, no dryness. Watsons, Mercury Drug." />
           </RoutineStep>
@@ -1535,9 +1494,6 @@ function TeethRoutine() {
       </>}
 
       {sub === 'whitening' && <>
-        <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-          One course every 3 months keeps teeth noticeably white without over-whitening. Always prep with Sensodyne for 2 weeks before starting.
-        </div>
         <StepFlow>
           <RoutineStep num="1" cat="2 weeks before starting a course" name="Prep — Sensitivity Protection">
             <ul className="ag-detail-list">
@@ -1586,10 +1542,6 @@ function TeethRoutine() {
 function MakeupRoutine() {
   return (
     <>
-      <div className="note-box note-gold" style={{ marginBottom: 14 }}>
-        Non-cakey makeup starts with less product and better prep. Follow the steps, then use Extras for polished details.
-      </div>
-
       <div className="g-card splash-item" style={{ marginBottom: 16 }}>
         <div className="ag-detail-section-title">The Charlotte Tilbury Sandwich Hack — Used by MUAs Globally</div>
         <p className="ag-detail-body">Spritz setting spray on bare skin → skincare + primer + foundation → setting spray → powder T-zone only → final setting spray.</p>
@@ -1615,7 +1567,7 @@ function MakeupRoutine() {
         </RoutineStep>
 
         <RoutineStep num="2" cat="Primer" name="Grip + Blur Primer">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">e.l.f. Power Grip Primer</div><div className="prod-why">Tacky gel that holds makeup all day. Budget dupe for Milk Hydro Grip. Shopee PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Holy Grail</div><div><div className="prod-name">e.l.f. Power Grip Primer</div><div className="prod-why">Tacky gel that holds makeup all day. Budget dupe for Milk Hydro Grip. Shopee PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Splurge</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Primer</div><div className="prod-why">Blurs and grips for a soft-focus base. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Milk Makeup Hydro Grip Primer</div><div className="prod-why">Lighter than e.l.f. Good for dry skin.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
@@ -1627,8 +1579,8 @@ function MakeupRoutine() {
         </RoutineStep>
 
         <RoutineStep num="3" cat="Foundation" name="Your Skin But Better">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Foundation</div><div className="prod-why">Medium coverage, satin finish, looks like skin. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Armani Beauty Luminous Silk Foundation</div><div className="prod-why">The iconic silk finish. Sheer-to-medium buildable coverage that looks like filtered skin. Serum-like texture, virtually weightless. The gold standard for "your skin but better" worldwide. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Holy Grail</div><div><div className="prod-name">Charlotte Tilbury Airbrush Flawless Foundation</div><div className="prod-why">Medium coverage, satin finish, looks like skin. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Holy Grail</div><div><div className="prod-name">Armani Beauty Luminous Silk Foundation</div><div className="prod-why">The iconic silk finish. Sheer-to-medium buildable coverage that looks like filtered skin. Serum-like texture, virtually weightless. The gold standard for "your skin but better" worldwide. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Matte + Poreless Foundation</div><div className="prod-why">Easy to find, not cakey. Blend with a damp sponge. Watsons, SM Beauty.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
             <li>Dot on the centre of the face, blend outward</li>
@@ -1640,7 +1592,7 @@ function MakeupRoutine() {
         </RoutineStep>
 
         <RoutineStep num="4" cat="Concealer" name="Spot & Under-Eye">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">NARS Radiant Creamy Concealer</div><div className="prod-why">Creamy, radiant, doesn't crease. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Holy Grail</div><div><div className="prod-name">NARS Radiant Creamy Concealer</div><div className="prod-why">Creamy, radiant, doesn't crease. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Rare Beauty Liquid Touch Brightening Concealer</div><div className="prod-why">Light, natural, doesn't settle in lines. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">Maybelline Fit Me Concealer</div><div className="prod-why">Budget dupe for NARS. Everywhere in PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
@@ -1653,7 +1605,7 @@ function MakeupRoutine() {
         </RoutineStep>
 
         <RoutineStep num="5" cat="Setting Powder" name="Lock — T-Zone Only">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Laura Mercier Translucent Loose Setting Powder</div><div className="prod-why">Sets without adding coverage. T-zone and under-eyes only.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Holy Grail</div><div><div className="prod-name">Laura Mercier Translucent Loose Setting Powder</div><div className="prod-why">Sets without adding coverage. T-zone and under-eyes only.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">Laneige Neo Blurring Powder</div><div className="prod-why">Blurs pores without going flat. YesStyle, Shopee PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
             <li><strong>T-zone only</strong> — forehead, nose bridge, chin</li>
@@ -1664,8 +1616,8 @@ function MakeupRoutine() {
         </RoutineStep>
 
         <RoutineStep num="6" cat="Contour & Blush" name="Sculpt & Flush">
-          <div className="prod-item"><div className="prod-badge">★ Blush</div><div><div className="prod-name">Rare Beauty Soft Pinch Liquid Blush</div><div className="prod-why">One tiny dot is enough. Looks like a natural flush. Sephora PH.</div></div></div>
-          <div className="prod-item"><div className="prod-badge">★ Contour</div><div><div className="prod-name">Charlotte Tilbury Filmstar Bronze & Glow</div><div className="prod-why">Bronzer and highlighter in one. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Blush</div><div><div className="prod-name">Rare Beauty Soft Pinch Liquid Blush</div><div className="prod-why">One tiny dot is enough. Looks like a natural flush. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Contour</div><div><div className="prod-name">Charlotte Tilbury Filmstar Bronze & Glow</div><div className="prod-why">Bronzer and highlighter in one. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Budget Blush</div><div><div className="prod-name">e.l.f. Halo Glow Blush Beauty Wand</div><div className="prod-why">Easy blush wand, no tools. Shopee PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
             <li><strong>Contour:</strong> matte bronzer under cheekbones, temples, jaw — blend well</li>
@@ -1699,7 +1651,7 @@ function MakeupRoutine() {
         </RoutineStep>
 
         <RoutineStep num="9" cat="Set & Finish" name="Setting Spray — Final Lock">
-          <div className="prod-item"><div className="prod-badge">★ Holy Grail</div><div><div className="prod-name">Urban Decay All Nighter Setting Spray</div><div className="prod-why">Up to 16 hours, holds in heat. Sephora PH.</div></div></div>
+          <div className="prod-item"><div className="prod-badge">Holy Grail</div><div><div className="prod-name">Urban Decay All Nighter Setting Spray</div><div className="prod-why">Up to 16 hours, holds in heat. Sephora PH.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Alt</div><div><div className="prod-name">MAC Fix+</div><div className="prod-why">Melts makeup into skin. Also great for dampening your sponge.</div></div></div>
           <div className="prod-item"><div className="prod-badge">Budget</div><div><div className="prod-name">e.l.f. Power Grip Dewy Setting Spray</div><div className="prod-why">Locks makeup with a dewy glow. Shopee PH.</div></div></div>
           <ul className="ag-detail-list" style={{ marginTop: 12 }}>
@@ -1712,16 +1664,16 @@ function MakeupRoutine() {
         </RoutineStep>
       </StepFlow>
 
-      <div className="note-box note-rose" style={{ marginTop: 16 }}>
-        🌸 <strong>Makeup removal is skincare:</strong> Never sleep in makeup. Use micellar water or balm first, then double cleanse.
-      </div>
+      <Tips items={[
+        ['moon', 'Never sleep in makeup'],
+        ['drop', 'Balm or micellar first, then double cleanse'],
+      ]} />
 
       {/* ── GODDESS EXTRAS ── */}
-      <div className="divider splash-item" style={{ marginTop: 32 }}>👑 Goddess Extras</div>
-      <p className="s-desc splash-item" style={{ marginBottom: 16 }}>Low-effort features that keep you looking polished.</p>
+      <div className="divider splash-item" style={{ marginTop: 32 }}>Goddess Extras</div>
 
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">✨ Lash Lift + Tint</div>
+        <div className="ag-detail-section-title"><BodyIcon name="eye" size={17} /> Lash Lift + Tint</div>
         <p className="ag-detail-body">Curl lashes from the root for wider eyes with almost no daily effort. Results last 6–8 weeks.</p>
         <div className="ag-detail-section-title" style={{ marginTop: 12 }}>Before Your Appointment</div>
         <ul className="ag-detail-list">
@@ -1740,7 +1692,7 @@ function MakeupRoutine() {
       </div>
 
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">🫧 Face Lifting — Daily Non-Surgical Methods</div>
+        <div className="ag-detail-section-title"><BodyIcon name="face" size={17} /> Face Lifting — Daily Non-Surgical Methods</div>
         <ul className="ag-detail-list">
           <li><strong>Gua sha daily (5 min, morning):</strong> lift jaw to ear, neck to chin, brow to hairline — upward and outward strokes</li>
           <li><strong>Ice rolling (2 min before makeup):</strong> roll cheeks, jaw, and brow before moisturiser. Store roller in the freezer</li>
@@ -1751,7 +1703,7 @@ function MakeupRoutine() {
       </div>
 
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">🤎 Brow Lamination + Darker Brows</div>
+        <div className="ag-detail-section-title"><BodyIcon name="brow" size={17} /> Brow Lamination + Darker Brows</div>
         <p className="ag-detail-body">Brow lamination sets brows upward for 6–8 weeks. Darker brows frame the face with little daily effort.</p>
         <ul className="ag-detail-list" style={{ marginTop: 8 }}>
           <li><strong>Brow lamination:</strong> any brow salon, lasts 6–8 weeks, can be tinted darker at the same appointment</li>
@@ -1762,7 +1714,7 @@ function MakeupRoutine() {
       </div>
 
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">💋 Full, Defined Lips</div>
+        <div className="ag-detail-section-title"><BodyIcon name="lips" size={17} /> Full, Defined Lips</div>
         <ul className="ag-detail-list">
           <li><strong>Sugar scrub 2× per week:</strong> 1 tsp sugar + 1 tsp honey, 1 min, rinse</li>
           <li><strong>Overline technique:</strong> line 1 mm outside the natural lip line, focus cupid's bow and lower-lip centre</li>
@@ -1773,7 +1725,7 @@ function MakeupRoutine() {
       </div>
 
       <div className="g-card splash-item">
-        <div className="ag-detail-section-title">🌊 Glass Skin Before Makeup — The Night Before Trick</div>
+        <div className="ag-detail-section-title"><BodyIcon name="wave" size={17} /> Glass Skin Before Makeup — The Night Before Trick</div>
         <ul className="ag-detail-list">
           <li><strong>Slugging the night before:</strong> full PM skincare → wait to absorb → thin layer of CeraVe Healing Ointment or Vaseline over everything. Wake up plump; makeup lasts longer</li>
           <li><strong>Morning ice water dunk:</strong> ice water, face in for 10 seconds, 3× — less puffiness</li>
@@ -1800,23 +1752,36 @@ function resolveInitial(initialTab) {
 // you open most days, the right column the ones you open when something needs
 // doing. Grouping them that way means the common four are always in the same
 // place under your thumb.
-const TOP_TABS_LEFT = [
-  { id: 'face',      label: '💆 Face' },
-  { id: 'hair',      label: '💇 Hair' },
-  { id: 'teeth',     label: '🦷 Teeth' },
-  { id: 'body',      label: '🫧 Body' },
-];
-const TOP_TABS_RIGHT = [
-  { id: 'retinoid',  label: '✨ Retinoid' },
-  { id: 'antiaging', label: '🌿 Anti-Aging' },
-  { id: 'underarm',  label: '🌟 Underarm' },
-  { id: 'makeup',    label: '💄 Makeup' },
+// Since 2026-10-26: one grid of eight drawn tiles, the four daily ones on
+// the top row and the rest below.
+const TOP_TABS = [
+  { id: 'face',      label: 'Face',       icon: 'face' },
+  { id: 'hair',      label: 'Hair',       icon: 'hair' },
+  { id: 'teeth',     label: 'Teeth',      icon: 'tooth' },
+  { id: 'body',      label: 'Body',       icon: 'bubbles' },
+  { id: 'retinoid',  label: 'Retinoid',   icon: 'dropper' },
+  { id: 'antiaging', label: 'Anti-Aging', icon: 'hourglass' },
+  { id: 'underarm',  label: 'Underarm',   icon: 'spray' },
+  { id: 'makeup',    label: 'Makeup',     icon: 'lipstick' },
 ];
 
 const AM_PM_SUBS = [
-  { id: 'morning', label: '☀️ Morning' },
-  { id: 'evening', label: '🌙 Evening' },
+  { id: 'morning', label: 'Morning', icon: 'sun' },
+  { id: 'evening', label: 'Evening', icon: 'moon' },
 ];
+
+// Morning / Evening and the like, each with its drawing.
+function SubTabs({ tabs, value, onChange }) {
+  return (
+    <div className="sk-tabs splash-item">
+      {tabs.map(t => (
+        <button key={t.id} className={`sk-tab${value === t.id ? ' active' : ''}`} onClick={() => onChange(t.id)}>
+          <BodyIcon name={t.icon} size={17} /> {t.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function Skincare({ initialTab }) {
   const init = resolveInitial(initialTab);
@@ -1841,34 +1806,20 @@ export default function Skincare({ initialTab }) {
       <div className="s-header">
         <div className="s-tag">Your Complete Body Protocol</div>
         <h2 className="s-title">Body <em>Care</em></h2>
-        <p className="s-desc">Face · Body · Hair · Makeup · Teeth · Underarm — everything in one place.</p>
       </div>
 
-      <div className="note-box note-gold splash-item" style={{ marginBottom: 20 }}>
-        🛍 <strong>Where to buy:</strong> Products are available in the Philippines on <strong>Shopee</strong>, <strong>Lazada</strong>, and <strong>Watsons</strong>. Search the exact names. Most are under ₱500–₱1,200.
-      </div>
-
-      <div className="sk-top-tabs splash-item">
-        {[TOP_TABS_LEFT, TOP_TABS_RIGHT].map((col, ci) => (
-          <div key={ci} className="sk-top-col">
-            {col.map(t => (
-              <button key={t.id} className={`sk-top-tab${topTab === t.id ? ' active' : ''}`} onClick={() => switchTop(t.id)}>
-                {t.label}
-              </button>
-            ))}
-          </div>
+      <div className="bk-tiles splash-item">
+        {TOP_TABS.map(t => (
+          <button key={t.id} className={`bk-tile${topTab === t.id ? ' active' : ''}`} onClick={() => switchTop(t.id)} aria-pressed={topTab === t.id}>
+            <BodyIcon name={t.icon} size={26} />
+            <span>{t.label}</span>
+          </button>
         ))}
       </div>
 
       {topTab === 'face' && (
         <>
-          <div className="sk-tabs splash-item">
-            {AM_PM_SUBS.map(s => (
-              <button key={s.id} className={`sk-tab${faceSub === s.id ? ' active' : ''}`} onClick={() => setFaceSub(s.id)}>
-                {s.label}
-              </button>
-            ))}
-          </div>
+          <SubTabs tabs={AM_PM_SUBS} value={faceSub} onChange={setFaceSub} />
           {faceSub === 'morning' && <AMFace />}
           {faceSub === 'evening' && <PMFace />}
         </>
@@ -1876,13 +1827,7 @@ export default function Skincare({ initialTab }) {
 
       {topTab === 'body' && (
         <>
-          <div className="sk-tabs splash-item">
-            {AM_PM_SUBS.map(s => (
-              <button key={s.id} className={`sk-tab${bodySub === s.id ? ' active' : ''}`} onClick={() => setBodySub(s.id)}>
-                {s.label}
-              </button>
-            ))}
-          </div>
+          <SubTabs tabs={AM_PM_SUBS} value={bodySub} onChange={setBodySub} />
           {bodySub === 'morning' && <BodyMorning />}
           {bodySub === 'evening' && <BodyEvening />}
         </>
