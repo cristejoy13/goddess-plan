@@ -12464,3 +12464,83 @@ body.gp-dragging { overscroll-behavior: none; }
   .topbar-sections { gap: 2px; }
   .topbar-sec-btn { padding: 6px 7px; font-size: 10px; }
 }
+
+/* ── Body, made easier to read (2026-10-27) ──
+   Today stands out in every week, All/Mine is a glowing button, products
+   carry a bottle drawing, titles look like titles and how-to lines look like
+   instructions. */
+
+/* Today in the Face week: a solid pink tile with a "Today" tag. Saturday's
+   extra keeps only its small gold label, so nothing else competes. */
+.tx-day.tx-addon { border-color: var(--border-g); background: var(--card); }
+.tx-day.tx-today {
+  position: relative; border: 2px solid #ff5c9d; background: linear-gradient(160deg, #d41f76, #a8105c);
+  box-shadow: 0 0 0 3px rgba(255,92,157,0.25), 0 6px 18px rgba(255,92,157,0.45); transform: translateY(-3px); z-index: 1;
+}
+.tx-day.tx-today .tx-day-label, .tx-day.tx-today .tx-item, .tx-day.tx-today .tx-badge, .tx-day.tx-today .tx-warn { color: #fff; opacity: 1; }
+.tx-day.tx-today .tx-addon-badge { color: #3a2400; background: #ffd66b; border-color: #ffd66b; }
+.tx-today-tag { align-self: center; padding: 1px 6px; border-radius: 999px; background: #fff; color: #b0105e; font-size: 8px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; }
+.tx-cal-grid { padding-top: 4px; }
+[data-mode="light"] .tx-day.tx-today { border-color: #c8176e; background: linear-gradient(160deg, #d41f76, #a8105c); box-shadow: 0 0 0 3px rgba(200,23,110,0.18), 0 6px 16px rgba(200,23,110,0.3); }
+[data-mode="light"] .tx-day.tx-today .tx-day-label, [data-mode="light"] .tx-day.tx-today .tx-item,
+[data-mode="light"] .tx-day.tx-today .tx-badge, [data-mode="light"] .tx-day.tx-today .tx-warn { color: #fff; }
+@media (max-width: 480px) { .tx-today-tag { font-size: 6.5px; padding: 1px 4px; letter-spacing: 0.3px; } }
+
+/* Today in the dot weeks: the day name in a pink pill and its column lit. */
+.bk-week-head .is-today b { display: inline-grid; place-items: center; min-width: 26px; padding: 2px 6px; border-radius: 999px; background: #c8176e; color: #fff; font-weight: 800; }
+.bk-week-row > span.is-today:not(.bk-week-name) { background: rgba(255,92,157,0.2); }
+.bk-week-row:last-child > span.is-today:not(.bk-week-name) { border-radius: 0 0 8px 8px; }
+[data-mode="light"] .bk-week-row > span.is-today:not(.bk-week-name) { background: rgba(200,23,110,0.12); }
+
+/* All products / Only mine: a glowing rectangle that is hard to miss. */
+.bk-only-mine, [data-mode="light"] .bk-only-mine {
+  border-radius: 10px; border: 1.5px solid var(--gold); padding: 0 12px; min-height: 40px;
+  background: rgba(240,204,96,0.1); color: var(--gold); animation: bk-glow 2.4s ease-in-out infinite;
+}
+.bk-only-mine.is-on { background: linear-gradient(135deg, #ffd66b, #f0b429); color: #2a1a00; border-color: #ffd66b; }
+[data-mode="light"] .bk-only-mine { color: #7a5000; border-color: #b07a00; background: rgba(240,180,41,0.14); }
+[data-mode="light"] .bk-only-mine.is-on { background: linear-gradient(135deg, #f0b429, #d99a10); color: #2a1a00; border-color: #b07a00; }
+@keyframes bk-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(240,204,96,0.0), 0 0 8px rgba(240,204,96,0.25); } 50% { box-shadow: 0 0 0 3px rgba(240,204,96,0.18), 0 0 18px rgba(240,204,96,0.5); } }
+@media (prefers-reduced-motion: reduce) { .bk-only-mine { animation: none; box-shadow: 0 0 12px rgba(240,204,96,0.4); } }
+@media (max-width: 400px) { .bk-page-head { grid-template-columns: auto 1fr auto; } .bk-page-title { justify-content: center; } }
+/* Mine hides what she can't own: plain product lists and the retinol pick. */
+.bk-mine .prod-item, .bk-mine .my-retinol, .bk-mine .tool-card { display: none; }
+
+/* A product: bottle drawing, brand over name, best pick or "or" on the right. */
+.pc-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.pc-ico { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px;
+  background: color-mix(in srgb, var(--brand, var(--gold)) 22%, transparent); color: color-mix(in srgb, var(--brand, var(--gold)) 60%, #ffffff); }
+.pc-title { flex: 1; min-width: 0; }
+.pc-title .pc-name { margin-bottom: 0; font-size: 15px; font-weight: 700; }
+.pc-top .pc-star { flex: none; margin: 0; font-weight: 700; white-space: nowrap; }
+.pc-why { padding-left: 10px; border-left: 2px solid rgba(255,92,157,0.35); color: var(--text-mid); }
+.pc-find { padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); margin-top: 10px; }
+[data-mode="light"] .pc-ico { color: color-mix(in srgb, var(--brand, var(--gold)) 70%, #1a0a28); background: color-mix(in srgb, var(--brand, var(--gold)) 14%, #ffffff); }
+[data-mode="light"] .pc-why { border-left-color: rgba(200,23,110,0.35); }
+[data-mode="light"] .pc-find { border-top-color: rgba(120,60,100,0.15); }
+
+/* Plain product lines: a diamond bullet before the name, a squared day tag. */
+.prod-badge { border-radius: 8px; height: auto; min-height: 24px; padding: 3px 8px; font-size: 10.5px; white-space: nowrap; }
+.prod-name { display: flex; gap: 7px; font-weight: 700; }
+.prod-name::before { content: ''; flex: none; width: 7px; height: 7px; margin-top: 6px; background: var(--rose); transform: rotate(45deg); border-radius: 1px; }
+.prod-why { padding-left: 14px; }
+[data-mode="light"] .prod-name::before { background: #c8176e; }
+
+/* A step's title: a pink tag over a big bold name with a gold underline. */
+.rs-cat { display: inline-block; padding: 3px 9px; border-radius: 6px; background: rgba(255,92,157,0.14); color: var(--rose); font-size: 9.5px; font-weight: 800; letter-spacing: 1.2px; margin-bottom: 4px; }
+.rs-name { font-size: 21px; font-weight: 700; line-height: 1.15; }
+.rs-name::after { content: ''; display: block; width: 44px; height: 2.5px; margin-top: 5px; border-radius: 2px; background: linear-gradient(90deg, var(--gold), transparent); }
+[data-mode="light"] .rs-cat { background: rgba(200,23,110,0.1); color: #a8105c; }
+
+/* A how-to line: a soft gold box with a bulb, in italics. Clearly advice. */
+.step-note, [data-mode="light"] .step-note {
+  justify-content: flex-start; text-align: left; margin-top: 12px; padding: 10px 12px; border: 0; border-left: 3px solid var(--gold);
+  border-radius: 10px; background: rgba(240,204,96,0.09); color: var(--text); font-style: italic;
+}
+[data-mode="light"] .step-note { border-left-color: #b07a00; background: rgba(240,180,41,0.12); color: #3a1030; }
+
+/* Section names ("Your week", "Good to know"): a pill on the line. */
+.bk-tips-line > span, .tx-cal-title { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px;
+  background: rgba(255,92,157,0.14); color: var(--rose); font-size: 11.5px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; font-family: inherit; }
+.tx-cal-title { display: flex; width: fit-content; margin: 0 auto 10px; }
+[data-mode="light"] .bk-tips-line > span, [data-mode="light"] .tx-cal-title { background: rgba(200,23,110,0.1); color: #a8105c; }

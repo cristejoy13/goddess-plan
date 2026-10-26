@@ -1,7 +1,7 @@
 // Her shelf (2026-10-26): which Body products she owns, which are running
 // low, and whether to hide the ones she doesn't own. Saved in gp_body_shelf
 // and synced, so every gadget shows the same shelf.
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { Children, createContext, isValidElement, useCallback, useContext, useEffect, useState } from 'react';
 
 const SHELF_KEY = 'gp_body_shelf';
 const NOTEBOOK_KEY = 'gp_daily_notebook';
@@ -87,3 +87,30 @@ export function useShelf() {
 
 export const ShelfContext = createContext(null);
 export const useShelfContext = () => useContext(ShelfContext);
+
+// For "Mine": does a step hold products, and is any of them hers? A product
+// is a card with a brand and a name, or a plain product line (prod-item),
+// which she can't mark, so it never counts as hers.
+export function shelfStatus(children, owned) {
+  let products = 0, mine = 0;
+  const walk = kids => Children.forEach(kids, el => {
+    if (!isValidElement(el)) return;
+    const p = el.props || {};
+    if (typeof p.brand === 'string' && typeof p.name === 'string') {
+      products++;
+      if (owned[productKey(p.brand, p.name)]) mine++;
+      return;
+    }
+    if (typeof p.className === 'string' && /\bprod-item\b/.test(p.className)) { products++; return; }
+    if (p.children) walk(p.children);
+  });
+  walk(children);
+  return { products, mine };
+}
+
+// In "Mine", a step full of products she doesn't own is left out.
+export function hiddenInMine(children, shelf) {
+  if (!shelf?.onlyMine) return false;
+  const { products, mine } = shelfStatus(children, shelf.owned);
+  return products > 0 && mine === 0;
+}

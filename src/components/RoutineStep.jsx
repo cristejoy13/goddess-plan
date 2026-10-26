@@ -1,14 +1,18 @@
 import { useState } from 'react';
+import { hiddenInMine, useShelfContext } from '../utils/bodyShelf';
 
 export default function RoutineStep({ num, cat, name, children, open: controlledOpen, onToggle, flow = false }) {
   const isControlled = controlledOpen !== undefined;
   const [internal, setInternal] = useState(false);
   const open = isControlled ? controlledOpen : internal;
+  const shelf = useShelfContext();
 
   function handleToggle() {
     if (isControlled) onToggle?.();
     else setInternal(o => !o);
   }
+
+  if (hiddenInMine(children, shelf)) return null;
 
   // Inside a StepFlow there is nothing to open — this IS the step you are on —
   // so the trigger becomes a plain heading and the body is simply there.

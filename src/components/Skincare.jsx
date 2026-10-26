@@ -74,11 +74,16 @@ function ProductCard({ brand, name, badges = [], why, primary = false }) {
     <div className={`product-card${primary ? ' primary' : ''}`}>
       <div className="pc-band" style={{ background: color }} />
       <div className="pc-body">
-        <span className={`pc-star ${primary ? 'primary' : 'alt'}`}>
-          {primary ? 'Recommended' : 'Alternative'}
-        </span>
-        <div className="pc-brand" style={{ '--brand': color }}>{brand}</div>
-        <div className="pc-name">{name}</div>
+        <div className="pc-top">
+          <span className="pc-ico" style={{ '--brand': color }}><BodyIcon name="bottle" size={20} /></span>
+          <div className="pc-title">
+            <div className="pc-brand" style={{ '--brand': color }}>{brand}</div>
+            <div className="pc-name">{name}</div>
+          </div>
+          <span className={`pc-star ${primary ? 'primary' : 'alt'}`}>
+            {primary ? '★ Best pick' : 'Or'}
+          </span>
+        </div>
         {badges.length > 0 && (
           <div className="pc-badges">{badges.map((b, i) => <span key={i} className="pc-badge">{b}</span>)}</div>
         )}
@@ -134,6 +139,7 @@ function AMCalendar() {
       <div className="tx-cal-grid">
         {AM_DAYS.map((d, i) => (
           <div key={d.day} className={`tx-day${i === todayIdx ? ' tx-today' : ''}${d.addOn ? ' tx-addon' : ''}`}>
+            {i === todayIdx && <div className="tx-today-tag">Today</div>}
             <div className="tx-day-label">{d.day}</div>
             <div className="tx-section">
               <div className="tx-badge">AM</div>
@@ -155,6 +161,7 @@ function PMCalendar() {
       <div className="tx-cal-grid">
         {PM_DAYS.map((d, i) => (
           <div key={d.day} className={`tx-day${i === todayIdx ? ' tx-today' : ''}${d.addOn ? ' tx-addon' : ''}`}>
+            {i === todayIdx && <div className="tx-today-tag">Today</div>}
             <div className="tx-day-label">{d.day}</div>
             <div className="tx-section">
               <div className="tx-badge pm">PM</div>
@@ -1911,7 +1918,7 @@ export default function Skincare({ initialTab, pushBack, clearInnerBack }) {
 
   return (
     <ShelfContext.Provider value={shelf}>
-    <div className="section">
+    <div className={`section${shelfHere && shelf.onlyMine ? ' bk-mine' : ''}`}>
       <div className="bk-page-head">
         <button type="button" className="bk-back" onClick={goHome} aria-label="Back to Body">‹ Body</button>
         <h2 className="bk-page-title"><BodyIcon name={tab?.icon} size={24} /> {tab?.label}</h2>
@@ -1923,7 +1930,7 @@ export default function Skincare({ initialTab, pushBack, clearInnerBack }) {
             aria-pressed={shelf.onlyMine}
             title={shelf.onlyMine ? 'Show all products' : 'Hide products you don’t have'}
           >
-            <span>{shelf.onlyMine ? 'Mine' : 'All'}</span>
+            <span>{shelf.onlyMine ? 'Only mine' : 'All products'}</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d={shelf.onlyMine ? 'M6 9l6 6 6-6' : 'M6 15l6-6 6 6'} />
             </svg>
@@ -1931,7 +1938,7 @@ export default function Skincare({ initialTab, pushBack, clearInnerBack }) {
         ) : <span className="bk-page-spacer" />}
       </div>
       {shelfHere && shelf.onlyMine && !ownsAny && (
-        <p className="bk-shelf-empty">Click “I have it” on a product to keep it here.</p>
+        <p className="bk-shelf-empty">You haven’t picked any yet. Switch to <b>All products</b> and click “I have it”.</p>
       )}
 
       {topTab === 'face' && (

@@ -1,4 +1,5 @@
 import { useState, Children, isValidElement, cloneElement } from 'react';
+import { hiddenInMine, useShelfContext } from '../utils/bodyShelf';
 
 // One step at a time, instead of a stack of drop-downs.
 //
@@ -10,9 +11,13 @@ import { useState, Children, isValidElement, cloneElement } from 'react';
 // so a screen already written as a run of steps becomes a flow by being
 // wrapped — no rewriting of the steps themselves.
 export default function StepFlow({ children }) {
-  const steps = Children.toArray(children).filter(isValidElement);
+  const shelf = useShelfContext();
+  // In "Mine", steps with none of her products drop out of the flow.
+  const steps = Children.toArray(children).filter(isValidElement).filter(s => !hiddenInMine(s.props.children, shelf));
   const [i, setI] = useState(0);
-  if (steps.length === 0) return null;
+  if (steps.length === 0) {
+    return shelf?.onlyMine ? <p className="bk-shelf-empty">None of your products here yet. Switch to <b>All</b> and click “I have it”.</p> : null;
+  }
 
   // Clamped rather than stored blindly: the step list can be shorter after a
   // tab switch, and an index left pointing past the end would render nothing.

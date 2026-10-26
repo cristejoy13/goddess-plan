@@ -102,7 +102,7 @@ export function WeekGrid({ title = 'Your week', rows }) {
       <div className="bk-week" role="table" aria-label={title}>
         <div className="bk-week-row bk-week-head" role="row">
           <span role="columnheader" />
-          {WEEK.map((d, i) => <span key={d} role="columnheader" className={i === today ? 'is-today' : undefined}>{d}</span>)}
+          {WEEK.map((d, i) => <span key={d} role="columnheader" className={i === today ? 'is-today' : undefined}>{i === today ? <b>{d}</b> : d}</span>)}
         </div>
         {rows.map(r => (
           <div key={r.label} className="bk-week-row" role="row">
