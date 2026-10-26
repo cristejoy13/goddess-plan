@@ -20,5 +20,17 @@ t('logged end sets period length', periodLength({ ...one, ends: { '2026-10-01': 
 t('after a logged end: follicular', today({ ...one, ends: { '2026-10-01': '2026-10-03' } }, '2026-10-04').phase, 'follicular');
 t('late: still luteal', today(one, '2026-11-02').late, true);
 t('phases of 28/5', phaseBounds(28, 5).map(p => [p.from, p.to]), [[1, 5], [6, 12], [13, 15], [16, 28]]);
+// Birth control
+const pack = { ...one, method: 'combined' };
+t('pack day 1 is active', today(pack, '2026-10-01').phase, 'active');
+t('pack day 22 is break', today(pack, '2026-10-22').phase, 'break');
+t('break in 6 days on day 16', today(pack, '2026-10-16').breakIn, 6);
+t('next pack rolls on by itself', today(pack, '2026-10-30').day, 2);
+t('no break: day 25 still active', today({ ...pack, noBreak: true }, '2026-10-25').phase, 'active');
+t('steady with nothing logged', today({ ...empty, method: 'implant' }, '2026-10-26').phase, 'steady');
+t('steady counts days since a bleed', today({ ...one, method: 'injection' }, '2026-10-10').day, 10);
+t('mini-pill phases are maybe', today({ ...one, method: 'minipill' }, '2026-10-26').maybe, true);
+t('copper keeps her own phases', today({ ...one, method: 'copper' }, '2026-10-14').phase, 'ovulation');
+t('unknown method falls back to natural', today({ ...one, method: 'x' }, '2026-10-14').kind, 'natural');
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

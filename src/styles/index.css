@@ -12544,3 +12544,29 @@ body.gp-dragging { overscroll-behavior: none; }
   background: rgba(255,92,157,0.14); color: var(--rose); font-size: 11.5px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; font-family: inherit; }
 .tx-cal-title { display: flex; width: fit-content; margin: 0 auto 10px; }
 [data-mode="light"] .bk-tips-line > span, [data-mode="light"] .tx-cal-title { background: rgba(200,23,110,0.1); color: #a8105c; }
+
+/* Cycle: birth control (2026-10-27). One button per kind; the chosen one
+   is filled. A switch row under it for the pill's options. */
+.cy-method { margin: 0 0 14px; padding: 14px; border-radius: 18px; background: rgba(255,92,157,0.05); border: 1px solid rgba(255,92,157,0.2); }
+.cy-method-title { display: block; width: fit-content; margin: 0 auto 10px; padding: 5px 12px; border-radius: 999px; background: rgba(255,92,157,0.14); color: var(--rose); font-size: 11.5px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+.cy-method-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.cy-chip { min-height: 38px; padding: 0 13px; border-radius: 10px; border: 1px solid var(--border-r); background: transparent; color: var(--text); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.cy-chip.is-on { background: linear-gradient(135deg, #d41f76, #a8105c); border-color: #d41f76; color: #fff; box-shadow: 0 0 12px rgba(255,92,157,0.35); }
+.cy-method-opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(255,92,157,0.25); }
+.cy-switch { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; }
+.cy-switch input { width: 20px; height: 20px; accent-color: #d41f76; }
+.cy-today-word { font-size: 36px; }
+.cy-today-note { max-width: 420px; margin: 10px auto 0; padding: 8px 12px; border-left: 3px solid var(--gold); border-radius: 10px; background: rgba(240,204,96,0.09); font-size: 12.5px; font-style: italic; line-height: 1.45; color: var(--text); text-align: left; }
+.cy-today-btns { flex-wrap: wrap; gap: 8px; }
+.cy-pill.is-on { background: rgba(47,179,138,0.18); border-color: #2fb38a; color: var(--text); }
+.cy-line-pill { stroke: #ff5c9d; stroke-width: 3; }
+.cy-key-pill { background: #ff5c9d; }
+.cy-chart-note { margin: -6px 0 12px; }
+[data-mode="light"] .cy-method { background: rgba(255,255,255,0.8); border-color: rgba(200,23,110,0.2); }
+[data-mode="light"] .cy-method-title { background: rgba(200,23,110,0.1); color: #a8105c; }
+[data-mode="light"] .cy-chip { color: #3a1030; border-color: rgba(200,23,110,0.3); }
+[data-mode="light"] .cy-chip.is-on { color: #fff; }
+[data-mode="light"] .cy-switch { color: #3a1030; }
+[data-mode="light"] .cy-today-note { border-left-color: #b07a00; background: rgba(240,180,41,0.12); color: #3a1030; }
+[data-mode="light"] .cy-pill.is-on { background: rgba(31,138,104,0.12); border-color: #1f8a68; color: #3a1030; }
+[data-mode="light"] .cy-line-pill { stroke: #c8176e; } [data-mode="light"] .cy-key-pill { background: #c8176e; }

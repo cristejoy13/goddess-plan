@@ -1905,8 +1905,8 @@ function TodayPlan({ today, onCycle }) {
       {cyc && (
         <button type="button" className="home-cycle" style={{ '--ph': cyc.color }} onClick={onCycle}>
           <span className="home-cycle-dot" aria-hidden="true" />
-          <span className="home-cycle-name">{cyc.name} phase</span>
-          <span className="home-cycle-day">Day {cyc.day}</span>
+          <span className="home-cycle-name">{cyc.label}</span>
+          <span className="home-cycle-day">{cyc.sub}</span>
           <span className="home-cycle-go" aria-hidden="true">›</span>
         </button>
       )}

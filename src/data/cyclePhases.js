@@ -77,3 +77,87 @@ export const PHASES = {
 };
 
 export const PHASE_ORDER = ['period', 'follicular', 'ovulation', 'luteal'];
+
+// Birth control (2026-10-27): which kind she uses changes what Cycle shows.
+//   natural: her own phases, as above.
+//   pack:    the combined pill, patch or ring: no ovulation; active days,
+//            then a break week with a withdrawal bleed.
+//   maybe:   the mini-pill or hormone coil: ovulation may or may not
+//            happen, so the phases are shown as "maybe".
+//   steady:  the implant or injection: ovulation is usually stopped, so
+//            there are no monthly phases.
+// Copper has no hormones, so her own cycle carries on.
+export const METHODS = {
+  natural:   { label: 'Natural',                     kind: 'natural' },
+  combined:  { label: 'Combined pill, patch or ring', kind: 'pack', pill: true },
+  minipill:  { label: 'Mini-pill',                   kind: 'maybe', pill: true,
+    note: 'On the mini-pill your cycle may or may not run. Bleeding can be lighter, irregular or stop.' },
+  hcoil:     { label: 'Hormone coil',                kind: 'maybe',
+    note: 'With a hormone coil you may still ovulate. Periods often get lighter or stop.' },
+  implant:   { label: 'Implant',                     kind: 'steady' },
+  injection: { label: 'Injection',                   kind: 'steady' },
+  copper:    { label: 'Copper coil',                 kind: 'natural',
+    note: 'No hormones, so your own cycle runs. Periods can be heavier and longer, so iron foods matter more.' },
+};
+export const METHOD_ORDER = ['natural', 'combined', 'minipill', 'hcoil', 'implant', 'injection', 'copper'];
+
+const PILL_FOODS = [
+  ['Malunggay, spinach, mongo beans', 'folate, which the pill lowers'],
+  ['Eggs, sardines, salmon', 'B12 and omega-3'],
+  ['Pumpkin seeds, dark chocolate', 'magnesium and zinc, also lowered'],
+  ['Banana, kamote', 'B6 for mood'],
+  ['Guava, calamansi, papaya', 'vitamin C'],
+];
+
+export const METHOD_PHASES = {
+  active: {
+    name: 'Active pills',
+    full: 'Active pill days',
+    color: '#d63a7f',
+    expect: 'The pill gives a steady dose and switches off ovulation. No big ups and downs this month.',
+    mood: 'Usually steady. Some feel flatter or more sensitive in the first 3 months.',
+    energy: 'Even through the month.',
+    workout: ['Heavy lifting', 'Glutes and legs', 'HIIT', 'Pilates'],
+    foods: PILL_FOODS,
+    skin: 'Often clearer and steadier.',
+  },
+  break: {
+    name: 'Break week',
+    full: 'Break week',
+    color: '#e5484d',
+    expect: 'No hormones this week, so a light bleed comes. It is a withdrawal bleed, not a true period.',
+    mood: 'Some feel low or get a headache for a day or two.',
+    energy: 'Can dip a little.',
+    workout: ['Walking', 'Pilates', 'Moderate strength', 'Stretching'],
+    foods: [
+      ['Beef, liver or sardines', 'iron you are losing'],
+      ['Malunggay or spinach + calamansi', 'iron, and vitamin C to absorb it'],
+      ['Ginger tea', 'cramps and headaches'],
+      ['Water, buko juice', 'headaches and bloating'],
+    ],
+    skin: 'Small breakouts can show. Keep it gentle.',
+  },
+  steady: {
+    name: 'Steady',
+    full: 'Steady hormones',
+    color: '#5b8def',
+    expect: 'Ovulation is usually stopped, so there are no monthly phases. Bleeding can come at any time, get lighter, or stop.',
+    mood: 'Usually steady. If low mood lasts for weeks, tell your doctor.',
+    energy: 'Even, day to day.',
+    workout: ['Heavy lifting', 'Glutes and legs', 'HIIT', 'Pilates'],
+    foods: [
+      ['Eggs, salmon, chicken', 'protein for muscle'],
+      ['Dark leafy greens', 'magnesium and folate'],
+      ['Beef, mongo beans + calamansi', 'iron for spotting days'],
+      ['Pumpkin seeds', 'zinc and magnesium'],
+    ],
+    skin: 'Some get more breakouts. BHA nights help.',
+  },
+};
+
+// The injection can thin bones over time, so calcium is added for it
+// (no dairy, her own rule).
+export const INJECTION_FOODS = [
+  ['Sardines with bones, dilis', 'calcium for bones'],
+  ['Tofu, malunggay, pechay', 'calcium without dairy'],
+];

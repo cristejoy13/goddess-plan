@@ -5,9 +5,15 @@
 //   { starts: ['2026-10-01', ...],      first day of each period
 //     ends: { '2026-10-01': '2026-10-05' },  last day, by start
 //     cycleLen: 29 | null,               her usual cycle, if she typed one
-//     periodLen: 5 | null }              her usual period, if she typed one
+//     periodLen: 5 | null,               her usual period, if she typed one
+//     method: 'natural' | 'combined' | …  her birth control (METHODS)
+//     noBreak: false,                    combined, taken without a break week
+//     pillTick: false,                   show the optional daily pill tick
+//     pills: { '2026-10-27': true } }    days the pill was ticked
+//
+// On the combined pill, starts are the first day of each pack instead.
 
-import { PHASES } from '../data/cyclePhases.js';
+import { PHASES, METHODS, METHOD_PHASES } from '../data/cyclePhases.js';
 
 export const CYCLE_KEY = 'gp_cycle';
 const DAY = 24 * 60 * 60 * 1000;
@@ -21,11 +27,18 @@ export function loadCycle() {
         ends: v.ends && typeof v.ends === 'object' ? v.ends : {},
         cycleLen: okLen(v.cycleLen, 21, 45),
         periodLen: okLen(v.periodLen, 2, 10),
+        method: METHODS[v.method] ? v.method : 'natural',
+        noBreak: Boolean(v.noBreak),
+        pillTick: Boolean(v.pillTick),
+        pills: v.pills && typeof v.pills === 'object' ? v.pills : {},
       };
     }
   } catch { /* start empty */ }
-  return { starts: [], ends: {}, cycleLen: null, periodLen: null };
+  return { starts: [], ends: {}, cycleLen: null, periodLen: null, method: 'natural', noBreak: false, pillTick: false, pills: {} };
 }
+
+export const methodOf = c => METHODS[c?.method] || METHODS.natural;
+export const PACK = 28, ACTIVE = 21;
 
 export function saveCycle(v) {
   try { localStorage.setItem(CYCLE_KEY, JSON.stringify(v)); } catch { /* kept for this visit */ }
@@ -80,10 +93,28 @@ export function phaseOf(day, len, plen) {
   return (b.find(p => day >= p.from && day <= p.to) || b[b.length - 1]).id;
 }
 
-// Where she is today, or null when no period has been entered yet.
+// Where she is today, or null when nothing has been entered yet. The kind
+// of birth control decides the answer (see METHODS).
 export function today(c, now = dayKey()) {
+  const kind = methodOf(c).kind;
   const last = [...c.starts].filter(s => s <= now).pop();
+  if (kind === 'steady') {
+    // No phases: just how long since the last bleed, if one was logged.
+    const day = last ? daysBetween(last, now) + 1 : null;
+    const endDay = last && c.ends[last] ? daysBetween(last, c.ends[last]) + 1 : periodLength(c);
+    return { kind, last, day, phase: 'steady', bleeding: Boolean(last) && day <= endDay, ended: Boolean(last && c.ends[last]) };
+  }
   if (!last) return null;
+  if (kind === 'pack') {
+    // Packs follow on every 28 days, even when a new one isn't logged.
+    const day = (daysBetween(last, now) % PACK) + 1;
+    const inBreak = !c.noBreak && day > ACTIVE;
+    return {
+      kind, last, day, len: PACK, phase: inBreak ? 'break' : 'active', bleeding: inBreak, ended: true,
+      breakIn: c.noBreak || inBreak ? null : ACTIVE + 1 - day,
+      packIn: PACK + 1 - day,
+    };
+  }
   const len = cycleLength(c);
   const plen = periodLength(c);
   const day = daysBetween(last, now) + 1;
@@ -93,11 +124,21 @@ export function today(c, now = dayKey()) {
   const next = addDays(last, len.days);
   const late = day > len.days;
   const phase = bleeding ? 'period' : late ? 'luteal' : phaseOf(day, len.days, plen) === 'period' ? 'follicular' : phaseOf(day, len.days, plen);
-  return { last, day, len: len.days, lenFrom: len.from, plen, phase, next, inDays: daysBetween(now, next), late, bleeding, ended: Boolean(c.ends[last]) };
+  return { kind, maybe: kind === 'maybe', last, day, len: len.days, lenFrom: len.from, plen, phase, next, inDays: daysBetween(now, next), late, bleeding, ended: Boolean(c.ends[last]) };
 }
 
-// For Home: the phase she is in today, or null before any period is entered.
+export const phaseInfo = id => PHASES[id] || METHOD_PHASES[id];
+
+// For Home: where she is today, worded for her kind of birth control, or
+// null before anything is entered.
 export function cycleToday() {
-  const now = today(loadCycle());
-  return now && { ...now, name: PHASES[now.phase].name, color: PHASES[now.phase].color };
+  const c = loadCycle();
+  const now = today(c);
+  if (!now) return null;
+  const p = phaseInfo(now.phase);
+  const label = now.kind === 'steady' ? methodOf(c).label
+    : now.kind === 'pack' ? p.name
+    : `${p.name} phase${now.maybe ? ' · maybe' : ''}`;
+  const sub = now.kind === 'steady' ? 'Steady' : now.kind === 'pack' ? `Pill day ${now.day}` : `Day ${now.day}`;
+  return { ...now, name: p.name, color: p.color, label, sub };
 }
