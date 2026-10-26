@@ -29,6 +29,17 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.owner == request.auth.uid;
     }
 
+    // DareZero: ready-made trackers people saved from their sheets and documents (2026-10-27).
+    // Only the shape is saved (columns, headings), never their rows. Anyone signed in can read
+    // them; each person can only add their own, and only delete their own.
+    match /templates/{id} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.owner == request.auth.uid
+                    && request.resource.data.shape is string && request.resource.data.shape.size() < 900000
+                    && request.resource.data.kind in ['table', 'doc'];
+      allow delete: if request.auth != null && resource.data.owner == request.auth.uid;
+    }
+
     // Biz (mybizapp.vercel.app): each person's trackers. Only that signed-in person can
     // read or write their own folder; nobody else, and nothing is public.
     match /biz/{uid}/{document=**} {
