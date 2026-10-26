@@ -3,7 +3,7 @@ import { useDictation, joinSpeech, showCursorAtEnd } from '../utils/dictation';
 import { loadGarmin, garminBurnOn } from '../utils/garmin';
 import { ideasFor, NUTRITION_NOTES, PREP_TIPS, DAY_RANGE } from '../data/mealIdeas';
 import { isOwner, readProfile } from '../utils/userPlan';
-import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, groqKeyReminder } from '../utils/mealScan';
+import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, rememberFoods, rememberOwnNumbers, groqKeyReminder } from '../utils/mealScan';
 import { ask } from '../utils/ask';
 import Camera from './Camera';
 import PhotoView from './PhotoView';
@@ -536,15 +536,18 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
   function saveScan() {
     if (!scan) return;
     const words = text.trim();
-    // Her corrected portions are what is remembered for these words, so the
-    // same meal comes back with her amounts next time.
-    if (words && !photo) {
+    // Her corrected portions, calories and totals are what is remembered for
+    // these words, so the same meal comes back with her numbers next time
+    // (with a photo too, as long as she typed or said what it was).
+    if (words) {
       const clean = scan.items.map(it => {
         const out = { ...it };
+        if (it.kcalText != null) out.own = true;
         delete out.base; delete out.countText; delete out.gramsText; delete out.kcalText;
         return out;
       });
-      remember(words, { items: clean, total: scan.total, ...(scan.missing && { missing: scan.missing }) });
+      const totals = scan.totals && Object.fromEntries(Object.entries(scan.totals).filter(([, v]) => String(v ?? '').trim() !== ''));
+      remember(words, { items: clean, total: scan.total, ...(totals && Object.keys(totals).length && { totals }), ...(scan.missing && { missing: scan.missing }) });
       rememberFoods(clean);
     }
     const { cal, ...macros } = finalTotals(scan);
@@ -561,6 +564,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
     if (!editing) { if (!scan) runScan(); return; }
     const protein = typedNum(own.protein);
     const iron = typedNum(own.iron);
+    rememberOwnNumbers(t, { cal: parseCal(own.cal), protein, iron });
     onSubmit({
       time: time || nowTime(), text: t, cal: parseCal(own.cal),
       protein: protein != null ? r1(protein) : undefined,
@@ -719,8 +723,8 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
                         <span>g</span>
                       </label>
                     )}
-                    <em className={it.source === 'ai' ? 'is-ai' : 'is-usda'} title={it.usdaName || ''}>
-                      {it.source === 'ai' ? 'AI guess' : 'USDA'}
+                    <em className={it.source === 'ai' && !it.own ? 'is-ai' : 'is-usda'} title={it.usdaName || ''}>
+                      {it.own || it.source === 'saved' ? 'Your number' : it.source === 'ai' ? 'AI guess' : 'USDA'}
                     </em>
                   </span>
                   {(typeof it.protein === 'number' || typeof it.iron === 'number') && (

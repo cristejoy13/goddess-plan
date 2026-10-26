@@ -56,7 +56,7 @@ export function reloadBehindLogo() {
     const cover = document.createElement('div');
     cover.id = 'boot-cover';
     const img = document.createElement('img');
-    img.src = '/icon-192.png'; img.alt = ''; img.width = 112; img.height = 112;
+    img.src = '/logo-splash.png'; img.alt = ''; img.width = 112; img.height = 112;
     cover.appendChild(img);
     document.body.appendChild(cover);
   }

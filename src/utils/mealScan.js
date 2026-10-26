@@ -38,10 +38,55 @@ const memKey = text => text.toLowerCase().replace(/[^a-z0-9.]+/g, ' ').trim();
 export function recall(text) {
   try {
     const all = JSON.parse(localStorage.getItem(MEMORY_KEY) || '{}');
-    return all[memKey(text)]?.result || null;
+    return all[memKey(text)]?.result || fromLog(text);
+  } catch {
+    return fromLog(text);
+  }
+}
+
+// Every meal she has saved is remembered too (2026-10-26), including ones
+// from before this memory existed: the newest saved meal with the same words
+// brings back its calories, protein, carbs, fats, fiber and iron, so the
+// same meal needs no working out next time.
+const NUMS = ['protein', 'carbs', 'fat', 'fiber', 'iron'];
+function fromLog(text) {
+  const key = memKey(String(text || ''));
+  if (!key) return null;
+  try {
+    const log = JSON.parse(localStorage.getItem('gp_meal_log') || 'null');
+    let best = null;
+    let bestAt = '';
+    for (const [day, entries] of Object.entries(log?.days || {})) {
+      for (const e of Array.isArray(entries) ? entries : []) {
+        if (typeof e?.cal !== 'number' || e.cal <= 0 || memKey(String(e.text || '')) !== key) continue;
+        const at = `${day} ${e.updatedAt || ''} ${e.time || ''}`;
+        if (at > bestAt) { best = e; bestAt = at; }
+      }
+    }
+    if (!best) return null;
+    const item = { name: best.text, kcal: best.cal, source: 'saved' };
+    NUMS.forEach(k => { if (typeof best[k] === 'number') item[k] = best[k]; });
+    return { items: [item], total: best.cal };
   } catch {
     return null;
   }
+}
+
+// A saved meal's numbers fixed by hand (2026-10-26) become the numbers this
+// meal comes back with next time.
+export function rememberOwnNumbers(text, { cal, protein, iron }) {
+  try {
+    const all = JSON.parse(localStorage.getItem(MEMORY_KEY) || '{}');
+    const key = memKey(String(text || ''));
+    const had = all[key];
+    if (!key || !had?.result) return;
+    const totals = {};
+    if (cal != null) totals.cal = String(cal);
+    if (protein != null) totals.protein = String(protein);
+    if (iron != null) totals.iron = String(iron);
+    all[key] = { result: { ...had.result, totals }, at: Date.now() };
+    localStorage.setItem(MEMORY_KEY, JSON.stringify(trimMemory(all)));
+  } catch { /* memory is a bonus */ }
 }
 
 export function remember(text, result) {
@@ -88,7 +133,8 @@ export function rememberFoods(items = []) {
     let added = false;
     items.forEach(it => {
       const key = memKey(it.name || '');
-      if (!key || all[key] || !(Number(it.kcal) > 0)) return;
+      // A food whose calories she typed herself replaces what was known.
+      if (!key || (all[key] && !it.own) || !(Number(it.kcal) > 0)) return;
       all[key] = { result: { items: [it], total: Number(it.kcal) }, at: Date.now() };
       added = true;
     });

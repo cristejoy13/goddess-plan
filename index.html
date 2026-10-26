@@ -57,7 +57,8 @@
       #boot-splash img, #boot-cover img, #boot-splash::after, #boot-cover::after {
         position: absolute; left: 50%; top: var(--boot-y, 50%); transform: translate(-50%, -50%);
       }
-      #boot-splash img, #boot-cover img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 10px 40px rgba(255,92,157,0.3); }
+      /* Her see-through lotus (2026-10-26), not the square icon: no box, no shadow. */
+      #boot-splash img, #boot-cover img { width: 112px; height: 112px; object-fit: contain; }
       /* A ring turning around the logo while the app loads (2026-10-22). */
       #boot-splash::after, #boot-cover::after {
         content: ''; width: 144px; height: 144px; box-sizing: border-box; border-radius: 50%;
@@ -67,12 +68,12 @@
       @keyframes boot-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) { #boot-splash::after, #boot-cover::after { animation-duration: 2.4s; } }
     </style>
-    <div id="root"><div id="boot-splash"><img src="/icon-192.png" alt="" width="112" height="112" /></div></div>
+    <div id="root"><div id="boot-splash"><img src="/logo-splash.png" alt="" width="112" height="112" /></div></div>
     <!-- One load only (2026-10-10). The logo stays over the app for a moment
          while the app checks for a newer version, so a new version swaps in
          behind the logo instead of the app showing and then reloading.
          src/utils/swUpdate.js lifts it; this lifts it anyway after 8 s. -->
-    <div id="boot-cover"><img src="/icon-192.png" alt="" width="112" height="112" /></div>
+    <div id="boot-cover"><img src="/logo-splash.png" alt="" width="112" height="112" /></div>
     <script>
       setTimeout(function () { var c = document.getElementById('boot-cover'); if (c && !window.__gpReloading) c.remove(); }, 8000);
     </script>

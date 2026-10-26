@@ -1777,12 +1777,21 @@ function TodayPlan({ today }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
   const [adding, setAdding] = useState(false);
-  // Hold a step (2026-10-26): it opens right there to change its words and
-  // icon, with Delete beside it.
+  // Hold a step (2026-10-26): the list turns into a picker with the held
+  // step picked. Tap others to pick them too. On top: Edit (one step picked)
+  // and Delete (all picked, asked once).
+  const [picked, setPicked] = useState(null);    // null, or a Set of ids
+  const picking = !!picked;
+  const startPicking = id => { setPicked(new Set([id])); setEditing(null); setAdding(false); };
+  const togglePick = id => setPicked(cur => {
+    const next = new Set(cur);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
   const [editing, setEditing] = useState(null);  // null, or { id, title, icon }
   const startEditing = id => {
     const it = loadPlanItems().items.find(x => x.id === id);
-    if (it) { setEditing({ id, title: it.title, icon: it.icon || '' }); setAdding(false); }
+    if (it) { setEditing({ id, title: it.title, icon: it.icon || '' }); setPicked(null); }
   };
   const [newTitle, setNewTitle] = useState('');
   const [newIcon, setNewIcon] = useState('✨');
@@ -1834,6 +1843,22 @@ function TodayPlan({ today }) {
     savePlanItems(next); setPlan(next); setEditing(null);
   }
 
+  async function deletePicked() {
+    const cur = loadPlanItems();
+    const gone = cur.items.filter(x => picked.has(x.id));
+    if (!gone.length) return;
+    const text = gone.length === 1
+      ? `Delete “${gone[0].title}” from Today’s Plan? It goes from every day, on every gadget.`
+      : `Delete these ${gone.length} steps from Today’s Plan? They go from every day, on every gadget.`;
+    if (!(await ask(text, { yes: 'Delete', danger: true }))) return;
+    const t = stampNow();
+    const fresh = loadPlanItems();
+    const deleted = { ...fresh.deleted };
+    gone.forEach(x => { deleted[x.id] = t; });
+    const next = { items: fresh.items.filter(x => !picked.has(x.id)), deleted };
+    savePlanItems(next); setPlan(next); setPicked(null);
+  }
+
   async function deleteEditing() {
     const it = loadPlanItems().items.find(x => x.id === editing?.id);
     if (!it) { setEditing(null); return; }
@@ -1851,7 +1876,7 @@ function TodayPlan({ today }) {
     const next = { ...loadPlanItems(), items: list.map((it, k) => ({ ...it, pos: k, at: t })) };
     savePlanItems(next); setPlan(next);
   }
-  const drag = useDragOrder(plan.items, saveOrder, startEditing);
+  const drag = useDragOrder(plan.items, saveOrder, startPicking);
 
   const items = drag.items;
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
@@ -1867,7 +1892,7 @@ function TodayPlan({ today }) {
           <button
             type="button"
             className={`home-plan-edit${adding ? ' on' : ''}`}
-            onClick={() => { setAdding(a => !a); setEditing(null); }}
+            onClick={() => { setAdding(a => !a); setEditing(null); setPicked(null); }}
             aria-expanded={adding}
             aria-label={adding ? 'Close' : 'Add a step'}
             title={adding ? 'Close' : 'Add a step'}
@@ -1884,7 +1909,14 @@ function TodayPlan({ today }) {
       <div className="home-plan-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Done today">
         <span style={{ width: `${pct}%` }} />
       </div>
-      <ul className="home-plan-list">
+      {picking && (
+        <div className="home-plan-pickbar">
+          <button type="button" onClick={() => setPicked(null)}>Cancel</button>
+          <button type="button" onClick={() => startEditing([...picked][0])} disabled={picked.size !== 1}>✎ Edit</button>
+          <button type="button" className="home-plan-del" onClick={deletePicked} disabled={!picked.size}>Delete {picked.size || ''}</button>
+        </div>
+      )}
+      <ul className={`home-plan-list${picking ? ' is-picking' : ''}`}>
         {items.map(it => (editing?.id === it.id ? (
           <li key={it.id} ref={el => drag.register(it.id, el)}>
             <form className="home-plan-editrow" onSubmit={saveEdit}>
@@ -1910,13 +1942,18 @@ function TodayPlan({ today }) {
             key={it.id}
             ref={el => drag.register(it.id, el)}
             className={drag.draggingId === it.id ? 'is-dragging' : undefined}
-            {...(editing ? {} : drag.handlers(it.id))}
+            {...(editing || picking ? {} : drag.handlers(it.id))}
           >
             <button
               type="button"
-              className={`home-plan-item${isChecked(it.id) ? ' is-done' : ''}`}
-              onClick={() => { if (drag.justDropped()) return; if (editing) { setEditing(null); return; } toggle(it.id); }}
-              aria-pressed={isChecked(it.id)}
+              className={`home-plan-item${picking ? (picked.has(it.id) ? ' is-picked' : '') : isChecked(it.id) ? ' is-done' : ''}`}
+              onClick={() => {
+                if (drag.justDropped()) return;
+                if (editing) { setEditing(null); return; }
+                if (picking) togglePick(it.id); else toggle(it.id);
+              }}
+              aria-pressed={picking ? picked.has(it.id) : isChecked(it.id)}
+              aria-label={picking ? `Pick ${it.title}` : undefined}
             >
               <span className="home-plan-ring" aria-hidden="true" />
               <span className="home-plan-name">{it.title}</span>

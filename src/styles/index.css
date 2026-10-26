@@ -12186,3 +12186,8 @@ body.gp-dragging { overscroll-behavior: none; }
 .nb-rich ul[data-todo] > li[data-done] { color: var(--text-mid); text-decoration: line-through; }
 [data-mode="light"] .nb-rich ul[data-todo] > li::before { border-color: #9a6800; }
 [data-mode="light"] .nb-rich ul[data-todo] > li[data-done]::before { background: #c8176e; border-color: #c8176e; }
+
+/* Hold a step: Cancel, Edit (one picked) and Delete on top (2026-10-26). */
+.home-plan-pickbar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.home-plan-pickbar button:disabled { opacity: 0.5; cursor: default; }
+.home-plan-list.is-picking .home-plan-item.is-picked .home-plan-ring::after { content: '✓'; font-size: 13px; }
