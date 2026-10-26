@@ -8,6 +8,7 @@ import { ask } from '../utils/ask';
 import { useDictation, joinSpeech } from '../utils/dictation';
 import { RichNote, NoteToolbar } from './RichNote';
 import { noteText, appendSpeech, showRichCursorAtEnd } from '../utils/richNote';
+import { cycleToday } from '../utils/cycle';
 
 
 const jsDay    = new Date().getDay();
@@ -1773,7 +1774,7 @@ function useDragOrder(list, onDrop, onHold) {
   };
 }
 
-function TodayPlan({ today }) {
+function TodayPlan({ today, onCycle }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
   const [adding, setAdding] = useState(false);
@@ -1879,6 +1880,7 @@ function TodayPlan({ today }) {
   const drag = useDragOrder(plan.items, saveOrder, startPicking);
 
   const items = drag.items;
+  const cyc = cycleToday();
   const isChecked = id => (id === 'workout' ? workoutStats.doneToday : !!checked[id]);
   const done = items.filter(it => isChecked(it.id)).length;
   const pct = items.length ? Math.round((done / items.length) * 100) : 0;
@@ -1899,6 +1901,15 @@ function TodayPlan({ today }) {
           >{adding ? '✕' : '＋'}</button>
         </span>
       </div>
+      {/* Where she is in her cycle today (2026-10-26); opens Cycle. */}
+      {cyc && (
+        <button type="button" className="home-cycle" style={{ '--ph': cyc.color }} onClick={onCycle}>
+          <span className="home-cycle-dot" aria-hidden="true" />
+          <span className="home-cycle-name">{cyc.name} phase</span>
+          <span className="home-cycle-day">Day {cyc.day}</span>
+          <span className="home-cycle-go" aria-hidden="true">›</span>
+        </button>
+      )}
       {adding && (
         <form className="home-plan-add" onSubmit={addItem}>
           <input className="home-plan-add-icon" value={newIcon} onChange={e => setNewIcon(e.target.value)} aria-label="Emoji" maxLength={4} />
@@ -2076,7 +2087,7 @@ export default function Hero({ onNavigate }) {
 
 
 
-      <TodayPlan today={today} />
+      <TodayPlan today={today} onCycle={() => onNavigate('cycle')} />
 
       {/* Her own rules (No GODSSS, PFBS, SLOW) are hers. */}
       {owner && <RuleBoard />}

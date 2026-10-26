@@ -7,6 +7,7 @@ import Workout from './components/Workout';
 import Meal from './components/Meal';
 import Nutrition from './components/Nutrition';
 import Skincare from './components/Skincare';
+import Cycle from './components/Cycle';
 import Settings from './components/Settings';
 import { GoalWatcher } from './components/Goals';
 import { WorkoutToast } from './components/WorkoutTracker';
@@ -45,6 +46,7 @@ const NAV_ITEMS = [
   { id: 'home',       label: 'Home',       icon: 'home' },
   { id: 'meal',       label: 'Meals',      icon: 'meal' },
   { id: 'skincare',   label: 'Body',       icon: 'body', ownerOnly: true },
+  { id: 'cycle',      label: 'Cycle',      icon: 'cycle', ownerOnly: true },
   // DZ (DareZero) moved to the top-left corner of Home, in place of G
   // (2026-10-14) — see DzLink in Hero.jsx.
 ];
@@ -55,6 +57,7 @@ const NAV_ICON_PATHS = {
   home: <><path d="M3.2 11.3 12 4.2l8.8 7" /><path d="M5.7 9.7v9.8c0 .5.3.8.8.8h11.1c.5 0 .8-.3.8-.8V9.5" /><path d="M10 20.2v-4.6c0-1 .8-1.7 2-1.7s2 .7 2 1.7v4.6" /></>,
   meal: <><path d="M3.4 12.3h17.2c-.3 4.4-3.4 7.2-7.3 7.4h-2.6c-3.9-.2-7-3-7.3-7.4z" /><path d="M9 21.2h6" /><path d="M13.4 10.4 19.6 3.6M15.8 10.6l5-5.6" /><path d="M8.3 9.6c-1-1.3-.2-2.2.5-3s1-1.8.1-2.9" /></>,
   body: <><path d="M12 18.9c-3-2.9-3.1-8.4 0-12.4 3.1 4 3 9.5 0 12.4z" /><path d="M11.2 19.1c-4.3 0-7.3-3-7.8-7.6 2.8.3 5 1.6 6.4 3.8" /><path d="M12.8 19.1c4.3 0 7.3-3 7.8-7.6-2.8.3-5 1.6-6.4 3.8" /><path d="M5 21.3c4.6-1.2 9.4-1.2 14 0" /></>,
+  cycle: <><path d="M18.5 15.2A7.5 7.5 0 0 1 8.8 5.5a7.5 7.5 0 1 0 9.7 9.7z" /><path d="M16.5 3.5c1.4 1.8 2.3 3.1 2.3 4.3a2.3 2.3 0 0 1-4.6 0c0-1.2.9-2.5 2.3-4.3z" /></>,
   settings: <><circle cx="12" cy="12" r="2.6" /><circle cx="12" cy="12" r="6.1" /><path d="M12 2.9v2.6M12 18.5v2.6M2.9 12h2.6M18.5 12h2.6M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8" /></>,
 };
 function NavIcon({ name }) {
@@ -66,7 +69,7 @@ function NavIcon({ name }) {
 }
 
 const VIEW_KEY = 'gp_view';
-const KNOWN_SECTIONS = ['home', 'workout', 'meal', 'nutrition', 'skincare', 'settings'];
+const KNOWN_SECTIONS = ['home', 'workout', 'meal', 'nutrition', 'skincare', 'cycle', 'settings'];
 function readView() {
   try {
     const v = JSON.parse(sessionStorage.getItem(VIEW_KEY) || 'null');
@@ -326,6 +329,7 @@ export default function App() {
         {active === 'meal'       && <Meal />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && isOwner(profile) && <Skincare  key={navMeta.key} initialTab={navMeta.tab} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
+        {active === 'cycle'      && isOwner(profile) && <Cycle />}
         {active === 'settings'   && <Settings
             key="settings"
             onNavigate={navigate}
