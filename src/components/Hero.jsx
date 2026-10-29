@@ -35,9 +35,12 @@ function thisWeek() {
 // below.
 // Tue and Fri are Pilates days, Wed is yoga (2026-10-23). Friday has her own
 // red Pilates picture (her-pilates-fri.jpg; full size in
-// public/workouts/originals/pilates-friday.png). her-yoga-b.jpg is unused.
+// public/workouts/originals/pilates-friday.png). New yellow Tuesday Pilates
+// and purple Wednesday Yoga pictures (2026-10-29; full size in originals/
+// as pilates-tuesday-yellow.png and yoga-wednesday-purple.png).
+// her-pilates-run.jpg, her-yoga-a.jpg and her-yoga-b.jpg are now unused.
 const HER_PICTURES = [
-  '/workouts/her-glute-a.jpg', '/workouts/her-pilates-run.jpg', '/workouts/her-yoga-a.jpg',
+  '/workouts/her-glute-a.jpg', '/workouts/her-pilates-tue.jpg', '/workouts/her-yoga-wed.jpg',
   '/workouts/her-glute-b.jpg', '/workouts/her-pilates-fri.jpg', '/workouts/her-glute-c.jpg',
   '/workouts/her-bike-swim.jpg',
 ];
