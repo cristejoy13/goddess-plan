@@ -20,6 +20,7 @@ const MARK = {
   protein: <><path d="M6.5 13.5c0-3 1.5-5.5 4-6.5l1-3.5 2.5 1-1 3c2.6.6 4.5 2.8 4.5 5.6 0 3.3-2.7 5.4-6 5.4s-5-2-5-5z" /><path d="M10 13.5c1 .8 2.6.8 3.6 0" /></>,
   fiber: <><path d="M12 20.5V10" /><path d="M12 13c-3.6 0-6-2.2-6-6.5 3.8 0 6 2.4 6 6.5zM12 11c0-3.8 2.2-6.3 6-6.3 0 4-2.4 6.3-6 6.3z" /></>,
   carbs: <><path d="M4.5 12.5h15a7.5 7.5 0 0 1-15 0z" /><path d="M8 9.5c.5-1.2 1.6-2 3-2M13 8c.6-.8 1.6-1.4 2.8-1.4" /></>,
+  iron: <path d="M12 3.5c-2.8 4-5.5 7.3-5.5 10.5a5.5 5.5 0 0 0 11 0c0-3.2-2.7-6.5-5.5-10.5z" />,
 };
 function Mark({ k }) {
   return (
@@ -30,7 +31,7 @@ function Mark({ k }) {
 }
 
 function Totals({ totals }) {
-  const parts = ['kcal', 'protein', 'fiber', 'carbs'].filter(k => totals[k]);
+  const parts = ['kcal', 'protein', 'fiber', 'carbs', 'iron'].filter(k => totals[k]);
   return (
     <div className="md-totals">
       {parts.map(k => (
@@ -69,17 +70,17 @@ function MealCard({ meal }) {
         </header>
         <ul className="md-items">
           {meal.items.map(([food, amount]) => (
-            <li key={food}><span>{food}</span><b>{amount}</b></li>
+            <li key={food}><span>{food}</span>{amount && <b>{amount}</b>}</li>
           ))}
         </ul>
-        <div className="md-sum">{meal.kcal} · {meal.protein}</div>
+        <div className="md-sum">{[meal.kcal, meal.protein, meal.fiber, meal.iron].filter(Boolean).join(' · ')}</div>
       </div>
       {meal.image && <img className="md-meal-pic" src={meal.image} alt={meal.name} loading="lazy" />}
       {(meal.why || meal.gives || meal.steps) && (
         <div className="md-more">
           {meal.why && (
             <details className="md-fold">
-              <summary>Why</summary>
+              <summary>{meal.whyTitle || 'Why'}</summary>
               <ul className="md-why">
                 {meal.why.map(([food, what]) => <li key={food}><b>{food}</b><span>{what}</span></li>)}
               </ul>
