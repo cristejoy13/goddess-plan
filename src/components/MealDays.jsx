@@ -260,8 +260,9 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack 
     );
   }
 
-  const list = plansFor(type.id);
   const chosenId = picks[DAY_PICK_KEY(type.id)];
+  // Her hearted plan comes first; the rest keep their order.
+  const list = [...plansFor(type.id)].sort((a, b) => (b.id === chosenId) - (a.id === chosenId));
 
   return (
     <div className="md">

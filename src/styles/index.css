@@ -11674,11 +11674,10 @@ body {
 .mt-idea-notes { border-top: 1px solid var(--border-r); padding-top: 10px; }
 .mt-idea-notes summary { cursor: pointer; font-weight: 700; color: var(--text); min-height: 32px; display: flex; align-items: center; }
 .mt-idea-notes .mt-idea-list { margin-top: 6px; font-size: 13.5px; }
-/* Five ideas per meal time: one row that scrolls sideways inside itself,
-   like a shelf, so no card sits alone on a row. */
-.mt-idea-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
-.mt-idea { flex: 0 0 38%; scroll-snap-align: start; }
-@media (min-width: 600px) { .mt-idea { flex-basis: 30%; } }
+/* Two pictures per row on every screen (2026-10-30), her hearted one first.
+   The grid is capped and centred so the pictures don't grow huge on a laptop. */
+.mt-idea-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 640px; margin-left: auto; margin-right: auto; }
+.mt-idea.is-fav { border-color: #e8347a; }
 /* Protein eaten that day, under "Eaten so far" (2026-10-11). */
 .ml-receipt-protein { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 2px 0; font-size: 14px; font-weight: 700; color: var(--text); }
 .ml-receipt-protein b { font-size: 16px; font-variant-numeric: tabular-nums; color: #ff7fb0; }
@@ -12599,12 +12598,13 @@ body.gp-dragging { overscroll-behavior: none; }
 
 .md-plans-title { display: block; width: fit-content; margin: 6px auto 10px; padding: 5px 12px; border-radius: 999px; background: rgba(255,92,157,0.14); color: var(--rose); font-size: 11.5px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
 [data-mode="light"] .md-plans-title { background: rgba(200,23,110,0.1); color: #a8105c; }
-.md-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.md-plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 640px; margin: 0 auto; }
 .md-plancard { position: relative; padding: 0; border: 1px solid var(--border-r); border-radius: 18px; overflow: hidden; aspect-ratio: 4 / 5; cursor: pointer; background: var(--card); font-family: inherit; text-align: left; }
 .md-plancard.on { border-color: #e8347a; box-shadow: 0 0 0 2px rgba(232,52,122,0.4); }
 .md-plancard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .md-plancard-text { position: absolute; left: 0; right: 0; bottom: 0; padding: 30px 14px 12px; display: flex; flex-direction: column; gap: 2px; color: #fff; background: linear-gradient(180deg, rgba(20,4,16,0), rgba(20,4,16,0.8)); }
-.md-plancard-text b { font-size: 18px; }
+.md-plancard-text b { font-size: 18px; line-height: 1.15; }
+@media (max-width: 480px) { .md-plancard-text { padding: 26px 10px 10px; } .md-plancard-text b { font-size: 15px; } .md-plancard-text small { font-size: 11.5px; } .md-shop-btn-tile { top: 8px; right: 8px; width: 40px; height: 40px; } }
 .md-plancard-text small { font-size: 12.5px; font-weight: 600; }
 
 /* The plan, on cream paper. */

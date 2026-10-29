@@ -1441,7 +1441,8 @@ function MealTimePanel({ time, entries, goal, onEat }) {
     window.addEventListener('gp-remote-sync', refresh);
     return () => window.removeEventListener('gp-remote-sync', refresh);
   }, []);
-  const ideas = ideasFor(time.id);
+  // Her hearted idea comes first; the rest keep their order.
+  const ideas = [...ideasFor(time.id)].sort((a, b) => (b.id === picks[time.id]) - (a.id === picks[time.id]));
   const picked = ideas.find(i => i.id === picks[time.id]);
   const shown = ideas.find(i => i.id === openIdea);
   const eatenToday = id => entries.some(e => e.ideaId === id && e.mealTime === time.id);
@@ -1478,9 +1479,9 @@ function MealTimePanel({ time, entries, goal, onEat }) {
         ) : (
           <div className="mt-idea-grid">
             {ideas.map(i => (
-              <button key={i.id} type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
+              <button key={i.id} type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}${picked?.id === i.id ? ' is-fav' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
                 {i.image ? <img src={i.image} alt="" loading="lazy" /> : <span className="mt-idea-noimg" aria-hidden="true">{time.icon}</span>}
-                <span className="mt-idea-label">{eatenToday(i.id) ? '♥ ' : ''}{i.name}</span>
+                <span className="mt-idea-label">{eatenToday(i.id) || picked?.id === i.id ? '♥ ' : ''}{i.name}</span>
               </button>
             ))}
           </div>
