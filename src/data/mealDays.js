@@ -42,7 +42,6 @@ export const DAY_PLANS = [
     id: 'dp-glute-1', type: 'glute', name: 'Glute Day',
     image: '/meal-ideas/day-glute-plan.jpg', card: '/meal-ideas/day-glute-card.jpg',
     totals: { kcal: '≈ 1,200 kcal', protein: '≈ 79 g protein', fiber: '≈ 26 g fiber', carbs: '≈ 105 g carbs' },
-    note: 'The carbs are moderate, not extremely low.',
     meals: [
       {
         time: '1:00 PM', name: 'Main Meal', image: '/meal-ideas/day-glute-main.jpg',
@@ -86,7 +85,6 @@ export const DAY_PLANS = [
           ['Chia seeds', '10 g'],
         ],
         kcal: '≈ 225 kcal', protein: '≈ 11 g protein',
-        gives: 'protein + fiber + something sweet.',
         stepsTitle: 'How to prepare', steps: SNACK_STEPS, after: 'No cooking needed.',
       },
       {

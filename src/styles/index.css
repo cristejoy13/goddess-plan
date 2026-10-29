@@ -12610,10 +12610,12 @@ body.gp-dragging { overscroll-behavior: none; }
 /* The plan, on cream paper. */
 .md-plan { --ink: #2f3a24; --ink-soft: #5b5446; --green: #4f5e3a; --coral: #d9826b; --sage: #e2e8d2; --peach: #f6d9cb;
   padding: 16px 12px 18px; border-radius: 20px; background: #f7f0e6; color: var(--ink); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
-.md-plan-title { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 8px; }
-.md-plan-title h3 { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 40px; line-height: 1; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); }
-.md-heart { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--coral); background: #fff; color: #9a3d24; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
-.md-heart.on { background: linear-gradient(135deg, #e7a08a, #d9826b); color: #fff; border-color: var(--coral); }
+.md-plan-title { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; }
+.md-plan-title h3 { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 40px; line-height: 1; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); text-align: center; }
+.md-heart { flex: none; display: grid; place-items: center; width: 52px; height: 52px; padding: 0; border-radius: 50%; border: 1.5px solid var(--coral); background: #fff; color: #c2553a; cursor: pointer; transition: transform 0.15s; }
+.md-heart:active { transform: scale(0.92); }
+.md-heart.on { background: linear-gradient(135deg, #e7a08a, #d9826b); color: #fff; }
+@media (max-width: 480px) { .md-plan-title h3 { font-size: 32px; } }
 .md-plan .md-day.is-today { box-shadow: 0 0 0 3px rgba(200,23,110,0.25); }
 
 .md-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0; margin: 0 0 12px; padding: 8px 4px; border-radius: 14px; background: #fffaf3; box-shadow: 0 2px 10px rgba(80,60,30,0.08); }

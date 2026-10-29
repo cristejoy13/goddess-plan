@@ -8,7 +8,8 @@ import { DAY_TYPES, DAY_PLANS, DAY_NAMES, DAY_SHORT, DAY_PICK_KEY, plansFor } fr
 // plans as pictures. A picture opens the plan laid out like her card: daily
 // totals, then each meal with its time, foods and amounts, calories and
 // protein, and below it why and how to cook. ♥ chooses that plan for those
-// days; Home shows it on the day.
+// days; Home shows it on the day. No repeated words: the plan's name is
+// shown once, beside its heart.
 
 const PICKS_KEY = 'gp_meal_picks';
 const loadPicks = () => { try { return JSON.parse(localStorage.getItem(PICKS_KEY) || '{}') || {}; } catch { return {}; } };
@@ -76,7 +77,7 @@ function MealCard({ meal }) {
         <div className="md-sum">{[meal.kcal, meal.protein, meal.fiber, meal.iron].filter(Boolean).join(' · ')}</div>
       </div>
       {meal.image && <img className="md-meal-pic" src={meal.image} alt={meal.name} loading="lazy" />}
-      {(meal.why || meal.gives || meal.steps) && (
+      {(meal.why || meal.steps) && (
         <div className="md-more">
           {meal.why && (
             <details className="md-fold">
@@ -86,7 +87,6 @@ function MealCard({ meal }) {
               </ul>
             </details>
           )}
-          {meal.gives && <p className="md-gives"><b>This gives you:</b> {meal.gives}</p>}
           {meal.steps && (
             <details className="md-fold">
               <summary>{meal.stepsTitle || 'How to cook'}</summary>
@@ -103,23 +103,21 @@ function MealCard({ meal }) {
 
 export function PlanPage({ plan, type, hearted, onHeart }) {
   const [card, setCard] = useState(false);
-  const dayWords = type.days.map(d => DAY_NAMES[d]);
-  const dayList = dayWords.length > 1 ? `${dayWords.slice(0, -1).join(', ')}, and ${dayWords.at(-1)}` : dayWords[0];
   return (
     <div className="md-plan">
       <div className="md-plan-title">
         <h3>{plan.name}</h3>
-        <button type="button" className={`md-heart${hearted ? ' on' : ''}`} onClick={onHeart} aria-pressed={hearted}>
-          {hearted ? `♥ Chosen for ${type.name.toLowerCase()}` : `♡ Choose for ${type.name.toLowerCase()}`}
+        <button type="button" className={`md-heart${hearted ? ' on' : ''}`} onClick={onHeart} aria-pressed={hearted} aria-label={`Choose for ${type.name.toLowerCase()}`}>
+          <svg viewBox="0 0 24 24" width="30" height="30" fill={hearted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3z" />
+          </svg>
         </button>
       </div>
       <DayRow type={type} />
       <Totals totals={plan.totals} />
-      {plan.note && <p className="md-note">{plan.note}</p>}
       <div className="md-meals">
         {plan.meals.map(m => <MealCard key={m.time} meal={m} />)}
       </div>
-      <div className="md-use">Use this plan on {dayList}.</div>
       {plan.card && (
         <button type="button" className="md-card-btn" onClick={() => setCard(true)}>See your plan card</button>
       )}
@@ -189,7 +187,7 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack 
         <button type="button" className="md-back" onClick={() => backTo(plan ? type.id : null, null)}>
           ‹ {plan ? type.name : 'Days'}
         </button>
-        <h3 className="md-head-title">{plan ? plan.name : type.name}</h3>
+        {plan ? <span /> : <h3 className="md-head-title">{type.name}</h3>}
         <span />
       </div>
 
