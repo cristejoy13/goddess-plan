@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import PhotoView from './PhotoView';
-import { DAY_TYPES, DAY_PLANS, DAY_NAMES, DAY_SHORT, DAY_PICK_KEY, plansFor } from '../data/mealDays';
+import Sheet from './Sheet';
+import { DAY_TYPES, DAY_PLANS, DAY_NAMES, DAY_SHORT, DAY_PICK_KEY, plansFor, shopList } from '../data/mealDays';
 
 // ─── Meals → Days (2026-10-30) ─────────────────────────────────────────────
 // Her whole-day meal plans. First the two covers, Glute Days and Light Days.
@@ -13,6 +14,85 @@ import { DAY_TYPES, DAY_PLANS, DAY_NAMES, DAY_SHORT, DAY_PICK_KEY, plansFor } fr
 
 const PICKS_KEY = 'gp_meal_picks';
 const loadPicks = () => { try { return JSON.parse(localStorage.getItem(PICKS_KEY) || '{}') || {}; } catch { return {}; } };
+// Shopping lists: { checklist: true, ticks: { <planId>: { <food>: true } } },
+// synced as gp_shop. The checklist switch is one icon in the list.
+const SHOP_KEY = 'gp_shop';
+const loadShop = () => {
+  try {
+    const v = JSON.parse(localStorage.getItem(SHOP_KEY) || 'null');
+    if (v && typeof v === 'object') return { checklist: v.checklist !== false, ticks: v.ticks && typeof v.ticks === 'object' ? v.ticks : {} };
+  } catch { /* start fresh */ }
+  return { checklist: true, ticks: {} };
+};
+const saveShop = v => { try { localStorage.setItem(SHOP_KEY, JSON.stringify(v)); } catch { /* kept for this visit */ } };
+
+const BAG = (
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M5.5 8h13l-1 12h-11z" /><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5" />
+  </svg>
+);
+
+function ShopButton({ plan, onOpen, className = '' }) {
+  return (
+    <button type="button" className={`md-shop-btn ${className}`} onClick={e => { e.stopPropagation(); onOpen(plan.id); }} aria-label={`Shopping list for ${plan.name}`} title="Shopping list">
+      {BAG}
+    </button>
+  );
+}
+
+function ShopSheet({ plan, onClose }) {
+  const [shop, setShop] = useState(loadShop);
+  useEffect(() => {
+    const refresh = () => setShop(loadShop());
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => window.removeEventListener('gp-remote-sync', refresh);
+  }, []);
+  if (!plan) return null;
+  const ticks = shop.ticks[plan.id] || {};
+  const list = shopList(plan);
+  const update = next => { saveShop(next); setShop(next); };
+  const tick = food => {
+    const mine = { ...ticks };
+    if (mine[food]) delete mine[food]; else mine[food] = true;
+    update({ ...shop, ticks: { ...shop.ticks, [plan.id]: mine } });
+  };
+  return (
+    <Sheet open kicker="Shopping list" title={plan.name} onClose={onClose}>
+      <div className="md-shop">
+        <div className="md-shop-tools">
+          <button
+            type="button"
+            className={`md-shop-mode${shop.checklist ? ' on' : ''}`}
+            onClick={() => update({ ...shop, checklist: !shop.checklist })}
+            aria-pressed={shop.checklist}
+            aria-label={shop.checklist ? 'Checklist on' : 'Checklist off'}
+            title={shop.checklist ? 'Checklist on' : 'Checklist off'}
+          >
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="4" />{shop.checklist && <path d="M8.5 12.2l2.4 2.4 4.8-5" />}
+            </svg>
+          </button>
+        </div>
+        <ul className={`md-shop-list${shop.checklist ? ' is-check' : ''}`}>
+          {list.map(({ food, amounts }) => {
+            const done = shop.checklist && ticks[food];
+            const body = <><span className="md-shop-food">{food}</span>{amounts.length > 0 && <b>{amounts.join(' + ')}</b>}</>;
+            return (
+              <li key={food} className={done ? 'done' : ''}>
+                {shop.checklist ? (
+                  <button type="button" className="md-shop-row" onClick={() => tick(food)} aria-pressed={Boolean(done)}>
+                    <span className="md-shop-box" aria-hidden="true">{done && '✓'}</span>{body}
+                  </button>
+                ) : <div className="md-shop-row">{body}</div>}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </Sheet>
+  );
+}
+
 const todayIdx = () => (new Date().getDay() + 6) % 7;
 
 // Small drawn marks for the totals, as on her card.
@@ -101,7 +181,7 @@ function MealCard({ meal }) {
   );
 }
 
-export function PlanPage({ plan, type, hearted, onHeart }) {
+export function PlanPage({ plan, type, hearted, onHeart, onShop }) {
   const [card, setCard] = useState(false);
   return (
     <div className="md-plan">
@@ -112,6 +192,7 @@ export function PlanPage({ plan, type, hearted, onHeart }) {
             <path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3z" />
           </svg>
         </button>
+        {onShop && <ShopButton plan={plan} onOpen={onShop} className="md-shop-btn-plan" />}
       </div>
       <DayRow type={type} />
       <Totals totals={plan.totals} />
@@ -130,6 +211,7 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack 
   const [typeId, setTypeId] = useState(DAY_TYPES.some(t => t.id === initialType) ? initialType : null);
   const [planId, setPlanId] = useState(null);
   const [picks, setPicks] = useState(loadPicks);
+  const [shopFor, setShopFor] = useState(null);
   useEffect(() => {
     const refresh = () => setPicks(loadPicks());
     window.addEventListener('gp-remote-sync', refresh);
@@ -192,24 +274,28 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack 
       </div>
 
       {plan ? (
-        <PlanPage plan={plan} type={type} hearted={chosenId === plan.id} onHeart={() => heart(type, plan)} />
+        <PlanPage plan={plan} type={type} hearted={chosenId === plan.id} onHeart={() => heart(type, plan)} onShop={setShopFor} />
       ) : (
         <>
           <DayRow type={type} />
           <div className="md-plans-title">Meal plans</div>
           <div className="md-plans">
             {list.map(p => (
-              <button key={p.id} type="button" className={`md-plancard${chosenId === p.id ? ' on' : ''}`} onClick={() => backTo(type.id, p.id)}>
-                <img src={p.image} alt="" />
-                <span className="md-plancard-text">
-                  <b>{chosenId === p.id ? '♥ ' : ''}{p.name}</b>
-                  <small>{p.totals.kcal} · {p.totals.protein}</small>
-                </span>
-              </button>
+              <div key={p.id} className="md-plancard-wrap">
+                <button type="button" className={`md-plancard${chosenId === p.id ? ' on' : ''}`} onClick={() => backTo(type.id, p.id)}>
+                  <img src={p.image} alt="" />
+                  <span className="md-plancard-text">
+                    <b>{chosenId === p.id ? '♥ ' : ''}{p.name}</b>
+                    <small>{p.totals.kcal} · {p.totals.protein}</small>
+                  </span>
+                </button>
+                <ShopButton plan={p} onOpen={setShopFor} className="md-shop-btn-tile" />
+              </div>
             ))}
           </div>
         </>
       )}
+      {shopFor && <ShopSheet plan={DAY_PLANS.find(p => p.id === shopFor)} onClose={() => setShopFor(null)} />}
     </div>
   );
 }

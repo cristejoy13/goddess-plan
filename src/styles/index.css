@@ -12682,3 +12682,24 @@ body.gp-dragging { overscroll-behavior: none; }
 .home-meals-go { font-size: 24px; color: var(--rose); padding-right: 4px; }
 [data-mode="light"] .home-meals-kicker { color: #a8105c; }
 [data-mode="light"] .home-meals-go { color: #a8105c; }
+
+/* Meals → Days: shopping list for each plan (2026-10-30). */
+.md-plancard-wrap { position: relative; }
+.md-plancard-wrap .md-plancard { width: 100%; }
+.md-shop-btn { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 1.5px solid var(--coral, #d9826b); background: #fff; color: #4f5e3a; cursor: pointer; transition: transform 0.15s; flex: none; }
+.md-shop-btn:active { transform: scale(0.92); }
+.md-shop-btn-tile { position: absolute; top: 10px; right: 10px; border-color: rgba(255,255,255,0.9); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+.md-shop-btn-plan { width: 52px; height: 52px; }
+.md-shop { max-width: 520px; margin: 0 auto; }
+.md-shop-tools { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.md-shop-mode { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 12px; border: 1.5px solid var(--border-r); background: transparent; color: var(--text-mid); cursor: pointer; }
+.md-shop-mode.on { border-color: var(--rose); color: var(--rose); background: rgba(255,92,157,0.12); }
+.md-shop-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.md-shop-list li + li { border-top: 1px solid var(--border-r); }
+.md-shop-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 4px; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 15.5px; text-align: left; }
+button.md-shop-row { cursor: pointer; }
+.md-shop-food { flex: 1; min-width: 0; }
+.md-shop-row b { font-weight: 700; text-align: right; color: var(--text); }
+.md-shop-box { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--rose); color: #fff; font-size: 15px; font-weight: 900; }
+.md-shop-list li.done .md-shop-box { background: var(--rose); }
+.md-shop-list li.done .md-shop-food, .md-shop-list li.done b { text-decoration: line-through; color: var(--text-mid); }

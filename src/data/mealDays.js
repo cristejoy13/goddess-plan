@@ -463,6 +463,19 @@ export const DAY_PLANS = [
 
 export const plansFor = type => DAY_PLANS.filter(p => p.type === type);
 
+// Every food in a plan, once. A food in two meals keeps both amounts as she
+// wrote them ("5 g + 10 g"); nothing is added up or changed.
+export function shopList(plan) {
+  const out = [];
+  for (const m of plan.meals) {
+    for (const [food, amount] of m.items) {
+      const hit = out.find(x => x.food.toLowerCase() === food.toLowerCase());
+      if (hit) { if (amount) hit.amounts.push(amount); } else out.push({ food, amounts: amount ? [amount] : [] });
+    }
+  }
+  return out;
+}
+
 // The plan she hearted for a kind of day, else its first plan. Hearts live
 // in gp_meal_picks (synced) as day-glute / day-light.
 export const DAY_PICK_KEY = type => `day-${type}`;

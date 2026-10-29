@@ -1491,13 +1491,9 @@ function MealTimePanel({ time, entries, goal, onEat }) {
   );
 }
 
-// Days (2026-10-30): her whole-day meal plans, beside Snacks. A drawn
-// calendar page, not an emoji.
-const DAYS_ICON = (
-  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="5.5" width="16" height="14.5" rx="2" /><path d="M4 10h16M8.5 3.5v3.5M15.5 3.5v3.5M8 14h3M8 17h6" />
-  </svg>
-);
+// Days (2026-10-30): her whole-day meal plans, beside Snacks. Same kind of
+// icon as Brunch, Dinner, Snacks and Calendar beside it: a full day's meals.
+const DAYS_ICON = '🍱';
 
 // Breakfast · Lunch · Dinner · Snacks · Calendar. The calendar is the one
 // she has always had — every meal, weight and goal in it stays as it was.
