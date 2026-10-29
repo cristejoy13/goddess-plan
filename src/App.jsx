@@ -326,7 +326,7 @@ export default function App() {
             closed the open day and lost what she was typing every time any
             gadget — or the Garmin Shortcut — saved something. Meal refreshes
             its numbers in place; Nutrition and Body show nothing synced. */}
-        {active === 'meal'       && <Meal />}
+        {active === 'meal'       && <Meal key={navMeta.key} initialTab={navMeta.tab} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'nutrition'  && <Nutrition key={navMeta.key} initialTab={navMeta.tab} onNavigate={navigate} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'skincare'   && isOwner(profile) && <Skincare  key={navMeta.key} initialTab={navMeta.tab} pushBack={pushBack} clearInnerBack={clearInnerBack} />}
         {active === 'cycle'      && isOwner(profile) && <Cycle />}

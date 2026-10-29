@@ -12570,3 +12570,112 @@ body.gp-dragging { overscroll-behavior: none; }
 [data-mode="light"] .cy-today-note { border-left-color: #b07a00; background: rgba(240,180,41,0.12); color: #3a1030; }
 [data-mode="light"] .cy-pill.is-on { background: rgba(31,138,104,0.12); border-color: #1f8a68; color: #3a1030; }
 [data-mode="light"] .cy-line-pill { stroke: #c8176e; } [data-mode="light"] .cy-key-pill { background: #c8176e; }
+
+/* ── Meals → Days (2026-10-30) ──
+   Two covers; a cover opens its days (big, on top) and its plans; a plan
+   opens laid out like her card: cream paper, dark green and coral time
+   pills, a dashed line, foods with amounts, a soft total pill and the meal's
+   picture. The paper looks the same in light and dark mode. */
+.mt-pills { grid-template-columns: repeat(5, minmax(0, 1fr)); } /* Brunch, Dinner, Snacks, Days, Calendar */
+.mt-pill-icon svg { display: block; }
+.md { width: 100%; max-width: 620px; margin: 0 auto; }
+.md-covers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.md-cover { position: relative; padding: 0; border: 0; border-radius: 18px; overflow: hidden; aspect-ratio: 4 / 5; cursor: pointer; background: var(--card); box-shadow: 0 12px 30px rgba(0,0,0,0.28); font-family: inherit; }
+.md-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.md-cover-days { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 8px 10px; background: linear-gradient(180deg, rgba(20,4,16,0), rgba(20,4,16,0.75)); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 0.04em; text-align: center; }
+.md-cover-today { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 999px; background: #fff; color: #a8105c; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+
+.md-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 12px; }
+.md-back { justify-self: start; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border-r); background: transparent; color: var(--text); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.md-head-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--text); white-space: nowrap; }
+
+.md-dayrow { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 4px 0 16px; }
+.md-day { min-width: 74px; padding: 10px 14px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: linear-gradient(135deg, #e7a08a, #d9826b); color: #fff; box-shadow: 0 6px 16px rgba(217,130,107,0.35); }
+.md-day b { font-size: 18px; font-weight: 800; letter-spacing: 0.02em; }
+.md-day small { font-size: 10.5px; font-weight: 700; opacity: 0.95; }
+.md-day em { font-style: normal; font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 7px; border-radius: 999px; background: #fff; color: #a8105c; }
+.md-day.is-today { background: linear-gradient(135deg, #d41f76, #a8105c); box-shadow: 0 0 0 3px rgba(255,92,157,0.3), 0 8px 18px rgba(200,23,110,0.4); }
+
+.md-plans-title { display: block; width: fit-content; margin: 6px auto 10px; padding: 5px 12px; border-radius: 999px; background: rgba(255,92,157,0.14); color: var(--rose); font-size: 11.5px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+[data-mode="light"] .md-plans-title { background: rgba(200,23,110,0.1); color: #a8105c; }
+.md-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.md-plancard { position: relative; padding: 0; border: 1px solid var(--border-r); border-radius: 18px; overflow: hidden; aspect-ratio: 4 / 5; cursor: pointer; background: var(--card); font-family: inherit; text-align: left; }
+.md-plancard.on { border-color: #e8347a; box-shadow: 0 0 0 2px rgba(232,52,122,0.4); }
+.md-plancard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.md-plancard-text { position: absolute; left: 0; right: 0; bottom: 0; padding: 30px 14px 12px; display: flex; flex-direction: column; gap: 2px; color: #fff; background: linear-gradient(180deg, rgba(20,4,16,0), rgba(20,4,16,0.8)); }
+.md-plancard-text b { font-size: 18px; }
+.md-plancard-text small { font-size: 12.5px; font-weight: 600; }
+
+/* The plan, on cream paper. */
+.md-plan { --ink: #2f3a24; --ink-soft: #5b5446; --green: #4f5e3a; --coral: #d9826b; --sage: #e2e8d2; --peach: #f6d9cb;
+  padding: 16px 12px 18px; border-radius: 20px; background: #f7f0e6; color: var(--ink); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+.md-plan-title { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 8px; }
+.md-plan-title h3 { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 40px; line-height: 1; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); }
+.md-heart { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--coral); background: #fff; color: #9a3d24; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+.md-heart.on { background: linear-gradient(135deg, #e7a08a, #d9826b); color: #fff; border-color: var(--coral); }
+.md-plan .md-day.is-today { box-shadow: 0 0 0 3px rgba(200,23,110,0.25); }
+
+.md-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0; margin: 0 0 12px; padding: 8px 4px; border-radius: 14px; background: #fffaf3; box-shadow: 0 2px 10px rgba(80,60,30,0.08); }
+.md-total { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 8px; }
+.md-total + .md-total { border-left: 1px solid rgba(80,60,30,0.15); }
+.md-total span { display: flex; flex-direction: column; line-height: 1.15; }
+.md-total b { font-size: 16px; color: var(--ink); white-space: nowrap; }
+.md-total small { font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+.md-mark { flex: none; color: var(--coral); }
+.md-total-fiber .md-mark { color: var(--green); }
+.md-note { margin: -4px 0 12px; text-align: center; font-size: 13px; font-style: italic; color: var(--ink-soft); }
+
+.md-meals { display: flex; flex-direction: column; gap: 12px; }
+.md-meal { display: grid; grid-template-columns: 1fr; border-radius: 16px; background: #fbf6ee; overflow: hidden; box-shadow: 0 2px 10px rgba(80,60,30,0.08); }
+.md-meal-pic { order: -1; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
+.md-meal-main { padding: 12px 14px 14px; }
+.md-meal-head { display: flex; align-items: center; gap: 12px; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1.5px dashed rgba(80,60,30,0.3); }
+.md-time { flex: none; padding: 6px 14px; border-radius: 999px; background: var(--green); color: #fff; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; font-weight: 700; }
+.md-meal.is-snack .md-time { background: var(--coral); }
+.md-meal-name { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+.md-meal-name::after { content: ''; display: block; width: 70%; height: 3px; margin-top: 2px; border-radius: 3px; background: var(--coral); opacity: 0.8; }
+.md-items { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; }
+.md-items li { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; padding: 6px 2px; font-size: 15px; color: var(--ink); }
+.md-items li + li { border-top: 1px solid rgba(80,60,30,0.08); }
+.md-items li span { display: flex; gap: 8px; align-items: baseline; }
+.md-items li span::before { content: ''; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); transform: translateY(-2px); }
+.md-items b { font-weight: 700; padding-left: 12px; border-left: 1px solid rgba(80,60,30,0.25); text-align: right; white-space: nowrap; }
+.md-sum { padding: 10px 14px; border-radius: 999px; background: var(--sage); color: var(--ink); text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 700; }
+.md-meal.is-snack .md-sum { background: var(--peach); }
+.md-more { grid-column: 1 / -1; padding: 0 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+.md-fold { border-radius: 12px; background: #fff; border: 1px solid rgba(80,60,30,0.12); }
+.md-fold summary { min-height: 44px; display: flex; align-items: center; padding: 0 14px; cursor: pointer; font-weight: 800; font-size: 14px; color: var(--green); list-style: none; }
+.md-fold summary::-webkit-details-marker { display: none; }
+.md-fold summary::after { content: '+'; margin-left: auto; font-size: 18px; color: var(--coral); }
+.md-fold[open] summary::after { content: '−'; }
+.md-why { list-style: none; margin: 0; padding: 0 14px 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.md-why li { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: #f7f0e6; font-size: 13px; color: var(--ink-soft); }
+.md-why b { color: var(--ink); font-size: 13.5px; }
+.md-steps { margin: 0; padding: 0 14px 10px 34px; display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; line-height: 1.45; color: var(--ink); }
+.md-steps li::marker { color: var(--coral); font-weight: 800; }
+.md-optional, .md-gives { margin: 0; padding: 0 14px 12px; font-size: 13.5px; color: var(--ink-soft); }
+.md-gives { padding: 0 2px; }
+.md-optional b, .md-gives b { color: var(--ink); }
+.md-use { margin: 14px auto 0; width: fit-content; max-width: 100%; padding: 12px 20px; border-radius: 999px; background: var(--green); color: #fff; text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; font-style: italic; }
+.md-card-btn { display: block; margin: 12px auto 0; min-height: 40px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--green); background: transparent; color: var(--green); font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+@media (min-width: 640px) {
+  .md-plan { padding: 22px 20px; }
+  .md-meal { grid-template-columns: 1.15fr 1fr; }
+  .md-meal-pic { order: 0; height: 100%; aspect-ratio: auto; min-height: 220px; }
+  .md-plan-title h3 { font-size: 52px; }
+}
+@media (max-width: 380px) { .md-meal-name { font-size: 22px; } .md-time { font-size: 17px; padding: 5px 11px; } .md-items li { font-size: 14px; } .md-day { min-width: 64px; padding: 8px 10px; } }
+
+/* Home: today's meal plan, under Today's Plan. */
+.home-meals { width: 100%; margin: 0 0 22px; padding: 10px; display: grid; grid-template-columns: 92px 1fr auto; align-items: center; gap: 12px;
+  border-radius: 20px; border: 1px solid var(--border-r); background: var(--card); color: var(--text); font-family: inherit; text-align: left; cursor: pointer; }
+.home-meals img { width: 92px; height: 110px; object-fit: cover; border-radius: 14px; }
+.home-meals-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.home-meals-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); }
+.home-meals-text b { font-size: 17px; }
+.home-meals-text small { font-size: 13px; font-weight: 700; color: var(--text-mid); }
+.home-meals-times { font-size: 12px; color: var(--text-mid); line-height: 1.35; }
+.home-meals-go { font-size: 24px; color: var(--rose); padding-right: 4px; }
+[data-mode="light"] .home-meals-kicker { color: #a8105c; }
+[data-mode="light"] .home-meals-go { color: #a8105c; }

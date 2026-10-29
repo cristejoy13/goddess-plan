@@ -7,6 +7,7 @@ import { shrinkPhoto, scanMeal, scanScale, describeItems, recall, remember, reme
 import { ask } from '../utils/ask';
 import Camera from './Camera';
 import PhotoView from './PhotoView';
+import MealDays from './MealDays';
 import {
   dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog, parseCal,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -1490,13 +1491,21 @@ function MealTimePanel({ time, entries, goal, onEat }) {
   );
 }
 
+// Days (2026-10-30): her whole-day meal plans, beside Snacks. A drawn
+// calendar page, not an emoji.
+const DAYS_ICON = (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="5.5" width="16" height="14.5" rx="2" /><path d="M4 10h16M8.5 3.5v3.5M15.5 3.5v3.5M8 14h3M8 17h6" />
+  </svg>
+);
+
 // Breakfast · Lunch · Dinner · Snacks · Calendar. The calendar is the one
 // she has always had — every meal, weight and goal in it stays as it was.
 function MealTabs({ tab, setTab }) {
   return (
     <div className="mt splash-item">
       <div className="mt-pills" role="tablist" aria-label="Meals">
-        {[...MEAL_TIMES, { id: 'calendar', label: 'Calendar', icon: '📅' }].map(t => (
+        {[...MEAL_TIMES, { id: 'days', label: 'Days', icon: DAYS_ICON }, { id: 'calendar', label: 'Calendar', icon: '📅' }].map(t => (
           <button
             key={t.id}
             type="button"
@@ -1514,7 +1523,7 @@ function MealTabs({ tab, setTab }) {
   );
 }
 
-export default function Meal() {
+export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
   const [state, setState] = useState(loadLog);
   const [garmin, setGarmin] = useState(loadGarmin);
   // A sync from another gadget (or the Garmin Shortcut) refreshes the numbers
@@ -1535,12 +1544,15 @@ export default function Meal() {
   const [saveFailed, setSaveFailed] = useState(false);
   // Which pill is open: a meal time, or the calendar (first, as always).
   // A tab that no longer exists (Breakfast, taken away 2026-10-23) opens the calendar.
+  // Home's meal card opens Days straight on today's kind of day ('days:glute').
+  const [dayType] = useState(() => (String(initialTab || '').startsWith('days:') ? initialTab.slice(5) : null));
   const [tab, setTabState] = useState(() => {
+    if (dayType) return 'days';
     let saved = null;
     try { saved = sessionStorage.getItem('gp_meal_tab'); } catch { /* fine */ }
-    return MEAL_TIMES.some(t => t.id === saved) ? saved : 'calendar';
+    return MEAL_TIMES.some(t => t.id === saved) || saved === 'days' ? saved : 'calendar';
   });
-  const setTab = t => { setTabState(t); try { sessionStorage.setItem('gp_meal_tab', t); } catch { /* fine */ } };
+  const setTab = t => { clearInnerBack?.(); setTabState(t); try { sessionStorage.setItem('gp_meal_tab', t); } catch { /* fine */ } };
 
   const days = state.days || {};
 
@@ -1684,7 +1696,13 @@ export default function Meal() {
 
       <MealTabs tab={tab} setTab={setTab} />
 
-      {tab !== 'calendar' && (
+      {tab === 'days' && (
+        <div className="mt">
+          <MealDays initialType={dayType} pushBack={pushBack} clearInnerBack={clearInnerBack} />
+        </div>
+      )}
+
+      {tab !== 'calendar' && tab !== 'days' && (
         <div className="mt">
           <MealTimePanel
             key={tab}

@@ -9,6 +9,7 @@ import { useDictation, joinSpeech } from '../utils/dictation';
 import { RichNote, NoteToolbar } from './RichNote';
 import { noteText, appendSpeech, showRichCursorAtEnd } from '../utils/richNote';
 import { cycleToday } from '../utils/cycle';
+import { dayTypeOf, chosenPlan, DAY_NAMES as WEEKDAY_NAMES } from '../data/mealDays';
 
 
 const jsDay    = new Date().getDay();
@@ -1777,6 +1778,34 @@ function useDragOrder(list, onDrop, onHold) {
   };
 }
 
+// Today's meals (2026-10-30), under Today's Plan: the plan she chose for
+// today's kind of day (glute or light), or its first plan until she hearts
+// one. Clicking it opens Meals → Days on that kind of day.
+function TodayMeals({ onOpen }) {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const refresh = () => setTick(n => n + 1);
+    window.addEventListener('gp-remote-sync', refresh);
+    return () => window.removeEventListener('gp-remote-sync', refresh);
+  }, []);
+  const wd = (new Date().getDay() + 6) % 7;
+  const type = dayTypeOf(wd);
+  const { plan, hearted } = type ? chosenPlan(type.id) : {};
+  if (!type || !plan) return null;
+  return (
+    <button type="button" className="home-meals splash-item" onClick={() => onOpen(type.id)}>
+      <img src={plan.image} alt="" />
+      <span className="home-meals-text">
+        <span className="home-meals-kicker">{WEEKDAY_NAMES[wd]}’s meals · {type.one}</span>
+        <b>{hearted ? '♥ ' : ''}{plan.name}</b>
+        <small>{plan.totals.kcal} · {plan.totals.protein}</small>
+        <span className="home-meals-times">{plan.meals.map(m => `${m.time} ${m.name}`).join(' · ')}</span>
+      </span>
+      <span className="home-meals-go" aria-hidden="true">›</span>
+    </button>
+  );
+}
+
 function TodayPlan({ today, onCycle }) {
   const [checked, setChecked] = useState(() => loadChecksCarryingWorkout(today));
   const [plan, setPlan] = useState(loadPlanItems);
@@ -2091,6 +2120,7 @@ export default function Hero({ onNavigate }) {
 
 
       <TodayPlan today={today} onCycle={() => onNavigate('cycle')} />
+      <TodayMeals onOpen={type => onNavigate('meal', `days:${type}`)} />
 
       {/* Her own rules (No GODSSS, PFBS, SLOW) are hers. */}
       {owner && <RuleBoard />}

@@ -33,7 +33,9 @@ export default defineConfig({
         ],
       },
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Every picture the app shows is kept on the gadget, so the app looks
+        // the same with no internet (her request, 2026-10-30).
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,jpg,jpeg,webp}'],
         // Her logo is kept at full size and never shrunk, so it is over the
         // offline-cache limit. The phone fetches it when the app is added to
         // the home screen; it does not need to live in the offline copy.

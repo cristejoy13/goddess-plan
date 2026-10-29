@@ -30,6 +30,18 @@ registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html'), {
   denylist: [/^\/__/, /\/[^/?]+\.[^/]+$/, /^\/this(\/|$)/],
 }));
 
+// ── PWA: pictures stay on the gadget ──
+// The app's own pictures are in the offline copy above. Any other picture it
+// shows (a new one before the next update, an avatar) is kept the first time
+// it loads, so it still shows with no internet.
+registerRoute(
+  ({ request, url }) => request.destination === 'image' && url.origin === self.location.origin,
+  new CacheFirst({
+    cacheName: 'gp-images',
+    plugins: [new ExpirationPlugin({ maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 365 })],
+  })
+);
+
 // ── PWA: cache Google Fonts ──
 registerRoute(
   ({ url }) => url.origin === 'https://fonts.googleapis.com',
