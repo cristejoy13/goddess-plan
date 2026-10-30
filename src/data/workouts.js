@@ -1,10 +1,10 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
 // Her plan of 2026-10-10, Monday to Sunday:
 //   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat · abs finisher
-//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · jump rope or Zone 2
-//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · Zone 2 run only
+//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · Zone 2 run
+//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · jump rope
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
-//   Fri  Pilates or yoga, same choice as Wed · jump rope or Zone 2
+//   Fri  Pilates or yoga, same choice as Wed · jump rope
 //   Sat  Glutes C — squat to cross-body knee, RDL to squat clean, jump lunge · DB core flutters
 // (2026-10-30, her call: Tue became upper body only, toning the arms rather
 // than building them; Wed and Fri each offer Izzy or Nicole; Sat became
@@ -67,16 +67,15 @@ const absFinisher = (name, detail, cover) => [
   H('🔥 After · Abs Finisher', 'One move · straight after the lifts.', 'core', cover),
   { name, detail },
 ];
-// After the main workout on the video days (Tue, Wed, Fri): one or the other.
-// After Wednesday's Pilates: running only (her call, 2026-10-12).
+// After Tuesday's upper body: Zone 2 run only (her call, 2026-10-30).
 const RUN_AFTER = [
   H('🏃 After · Zone 2 Run', 'Only after the main workout.', undefined, C('run')),
   { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · easy — you can talk in short sentences' },
 ];
-const ROPE_OR_ZONE2 = [
-  H('🪢 After · Jump Rope or Zone 2', 'Pick ONE · only after the main workout.', undefined, C('rope-run')),
+// After Wednesday's and Friday's Pilates: jump rope only (her call, 2026-10-30).
+const ROPE_AFTER = [
+  H('🪢 After · Jump Rope', 'Only after the main workout.', undefined, C('rope-run')),
   { name: 'Jump Rope', detail: '5–15 min · moderate · 1 min jumping, 30–60 sec rest, repeat' },
-  { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · easy — you can talk in short sentences' },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
@@ -948,7 +947,7 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Tuesday · Upper Body', title: 'Shoulder Press · Row · Triceps',
-    sub: '20–25 min light weights · jump rope or Zone 2 · evening walk',
+    sub: '20–25 min light weights · Zone 2 run · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     // Toned arms, not bigger ones: light dumbbells, high reps, short rests.
     exercises: [
@@ -956,7 +955,7 @@ export const WORKOUT_DAYS = [
       { name: '1. Dumbbell Shoulder Press', detail: '3 × 15 reps · light dumbbells, seated · rest 45 sec · press straight up, lower slowly' },
       { name: '2. Dumbbell Bent-Over Row', detail: '3 × 15 reps · rest 45 sec · elbows close to your body, squeeze your shoulder blades together' },
       { name: '3. Overhead Triceps Extension', detail: '3 × 15 reps · one dumbbell in both hands · rest 45 sec · elbows point up, works the back of the arms' },
-      ...ROPE_OR_ZONE2,
+      ...RUN_AFTER,
       ...walk('30–60'),
     ],
     trackLifts: true,
@@ -964,12 +963,12 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Wednesday · Pilates or Yoga', title: 'Izzy or Nicole · Zone 2 Run',
-    sub: '20–40 min video · Zone 2 run · evening walk',
+    day: 'Wednesday · Pilates or Yoga', title: 'Izzy or Nicole · Jump Rope',
+    sub: '20–40 min video · jump rope · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
       ...izzyOrNicole(),
-      ...RUN_AFTER,
+      ...ROPE_AFTER,
       ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
@@ -992,12 +991,12 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🧘', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Friday · Pilates or Yoga', title: 'Izzy or Nicole · Rope or Zone 2',
-    sub: '20–40 min video · jump rope or Zone 2 · evening walk',
+    day: 'Friday · Pilates or Yoga', title: 'Izzy or Nicole · Jump Rope',
+    sub: '20–40 min video · jump rope · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
       ...izzyOrNicole(),
-      ...ROPE_OR_ZONE2,
+      ...ROPE_AFTER,
       ...walk('30–60'),
     ],
     meals: DAILY_MEALS,
