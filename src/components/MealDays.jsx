@@ -147,7 +147,7 @@ function MealCard({ meal }) {
     <article className={`md-meal${meal.snack ? ' is-snack' : ''}`}>
       <div className="md-meal-main">
         <header className="md-meal-head">
-          <span className="md-time">{meal.time}</span>
+          {meal.time && <span className="md-time">{meal.time}</span>}
           <h4 className="md-meal-name">{meal.name}</h4>
         </header>
         <ul className="md-items">

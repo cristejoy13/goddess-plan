@@ -47,7 +47,7 @@ export const DAY_PLANS = [
     totals: { kcal: '≈ 1,200 kcal', protein: '≈ 79 g protein', fiber: '≈ 26 g fiber', carbs: '≈ 105 g carbs' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal', image: '/meal-ideas/day-glute-main.jpg',
+        name: 'Main Meal', image: '/meal-ideas/day-glute-main.jpg',
         items: [
           ['Chicken breast, cooked', '120 g'],
           ['Green peas', '70 g'],
@@ -81,7 +81,7 @@ export const DAY_PLANS = [
         optional: 'Add salt, black pepper, garlic, or calamansi.',
       },
       {
-        time: '3:00 PM', name: 'Snack', snack: true, image: '/meal-ideas/day-glute-snack.jpg',
+        name: 'Snack', snack: true, image: '/meal-ideas/day-glute-snack.jpg',
         items: [
           ['1 medium apple', '~180 g'],
           ['Greek yogurt', '100 g'],
@@ -91,7 +91,7 @@ export const DAY_PLANS = [
         stepsTitle: 'How to prepare', steps: SNACK_STEPS, after: 'No cooking needed.',
       },
       {
-        time: '7:00 PM', name: 'Dinner', image: '/meal-ideas/day-glute-dinner.jpg',
+        name: 'Dinner', image: '/meal-ideas/day-glute-dinner.jpg',
         items: [
           ['Whole eggs', '2'],
           ['Carrots', '100 g'],
@@ -124,7 +124,7 @@ export const DAY_PLANS = [
     totals: { kcal: '≈ 990–1,000 kcal', protein: '≈ 74 g protein', fiber: '≈ 25 g fiber' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal', image: '/meal-ideas/day-light-main.jpg',
+        name: 'Main Meal', image: '/meal-ideas/day-light-main.jpg',
         items: [
           ['Whole eggs', '2'],
           ['Egg whites', '150 g'],
@@ -142,7 +142,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack', snack: true, image: '/meal-ideas/day-light-snack.jpg',
+        name: 'Snack', snack: true, image: '/meal-ideas/day-light-snack.jpg',
         items: [
           ['1 medium apple', '~180 g'],
           ['Greek yogurt', '100 g'],
@@ -152,7 +152,7 @@ export const DAY_PLANS = [
         stepsTitle: 'How to prepare', steps: SNACK_STEPS, after: 'No cooking needed.',
       },
       {
-        time: '7:00 PM', name: 'Dinner', image: '/meal-ideas/day-light-dinner.jpg',
+        name: 'Dinner', image: '/meal-ideas/day-light-dinner.jpg',
         items: [
           ['Chicken breast, cooked', '70 g'],
           ['Squash', '200 g'],
@@ -174,7 +174,7 @@ export const DAY_PLANS = [
     totals: { kcal: '~1,200 kcal', protein: '~75 g protein', fiber: '~32 g fiber', iron: '~18 mg iron' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal · Beef + Greens Bowl', image: '/meal-ideas/day-glute-2-main.jpg',
+        name: 'Main Meal · Beef + Greens Bowl', image: '/meal-ideas/day-glute-2-main.jpg',
         items: [
           ['Lean ground beef, cooked', '100 g'],
           ['Cooked spinach', '120 g'],
@@ -199,7 +199,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack · Apple Yogurt Bowl', snack: true, image: '/meal-ideas/day-glute-2-snack.jpg',
+        name: 'Snack · Apple Yogurt Bowl', snack: true, image: '/meal-ideas/day-glute-2-snack.jpg',
         items: [
           ['Apple', '1 medium (~180 g)'],
           ['High-protein Greek yogurt', '100 g'],
@@ -218,7 +218,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', name: 'Dinner · Egg + Vegetable Plate', image: '/meal-ideas/day-glute-2-dinner.jpg',
+        name: 'Dinner · Egg + Vegetable Plate', image: '/meal-ideas/day-glute-2-dinner.jpg',
         items: [
           ['Whole eggs', '2'],
           ['Broccoli', '150 g'],
@@ -253,7 +253,7 @@ export const DAY_PLANS = [
     totals: { kcal: '~1,000 kcal', protein: '~78 g protein', fiber: '~30 g fiber', iron: '~19–20 mg iron' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal · Chicken + Greens Bowl', image: '/meal-ideas/day-light-2-main.jpg',
+        name: 'Main Meal · Chicken + Greens Bowl', image: '/meal-ideas/day-light-2-main.jpg',
         items: [
           ['Chicken breast, cooked', '110 g'],
           ['Cooked spinach', '150 g'],
@@ -278,7 +278,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack · Apple Yogurt Bowl', snack: true, image: '/meal-ideas/day-light-2-snack.jpg',
+        name: 'Snack · Apple Yogurt Bowl', snack: true, image: '/meal-ideas/day-light-2-snack.jpg',
         items: [
           ['Apple', '1 medium (~180 g)'],
           ['High-protein Greek yogurt', '100 g'],
@@ -295,7 +295,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', name: 'Dinner · Egg + Spinach + Broccoli Plate', image: '/meal-ideas/day-light-2-dinner.jpg',
+        name: 'Dinner · Egg + Spinach + Broccoli Plate', image: '/meal-ideas/day-light-2-dinner.jpg',
         items: [
           ['Whole egg', '1'],
           ['Cooked spinach', '150 g'],
@@ -327,7 +327,7 @@ export const DAY_PLANS = [
     totals: { kcal: '≈ 1,200 kcal', protein: '≈ 78 g protein', fiber: '≈ 30 g fiber', iron: '≈ 18–20 mg iron' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal · Mussels + Mung Bean Bowl', image: '/meal-ideas/day-glute-3-main.jpg',
+        name: 'Main Meal · Mussels + Mung Bean Bowl', image: '/meal-ideas/day-glute-3-main.jpg',
         items: [
           ['Cooked mussels', '120 g'],
           ['Cooked mung beans', '120 g'],
@@ -352,7 +352,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack · Apple + Yogurt Bowl', snack: true, image: '/meal-ideas/day-glute-3-snack.jpg',
+        name: 'Snack · Apple + Yogurt Bowl', snack: true, image: '/meal-ideas/day-glute-3-snack.jpg',
         items: [
           ['1 medium apple', ''],
           ['Greek yogurt', '100 g'],
@@ -370,7 +370,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', name: 'Dinner · Egg + Edamame Plate', image: '/meal-ideas/day-glute-3-dinner.jpg',
+        name: 'Dinner · Egg + Edamame Plate', image: '/meal-ideas/day-glute-3-dinner.jpg',
         items: [
           ['Whole eggs', '2'],
           ['Cooked edamame', '100 g'],
@@ -399,7 +399,7 @@ export const DAY_PLANS = [
     totals: { kcal: '≈ 1,000 kcal', protein: '≈ 73–77 g protein', fiber: '≈ 30 g fiber', iron: '≈ 18 mg iron' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal · Shrimp + Mung Bean Vegetable Bowl', image: '/meal-ideas/day-light-3-main.jpg',
+        name: 'Main Meal · Shrimp + Mung Bean Vegetable Bowl', image: '/meal-ideas/day-light-3-main.jpg',
         items: [
           ['Cooked shrimp', '120 g'],
           ['Cooked mung beans', '130 g'],
@@ -422,7 +422,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack · Apple + Yogurt Bowl', snack: true, image: '/meal-ideas/day-light-3-snack.jpg',
+        name: 'Snack · Apple + Yogurt Bowl', snack: true, image: '/meal-ideas/day-light-3-snack.jpg',
         items: [
           ['1 medium apple', ''],
           ['Greek yogurt', '100 g'],
@@ -439,7 +439,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', name: 'Dinner · Egg + Tofu + Vegetable Plate', image: '/meal-ideas/day-light-3-dinner.jpg',
+        name: 'Dinner · Egg + Tofu + Vegetable Plate', image: '/meal-ideas/day-light-3-dinner.jpg',
         items: [
           ['Whole egg', '1'],
           ['Firm tofu', '100 g'],
@@ -471,7 +471,7 @@ export const DAY_PLANS = [
     totals: { kcal: '≈ 1,195 kcal', protein: '≈ 77–80 g protein', fiber: '≈ 30 g fiber', iron: '≈ 18–20 mg iron' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal · Lean Beef + Chickpea Quinoa Bowl', image: '/meal-ideas/day-glute-4-main.jpg',
+        name: 'Main Meal · Lean Beef + Chickpea Quinoa Bowl', image: '/meal-ideas/day-glute-4-main.jpg',
         items: [
           ['Lean beef, cooked', '90 g'],
           ['Cooked chickpeas', '100 g'],
@@ -499,7 +499,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack · Apple + Yogurt', snack: true, image: '/meal-ideas/day-glute-4-snack.jpg',
+        name: 'Snack · Apple + Yogurt', snack: true, image: '/meal-ideas/day-glute-4-snack.jpg',
         items: [
           ['1 medium apple', ''],
           ['Greek yogurt', '100 g'],
@@ -509,7 +509,7 @@ export const DAY_PLANS = [
         stepsTitle: 'How to prepare', steps: APPLE_YOGURT_STEPS,
       },
       {
-        time: '7:00 PM', name: 'Dinner · Sardine + White Bean Vegetable Bowl', image: '/meal-ideas/day-glute-4-dinner.jpg',
+        name: 'Dinner · Sardine + White Bean Vegetable Bowl', image: '/meal-ideas/day-glute-4-dinner.jpg',
         items: [
           ['Sardines', '60 g'],
           ['Cooked white beans', '80 g'],
@@ -528,7 +528,7 @@ export const DAY_PLANS = [
     totals: { kcal: '≈ 1,000 kcal', protein: '≈ 72–76 g protein', fiber: '≈ 29–32 g fiber', iron: '≈ 18–20 mg iron' },
     meals: [
       {
-        time: '1:00 PM', name: 'Main Meal · Tuna + Black Bean Kangkong Bowl', image: '/meal-ideas/day-light-4-main.jpg',
+        name: 'Main Meal · Tuna + Black Bean Kangkong Bowl', image: '/meal-ideas/day-light-4-main.jpg',
         items: [
           ['Tuna in water, drained', '100 g'],
           ['Cooked black beans', '120 g'],
@@ -554,7 +554,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '3:00 PM', name: 'Snack · Apple + Yogurt', snack: true, image: '/meal-ideas/day-light-4-snack.jpg',
+        name: 'Snack · Apple + Yogurt', snack: true, image: '/meal-ideas/day-light-4-snack.jpg',
         items: [
           ['1 medium apple', ''],
           ['Greek yogurt', '100 g'],
@@ -564,7 +564,7 @@ export const DAY_PLANS = [
         stepsTitle: 'How to prepare', steps: APPLE_YOGURT_STEPS,
       },
       {
-        time: '7:00 PM', name: 'Dinner · Oyster + Mushroom Cauliflower Plate', image: '/meal-ideas/day-light-4-dinner.jpg',
+        name: 'Dinner · Oyster + Mushroom Cauliflower Plate', image: '/meal-ideas/day-light-4-dinner.jpg',
         items: [
           ['Cooked or canned oysters, drained', '85 g'],
           ['Cauliflower', '200 g'],
@@ -598,11 +598,11 @@ export const DAY_PLANS = [
       },
     ],
   },
-  // Fifth plans (sent 2026-10-30): built round the workout — before, after,
-  // then a 7 PM choice of two. Her numbers came for the glute day only (the
-  // 7 PM numbers are for the apple + yogurt); the light day has none, so none
-  // are shown. Only the option with numbers goes on the calendar when the
-  // plan is hearted; the soup is the other choice.
+  // Fifth plans (sent 2026-10-30, changed 2026-10-31): built round the
+  // workout. The glute day is four meals — before, after, the soup for dinner,
+  // then the apple + yogurt. The light day is three — before, the main meal,
+  // then soup OR apple + yogurt if still hungry. Her numbers came for the
+  // glute day only (none for the soup); the light day has none, so none show.
   {
     id: 'dp-glute-5', type: 'glute', name: 'Coffee + Chicken Day',
     image: '/meal-ideas/day-glute-5-plan.jpg',
@@ -657,7 +657,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', option: 1, name: 'Option 1 · Light Vegetable Soup', image: '/meal-ideas/day-glute-5-soup.jpg',
+        time: 'Dinner', name: 'Light Vegetable Soup', image: '/meal-ideas/day-glute-5-soup.jpg',
         items: [
           ['Cabbage', '100 g'],
           ['Carrots', '70 g'],
@@ -680,7 +680,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', option: 2, name: 'Option 2 · Apple + Yogurt', image: '/meal-ideas/day-glute-5-yogurt.jpg',
+        time: 'Snack', name: 'Apple + Yogurt', snack: true, image: '/meal-ideas/day-glute-5-yogurt.jpg',
         kcal: '≈ 230–250 kcal', protein: '~11–13 g protein', carbs: '~35–40 g carbs', fat: '~5–7 g fat', fiber: '~8–9 g fiber', iron: '~1 mg iron',
         items: [
           ['Apple', '1 medium'],
@@ -726,7 +726,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: 'After workout', name: 'Boiled Eggs with Sesame + Soy', image: '/meal-ideas/day-light-5-after.jpg',
+        time: 'Main meal', name: 'Boiled Eggs with Sesame + Soy', image: '/meal-ideas/day-light-5-after.jpg',
         items: [
           ['Whole eggs', '2'],
           ['Sesame oil', '1 tsp'],
@@ -749,7 +749,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', option: 1, name: 'Option 1 · Light Vegetable Soup', image: '/meal-ideas/day-light-5-soup.jpg',
+        time: 'If still hungry', option: 1, name: 'Option 1 · Light Vegetable Soup', image: '/meal-ideas/day-light-5-soup.jpg',
         items: [
           ['Cabbage', '100 g'],
           ['Carrots', '70 g'],
@@ -772,7 +772,7 @@ export const DAY_PLANS = [
         ],
       },
       {
-        time: '7:00 PM', option: 2, name: 'Option 2 · Apple + Yogurt', image: '/meal-ideas/day-light-5-yogurt.jpg',
+        time: 'If still hungry', option: 2, name: 'Option 2 · Apple + Yogurt', image: '/meal-ideas/day-light-5-yogurt.jpg',
         items: [
           ['Apple', '1 medium'],
           ['Greek yogurt', '100 g'],

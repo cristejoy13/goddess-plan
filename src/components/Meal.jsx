@@ -1682,7 +1682,7 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
       const added = plan ? plan.meals.filter(m => !m.option || m.option === pickOpt).map(m => ({
         id: newEntryId(), time: time24(m.time) || nowTime(), text: m.name.includes('·') ? m.name : `${m.name} · ${plan.name}`, cal: numOf(m.kcal), protein: numOf(m.protein),
         ...(m.fiber && { fiber: numOf(m.fiber) }), ...(m.iron && { iron: numOf(m.iron, 1) }),
-        mealTime: m.snack ? 'snacks' : m.option || /dinner/i.test(m.name) ? 'dinner' : 'lunch',
+        mealTime: m.snack ? 'snacks' : m.option || /dinner/i.test(`${m.time} ${m.name}`) ? 'dinner' : 'lunch',
         dayType: type.id, dayPlanId: plan.id, createdAt: now, updatedAt: now,
       })) : [];
       const next = [...kept, ...added].sort(byTime);

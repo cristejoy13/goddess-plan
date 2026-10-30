@@ -1803,7 +1803,7 @@ function TodayMeals({ onOpen }) {
         <span className="home-meals-kicker">{WEEKDAY_NAMES[wd]}’s meals · {type.one}</span>
         <b>{hearted ? '♥ ' : ''}{plan.name}</b>
         {plan.totals.kcal && <small>{plan.totals.kcal} · {plan.totals.protein}</small>}
-        <span className="home-meals-times">{plan.meals.map(m => `${m.time} ${m.name}`).join(' · ')}</span>
+        <span className="home-meals-times">{plan.meals.map(m => [m.time, m.name].filter(Boolean).join(' ')).join(' · ')}</span>
       </span>
       <span className="home-meals-go" aria-hidden="true">›</span>
     </button>
