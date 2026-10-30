@@ -37,6 +37,9 @@ const SNACK_STEPS = [
   'Mix everything together or eat the apple separately.',
 ];
 
+// The apple + yogurt + chia snack in her fourth plans (light day's steps).
+const APPLE_YOGURT_STEPS = ['Slice the apple.', 'Add yogurt to a bowl.', 'Add apple.', 'Sprinkle chia seeds.', 'Mix and eat.'];
+
 export const DAY_PLANS = [
   {
     id: 'dp-glute-1', type: 'glute', name: 'Glute Day',
@@ -455,6 +458,142 @@ export const DAY_PLANS = [
           'Put everything on one plate.',
           'Sprinkle pumpkin seeds.',
           'Squeeze calamansi over the vegetables.',
+        ],
+      },
+    ],
+  },
+  // Fourth plans (sent 2026-10-30). The glute day came with two daily totals;
+  // this shows the one at the end of her plan. Its snack is the same as the
+  // light day's, so it shares those steps; its dinner came without steps.
+  {
+    id: 'dp-glute-4', type: 'glute', name: 'Beef + Chickpea Quinoa Day',
+    image: '/meal-ideas/day-glute-4-plan.jpg',
+    totals: { kcal: '≈ 1,195 kcal', protein: '≈ 77–80 g protein', fiber: '≈ 30 g fiber', iron: '≈ 18–20 mg iron' },
+    meals: [
+      {
+        time: '1:00 PM', name: 'Main Meal · Lean Beef + Chickpea Quinoa Bowl', image: '/meal-ideas/day-glute-4-main.jpg',
+        items: [
+          ['Lean beef, cooked', '90 g'],
+          ['Cooked chickpeas', '100 g'],
+          ['Cooked quinoa', '100 g'],
+          ['Cooked kale', '100 g'],
+          ['Sunflower seeds', '15 g'],
+          ['Tahini', '15 g'],
+          ['Olive oil', '5 g'],
+          ['Lemon or calamansi', ''],
+        ],
+        kcal: '≈ 680 kcal', protein: '≈ 42–44 g protein', fiber: '≈ 13–14 g fiber', iron: '≈ 10–11 mg iron',
+        stepsTitle: 'How to cook',
+        steps: [
+          'Season the beef with garlic and black pepper.',
+          'Cook it in a pan until fully browned.',
+          'Cook quinoa separately.',
+          'Steam or sauté the kale.',
+          'Warm the chickpeas.',
+          'Put quinoa in a bowl.',
+          'Add beef, chickpeas, and kale.',
+          'Sprinkle sunflower seeds.',
+          'Add tahini.',
+          'Drizzle olive oil.',
+          'Squeeze lemon or calamansi on top.',
+        ],
+      },
+      {
+        time: '3:00 PM', name: 'Snack · Apple + Yogurt', snack: true, image: '/meal-ideas/day-glute-4-snack.jpg',
+        items: [
+          ['1 medium apple', ''],
+          ['Greek yogurt', '100 g'],
+          ['Chia seeds', '15 g'],
+        ],
+        kcal: '≈ 225 kcal', protein: '≈ 8–11 g protein', fiber: '≈ 9–10 g fiber', iron: '≈ 1.5 mg iron',
+        stepsTitle: 'How to prepare', steps: APPLE_YOGURT_STEPS,
+      },
+      {
+        time: '7:00 PM', name: 'Dinner · Sardine + White Bean Vegetable Bowl', image: '/meal-ideas/day-glute-4-dinner.jpg',
+        items: [
+          ['Sardines', '60 g'],
+          ['Cooked white beans', '80 g'],
+          ['Bok choy', '150 g'],
+          ['Sesame seeds', '10 g'],
+          ['Calamansi or lemon', ''],
+          ['Black pepper', ''],
+        ],
+        kcal: '≈ 290 kcal', protein: '≈ 25–27 g protein', fiber: '≈ 7–8 g fiber', iron: '≈ 7–8 mg iron',
+      },
+    ],
+  },
+  {
+    id: 'dp-light-4', type: 'light', name: 'Tuna + Black Bean Day',
+    image: '/meal-ideas/day-light-4-plan.jpg',
+    totals: { kcal: '≈ 1,000 kcal', protein: '≈ 72–76 g protein', fiber: '≈ 29–32 g fiber', iron: '≈ 18–20 mg iron' },
+    meals: [
+      {
+        time: '1:00 PM', name: 'Main Meal · Tuna + Black Bean Kangkong Bowl', image: '/meal-ideas/day-light-4-main.jpg',
+        items: [
+          ['Tuna in water, drained', '100 g'],
+          ['Cooked black beans', '120 g'],
+          ['Kangkong', '150 g'],
+          ['Sesame seeds', '15 g'],
+          ['Olive oil', '5 g'],
+          ['Garlic', ''],
+          ['Calamansi', ''],
+        ],
+        kcal: '≈ 445–460 kcal', protein: '≈ 45–47 g protein', fiber: '≈ 14–15 g fiber', iron: '≈ 8–9 mg iron',
+        stepsTitle: 'How to cook',
+        steps: [
+          'Drain the tuna.',
+          'Warm the black beans.',
+          'Sauté garlic in 1 tsp olive oil.',
+          'Add kangkong.',
+          'Cook until wilted.',
+          'Add the black beans.',
+          'Add tuna last.',
+          'Mix gently.',
+          'Sprinkle sesame seeds.',
+          'Squeeze calamansi before eating.',
+        ],
+      },
+      {
+        time: '3:00 PM', name: 'Snack · Apple + Yogurt', snack: true, image: '/meal-ideas/day-light-4-snack.jpg',
+        items: [
+          ['1 medium apple', ''],
+          ['Greek yogurt', '100 g'],
+          ['Chia seeds', '15 g'],
+        ],
+        kcal: '≈ 225 kcal', protein: '≈ 8–11 g protein', fiber: '≈ 9–10 g fiber', iron: '≈ 1.5 mg iron',
+        stepsTitle: 'How to prepare', steps: APPLE_YOGURT_STEPS,
+      },
+      {
+        time: '7:00 PM', name: 'Dinner · Oyster + Mushroom Cauliflower Plate', image: '/meal-ideas/day-light-4-dinner.jpg',
+        items: [
+          ['Cooked or canned oysters, drained', '85 g'],
+          ['Cauliflower', '200 g'],
+          ['Mushrooms', '150 g'],
+          ['Olive oil', '10 g'],
+          ['Garlic', ''],
+          ['Black pepper', ''],
+          ['Lemon or calamansi', ''],
+        ],
+        kcal: '≈ 310–330 kcal', protein: '≈ 19–21 g protein', fiber: '≈ 6–7 g fiber', iron: '≈ 8–9 mg iron',
+        whyTitle: 'Why dinner helps satiety',
+        why: [
+          ['Oysters', 'protein + iron'],
+          ['Cauliflower', 'high volume + fiber'],
+          ['Mushrooms', 'volume + micronutrients'],
+          ['Olive oil', 'fat for longer satiety'],
+        ],
+        stepsTitle: 'How to cook',
+        steps: [
+          'Steam the cauliflower.',
+          'Slice the mushrooms.',
+          'Heat olive oil in a pan.',
+          'Add garlic and mushrooms.',
+          'Cook until mushrooms become tender.',
+          'Add the oysters.',
+          'Heat gently until completely warmed.',
+          'Serve with cauliflower.',
+          'Add black pepper.',
+          'Squeeze lemon or calamansi on top.',
         ],
       },
     ],
