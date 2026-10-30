@@ -8,7 +8,7 @@ import { ask } from '../utils/ask';
 import Camera from './Camera';
 import PhotoView from './PhotoView';
 import MealDays from './MealDays';
-import { DAY_PLANS, DAY_TYPES, numOf, time24 } from '../data/mealDays';
+import { DAY_PLANS, DAY_TYPES, dayTypeOf, numOf, time24 } from '../data/mealDays';
 import {
   dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog, parseCal,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -98,6 +98,14 @@ function averageBurn(profile = readProfile()) {
 // they set a goal for a week themselves.
 function planGoal(profile = readProfile()) {
   return isOwner(profile) ? null : (profile?.targets?.calories ?? null);
+}
+
+// Her own goal is set by the kind of day (2026-10-31): 1,200 on a glute day,
+// 1,000 on a light day. It wins over any number typed for the week.
+function dayTypeGoal(key, profile = readProfile()) {
+  if (!key || !isOwner(profile)) return null;
+  const type = dayTypeOf((new Date(`${key}T12:00:00`).getDay() + 6) % 7);
+  return type?.kcalGoal ? { cal: type.kcalGoal, label: type.one } : null;
 }
 
 // One short line under Garmin cal burned (2026-10-21), so she can see whether
@@ -831,7 +839,7 @@ function MealForm({ initial, onSubmit, onCancel, time: dayTime, setTime: setDayT
 // the week, not only Monday — she can reach it from whichever day she has
 // open, and the heading names the week it will change so there is never a
 // question of which seven days are about to move.
-function GoalForm({ cal, weekLabel, onSave }) {
+function GoalForm({ cal, weekLabel, fixedLabel, onSave }) {
   const [draft, setDraft] = useState(() => (cal != null ? String(cal) : ''));
   const [open, setOpen] = useState(false);
   const [warn, setWarn] = useState('');
@@ -868,10 +876,12 @@ function GoalForm({ cal, weekLabel, onSave }) {
     return (
       <div className="ml-goal ml-goal-shut">
         <div className="ml-goal-head">
-          <span className="ml-goal-lbl">🎯 Goal · {weekLabel}</span>
-          <button type="button" className="ml-goal-edit" onClick={() => setOpen(true)}>
-            {cal != null ? 'Edit' : '＋ Set'}
-          </button>
+          <span className="ml-goal-lbl">🎯 Goal · {fixedLabel || weekLabel}</span>
+          {!fixedLabel && (
+            <button type="button" className="ml-goal-edit" onClick={() => setOpen(true)}>
+              {cal != null ? 'Edit' : '＋ Set'}
+            </button>
+          )}
         </div>
         <div className="ml-goal-val">
           {cal != null
@@ -1176,7 +1186,7 @@ function EntryRow({ entry, onEdit, onDelete }) {
 }
 
 // ─── the open day ──────────────────────────────────────────────────────────
-function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFrom, watchNote, weekAvg, goal, weekLabel, left,
+function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFrom, watchNote, weekAvg, goal, goalLabel, weekLabel, left,
                     onAdd, onEdit, onDelete, onWeight, onGoal, onClose, saveFailed }) {
   const dow = (new Date(year, monthIdx, day).getDay() + 6) % 7;
   const { total, missing } = calTotals(entries);
@@ -1239,7 +1249,7 @@ function DayPanel({ year, monthIdx, day, entries, kg, burn, averageBurn, burnFro
           </button>
         ))}
       </div>
-      {show('goal') && <GoalForm cal={goal} weekLabel={weekLabel} onSave={onGoal} />}
+      {show('goal') && <GoalForm cal={goal} weekLabel={weekLabel} fixedLabel={goalLabel} onSave={onGoal} />}
 
       {show('meals') && <section className="ml-box ml-box-meals" aria-label="Meals and calories">
       <GroqReminder />
@@ -1746,6 +1756,7 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
   const openKey = openDay ? dateKey(year, monthIdx, openDay) : null;
   const openIsSunday = openDay ? new Date(year, monthIdx, openDay).getDay() === 0 : false;
   const openMonday = openDay ? weekStartKey(year, monthIdx, openDay) : null;
+  const openDayGoal = dayTypeGoal(openKey);
 
   return (
     <div className="section">
@@ -1769,7 +1780,7 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
             key={tab}
             time={MEAL_TIMES.find(t => t.id === tab)}
             entries={days[dateKeyOf()] || []}
-            goal={goalForWeek(state, weekStartKey(today.y, today.m, today.d)) ?? planGoal()}
+            goal={dayTypeGoal(dateKeyOf())?.cal ?? goalForWeek(state, weekStartKey(today.y, today.m, today.d)) ?? planGoal()}
             onEat={eatIdea}
           />
         </div>
@@ -1909,9 +1920,10 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
              closes — on Sunday — and nowhere else, rather than on every day as
              a half-finished figure. */
           weekAvg={openIsSunday ? weekWeightAvg(state, year, monthIdx, openDay) : null}
-          goal={openMonday ? (goalForWeek(state, openMonday) ?? planGoal()) : null}
+          goal={openDayGoal ? openDayGoal.cal : openMonday ? (goalForWeek(state, openMonday) ?? planGoal()) : null}
+          goalLabel={openDayGoal?.label}
           weekLabel={openMonday ? weekLabelOf(openMonday) : ''}
-          left={openKey ? (calsLeft(state, openKey) ?? (planGoal() != null ? planGoal() - calTotals(days[openKey] || []).total : null)) : null}
+          left={openDayGoal ? openDayGoal.cal - calTotals(days[openKey] || []).total : openKey ? (calsLeft(state, openKey) ?? (planGoal() != null ? planGoal() - calTotals(days[openKey] || []).total : null)) : null}
           onAdd={(fields) => addEntry(openDay, fields)}
           onEdit={(entry, fields) => editEntry(openDay, entry, fields)}
           onDelete={(entry) => deleteEntry(openDay, entry)}

@@ -17,11 +17,11 @@ export const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const DAY_TYPES = [
   {
     id: 'glute', name: 'Glute Days', one: 'Glute day', cover: '/meal-ideas/day-glute-cover.jpg',
-    days: [0, 3, 5], kcal: '1,200 kcal',
+    days: [0, 3, 5], kcal: '1,200 kcal', kcalGoal: 1200,
   },
   {
     id: 'light', name: 'Light Days', one: 'Light day', cover: '/meal-ideas/day-light-cover.jpg',
-    days: [1, 2, 4, 6], kcal: '1,000 kcal',
+    days: [1, 2, 4, 6], kcal: '1,000 kcal', kcalGoal: 1000,
     dayNotes: { 6: 'Light / flexible day' },
   },
 ];
