@@ -12644,7 +12644,7 @@ body.gp-dragging { overscroll-behavior: none; }
 .md-items li span { display: flex; gap: 8px; align-items: baseline; }
 .md-items li span::before { content: ''; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); transform: translateY(-2px); }
 .md-items b { font-weight: 700; padding-left: 12px; border-left: 1px solid rgba(80,60,30,0.25); text-align: right; white-space: nowrap; }
-.md-sum { padding: 10px 14px; border-radius: 999px; background: var(--sage); color: var(--ink); text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; font-weight: 700; line-height: 1.3; }
+.md-sum { padding: 10px 14px; border-radius: 20px; background: var(--sage); color: var(--ink); text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; font-weight: 700; line-height: 1.3; }
 .md-meal.is-snack .md-sum { background: var(--peach); }
 .md-more { grid-column: 1 / -1; padding: 0 14px 12px; display: flex; flex-direction: column; gap: 8px; }
 .md-fold { border-radius: 12px; background: #fff; border: 1px solid rgba(80,60,30,0.12); }
@@ -12719,3 +12719,6 @@ button.md-shop-row { cursor: pointer; }
 .ml-hearted-text { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 2px; padding: 26px 10px 10px; color: #fff; background: linear-gradient(180deg, rgba(20,4,16,0), rgba(20,4,16,0.82)); }
 .ml-hearted-text small { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #ffd0e3; }
 .ml-hearted-text b { font-size: 14px; line-height: 1.2; }
+
+/* "OR" between a plan's two 7 PM options (2026-10-30). */
+.md-or { align-self: center; justify-self: center; margin: -2px auto; padding: 4px 14px; border-radius: 999px; background: var(--green); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }

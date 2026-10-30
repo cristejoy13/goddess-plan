@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import PhotoView from './PhotoView';
 import Sheet from './Sheet';
 import { DAY_TYPES, DAY_PLANS, DAY_NAMES, DAY_SHORT, DAY_PICK_KEY, plansFor, shopList } from '../data/mealDays';
@@ -113,6 +113,7 @@ function Mark({ k }) {
 
 function Totals({ totals }) {
   const parts = ['kcal', 'protein', 'fiber', 'carbs', 'iron'].filter(k => totals[k]);
+  if (!parts.length) return null;
   return (
     <div className="md-totals">
       {parts.map(k => (
@@ -154,7 +155,7 @@ function MealCard({ meal }) {
             <li key={food}><span>{food}</span>{amount && <b>{amount}</b>}</li>
           ))}
         </ul>
-        <div className="md-sum">{[meal.kcal, meal.protein, meal.fiber, meal.iron].filter(Boolean).join(' · ')}</div>
+        {(meal.kcal || meal.protein) && <div className="md-sum">{[meal.kcal, meal.protein, meal.carbs, meal.fat, meal.fiber, meal.iron].filter(Boolean).join(' · ')}</div>}
       </div>
       {meal.image && <img className="md-meal-pic" src={meal.image} alt={meal.name} loading="lazy" />}
       {(meal.why || meal.steps) && (
@@ -197,7 +198,12 @@ export function PlanPage({ plan, type, hearted, onHeart, onShop }) {
       <DayRow type={type} />
       <Totals totals={plan.totals} />
       <div className="md-meals">
-        {plan.meals.map(m => <MealCard key={m.time} meal={m} />)}
+        {plan.meals.map((m, i) => (
+          <Fragment key={i}>
+            {m.option > 1 && <div className="md-or">OR</div>}
+            <MealCard meal={m} />
+          </Fragment>
+        ))}
       </div>
       {plan.card && (
         <button type="button" className="md-card-btn" onClick={() => setCard(true)}>See your plan card</button>
@@ -290,7 +296,7 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack,
                   <img src={p.image} alt="" />
                   <span className="md-plancard-text">
                     <b>{p.name}</b>
-                    <small>{p.totals.kcal} · {p.totals.protein}</small>
+                    {p.totals.kcal && <small>{p.totals.kcal} · {p.totals.protein}</small>}
                   </span>
                 </button>
                 <ShopButton plan={p} onOpen={setShopFor} className="md-shop-btn-tile" />

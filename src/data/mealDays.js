@@ -598,6 +598,197 @@ export const DAY_PLANS = [
       },
     ],
   },
+  // Fifth plans (sent 2026-10-30): built round the workout — before, after,
+  // then a 7 PM choice of two. Her numbers came for the glute day only (the
+  // 7 PM numbers are for the apple + yogurt); the light day has none, so none
+  // are shown. Only the option with numbers goes on the calendar when the
+  // plan is hearted; the soup is the other choice.
+  {
+    id: 'dp-glute-5', type: 'glute', name: 'Coffee + Chicken Day',
+    image: '/meal-ideas/day-glute-5-plan.jpg',
+    totals: { kcal: '≈ 800–890 kcal', protein: '≈ 66–69 g protein', fiber: '≈ 16–18 g fiber', iron: '≈ 7–8 mg iron' },
+    meals: [
+      {
+        time: 'Before workout', name: 'Coffee + Toast', image: '/meal-ideas/day-glute-5-before.jpg',
+        items: [
+          ['Kopiko Blanca', '1 sachet'],
+          ['Espresso', '1 shot'],
+          ['Hot water', ''],
+          ['Bread', '1 slice'],
+        ],
+        kcal: '≈ 180–220 kcal', protein: '~4–6 g protein', carbs: '~32–38 g carbs', fat: '~4–6 g fat', fiber: '~2 g fiber', iron: '~1 mg iron',
+        stepsTitle: 'How to make',
+        steps: [
+          'Prepare 1 shot of espresso.',
+          'Put Kopiko Blanca in a cup.',
+          'Add hot water.',
+          'Add the espresso.',
+          'Stir well.',
+          'Toast 1 slice of bread.',
+          'Eat the toast with your coffee.',
+        ],
+      },
+      {
+        time: 'After workout', name: 'Chicken + Spinach + Papaya', image: '/meal-ideas/day-glute-5-after.jpg',
+        items: [
+          ['Chicken breast, cooked', '150 g'],
+          ['Spinach', '100 g'],
+          ['Papaya', '150–200 g'],
+          ['Olive oil', '1 tsp'],
+          ['Garlic', '2 cloves'],
+          ['Black pepper', ''],
+          ['Salt', 'optional'],
+          ['Calamansi', 'optional'],
+        ],
+        kcal: '≈ 380–420 kcal', protein: '~50 g protein', carbs: '~20–25 g carbs', fat: '~10–12 g fat', fiber: '~6–7 g fiber', iron: '~5–6 mg iron',
+        stepsTitle: 'How to cook',
+        steps: [
+          'Cut chicken into bite-size pieces.',
+          'Heat olive oil in a pan.',
+          'Add minced garlic.',
+          'Add chicken.',
+          'Cook or reheat until the chicken is hot.',
+          'Add spinach.',
+          'Cook until spinach wilts.',
+          'Season with black pepper.',
+          'Put on a plate.',
+          'Eat papaya on the side.',
+          'Squeeze calamansi over the chicken if you want.',
+        ],
+      },
+      {
+        time: '7:00 PM', option: 1, name: 'Option 1 · Light Vegetable Soup', image: '/meal-ideas/day-glute-5-soup.jpg',
+        items: [
+          ['Cabbage', '100 g'],
+          ['Carrots', '70 g'],
+          ['Mushrooms', '100 g'],
+          ['Ginger', '5–10 g'],
+          ['Garlic', '2 cloves'],
+          ['Water', '400 ml'],
+          ['Salt', 'small amount'],
+          ['Black pepper', ''],
+        ],
+        stepsTitle: 'How to cook',
+        steps: [
+          'Boil the water.',
+          'Add ginger and garlic.',
+          'Add carrots.',
+          'Cook for 5 minutes.',
+          'Add mushrooms and cabbage.',
+          'Simmer for 5–7 minutes.',
+          'Add salt and pepper.',
+        ],
+      },
+      {
+        time: '7:00 PM', option: 2, name: 'Option 2 · Apple + Yogurt', image: '/meal-ideas/day-glute-5-yogurt.jpg',
+        kcal: '≈ 230–250 kcal', protein: '~11–13 g protein', carbs: '~35–40 g carbs', fat: '~5–7 g fat', fiber: '~8–9 g fiber', iron: '~1 mg iron',
+        items: [
+          ['Apple', '1 medium'],
+          ['Greek yogurt', '100 g'],
+          ['Chia seeds', 'optional'],
+        ],
+        stepsTitle: 'How to make',
+        steps: [
+          'Slice the apple.',
+          'Put yogurt in a bowl.',
+          'Add apple.',
+          'Add chia seeds if desired.',
+          'Mix and eat.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'dp-light-5', type: 'light', name: 'Smoothie + Eggs Day',
+    image: '/meal-ideas/day-light-5-plan.jpg',
+    totals: {},
+    meals: [
+      {
+        time: 'Before workout', name: 'Smoothie', image: '/meal-ideas/day-light-5-before.jpg',
+        items: [
+          ['Soy milk', '200 ml'],
+          ['Banana', '1 small'],
+          ['Apple', '1/2 medium'],
+          ['Collagen powder', '10 g'],
+          ['Granola', '15 g'],
+          ['Mixed nuts', '10 g'],
+          ['Ice', 'optional'],
+        ],
+        stepsTitle: 'How to make',
+        steps: [
+          'Add soy milk to the blender.',
+          'Add banana and apple.',
+          'Add collagen powder.',
+          'Add ice if you want it colder.',
+          'Blend until smooth.',
+          'Pour into a glass or bowl.',
+          'Add granola and nuts on top.',
+        ],
+      },
+      {
+        time: 'After workout', name: 'Boiled Eggs with Sesame + Soy', image: '/meal-ideas/day-light-5-after.jpg',
+        items: [
+          ['Whole eggs', '2'],
+          ['Sesame oil', '1 tsp'],
+          ['Soy sauce', '1 tsp'],
+          ['Calamansi', '1'],
+          ['Black pepper', 'optional'],
+          ['Sesame seeds', 'optional'],
+        ],
+        stepsTitle: 'How to make',
+        steps: [
+          'Put eggs in a pot.',
+          'Cover with water.',
+          'Boil for about 8–10 minutes.',
+          'Cool and peel.',
+          'Cut eggs in half.',
+          'Mix sesame oil and soy sauce.',
+          'Drizzle over the eggs.',
+          'Squeeze calamansi on top.',
+          'Add black pepper or sesame seeds if you want.',
+        ],
+      },
+      {
+        time: '7:00 PM', option: 1, name: 'Option 1 · Light Vegetable Soup', image: '/meal-ideas/day-light-5-soup.jpg',
+        items: [
+          ['Cabbage', '100 g'],
+          ['Carrots', '70 g'],
+          ['Mushrooms', '100 g'],
+          ['Ginger', '5–10 g'],
+          ['Garlic', '2 cloves'],
+          ['Water', '400 ml'],
+          ['Salt', 'small amount'],
+          ['Black pepper', ''],
+        ],
+        stepsTitle: 'How to cook',
+        steps: [
+          'Boil the water.',
+          'Add sliced ginger and garlic.',
+          'Add carrots.',
+          'Cook for 5 minutes.',
+          'Add mushrooms and cabbage.',
+          'Simmer another 5–7 minutes.',
+          'Add salt and pepper.',
+        ],
+      },
+      {
+        time: '7:00 PM', option: 2, name: 'Option 2 · Apple + Yogurt', image: '/meal-ideas/day-light-5-yogurt.jpg',
+        items: [
+          ['Apple', '1 medium'],
+          ['Greek yogurt', '100 g'],
+          ['Chia seeds', 'optional'],
+        ],
+        stepsTitle: 'How to make',
+        steps: [
+          'Slice the apple.',
+          'Put yogurt in a bowl.',
+          'Add apple.',
+          'Add chia seeds if desired.',
+          'Mix and eat.',
+        ],
+      },
+    ],
+  },
 ];
 
 export const plansFor = type => DAY_PLANS.filter(p => p.type === type);
@@ -611,10 +802,10 @@ export function numOf(text, decimals = 0) {
   const f = 10 ** decimals;
   return Math.round(v * f) / f;
 }
-// "1:00 PM" → "13:00", as the calendar writes times.
+// "1:00 PM" → "13:00", as the calendar writes times; null for "Before workout".
 export function time24(text) {
   const m = String(text || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-  if (!m) return '12:00';
+  if (!m) return null;
   let h = Number(m[1]) % 12;
   if (/pm/i.test(m[3])) h += 12;
   return `${String(h).padStart(2, '0')}:${m[2]}`;
