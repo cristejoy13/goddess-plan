@@ -1442,19 +1442,31 @@ const HEART = on => (
 
 // Under the My Meals title (2026-10-30): the pictures she hearted TODAY —
 // read from today's calendar, so they clear by themselves when the day ends.
-// Brunch, Dinner, Snack, then a Days plan. A click opens that tab. Nothing
+// Every hearted meal and Days plan shows. A click opens that tab. Nothing
 // hearted today, nothing shown. (This replaced the picture that sat above
 // Today's nutrition in each meal tab.)
 function HeartedPictures({ entries, onOpen }) {
-  const items = MEAL_TIMES.map(t => {
-    const e = [...entries].reverse().find(x => x.ideaId && x.mealTime === t.id);
-    const idea = e && ideasFor(t.id).find(i => i.id === e.ideaId);
-    return idea?.image ? { key: t.id, img: idea.image, label: t.label, name: idea.name, tab: t.id } : null;
-  }).filter(Boolean);
-  const planEntry = entries.find(x => x.dayPlanId);
-  const plan = planEntry && DAY_PLANS.find(p => p.id === planEntry.dayPlanId);
-  const type = plan && DAY_TYPES.find(t => t.id === plan.type);
-  if (plan) items.push({ key: 'days', img: plan.image, label: type?.one || 'Day', name: plan.name, tab: 'days' });
+  // Every heart from today, in the order she hearted them — four Brunch
+  // hearts show four pictures. A Days plan shows once, however many meals.
+  const items = [];
+  const seen = new Set();
+  [...entries].sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt))).forEach(e => {
+    if (e.ideaId) {
+      const key = `${e.mealTime}:${e.ideaId}`;
+      const t = MEAL_TIMES.find(x => x.id === e.mealTime);
+      const idea = t && ideasFor(t.id).find(i => i.id === e.ideaId);
+      if (!idea?.image || seen.has(key)) return;
+      seen.add(key);
+      items.push({ key, img: idea.image, label: t.label, name: idea.name, tab: t.id });
+    } else if (e.dayPlanId) {
+      const key = `plan:${e.dayPlanId}`;
+      const plan = DAY_PLANS.find(p => p.id === e.dayPlanId);
+      if (!plan || seen.has(key)) return;
+      seen.add(key);
+      const type = DAY_TYPES.find(t => t.id === plan.type);
+      items.push({ key, img: plan.image, label: type?.one || 'Day', name: plan.name, tab: 'days' });
+    }
+  });
   if (!items.length) return null;
   return (
     <div className="ml-hearted">
