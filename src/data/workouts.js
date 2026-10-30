@@ -953,8 +953,8 @@ export const WORKOUT_DAYS = [
     exercises: [
       H('💪 Main Workout', '3 moves · light weights, high reps · tones, doesn’t bulk.', undefined, C('arms')),
       { name: '1. Dumbbell Shoulder Press', detail: '3 × 15 reps · light dumbbells, seated · rest 45 sec · press straight up, lower slowly' },
-      { name: '2. Dumbbell Bent-Over Row', detail: '3 × 15 reps · rest 45 sec · elbows close to your body, squeeze your shoulder blades together' },
-      { name: '3. Overhead Triceps Extension', detail: '3 × 15 reps · one dumbbell in both hands · rest 45 sec · elbows point up, works the back of the arms' },
+      { name: '2. Dumbbell Bent-Over Row', detail: '3 × 15 reps · both arms at once, the same weight in each hand · rest 45 sec · elbows close to your body, squeeze your shoulder blades together' },
+      { name: '3. Overhead Triceps Extension', detail: '3 × 15 reps · hold the weight over your head, lower it behind your head, then lift it back up · rest 45 sec · elbows point up and stay still' },
       ...RUN_AFTER,
       ...walk('30–60'),
     ],
