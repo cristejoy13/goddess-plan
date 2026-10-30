@@ -1,12 +1,14 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
 // Her plan of 2026-10-10, Monday to Sunday:
 //   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat · abs finisher
-//   Tue  Upper body & core — Pilates by Izzy · jump rope or Zone 2
-//   Wed  Pilates or yoga (Move With Nicole) · Zone 2 run only
+//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · jump rope or Zone 2
+//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · Zone 2 run only
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
-//   Fri  Pilates by Izzy, same as Tue · jump rope or Zone 2
-// (2026-10-23, her call: Izzy moved to Tue and Fri, Nicole to Wed.)
-//   Sat  Glutes C — squat, pause squat, lateral squat · abs finisher
+//   Fri  Pilates or yoga, same choice as Wed · jump rope or Zone 2
+//   Sat  Glutes C — squat to cross-body knee, RDL to squat clean, jump lunge · DB core flutters
+// (2026-10-30, her call: Tue became upper body only, toning the arms rather
+// than building them; Wed and Fri each offer Izzy or Nicole; Sat became
+// fast, sprint-like glute moves.)
 //   Sun  Biking, then swimming at 5 PM
 // An easy walk every day. Three main lifts on each glute day, never shared;
 // one abs move finishes each (cable crunch, hanging knee raise, hollow hold). They progress by reps first, then a
@@ -48,13 +50,11 @@ const walk = (min) => [
 ];
 
 
-// Move With Nicole only (2026-10-14: Jessica Diễm's videos removed).
-const izzy = cover => [
-  H('💪 Pick ONE video · Pilates by Izzy', 'Upper body & core · 20–35 min.', 'core', cover),
+// Wed and Fri (2026-10-30): one video from either teacher, her choice.
+const izzyOrNicole = () => [
+  H('💪 Pick ONE video · Pilates by Izzy', 'Or a Move With Nicole video below · 20–35 min.', 'core', C('pilates')),
   ...IZZY_ABS,
-];
-const pilatesOrYoga = cover => [
-  H('🧘 Pick ONE video · Move With Nicole', 'Pilates or yoga · 20–40 min.', 'core', cover),
+  H('🧘 Or ONE video · Move With Nicole', 'Pilates or yoga · 20–40 min.', 'core', C('yoga-tue')),
   ...NICOLE_FULLBODY,
 ];
 
@@ -947,23 +947,28 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Tuesday · Upper Body & Core', title: 'Pilates by Izzy · Rope or Zone 2',
-    sub: '20–35 min video · jump rope or Zone 2 · evening walk',
+    day: 'Tuesday · Upper Body', title: 'Shoulder Press · Row · Triceps',
+    sub: '20–25 min light weights · jump rope or Zone 2 · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
+    // Toned arms, not bigger ones: light dumbbells, high reps, short rests.
     exercises: [
-      ...izzy(C('pilates')),
+      H('💪 Main Workout', '3 moves · light weights, high reps · tones, doesn’t bulk.', undefined, C('arms')),
+      { name: '1. Dumbbell Shoulder Press', detail: '3 × 15 reps · light dumbbells, seated · rest 45 sec · press straight up, lower slowly' },
+      { name: '2. Dumbbell Bent-Over Row', detail: '3 × 15 reps · rest 45 sec · elbows close to your body, squeeze your shoulder blades together' },
+      { name: '3. Overhead Triceps Extension', detail: '3 × 15 reps · one dumbbell in both hands · rest 45 sec · elbows point up, works the back of the arms' },
       ...ROPE_OR_ZONE2,
       ...walk('30–60'),
     ],
+    trackLifts: true,
     meals: DAILY_MEALS,
   },
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Wednesday · Pilates or Yoga', title: 'Move With Nicole · Zone 2 Run',
+    day: 'Wednesday · Pilates or Yoga', title: 'Izzy or Nicole · Zone 2 Run',
     sub: '20–40 min video · Zone 2 run · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...pilatesOrYoga(C('yoga-tue')),
+      ...izzyOrNicole(),
       ...RUN_AFTER,
       ...walk('30–60'),
     ],
@@ -986,12 +991,12 @@ export const WORKOUT_DAYS = [
     meals: GLUTE_MEALS,
   },
   {
-    emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Friday · Upper Body & Core', title: 'Pilates by Izzy · Rope or Zone 2',
-    sub: '20–35 min video · jump rope or Zone 2 · evening walk',
+    emoji: '🧘', emojiBg: 'rgba(252,228,239,0.5)',
+    day: 'Friday · Pilates or Yoga', title: 'Izzy or Nicole · Rope or Zone 2',
+    sub: '20–40 min video · jump rope or Zone 2 · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...izzy(C('pilates')),
+      ...izzyOrNicole(),
       ...ROPE_OR_ZONE2,
       ...walk('30–60'),
     ],
@@ -999,18 +1004,15 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Saturday · Glutes C', title: 'Squat · Pause · Lateral · Abs',
-    sub: '35–45 min strength · abs finisher · evening walk',
+    day: 'Saturday · Glutes C', title: 'Squat Knee Drive · RDL Clean · Jump Lunge · Abs',
+    sub: '25–35 min power · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 lifts · in order.', undefined, C('glute-c')),
-      { name: '1. Dumbbell Squat', detail: '3 × 12 reps · dumbbells at your shoulders or one held at your chest · rest 90 sec · sit back, full depth' },
-      { name: '2. Pause Squat', detail: '3 × 8 reps · a little lighter than the squat · hold 2 sec at the bottom, then stand up strong · rest 90 sec' },
-      { name: '3. Side Squat (Lateral Squat)', detail: '3 × 10 reps each side · feet wide and planted, sit into one hip, keep the other leg straight · a light dumbbell when easy' },
-      // Ab wheel swapped for a no-equipment move (2026-10-14). The hollow
-      // body hold does the same job as the wheel — the whole front of the
-      // core resisting an arched back — on the floor, with nothing to buy.
-      ...absFinisher('Hollow Body Hold', '3 × 30 sec · lie on your back, lower back pressed into the floor · arms and legs long and lifted · bend your knees to make it easier', C('hollow-hold')),
+      H('🍑 Main Workout', '3 moves · fast and powerful, like sprints for your glutes.', undefined, C('glute-c')),
+      { name: '1. Squat to Cross-Body Knee Drive', detail: '3 × 10 reps each side · bodyweight or light dumbbells · squat, then stand up fast and drive one knee across to the opposite elbow · switch sides · rest 60 sec' },
+      { name: '2. RDL to Squat Clean', detail: '3 × 10 reps · light dumbbells · hinge into an RDL, then pull the dumbbells up to your shoulders as you drop into a squat, and stand up · rest 60–90 sec' },
+      { name: '3. Jump Lunges', detail: '3 × 16 reps (8 each leg) · switch legs in the air, land soft · rest 60 sec' },
+      ...absFinisher('DB Core Flutters', '3 × 30 sec · lie on your back, one light dumbbell held above your chest · lower back pressed into the floor · small, fast leg kicks', C('hollow-hold')),
       ...walk('30–60'),
     ],
     trackLifts: true,

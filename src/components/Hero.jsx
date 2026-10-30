@@ -39,10 +39,14 @@ function thisWeek() {
 // public/workouts/originals/pilates-friday.png). New yellow Tuesday Pilates
 // and purple Wednesday Yoga pictures (2026-10-29; full size in originals/
 // as pilates-tuesday-yellow.png and yoga-wednesday-purple.png).
-// her-pilates-run.jpg, her-yoga-a.jpg and her-yoga-b.jpg are now unused.
+// 2026-10-30: yellow Tuesday Arms, lilac Wednesday Pilates and red Friday
+// Pilates (originals/her-arms-tue.png, her-pilates-wed.png,
+// her-pilates-fri-red.png).
+// her-pilates-run.jpg, her-yoga-a.jpg and her-yoga-b.jpg are now unused, and so are her-pilates-tue.jpg,
+// her-yoga-wed.jpg and her-pilates-fri.jpg; all are kept.
 const HER_PICTURES = [
-  '/workouts/her-glute-a.jpg', '/workouts/her-pilates-tue.jpg', '/workouts/her-yoga-wed.jpg',
-  '/workouts/her-glute-b.jpg', '/workouts/her-pilates-fri.jpg', '/workouts/her-glute-c.jpg',
+  '/workouts/her-glute-a.jpg', '/workouts/her-arms-tue.jpg', '/workouts/her-pilates-wed.jpg',
+  '/workouts/her-glute-b.jpg', '/workouts/her-pilates-fri-red.jpg', '/workouts/her-glute-c.jpg',
   '/workouts/her-bike-swim.jpg',
 ];
 
