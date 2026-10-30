@@ -8,7 +8,7 @@ import { ask } from '../utils/ask';
 import Camera from './Camera';
 import PhotoView from './PhotoView';
 import MealDays from './MealDays';
-import { dayTypeOf, chosenPlan, numOf, time24 } from '../data/mealDays';
+import { DAY_PLANS, DAY_TYPES, numOf, time24 } from '../data/mealDays';
 import {
   dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog, parseCal,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -1440,25 +1440,28 @@ const HEART = on => (
   </svg>
 );
 
-// Under the My Meals title (2026-10-30): the pictures she has hearted — her
-// Brunch, Dinner and Snack, and today's Days plan. A click opens that tab.
-// Nothing hearted, nothing shown.
-function HeartedPictures({ onOpen }) {
-  const picks = loadPicks();
+// Under the My Meals title (2026-10-30): the pictures she hearted TODAY —
+// read from today's calendar, so they clear by themselves when the day ends.
+// Brunch, Dinner, Snack, then a Days plan. A click opens that tab. Nothing
+// hearted today, nothing shown. (This replaced the picture that sat above
+// Today's nutrition in each meal tab.)
+function HeartedPictures({ entries, onOpen }) {
   const items = MEAL_TIMES.map(t => {
-    const idea = ideasFor(t.id).find(i => i.id === picks[t.id]);
+    const e = [...entries].reverse().find(x => x.ideaId && x.mealTime === t.id);
+    const idea = e && ideasFor(t.id).find(i => i.id === e.ideaId);
     return idea?.image ? { key: t.id, img: idea.image, label: t.label, name: idea.name, tab: t.id } : null;
   }).filter(Boolean);
-  const type = dayTypeOf((new Date().getDay() + 6) % 7);
-  const day = type ? chosenPlan(type.id) : null;
-  if (day?.hearted && day.plan) items.push({ key: 'days', img: day.plan.image, label: type.one, name: day.plan.name, tab: 'days' });
+  const planEntry = entries.find(x => x.dayPlanId);
+  const plan = planEntry && DAY_PLANS.find(p => p.id === planEntry.dayPlanId);
+  const type = plan && DAY_TYPES.find(t => t.id === plan.type);
+  if (plan) items.push({ key: 'days', img: plan.image, label: type?.one || 'Day', name: plan.name, tab: 'days' });
   if (!items.length) return null;
   return (
     <div className="ml-hearted">
       {items.map(it => (
         <button key={it.key} type="button" className="ml-hearted-card" onClick={() => onOpen(it.tab)}>
           <img src={it.img} alt="" />
-          <span className="ml-hearted-text"><small>♥ {it.label}</small><b>{it.name}</b></span>
+          <span className="ml-hearted-text">{it.label !== it.name && <small>♥ {it.label}</small>}<b>{it.name}</b></span>
         </button>
       ))}
     </div>
@@ -1488,18 +1491,6 @@ function MealTimePanel({ time, entries, goal, onEat }) {
   }
   return (
     <div className="mt-panel" role="tabpanel" aria-label={time.label}>
-      {picked?.image ? (
-        <button type="button" className="mt-hero mt-hero-pic" onClick={() => setOpenIdea(picked.id)}>
-          <img src={picked.image} alt="" />
-          <span className="mt-hero-name">♥ {picked.name}{eatenToday(picked.id) ? ' · eaten today' : ''}</span>
-        </button>
-      ) : (
-        <div className="mt-hero">
-          <span className="mt-hero-icon" aria-hidden="true">{time.icon}</span>
-          <span className="mt-hero-text">No {time.label.toLowerCase()} picked yet</span>
-          <span className="mt-hero-hint">Heart a meal idea and its picture shows here.</span>
-        </div>
-      )}
       <TodayNutrition entries={entries} goal={goal} />
       <div className="mt-ideas">
         <div className="mt-nutri-title">Meal ideas</div>
@@ -1746,7 +1737,7 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">What you actually ate</div>
         <h2 className="s-title">My <em>Meals</em></h2>
-        <HeartedPictures onOpen={setTab} />
+        <HeartedPictures entries={days[dateKeyOf()] || []} onOpen={setTab} />
       </div>
 
       <MealTabs tab={tab} setTab={setTab} />
