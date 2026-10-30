@@ -8,6 +8,7 @@ import { ask } from '../utils/ask';
 import Camera from './Camera';
 import PhotoView from './PhotoView';
 import MealDays from './MealDays';
+import { dayTypeOf, chosenPlan, numOf, time24 } from '../data/mealDays';
 import {
   dateKey, dateKeyOf, newEntryId, calTotals, byTime, loadLog, saveLog, parseCal,
   parseKg, formatKg, weightOn, setWeight, weekWeightAvg, MIN_KG, MAX_KG,
@@ -1433,6 +1434,37 @@ function IdeaDetail({ idea, picked, onPick, onClose }) {
 // eaten and left. Its picture stays on top of that meal time, today and every
 // day after, until she hearts another. A second ♥ on the same meal the same
 // day takes it off today again (the picture stays).
+const HEART = on => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill={on ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3z" />
+  </svg>
+);
+
+// Under the My Meals title (2026-10-30): the pictures she has hearted — her
+// Brunch, Dinner and Snack, and today's Days plan. A click opens that tab.
+// Nothing hearted, nothing shown.
+function HeartedPictures({ onOpen }) {
+  const picks = loadPicks();
+  const items = MEAL_TIMES.map(t => {
+    const idea = ideasFor(t.id).find(i => i.id === picks[t.id]);
+    return idea?.image ? { key: t.id, img: idea.image, label: t.label, name: idea.name, tab: t.id } : null;
+  }).filter(Boolean);
+  const type = dayTypeOf((new Date().getDay() + 6) % 7);
+  const day = type ? chosenPlan(type.id) : null;
+  if (day?.hearted && day.plan) items.push({ key: 'days', img: day.plan.image, label: type.one, name: day.plan.name, tab: 'days' });
+  if (!items.length) return null;
+  return (
+    <div className="ml-hearted">
+      {items.map(it => (
+        <button key={it.key} type="button" className="ml-hearted-card" onClick={() => onOpen(it.tab)}>
+          <img src={it.img} alt="" />
+          <span className="ml-hearted-text"><small>♥ {it.label}</small><b>{it.name}</b></span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function MealTimePanel({ time, entries, goal, onEat }) {
   const [picks, setPicks] = useState(loadPicks);
   const [openIdea, setOpenIdea] = useState(null);
@@ -1479,10 +1511,15 @@ function MealTimePanel({ time, entries, goal, onEat }) {
         ) : (
           <div className="mt-idea-grid">
             {ideas.map(i => (
-              <button key={i.id} type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}${picked?.id === i.id ? ' is-fav' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
-                {i.image ? <img src={i.image} alt="" loading="lazy" /> : <span className="mt-idea-noimg" aria-hidden="true">{time.icon}</span>}
-                <span className="mt-idea-label">{eatenToday(i.id) || picked?.id === i.id ? '♥ ' : ''}{i.name}</span>
-              </button>
+              <div key={i.id} className="mt-idea-wrap">
+                <button type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}${picked?.id === i.id ? ' is-fav' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
+                  {i.image ? <img src={i.image} alt="" loading="lazy" /> : <span className="mt-idea-noimg" aria-hidden="true">{time.icon}</span>}
+                  <span className="mt-idea-label">{eatenToday(i.id) || picked?.id === i.id ? '♥ ' : ''}{i.name}</span>
+                </button>
+                <button type="button" className={`mt-idea-heart${eatenToday(i.id) ? ' on' : ''}`} onClick={() => pick(i)} aria-pressed={eatenToday(i.id)} aria-label={eatenToday(i.id) ? `Take ${i.name} off today` : `I ate ${i.name} today`}>
+                  {HEART(eatenToday(i.id))}
+                </button>
+              </div>
             ))}
           </div>
         )}
@@ -1614,6 +1651,31 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
     });
   };
 
+  // ♥ on a Days plan: its meals go on TODAY with their times, calories,
+  // protein, fiber and iron. Hearting another plan of the same kind swaps
+  // them; un-hearting takes them off.
+  const eatPlan = (type, plan) => {
+    const key = dateKeyOf();
+    const now = new Date().toISOString();
+    commit(prev => {
+      const list = prev.days[key] || [];
+      const gone = list.filter(e => e.dayType === type.id);
+      const deleted = { ...prev.deleted };
+      gone.forEach(e => { deleted[e.id] = now; });
+      const kept = list.filter(e => e.dayType !== type.id);
+      const added = plan ? plan.meals.map(m => ({
+        id: newEntryId(), time: time24(m.time), text: m.name.includes('·') ? m.name : `${m.name} · ${plan.name}`, cal: numOf(m.kcal), protein: numOf(m.protein),
+        ...(m.fiber && { fiber: numOf(m.fiber) }), ...(m.iron && { iron: numOf(m.iron, 1) }),
+        mealTime: m.snack ? 'snacks' : /dinner/i.test(m.name) ? 'dinner' : 'lunch',
+        dayType: type.id, dayPlanId: plan.id, createdAt: now, updatedAt: now,
+      })) : [];
+      const next = [...kept, ...added].sort(byTime);
+      const nextDays = { ...prev.days };
+      if (next.length) nextDays[key] = next; else delete nextDays[key];
+      return { ...prev, days: nextDays, deleted };
+    });
+  };
+
   // A deleted line leaves a tombstone, or the other gadget's copy would put it
   // straight back on the next sync.
   const deleteEntry = async (dayNum, entry) => {
@@ -1684,18 +1746,14 @@ export default function Meal({ initialTab = null, pushBack, clearInnerBack }) {
       <div className="s-header">
         <div className="s-tag">What you actually ate</div>
         <h2 className="s-title">My <em>Meals</em></h2>
-        <p className="s-desc">
-          Tap a day to write meals, calories, weight, and burned calories.
-          Plan meals land here with time and calories; anything else is yours to type.
-          Weekly goals show calories left, and Sundays show that day&apos;s weight with the week&apos;s average.
-        </p>
+        <HeartedPictures onOpen={setTab} />
       </div>
 
       <MealTabs tab={tab} setTab={setTab} />
 
       {tab === 'days' && (
         <div className="mt">
-          <MealDays initialType={dayType} pushBack={pushBack} clearInnerBack={clearInnerBack} />
+          <MealDays initialType={dayType} pushBack={pushBack} clearInnerBack={clearInnerBack} onHeartPlan={eatPlan} />
         </div>
       )}
 

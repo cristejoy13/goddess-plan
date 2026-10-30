@@ -602,6 +602,24 @@ export const DAY_PLANS = [
 
 export const plansFor = type => DAY_PLANS.filter(p => p.type === type);
 
+// A number from her text, for the calendar: "≈ 545 kcal" → 545. A range
+// ("≈ 445–460 kcal") counts as its middle, 453 — the calendar needs one number.
+export function numOf(text, decimals = 0) {
+  const n = (String(text || '').match(/\d[\d,]*(?:\.\d+)?/g) || []).map(x => Number(x.replace(/,/g, '')));
+  if (!n.length) return undefined;
+  const v = n.slice(0, 2).reduce((a, b) => a + b, 0) / Math.min(n.length, 2);
+  const f = 10 ** decimals;
+  return Math.round(v * f) / f;
+}
+// "1:00 PM" → "13:00", as the calendar writes times.
+export function time24(text) {
+  const m = String(text || '').match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (!m) return '12:00';
+  let h = Number(m[1]) % 12;
+  if (/pm/i.test(m[3])) h += 12;
+  return `${String(h).padStart(2, '0')}:${m[2]}`;
+}
+
 // Every food in a plan, once. A food in two meals keeps both amounts as she
 // wrote them ("5 g + 10 g"); nothing is added up or changed.
 export function shopList(plan) {

@@ -207,7 +207,7 @@ export function PlanPage({ plan, type, hearted, onHeart, onShop }) {
   );
 }
 
-export default function MealDays({ initialType = null, pushBack, clearInnerBack }) {
+export default function MealDays({ initialType = null, pushBack, clearInnerBack, onHeartPlan }) {
   const [typeId, setTypeId] = useState(DAY_TYPES.some(t => t.id === initialType) ? initialType : null);
   const [planId, setPlanId] = useState(null);
   const [picks, setPicks] = useState(loadPicks);
@@ -238,6 +238,9 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack 
     if (next[key] === plan.id) delete next[key]; else next[key] = plan.id;
     try { localStorage.setItem(PICKS_KEY, JSON.stringify(next)); } catch { /* kept for this visit */ }
     setPicks(next);
+    // ♥ also puts the plan's meals on today in the calendar; un-hearting
+    // takes them off again.
+    onHeartPlan?.(type, next[key] ? plan : null);
   }
 
   const type = DAY_TYPES.find(t => t.id === typeId);
@@ -291,6 +294,9 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack 
                   </span>
                 </button>
                 <ShopButton plan={p} onOpen={setShopFor} className="md-shop-btn-tile" />
+                <button type="button" className={`md-heart md-heart-tile${chosenId === p.id ? ' on' : ''}`} onClick={() => heart(type, p)} aria-pressed={chosenId === p.id} aria-label={`Choose ${p.name} for ${type.name.toLowerCase()}`}>
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill={chosenId === p.id ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3z" /></svg>
+                </button>
               </div>
             ))}
           </div>
