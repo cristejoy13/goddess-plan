@@ -12713,9 +12713,8 @@ button.md-shop-row { cursor: pointer; }
 .md-heart-tile { position: absolute; top: 10px; left: 10px; width: 44px; height: 44px; border-color: rgba(255,255,255,0.9); color: #e8347a; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
 .md-heart-tile.on { background: #e8347a; color: #fff; border-color: #e8347a; }
 @media (max-width: 480px) { .md-heart-tile { top: 8px; left: 8px; width: 40px; height: 40px; } }
-.ml-hearted { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 640px; margin: 12px auto 0; }
-@media (min-width: 700px) { .ml-hearted { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 860px; } }
-.ml-hearted-card { position: relative; aspect-ratio: 4 / 5; padding: 0; border: 1.5px solid #e8347a; border-radius: 16px; overflow: hidden; background: var(--card); cursor: pointer; font-family: inherit; text-align: left; }
+.ml-hearted { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 860px; margin: 12px auto 0; }
+.ml-hearted-card { flex: 0 1 calc(50% - 5px); max-width: 200px; position: relative; aspect-ratio: 4 / 5; padding: 0; border: 1.5px solid #e8347a; border-radius: 16px; overflow: hidden; background: var(--card); cursor: pointer; font-family: inherit; text-align: left; }
 .ml-hearted-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ml-hearted-text { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 2px; padding: 26px 10px 10px; color: #fff; background: linear-gradient(180deg, rgba(20,4,16,0), rgba(20,4,16,0.82)); }
 .ml-hearted-text small { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #ffd0e3; }

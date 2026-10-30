@@ -1514,7 +1514,7 @@ function MealTimePanel({ time, entries, goal, onEat }) {
               <div key={i.id} className="mt-idea-wrap">
                 <button type="button" className={`mt-idea${openIdea === i.id ? ' on' : ''}${picked?.id === i.id ? ' is-fav' : ''}`} onClick={() => setOpenIdea(o => (o === i.id ? null : i.id))}>
                   {i.image ? <img src={i.image} alt="" loading="lazy" /> : <span className="mt-idea-noimg" aria-hidden="true">{time.icon}</span>}
-                  <span className="mt-idea-label">{eatenToday(i.id) || picked?.id === i.id ? '♥ ' : ''}{i.name}</span>
+                  <span className="mt-idea-label">{i.name}</span>
                 </button>
                 <button type="button" className={`mt-idea-heart${eatenToday(i.id) ? ' on' : ''}`} onClick={() => pick(i)} aria-pressed={eatenToday(i.id)} aria-label={eatenToday(i.id) ? `Take ${i.name} off today` : `I ate ${i.name} today`}>
                   {HEART(eatenToday(i.id))}

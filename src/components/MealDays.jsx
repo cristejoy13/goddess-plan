@@ -289,7 +289,7 @@ export default function MealDays({ initialType = null, pushBack, clearInnerBack,
                 <button type="button" className={`md-plancard${chosenId === p.id ? ' on' : ''}`} onClick={() => backTo(type.id, p.id)}>
                   <img src={p.image} alt="" />
                   <span className="md-plancard-text">
-                    <b>{chosenId === p.id ? '♥ ' : ''}{p.name}</b>
+                    <b>{p.name}</b>
                     <small>{p.totals.kcal} · {p.totals.protein}</small>
                   </span>
                 </button>
