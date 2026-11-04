@@ -5,13 +5,15 @@
 //   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · Zone 2 or bike
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
 //   Fri  Pilates or yoga, same choice as Wed · Zone 2 or bike
-//   Sat  Glutes C — squat to cross-body knee, RDL to squat clean, jump lunge · DB core flutters
+//   Sat  Glutes C — squat x RDL, squat x lunges, squat x pulse squat · DB core flutters
 // (2026-10-30, her call: Tue became upper body only, toning the arms rather
 // than building them; Wed and Fri each offer Izzy or Nicole; Sat became
 // fast, sprint-like glute moves.)
 //   Sun  Zone 2 or biking, then swimming at 5 PM
 // (2026-11-04, her call: the light days — Tue, Wed, Fri, Sun — lost the easy
 // walk, since she walks anyway, and each offers Zone 2 OR a bike ride.)
+// (2026-11-04, her call: Sat became three squat combos, and every glute lift
+// starts at 3 × 10 — she changes sets, reps and weight herself with ✏️.)
 // An easy walk on each glute day. Three main lifts on each glute day, never shared;
 // one abs move finishes each (cable crunch, hanging knee raise, hollow hold). They progress by reps first, then a
 // little weight — never by adding exercises.
@@ -935,7 +937,7 @@ export const WORKOUT_DAYS = [
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
       H('🍑 Main Workout', '3 lifts · in order.', undefined, C('hip-thrust')),
-      { name: '1. Barbell Hip Thrust', detail: '4 × 10 reps · barbell or dumbbell · rest 2 min · full hip extension, squeeze at the top' },
+      { name: '1. Barbell Hip Thrust', detail: '3 × 10 reps · barbell or dumbbell · rest 2 min · full hip extension, squeeze at the top' },
       { name: '2. Romanian Deadlift (RDL)', detail: '3 × 10 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
       { name: '3. Bulgarian Split Squat', detail: '3 × 10 reps each leg · rest 90 sec · lean slightly forward for the glutes' },
       ...absFinisher('Cable Crunch', '3 × 15 reps · kneel at the cable, rope by your head · curl your ribs down to your hips · hips stay still', C('cable-crunch')),
@@ -979,7 +981,7 @@ export const WORKOUT_DAYS = [
     exercises: [
       H('🍑 Main Workout', '3 lifts · in order.', undefined, C('glute-b')),
       { name: '1. Cable Kickback', detail: '3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec · a band round the ankle works at home' },
-      { name: '2. Hip Abduction (machine or band)', detail: '3 × 20 reps · machine, band or cable · rest 60 sec' },
+      { name: '2. Hip Abduction (machine or band)', detail: '3 × 10 reps · machine, band or cable · rest 60 sec' },
       { name: '3. Dumbbell Step-Up', detail: '3 × 10 reps each leg · rest 90 sec · drive through the working leg' },
       ...absFinisher('Hanging Knee Raise', '3 × 12 reps · hang from a bar · curl your hips up, not just your knees · no swinging', C('hanging-knee-raise')),
       ...walk('30–60'),
@@ -1000,14 +1002,14 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Saturday · Glutes C', title: 'Squat Knee Drive · RDL Clean · Jump Lunge · Abs',
-    sub: '25–35 min power · abs finisher · evening walk',
+    day: 'Saturday · Glutes C', title: 'Squat x RDL · Squat x Lunges · Squat x Pulse · Abs',
+    sub: '25–35 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      H('🍑 Main Workout', '3 moves · fast and powerful, like sprints for your glutes.', undefined, C('glute-c')),
-      { name: '1. Squat to Cross-Body Knee Drive', detail: '3 × 10 reps each side · bodyweight or light dumbbells · squat, then stand up fast and drive one knee across to the opposite elbow · switch sides · rest 60 sec' },
-      { name: '2. RDL to Squat Clean', detail: '3 × 10 reps · light dumbbells · hinge into an RDL, then pull the dumbbells up to your shoulders as you drop into a squat, and stand up · rest 60–90 sec' },
-      { name: '3. Jump Lunges', detail: '3 × 16 reps (8 each leg) · switch legs in the air, land soft · rest 60 sec' },
+      H('🍑 Main Workout', '3 squat combos · in order.', undefined, C('glute-c')),
+      { name: '1. Squat x RDL', detail: '3 × 10 reps · dumbbells · one squat, stand up, then one RDL = 1 rep · rest 90 sec' },
+      { name: '2. Squat x Lunges', detail: '3 × 10 reps · dumbbells · one squat, then one lunge back on each leg = 1 rep · rest 90 sec' },
+      { name: '3. Squat x Pulse Squat', detail: '3 × 10 reps · dumbbells · one full squat, then 3 small pulses at the bottom, then stand = 1 rep · rest 90 sec' },
       ...absFinisher('DB Core Flutters', '3 × 30 sec · lie on your back, one light dumbbell held above your chest · lower back pressed into the floor · small, fast leg kicks', C('hollow-hold')),
       ...walk('30–60'),
     ],
