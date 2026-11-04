@@ -1,16 +1,18 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
 // Her plan of 2026-10-10, Monday to Sunday:
 //   Mon  Glutes A — hip thrust, RDL, Bulgarian split squat · abs finisher
-//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · Zone 2 run
-//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · jump rope
+//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · Zone 2 or bike
+//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · Zone 2 or bike
 //   Thu  Glutes B — cable kickback, hip abduction, step-up · abs finisher
-//   Fri  Pilates or yoga, same choice as Wed · jump rope
+//   Fri  Pilates or yoga, same choice as Wed · Zone 2 or bike
 //   Sat  Glutes C — squat to cross-body knee, RDL to squat clean, jump lunge · DB core flutters
 // (2026-10-30, her call: Tue became upper body only, toning the arms rather
 // than building them; Wed and Fri each offer Izzy or Nicole; Sat became
 // fast, sprint-like glute moves.)
-//   Sun  Biking, then swimming at 5 PM
-// An easy walk every day. Three main lifts on each glute day, never shared;
+//   Sun  Zone 2 or biking, then swimming at 5 PM
+// (2026-11-04, her call: the light days — Tue, Wed, Fri, Sun — lost the easy
+// walk, since she walks anyway, and each offers Zone 2 OR a bike ride.)
+// An easy walk on each glute day. Three main lifts on each glute day, never shared;
 // one abs move finishes each (cable crunch, hanging knee raise, hollow hold). They progress by reps first, then a
 // little weight — never by adding exercises.
 //
@@ -67,15 +69,13 @@ const absFinisher = (name, detail, cover) => [
   H('🔥 After · Abs Finisher', 'One move · straight after the lifts.', 'core', cover),
   { name, detail },
 ];
-// After Tuesday's upper body: Zone 2 run only (her call, 2026-10-30).
-const RUN_AFTER = [
-  H('🏃 After · Zone 2 Run', 'Only after the main workout.', undefined, C('run')),
+// After the main workout on Tue, Wed and Fri: Zone 2 OR a bike ride, her
+// choice (2026-11-04). On Sunday the same choice is the main workout.
+const zone2OrBike = (when, bikeMin) => [
+  H(`🏃 ${when} · Zone 2 Run`, 'Or bike below.', undefined, C('run')),
   { name: 'Zone 2 Run', log: 'run', detail: '20–30 min · easy — you can talk in short sentences' },
-];
-// After Wednesday's and Friday's Pilates: jump rope only (her call, 2026-10-30).
-const ROPE_AFTER = [
-  H('🪢 After · Jump Rope', 'Only after the main workout.', undefined, C('rope-run')),
-  { name: 'Jump Rope', detail: '5–15 min · moderate · 1 min jumping, 30–60 sec rest, repeat' },
+  H('🚲 Or · Biking', 'Steady and easy.', undefined, C('bike')),
+  { name: 'Biking', log: 'bike', detail: `${bikeMin} min · steady easy pace` },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
@@ -947,29 +947,27 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Tuesday · Upper Body', title: 'Shoulder Press · Row · Triceps',
-    sub: '20–25 min light weights · Zone 2 run · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
+    sub: '20–25 min light weights · Zone 2 or bike',
+    cardio: cardio('Zone 2 or bike', '20–30 min'),
     // Toned arms, not bigger ones: light dumbbells, high reps, short rests.
     exercises: [
       H('💪 Main Workout', '3 moves · light weights, high reps · tones, doesn’t bulk.', undefined, C('arms')),
       { name: '1. Dumbbell Shoulder Press', detail: '3 × 15 reps · light dumbbells, seated · rest 45 sec · press straight up, lower slowly' },
       { name: '2. Dumbbell Bent-Over Row', detail: '3 × 15 reps · both arms at once, the same weight in each hand · rest 45 sec · elbows close to your body, squeeze your shoulder blades together' },
       { name: '3. Overhead Triceps Extension', detail: '3 × 15 reps · hold the weight over your head, lower it behind your head, then lift it back up · rest 45 sec · elbows point up and stay still' },
-      ...RUN_AFTER,
-      ...walk('30–60'),
+      ...zone2OrBike('After', '20–30'),
     ],
     trackLifts: true,
     meals: DAILY_MEALS,
   },
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Wednesday · Pilates or Yoga', title: 'Izzy or Nicole · Jump Rope',
-    sub: '20–40 min video · jump rope · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
+    day: 'Wednesday · Pilates or Yoga', title: 'Izzy or Nicole · Zone 2 or Bike',
+    sub: '20–40 min video · Zone 2 or bike',
+    cardio: cardio('Zone 2 or bike', '20–30 min'),
     exercises: [
       ...izzyOrNicole(),
-      ...ROPE_AFTER,
-      ...walk('30–60'),
+      ...zone2OrBike('After', '20–30'),
     ],
     meals: DAILY_MEALS,
   },
@@ -991,13 +989,12 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🧘', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Friday · Pilates or Yoga', title: 'Izzy or Nicole · Jump Rope',
-    sub: '20–40 min video · jump rope · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
+    day: 'Friday · Pilates or Yoga', title: 'Izzy or Nicole · Zone 2 or Bike',
+    sub: '20–40 min video · Zone 2 or bike',
+    cardio: cardio('Zone 2 or bike', '20–30 min'),
     exercises: [
       ...izzyOrNicole(),
-      ...ROPE_AFTER,
-      ...walk('30–60'),
+      ...zone2OrBike('After', '20–30'),
     ],
     meals: DAILY_MEALS,
   },
@@ -1019,17 +1016,15 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🚲', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Biking & Swim', title: 'Bike · Swim at 5 PM',
-    sub: '45–60 min bike · 30–45 min swim at 5 PM · evening walk',
-    cardio: cardio('Easy evening walk', '20–40 min'),
+    day: 'Sunday · Zone 2 or Bike & Swim', title: 'Zone 2 or Bike · Swim at 5 PM',
+    sub: 'Zone 2 or 45–60 min bike · 30–45 min swim at 5 PM',
+    cardio: cardio('Zone 2 or bike', '20–60 min'),
     exercises: [
-      H('🚲 Main Workout · Biking', 'Steady and easy.', undefined, C('bike')),
-      { name: 'Biking', log: 'bike', detail: '45–60 min · steady easy pace' },
-      H('🏊 5 PM · Swimming', 'After the bike. Enjoyable, mostly moderate.', undefined, C('swim')),
+      ...zone2OrBike('Main Workout', '45–60'),
+      H('🏊 5 PM · Swimming', 'Enjoyable, mostly moderate.', undefined, C('swim')),
       { name: 'Warm-Up Swim', detail: '5–10 min · easy' },
       { name: 'Main Swim', detail: '15–25 min · comfortable · mix strokes, rest when needed' },
       { name: 'Cool-Down Swim', detail: '5 min · very easy' },
-      ...walk('20–40'),
     ],
     meals: DAILY_MEALS,
   },
