@@ -18,7 +18,8 @@
 // day, bike before each light day — and Mon and Thu run hardest lift first.)
 // (2026-11-11: every day starts with 30 min of running, biking, jump rope
 // or walking, her pick; Mon became hip thrust, Bulgarian, RDL.)
-// An easy walk on each glute day. Three main lifts on each glute day, never shared;
+// (2026-11-11, later: the evening walk came off the glute days too — the
+// walk is already a choice in the cardio first.) Three main lifts on each glute day, never shared;
 // one abs move finishes each (cable crunch, hanging knee raise, hollow hold). They progress by reps first, then a
 // little weight — never by adding exercises.
 //
@@ -52,10 +53,6 @@ const NICOLE_FULLBODY = [
 const H = (heading, hint, tone, cover) => ({ heading, hint, tone, cover });
 const C = name => `/workouts/sec-${name}.jpg`;
 
-const walk = (min) => [
-  H('🌙 Evening · Easy Walk', 'Every evening.', undefined, C('walk')),
-  { name: 'Easy Walk', detail: `${min} min · easy pace` },
-];
 
 
 // Wed and Fri (2026-10-30): one video from either teacher, her choice.
@@ -938,8 +935,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Monday · Glutes A', title: 'Hip Thrust · Bulgarian · RDL · Abs',
-    sub: '30 min cardio first · 30–40 min strength · abs finisher · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
+    sub: '30 min cardio first · 30–40 min strength · abs finisher',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     exercises: [
       ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 lifts · in order.', undefined, C('hip-thrust')),
@@ -947,7 +944,6 @@ export const WORKOUT_DAYS = [
       { name: '2. Bulgarian Split Squat', detail: '3 × 10 reps each leg · rest 90 sec · lean slightly forward for the glutes' },
       { name: '3. Romanian Deadlift (RDL)', detail: '3 × 10 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
       ...absFinisher('Cable Crunch', '3 × 15 reps · kneel at the cable, rope by your head · curl your ribs down to your hips · hips stay still', C('cable-crunch')),
-      ...walk('30–60'),
     ],
     trackLifts: true,
     meals: GLUTE_MEALS,
@@ -982,8 +978,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Thursday · Glutes B', title: 'Step-Up · Kickback · Abduction · Abs',
-    sub: '30 min cardio first · 25–35 min strength · abs finisher · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
+    sub: '30 min cardio first · 25–35 min strength · abs finisher',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     exercises: [
       ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 lifts · hardest first.', undefined, C('glute-b')),
@@ -991,7 +987,6 @@ export const WORKOUT_DAYS = [
       { name: '2. Cable Kickback', detail: '3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec · a band round the ankle works at home' },
       { name: '3. Hip Abduction (machine or band)', detail: '3 × 10 reps · machine, band or cable · rest 60 sec' },
       ...absFinisher('Hanging Knee Raise', '3 × 12 reps · hang from a bar · curl your hips up, not just your knees · no swinging', C('hanging-knee-raise')),
-      ...walk('30–60'),
     ],
     trackLifts: true,
     meals: GLUTE_MEALS,
@@ -1010,8 +1005,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Saturday · Glutes C', title: 'Squat x RDL · Squat x Lunges · Squat x Pulse · Abs',
-    sub: '30 min cardio first · 25–35 min strength · abs finisher · evening walk',
-    cardio: cardio('Easy evening walk', '30–60 min'),
+    sub: '30 min cardio first · 25–35 min strength · abs finisher',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     exercises: [
       ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 squat combos · in order.', undefined, C('glute-c')),
@@ -1019,7 +1014,6 @@ export const WORKOUT_DAYS = [
       { name: '2. Squat x Lunges', detail: '3 × 10 reps · dumbbells · one squat, then one lunge back on each leg = 1 rep · rest 90 sec' },
       { name: '3. Squat x Pulse Squat', detail: '3 × 10 reps · dumbbells · one full squat, then 3 small pulses at the bottom, then stand = 1 rep · rest 90 sec' },
       ...absFinisher('DB Core Flutters', '3 × 30 sec · lie on your back, one light dumbbell held above your chest · lower back pressed into the floor · small, fast leg kicks', C('hollow-hold')),
-      ...walk('30–60'),
     ],
     trackLifts: true,
     meals: GLUTE_MEALS,
