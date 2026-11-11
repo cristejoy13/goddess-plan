@@ -78,8 +78,8 @@ const CARDIO_FIRST = [
   H('🏃 First · Pick One', 'Running, biking, jump rope or walking · before the main workout.', undefined, C('cardio')),
   { name: 'Running', log: 'run', detail: 'Zone 2 — easy, you can talk in short sentences' },
   { name: 'Biking', log: 'bike', detail: 'steady easy pace' },
-  { name: 'Jump Rope', detail: 'moderate · 1 min jumping, 30–60 sec rest, repeat' },
-  { name: 'Walking', detail: 'brisk pace' },
+  { name: 'Jump Rope', log: 'rope', detail: 'moderate · 1 min jumping, 30–60 sec rest, repeat' },
+  { name: 'Walking', log: 'walk', detail: 'brisk pace' },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────

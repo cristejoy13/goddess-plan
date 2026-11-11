@@ -65,7 +65,7 @@ function TodayDoneButton() {
 // Saturday's Zone 2 run and Sunday's bike each keep her minutes. Her goal is
 // to hold her time or beat it, so the day shows the last time and the best,
 // and the best moves up by itself when she beats it.
-const CARDIO_LABEL = { run: { icon: '🏃', name: 'Run' }, bike: { icon: '🚲', name: 'Bike' } };
+const CARDIO_LABEL = { run: { icon: '🏃', name: 'Run' }, bike: { icon: '🚲', name: 'Bike' }, rope: { icon: '🪢', name: 'Jump rope' }, walk: { icon: '🚶', name: 'Walk' } };
 
 function useCardio() {
   const [log, setLog] = useState(loadCardio);

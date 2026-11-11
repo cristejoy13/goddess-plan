@@ -1,24 +1,26 @@
-// Minutes logged for the Saturday Zone 2 run and the Sunday bike.
+// Minutes logged for the daily cardio: run, bike, jump rope and walk
+// (rope and walk added 2026-11-11).
 //
 // Her goal is to hold her time or beat it, so the page shows the last time
 // and the best, and the best moves up by itself the moment she beats it.
 //
 // Shape of gp_cardio (synced):
 //   { run:  { 'YYYY-MM-DD': { min: number|null, updatedAt } },
-//     bike: { ... } }
+//     bike: { ... }, rope: { ... }, walk: { ... } }
 // A cleared day keeps its entry with min: null, so the clearing wins over the
 // other gadget's older number when the two copies merge.
 
 export const CARDIO_KEY = 'gp_cardio';
 export const CARDIO_CHANGED = 'gp-cardio-changed';
-export const KINDS = ['run', 'bike'];
+export const KINDS = ['run', 'bike', 'rope', 'walk'];
+const emptyLog = () => Object.fromEntries(KINDS.map(k => [k, {}]));
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const pad = n => String(n).padStart(2, '0');
 export const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
 function clean(v) {
-  const out = { run: {}, bike: {} };
+  const out = emptyLog();
   if (!v || typeof v !== 'object') return out;
   for (const kind of KINDS) {
     for (const [date, e] of Object.entries(v[kind] || {})) {
@@ -31,7 +33,7 @@ function clean(v) {
 }
 const parse = raw => { try { return clean(JSON.parse(raw)); } catch { return clean(null); } };
 const sortObj = o => Object.fromEntries(Object.keys(o).sort().map(k => [k, o[k]]));
-const serialize = log => JSON.stringify({ bike: sortObj(log.bike), run: sortObj(log.run) });
+const serialize = log => JSON.stringify(Object.fromEntries([...KINDS].sort().map(k => [k, sortObj(log[k] || {})])));
 
 export function loadCardio() {
   try { return parse(localStorage.getItem(CARDIO_KEY)); } catch { return clean(null); }
@@ -69,7 +71,7 @@ export function dateFor(dayIndex, now = new Date()) {
 // Two gadgets' copies: per kind, per day, the newer edit wins.
 export function mergeCardioBlobs(localRaw, remoteRaw) {
   const a = parse(localRaw), b = parse(remoteRaw);
-  const out = { run: {}, bike: {} };
+  const out = emptyLog();
   for (const kind of KINDS) {
     for (const date of new Set([...Object.keys(a[kind]), ...Object.keys(b[kind])])) {
       const x = a[kind][date], y = b[kind][date];
