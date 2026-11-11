@@ -1,21 +1,23 @@
 // ─── THE WEEK ──────────────────────────────────────────────────────────────
 // Her plan of 2026-10-10, Monday to Sunday:
-//   Mon  Glutes A — Bulgarian split squat, RDL, hip thrust · abs finisher
-//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · bike first
-//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · bike first
+//   Mon  Glutes A — hip thrust, Bulgarian split squat, RDL · abs finisher
+//   Tue  Upper body — shoulder press, row, triceps (light, high reps) · cardio first
+//   Wed  Pilates or yoga — Pilates by Izzy OR Move With Nicole · cardio first
 //   Thu  Glutes B — step-up, cable kickback, hip abduction · abs finisher
-//   Fri  Pilates or yoga, same choice as Wed · bike first
+//   Fri  Pilates or yoga, same choice as Wed · cardio first
 //   Sat  Glutes C — squat x RDL, squat x lunges, squat x pulse squat · DB core flutters
 // (2026-10-30, her call: Tue became upper body only, toning the arms rather
 // than building them; Wed and Fri each offer Izzy or Nicole; Sat became
 // fast, sprint-like glute moves.)
-//   Sun  Biking, then swimming at 5 PM
+//   Sun  Cardio, then swimming at 5 PM
 // (2026-11-04, her call: the light days — Tue, Wed, Fri, Sun — lost the easy
 // walk, since she walks anyway, and each offers Zone 2 OR a bike ride.)
 // (2026-11-04, her call: Sat became three squat combos, and every glute lift
 // starts at 3 × 10 — she changes sets, reps and weight herself with ✏️.)
 // (2026-11-10, her call: cardio moved first — Zone 2 run before each glute
 // day, bike before each light day — and Mon and Thu run hardest lift first.)
+// (2026-11-11: every day starts with 30 min of running, biking, jump rope
+// or walking, her pick; Mon became hip thrust, Bulgarian, RDL.)
 // An easy walk on each glute day. Three main lifts on each glute day, never shared;
 // one abs move finishes each (cable crunch, hanging knee raise, hollow hold). They progress by reps first, then a
 // little weight — never by adding exercises.
@@ -73,15 +75,14 @@ const absFinisher = (name, detail, cover) => [
   H('🔥 After · Abs Finisher', 'One move · straight after the lifts.', 'core', cover),
   { name, detail },
 ];
-// Cardio comes FIRST (her call, 2026-11-10): a 30-minute Zone 2 run before
-// each glute workout, a bike ride before each light-day workout.
-const ZONE2_FIRST = [
-  H('🏃 First · Zone 2 Run', 'Before the main workout.', undefined, C('run')),
-  { name: 'Zone 2 Run', log: 'run', detail: '30 min · easy — you can talk in short sentences' },
-];
-const bikeFirst = (bikeMin) => [
-  H('🚲 First · Biking', 'Before the main workout.', undefined, C('bike')),
-  { name: 'Biking', log: 'bike', detail: `${bikeMin} min · steady easy pace` },
+// Cardio comes FIRST, every day (her call, 2026-11-11): 30 minutes of
+// running, biking, jump rope or walking — her choice on the day.
+const CARDIO_FIRST = [
+  H('🏃 First · Pick One · 30 min', 'Running, biking, jump rope or walking · before the main workout.', undefined, C('cardio')),
+  { name: 'Running', log: 'run', detail: '30 min · Zone 2 — easy, you can talk in short sentences' },
+  { name: 'Biking', log: 'bike', detail: '30 min · steady easy pace' },
+  { name: 'Jump Rope', detail: '30 min · moderate · 1 min jumping, 30–60 sec rest, repeat' },
+  { name: 'Walking', detail: '30 min · brisk pace' },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
@@ -936,15 +937,15 @@ const DAILY_MEALS = dailyMeals(false);
 export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Monday · Glutes A', title: 'Bulgarian · RDL · Hip Thrust · Abs',
-    sub: '30 min Zone 2 first · 30–40 min strength · abs finisher · evening walk',
+    day: 'Monday · Glutes A', title: 'Hip Thrust · Bulgarian · RDL · Abs',
+    sub: '30 min cardio first · 30–40 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...ZONE2_FIRST,
-      H('🍑 Main Workout', '3 lifts · hardest first.', undefined, C('hip-thrust')),
-      { name: '1. Bulgarian Split Squat', detail: '3 × 10 reps each leg · rest 90 sec · lean slightly forward for the glutes' },
-      { name: '2. Romanian Deadlift (RDL)', detail: '3 × 10 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
-      { name: '3. Barbell Hip Thrust', detail: '3 × 10 reps · barbell or dumbbell · rest 2 min · full hip extension, squeeze at the top' },
+      ...CARDIO_FIRST,
+      H('🍑 Main Workout', '3 lifts · in order.', undefined, C('hip-thrust')),
+      { name: '1. Barbell Hip Thrust', detail: '3 × 10 reps · barbell or dumbbell · rest 2 min · full hip extension, squeeze at the top' },
+      { name: '2. Bulgarian Split Squat', detail: '3 × 10 reps each leg · rest 90 sec · lean slightly forward for the glutes' },
+      { name: '3. Romanian Deadlift (RDL)', detail: '3 × 10 reps · rest 90 sec · slow stretch through glutes and hamstrings' },
       ...absFinisher('Cable Crunch', '3 × 15 reps · kneel at the cable, rope by your head · curl your ribs down to your hips · hips stay still', C('cable-crunch')),
       ...walk('30–60'),
     ],
@@ -954,11 +955,11 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Tuesday · Upper Body', title: 'Shoulder Press · Row · Triceps',
-    sub: 'Bike first · 20–25 min light weights',
-    cardio: cardio('Bike first', '20–30 min'),
+    sub: '30 min cardio first · 20–25 min light weights',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     // Toned arms, not bigger ones: light dumbbells, high reps, short rests.
     exercises: [
-      ...bikeFirst('20–30'),
+      ...CARDIO_FIRST,
       H('💪 Main Workout', '3 moves · light weights, high reps · tones, doesn’t bulk.', undefined, C('arms')),
       { name: '1. Dumbbell Shoulder Press', detail: '3 × 15 reps · light dumbbells, seated · rest 45 sec · press straight up, lower slowly' },
       { name: '2. Dumbbell Bent-Over Row', detail: '3 × 15 reps · both arms at once, the same weight in each hand · rest 45 sec · elbows close to your body, squeeze your shoulder blades together' },
@@ -969,11 +970,11 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
-    day: 'Wednesday · Pilates or Yoga', title: 'Bike · Izzy or Nicole',
-    sub: 'Bike first · 20–40 min video',
-    cardio: cardio('Bike first', '20–30 min'),
+    day: 'Wednesday · Pilates or Yoga', title: 'Cardio · Izzy or Nicole',
+    sub: '30 min cardio first · 20–40 min video',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     exercises: [
-      ...bikeFirst('20–30'),
+      ...CARDIO_FIRST,
       ...izzyOrNicole(),
     ],
     meals: DAILY_MEALS,
@@ -981,10 +982,10 @@ export const WORKOUT_DAYS = [
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Thursday · Glutes B', title: 'Step-Up · Kickback · Abduction · Abs',
-    sub: '30 min Zone 2 first · 25–35 min strength · abs finisher · evening walk',
+    sub: '30 min cardio first · 25–35 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...ZONE2_FIRST,
+      ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 lifts · hardest first.', undefined, C('glute-b')),
       { name: '1. Dumbbell Step-Up', detail: '3 × 10 reps each leg · rest 90 sec · drive through the working leg' },
       { name: '2. Cable Kickback', detail: '3 × 10 reps each leg · hinge forward slightly, drive the heel back and up, hold 2 sec · a band round the ankle works at home' },
@@ -997,11 +998,11 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🧘', emojiBg: 'rgba(252,228,239,0.5)',
-    day: 'Friday · Pilates or Yoga', title: 'Bike · Izzy or Nicole',
-    sub: 'Bike first · 20–40 min video',
-    cardio: cardio('Bike first', '20–30 min'),
+    day: 'Friday · Pilates or Yoga', title: 'Cardio · Izzy or Nicole',
+    sub: '30 min cardio first · 20–40 min video',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     exercises: [
-      ...bikeFirst('20–30'),
+      ...CARDIO_FIRST,
       ...izzyOrNicole(),
     ],
     meals: DAILY_MEALS,
@@ -1009,10 +1010,10 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Saturday · Glutes C', title: 'Squat x RDL · Squat x Lunges · Squat x Pulse · Abs',
-    sub: '30 min Zone 2 first · 25–35 min strength · abs finisher · evening walk',
+    sub: '30 min cardio first · 25–35 min strength · abs finisher · evening walk',
     cardio: cardio('Easy evening walk', '30–60 min'),
     exercises: [
-      ...ZONE2_FIRST,
+      ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 squat combos · in order.', undefined, C('glute-c')),
       { name: '1. Squat x RDL', detail: '3 × 10 reps · dumbbells · one squat, stand up, then one RDL = 1 rep · rest 90 sec' },
       { name: '2. Squat x Lunges', detail: '3 × 10 reps · dumbbells · one squat, then one lunge back on each leg = 1 rep · rest 90 sec' },
@@ -1025,11 +1026,11 @@ export const WORKOUT_DAYS = [
   },
   {
     emoji: '🚲', emojiBg: 'rgba(252,228,239,0.4)',
-    day: 'Sunday · Biking & Swim', title: 'Bike · Swim at 5 PM',
-    sub: '45–60 min bike first · 30–45 min swim at 5 PM',
-    cardio: cardio('Bike first', '45–60 min'),
+    day: 'Sunday · Cardio & Swim', title: 'Cardio · Swim at 5 PM',
+    sub: '30 min cardio first · 30–45 min swim at 5 PM',
+    cardio: cardio('Run, bike, rope or walk first', '30 min'),
     exercises: [
-      ...bikeFirst('45–60'),
+      ...CARDIO_FIRST,
       H('🏊 5 PM · Swimming', 'Enjoyable, mostly moderate.', undefined, C('swim')),
       { name: 'Warm-Up Swim', detail: '5–10 min · easy' },
       { name: 'Main Swim', detail: '15–25 min · comfortable · mix strokes, rest when needed' },
