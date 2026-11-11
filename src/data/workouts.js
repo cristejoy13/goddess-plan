@@ -16,7 +16,7 @@
 // starts at 3 × 10 — she changes sets, reps and weight herself with ✏️.)
 // (2026-11-10, her call: cardio moved first — Zone 2 run before each glute
 // day, bike before each light day — and Mon and Thu run hardest lift first.)
-// (2026-11-11: every day starts with 30 min of running, biking, jump rope
+// (2026-11-11: every day starts with running, biking, jump rope
 // or walking, her pick; Mon became hip thrust, Bulgarian, RDL.)
 // (2026-11-11, later: the evening walk came off the glute days too — the
 // walk is already a choice in the cardio first.) Three main lifts on each glute day, never shared;
@@ -72,14 +72,14 @@ const absFinisher = (name, detail, cover) => [
   H('🔥 After · Abs Finisher', 'One move · straight after the lifts.', 'core', cover),
   { name, detail },
 ];
-// Cardio comes FIRST, every day (her call, 2026-11-11): 30 minutes of
-// running, biking, jump rope or walking — her choice on the day.
+// Cardio comes FIRST, every day (her call, 2026-11-11): running, biking,
+// jump rope or walking — her choice on the day, for as long as she likes.
 const CARDIO_FIRST = [
-  H('🏃 First · Pick One · 30 min', 'Running, biking, jump rope or walking · before the main workout.', undefined, C('cardio')),
-  { name: 'Running', log: 'run', detail: '30 min · Zone 2 — easy, you can talk in short sentences' },
-  { name: 'Biking', log: 'bike', detail: '30 min · steady easy pace' },
-  { name: 'Jump Rope', detail: '30 min · moderate · 1 min jumping, 30–60 sec rest, repeat' },
-  { name: 'Walking', detail: '30 min · brisk pace' },
+  H('🏃 First · Pick One', 'Running, biking, jump rope or walking · before the main workout.', undefined, C('cardio')),
+  { name: 'Running', log: 'run', detail: 'Zone 2 — easy, you can talk in short sentences' },
+  { name: 'Biking', log: 'bike', detail: 'steady easy pace' },
+  { name: 'Jump Rope', detail: 'moderate · 1 min jumping, 30–60 sec rest, repeat' },
+  { name: 'Walking', detail: 'brisk pace' },
 ];
 
 // ─── MEAL PLAN ─────────────────────────────────────────────────────────────
@@ -935,8 +935,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Monday · Glutes A', title: 'Hip Thrust · Bulgarian · RDL · Abs',
-    sub: '30 min cardio first · 30–40 min strength · abs finisher',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 30–40 min strength · abs finisher',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     exercises: [
       ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 lifts · in order.', undefined, C('hip-thrust')),
@@ -951,8 +951,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '💪', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Tuesday · Upper Body', title: 'Shoulder Press · Row · Triceps',
-    sub: '30 min cardio first · 20–25 min light weights',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 20–25 min light weights',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     // Toned arms, not bigger ones: light dumbbells, high reps, short rests.
     exercises: [
       ...CARDIO_FIRST,
@@ -967,8 +967,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🧘', emojiBg: 'rgba(253,245,208,0.5)',
     day: 'Wednesday · Pilates or Yoga', title: 'Cardio · Izzy or Nicole',
-    sub: '30 min cardio first · 20–40 min video',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 20–40 min video',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     exercises: [
       ...CARDIO_FIRST,
       ...izzyOrNicole(),
@@ -978,8 +978,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '✨', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Thursday · Glutes B', title: 'Step-Up · Kickback · Abduction · Abs',
-    sub: '30 min cardio first · 25–35 min strength · abs finisher',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 25–35 min strength · abs finisher',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     exercises: [
       ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 lifts · hardest first.', undefined, C('glute-b')),
@@ -994,8 +994,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🧘', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Friday · Pilates or Yoga', title: 'Cardio · Izzy or Nicole',
-    sub: '30 min cardio first · 20–40 min video',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 20–40 min video',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     exercises: [
       ...CARDIO_FIRST,
       ...izzyOrNicole(),
@@ -1005,8 +1005,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🍑', emojiBg: 'rgba(252,228,239,0.5)',
     day: 'Saturday · Glutes C', title: 'Squat x RDL · Squat x Lunges · Squat x Pulse · Abs',
-    sub: '30 min cardio first · 25–35 min strength · abs finisher',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 25–35 min strength · abs finisher',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     exercises: [
       ...CARDIO_FIRST,
       H('🍑 Main Workout', '3 squat combos · in order.', undefined, C('glute-c')),
@@ -1021,8 +1021,8 @@ export const WORKOUT_DAYS = [
   {
     emoji: '🚲', emojiBg: 'rgba(252,228,239,0.4)',
     day: 'Sunday · Cardio & Swim', title: 'Cardio · Swim at 5 PM',
-    sub: '30 min cardio first · 30–45 min swim at 5 PM',
-    cardio: cardio('Run, bike, rope or walk first', '30 min'),
+    sub: 'Cardio first · 30–45 min swim at 5 PM',
+    cardio: cardio('Run, bike, rope or walk first', 'as long as you like'),
     exercises: [
       ...CARDIO_FIRST,
       H('🏊 5 PM · Swimming', 'Enjoyable, mostly moderate.', undefined, C('swim')),
