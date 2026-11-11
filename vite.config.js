@@ -18,8 +18,13 @@ export default defineConfig({
         background_color: '#1a0c12',
         display: 'standalone',
         orientation: 'portrait',
+        id: '/', // the same as before (it was taken from start_url), written out
         start_url: '/',
         scope: '/',
+        // A link to Goddessed (from DareZero, say) opens the installed app when the device
+        // allows it, reusing the window that is already open. (2026-11-11)
+        launch_handler: { client_mode: ['navigate-existing', 'auto'] },
+        handle_links: 'preferred',
         icons: [
           // Her logo (Background 2), only resized. The edge-to-edge
           // ("maskable") copies have their own files: when both kinds shared

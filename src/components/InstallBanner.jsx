@@ -6,7 +6,8 @@ export default function InstallBanner() {
     if (window.matchMedia('(display-mode: standalone)').matches) return false;
     if (sessionStorage.getItem('gp_install_dismissed')) return false;
 
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    // An iPad says it is a Mac; it is the "Mac" with a touch screen.
+    const isIOS = (/iphone|ipad|ipod/i.test(navigator.userAgent) || (/macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) && !window.MSStream;
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     return isIOS && isSafari;
   });
